@@ -384,8 +384,6 @@ SKC.RegisterGameState(GameState.INITIATION, {
         if hi and stagedVehicles[hi] and DoesEntityExist(stagedVehicles[hi]) then
             drawStarterHoverSpotlight(stagedVehicles[hi])
         end
-
-        devCamTick()
     end,
 
     tickWait = 0,
