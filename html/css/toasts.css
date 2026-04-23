@@ -1,0 +1,150 @@
+/* -------------------------------------------------------------------------- */
+/* Toast notifications                                                         */
+/* -------------------------------------------------------------------------- */
+
+.sk-toasts {
+  position: fixed;
+  bottom: 3rem;
+  left: 50%;
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  pointer-events: none;
+}
+
+.sk-toast {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  transform: translateX(-50%);
+  border: 1px solid var(--toast-border);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.6),
+    0 2px 8px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* Type tokens */
+.sk-toast--error   { --toast-border: rgba(255, 45, 120, 0.38);  --toast-icon-bg: #a8102a; --toast-body-bg: rgba(12, 2, 4, 0.92);   --toast-progress-color: #ff2d78; }
+.sk-toast--success { --toast-border: rgba(34, 197, 94, 0.35);   --toast-icon-bg: #15803d; --toast-body-bg: rgba(2, 10, 4, 0.92);   --toast-progress-color: #22c55e; }
+.sk-toast--info    { --toast-border: rgba(158, 229, 255, 0.32); --toast-icon-bg: #1d4ed8; --toast-body-bg: rgba(2, 5, 18, 0.92);   --toast-progress-color: #9ee5ff; }
+.sk-toast--warning { --toast-border: rgba(255, 209, 71, 0.38);  --toast-icon-bg: #a16207; --toast-body-bg: rgba(10, 7, 1, 0.92);   --toast-progress-color: #ffd147; }
+
+/* Icon square */
+.sk-toast-icon {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--toast-icon-bg);
+  animation: toastIconIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.sk-toast-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: #fff;
+}
+
+/* Body — expands to the right */
+.sk-toast-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  max-width: 0;
+  background: var(--toast-body-bg);
+  animation: toastBodyIn 0.32s cubic-bezier(0.33, 1, 0.68, 1) 0.2s both;
+}
+
+.sk-toast-title {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.95rem, 1.45vw, 1.15rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.96);
+  white-space: nowrap;
+  padding: 0 1.35rem 0.25rem;
+  opacity: 0;
+  animation: toastTextIn 0.2s ease 0.38s both;
+}
+
+.sk-toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2.5px;
+  background: var(--toast-progress-color);
+  transform-origin: left center;
+  opacity: 0;
+  animation:
+    toastProgressReveal 0.05s ease 0.38s both,
+    toastProgressDrain var(--toast-duration, 3s) linear 0.42s both;
+}
+
+/* Leaving */
+.sk-toast.is-leaving .sk-toast-title {
+  animation: toastTextOut 0.14s ease both;
+}
+
+.sk-toast.is-leaving .sk-toast-body {
+  animation: toastBodyOut 0.22s cubic-bezier(0.36, 0, 0.66, 0) 0.1s both;
+}
+
+.sk-toast.is-leaving .sk-toast-icon {
+  animation: toastIconOut 0.26s cubic-bezier(0.36, 0, 0.66, -0.56) 0.24s both;
+}
+
+.sk-toast.is-leaving .sk-toast-progress {
+  animation: none;
+}
+
+/* Keyframes */
+@keyframes toastIconIn {
+  from { opacity: 0; transform: scale(0.35) translateY(18px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+@keyframes toastBodyIn {
+  from { max-width: 0; }
+  to   { max-width: 800px; }
+}
+
+@keyframes toastTextIn {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes toastProgressReveal {
+  to { opacity: 1; }
+}
+
+@keyframes toastProgressDrain {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+@keyframes toastIconOut {
+  from { opacity: 1; transform: scale(1)    translateY(0); }
+  to   { opacity: 0; transform: scale(0.35) translateY(14px); }
+}
+
+@keyframes toastBodyOut {
+  from { max-width: 800px; opacity: 1; }
+  to   { max-width: 0;     opacity: 0; }
+}
+
+@keyframes toastTextOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}

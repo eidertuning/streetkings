@@ -1,0 +1,370 @@
+/* -------------------------------------------------------------------------- */
+/* Stunt Creator HUD Panel                                                    */
+/* -------------------------------------------------------------------------- */
+
+.sk-stuntdev-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(18vw, 320px);
+  background: linear-gradient(180deg, rgba(5, 4, 9, 0.99) 0%, rgba(3, 2, 6, 0.985) 100%);
+  border-left: 4px solid var(--sk-color-spray);
+  border-right: 3px solid var(--sk-color-spray);
+  box-shadow: 6px 0 32px rgba(0, 0, 0, 0.55), inset -1px 0 0 rgba(255, 209, 71, 0.35);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  z-index: 900;
+  pointer-events: none;
+  animation: skStuntdevIn 0.28s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+
+@keyframes skStuntdevIn {
+  from { opacity: 0; transform: translateX(-100%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.sk-stuntdev-header {
+  padding: 2.2vh 1.3vw 1.4vh;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3vh;
+}
+
+.sk-stuntdev-title {
+  font-family: var(--sk-font-body);
+  font-size: 1.25vw;
+  letter-spacing: 0.14em;
+  color: var(--sk-color-spray);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.sk-stuntdev-subtitle {
+  font-family: var(--sk-font-ui);
+  font-size: 0.55vw;
+  letter-spacing: 0.08em;
+  color: var(--sk-text-muted);
+  min-height: 1.2em;
+}
+
+.sk-stuntdev-divider {
+  height: 1px;
+  background: var(--sk-border-subtle);
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.sk-stuntdev-mode-section {
+  padding: 1.4vh 1.3vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4vh;
+}
+
+.sk-stuntdev-mode-name {
+  font-family: var(--sk-font-body);
+  font-size: 1.05vw;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sk-text-primary);
+  line-height: 1;
+}
+
+.sk-stuntdev-mode-name.is-active {
+  color: var(--sk-color-spray);
+}
+
+.sk-stuntdev-mode-detail {
+  font-family: var(--sk-font-ui);
+  font-size: 0.58vw;
+  letter-spacing: 0.06em;
+  color: var(--sk-text-dim);
+}
+
+.sk-stuntdev-props-card {
+  margin: 0 1.3vw;
+  padding: 1vh 0.9vw;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vh;
+}
+
+.sk-stuntdev-prop-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.sk-stuntdev-prop-label {
+  font-family: var(--sk-font-ui);
+  font-size: 0.52vw;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sk-text-muted);
+}
+
+.sk-stuntdev-prop-value {
+  font-family: var(--sk-font-ui);
+  font-size: 0.62vw;
+  letter-spacing: 0.04em;
+  color: var(--sk-text-primary);
+}
+
+.sk-stuntdev-prop-value.is-accent {
+  color: var(--sk-color-spray);
+}
+
+.sk-stuntdev-checklist {
+  padding: 1.2vh 1.3vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55vh;
+}
+
+.sk-stuntdev-check-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5vw;
+}
+
+.sk-stuntdev-check-dot {
+  width: 0.45vw;
+  height: 0.45vw;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.sk-stuntdev-check-dot.is-placed {
+  border-color: var(--sk-color-spray);
+  background: var(--sk-color-spray);
+}
+
+.sk-stuntdev-check-label {
+  font-family: var(--sk-font-ui);
+  font-size: 0.55vw;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sk-text-muted);
+}
+
+.sk-stuntdev-check-label.is-placed {
+  color: var(--sk-text-primary);
+}
+
+.sk-stuntdev-spacer {
+  flex: 1;
+}
+
+.sk-stuntdev-controls {
+  padding: 1.2vh 1.3vw 2vh;
+  font-family: var(--sk-font-ui);
+  font-size: 0.48vw;
+  letter-spacing: 0.05em;
+  color: var(--sk-text-muted);
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+.sk-stuntdev-controls-group {
+  margin-bottom: 0.6vh;
+}
+
+.sk-stuntdev-controls-group-title {
+  font-family: var(--sk-font-ui);
+  font-size: 0.42vw;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.25);
+  margin-bottom: 0.2vh;
+}
+
+.sk-stuntdev-controls kbd {
+  font-family: var(--sk-font-ui);
+  font-size: 0.45vw;
+  letter-spacing: 0.06em;
+  color: var(--sk-text-primary);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.08vh 0.25vw;
+  margin: 0 0.04vw;
+}
+
+.sk-stuntdev-crosshair {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1.4vw;
+  height: 1.4vw;
+  pointer-events: none;
+  z-index: 901;
+}
+
+.sk-stuntdev-crosshair::before,
+.sk-stuntdev-crosshair::after {
+  content: '';
+  position: absolute;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.sk-stuntdev-crosshair::before {
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+.sk-stuntdev-crosshair::after {
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  transform: translateX(-50%);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Stunt Devtool Dialogs                                                      */
+/* -------------------------------------------------------------------------- */
+
+.sk-devtool-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 950;
+  animation: skDevtoolFadeIn 0.18s ease both;
+}
+
+@keyframes skDevtoolFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.sk-devtool-panel {
+  background: linear-gradient(160deg, rgba(14, 12, 18, 0.97), rgba(8, 7, 11, 0.96));
+  border: 0.0521vw solid var(--sk-border-panel);
+  box-shadow: var(--sk-shadow-panel-inset), var(--sk-shadow-panel-drop);
+  clip-path: var(--sk-mask-panel);
+  padding: 2.7778vh 2.6042vw 3.3333vh;
+  min-width: 23.4375vw;
+  max-width: 34.375vw;
+  display: flex;
+  flex-direction: column;
+  gap: 1.3889vh;
+  animation: skDevtoolSlideIn 0.22s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+
+@keyframes skDevtoolSlideIn {
+  from { opacity: 0; transform: translateY(1.8519vh); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.sk-devtool-eyebrow {
+  font-family: var(--sk-font-body);
+  font-size: 0.5729vw;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sk-color-spray);
+  margin: 0;
+  opacity: 0.85;
+}
+
+.sk-devtool-title {
+  font-family: var(--sk-font-body);
+  font-size: 1.9792vw;
+  letter-spacing: 0.04em;
+  color: var(--sk-color-chalk);
+  margin: 0;
+  line-height: 1.05;
+}
+
+.sk-devtool-body {
+  font-family: var(--sk-font-ui);
+  font-size: 0.7292vw;
+  color: var(--sk-text-soft);
+  letter-spacing: 0.04em;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.sk-devtool-input-field {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.05);
+  border: 0.0521vw solid var(--sk-border-panel);
+  color: var(--sk-text-primary);
+  font-family: var(--sk-font-ui);
+  font-size: 0.8333vw;
+  padding: 1.1111vh 0.7813vw;
+  outline: none;
+  transition: border-color 0.15s ease;
+  letter-spacing: 0.04em;
+}
+
+.sk-devtool-input-field:focus {
+  border-color: var(--sk-color-spray);
+  background: rgba(255, 209, 71, 0.05);
+}
+
+.sk-devtool-input-field::placeholder {
+  color: var(--sk-text-muted);
+  font-style: italic;
+}
+
+.sk-devtool-input-error {
+  font-family: var(--sk-font-ui);
+  font-size: 0.625vw;
+  color: var(--sk-color-danger);
+  letter-spacing: 0.06em;
+  margin: 0;
+  min-height: 1.3em;
+}
+
+.sk-devtool-actions {
+  display: flex;
+  gap: 0.7813vw;
+  margin-top: 0.9259vh;
+}
+
+.sk-devtool-btn {
+  flex: 1;
+  padding: 1.1111vh 0;
+  font-family: var(--sk-font-body);
+  font-size: 0.9375vw;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 0.0521vw solid transparent;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.sk-devtool-btn--cancel {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--sk-text-soft);
+}
+
+.sk-devtool-btn--cancel:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--sk-text-primary);
+}
+
+.sk-devtool-btn--confirm {
+  background: rgba(255, 209, 71, 0.15);
+  border-color: rgba(255, 209, 71, 0.45);
+  color: var(--sk-color-spray);
+}
+
+.sk-devtool-btn--confirm:hover {
+  background: rgba(255, 209, 71, 0.25);
+  border-color: rgba(255, 209, 71, 0.7);
+}

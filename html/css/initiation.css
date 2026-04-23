@@ -1,0 +1,250 @@
+/* -------------------------------------------------------------------------- */
+/* Initiation — starter vehicle selection                                      */
+/* -------------------------------------------------------------------------- */
+
+.sk-initiation {
+  display: none;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sk-initiation.is-active {
+  display: block;
+  pointer-events: auto;
+}
+
+.initiation-overlay {
+  position: absolute;
+  inset: 0;
+  cursor: default;
+}
+
+.initiation-overlay.is-hovering {
+  cursor: pointer;
+}
+
+/* Header — top centre */
+.initiation-header {
+  position: absolute;
+  top: 6vh;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.initiation-header-eyebrow {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.7rem, 1.4vw, 0.9rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--sk-color-spray);
+  margin: 0 0 0.5rem;
+}
+
+.initiation-header-title {
+  font-family: var(--sk-font-display);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  color: var(--sk-text-primary);
+  margin: 0 0 0.6rem;
+  line-height: 1;
+  text-shadow: 0 2px 24px rgba(0,0,0,0.7);
+}
+
+.initiation-header-sub {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.7rem, 1.2vw, 0.85rem);
+  letter-spacing: 0.1em;
+  color: var(--sk-text-soft);
+  margin: 0;
+}
+
+/* Vehicle info panel — horizontal strip pinned to bottom */
+.initiation-info-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2vw;
+  padding: 1.6vh 3vw;
+  background: rgba(6, 5, 10, 0.82);
+  border-top: 1px solid var(--sk-border-panel);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.initiation-info-panel.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.initiation-info-identity {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2vh;
+  min-width: 14vw;
+}
+
+.initiation-info-brand {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.65rem, 1.1vw, 0.82rem);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--sk-color-spray);
+  margin: 0;
+}
+
+.initiation-info-name {
+  font-family: var(--sk-font-display);
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  color: var(--sk-text-primary);
+  margin: 0;
+  line-height: 1;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
+}
+
+.initiation-divider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--sk-border-subtle);
+  flex-shrink: 0;
+}
+
+.initiation-stats {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  gap: 1.5vw;
+}
+
+.initiation-stat-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vh;
+}
+
+.initiation-stat-label {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.55rem, 0.9vw, 0.7rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sk-text-soft);
+}
+
+.initiation-stat-bar-wrap {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.initiation-stat-bar {
+  display: block;
+  height: 100%;
+  background: var(--sk-color-spray);
+  box-shadow: 0 0 6px rgba(255, 209, 71, 0.4);
+  transition: width 0.28s ease;
+}
+
+.initiation-info-value {
+  flex-shrink: 0;
+  font-family: var(--sk-font-body);
+  font-size: clamp(1.1rem, 1.9vw, 1.6rem);
+  letter-spacing: 0.06em;
+  color: var(--sk-text-primary);
+  margin: 0;
+}
+
+/* Confirm modal */
+.initiation-confirm-modal {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  pointer-events: all;
+}
+
+.initiation-confirm-modal.is-visible {
+  display: flex;
+}
+
+.initiation-confirm-box {
+  width: min(420px, calc(100vw - 3rem));
+  padding: 1.3rem;
+  background: rgba(8, 6, 12, 0.96);
+  border: 1px solid rgba(255, 209, 71, 0.24);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.34);
+}
+
+.initiation-confirm-title {
+  margin: 0 0 0.5rem;
+  font-family: var(--sk-font-display);
+  font-size: clamp(1.25rem, 1.8vw, 1.6rem);
+  color: var(--sk-color-spray);
+}
+
+.initiation-confirm-body {
+  margin: 0;
+  font-family: var(--sk-font-ui);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.72);
+}
+
+.initiation-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.initiation-confirm-btn {
+  min-width: 132px;
+  padding: 0.7rem 1rem;
+  font-family: var(--sk-font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid rgba(255, 209, 71, 0.45);
+  background: rgba(255, 209, 71, 0.14);
+  color: var(--sk-color-spray);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.initiation-confirm-btn:hover:not(:disabled) {
+  background: rgba(255, 209, 71, 0.26);
+  border-color: rgba(255, 209, 71, 0.62);
+}
+
+.initiation-confirm-btn--secondary {
+  border-color: rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.7);
+}
+
+.initiation-confirm-btn--secondary:hover:not(:disabled) {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.24);
+  color: rgba(255,255,255,0.9);
+}
+
+.sk-initiation.is-controller-nav .initiation-confirm-btn.is-controller-focused {
+  outline: none;
+  box-shadow:
+    0 0 0 2px rgba(255, 209, 71, 0.78),
+    0 0 18px rgba(255, 209, 71, 0.18);
+}

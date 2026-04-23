@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Street Kings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=Permanent+Marker&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #080608;
+      font-family: 'Bebas Neue', sans-serif;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    /* -- Shared screen base -- */
+
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: #080608;
+      opacity: 0;
+      transition: opacity 0.65s ease;
+      z-index: 10;
+    }
+
+    /* -- Splash: both logos side-by-side -- */
+
+    .splash-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .splash-logo {
+      max-height: 36vh;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    .splash-logo.is-919,
+    .splash-logo.is-envi {
+      max-width: min(240px, 30vw);
+    }
+
+    .splash-x {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: clamp(0.85rem, 1.4vmin, 1rem);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: rgba(255, 255, 255, 0.2);
+      padding: 0 clamp(1.5rem, 4vw, 3rem);
+    }
+
+    /* -- Controller notice -- */
+
+    .notice-icon {
+      width: clamp(56px, 8vmin, 80px);
+      height: clamp(56px, 8vmin, 80px);
+      margin-bottom: 1.75rem;
+      opacity: 0.82;
+    }
+
+    .notice-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.6rem, 3.8vmin, 2.4rem);
+      letter-spacing: 0.36em;
+      text-transform: uppercase;
+      color: #ffd147;
+      text-shadow: 0 0 28px rgba(255, 209, 71, 0.25);
+      margin-bottom: 0.65rem;
+      padding-left: 0.36em;
+    }
+
+    .notice-body {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: clamp(0.82rem, 1.6vmin, 0.95rem);
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.48);
+      text-align: center;
+      max-width: min(440px, 72vw);
+    }
+
+    /* -- Loading screen -- */
+
+    #loadscreen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #080608;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 50% 38%, rgba(255, 45, 120, 0.06) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 65% 55%, rgba(255, 209, 71, 0.03) 0%, transparent 60%),
+        repeating-linear-gradient(
+          -12deg,
+          transparent,
+          transparent 3px,
+          rgba(255, 255, 255, 0.015) 3px,
+          rgba(255, 255, 255, 0.015) 4px
+        );
+      opacity: 0;
+      transition: opacity 0.65s ease;
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    #loadscreen::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background:
+        conic-gradient(from 0deg at 50% 50%,
+          transparent 0deg,
+          rgba(255, 45, 120, 0.015) 60deg,
+          transparent 120deg,
+          rgba(255, 209, 71, 0.012) 200deg,
+          transparent 280deg,
+          rgba(255, 45, 120, 0.01) 340deg,
+          transparent 360deg
+        );
+      animation: sk-ambient-rotate 45s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes sk-ambient-rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .load-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .brand {
+      font-family: 'Permanent Marker', cursive;
+      font-size: clamp(5.5rem, 15vmin, 11rem);
+      line-height: 0.88;
+      text-align: center;
+      transform: rotate(-2deg);
+      letter-spacing: 0.02em;
+      animation: sk-brand-enter 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes sk-brand-enter {
+      from {
+        opacity: 0;
+        transform: rotate(-2deg) translateY(18px) scale(0.92);
+        filter: blur(6px);
+      }
+      to {
+        opacity: 1;
+        transform: rotate(-2deg) translateY(0) scale(1);
+        filter: blur(0);
+      }
+    }
+
+    .brand-street {
+      display: block;
+      color: #f5f0e6;
+      text-shadow:
+        6px 6px 0 #1a1a1a,
+        -3px -3px 0 rgba(255, 45, 120, 0.5),
+        0 0 52px rgba(255, 196, 0, 0.2);
+    }
+
+    .brand-kings {
+      display: block;
+      color: #ffd147;
+      text-shadow:
+        6px 6px 0 #3d2800,
+        0 0 40px rgba(255, 209, 71, 0.3);
+    }
+
+    .accent-line {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin: 1.75rem 0 1.35rem;
+      animation: sk-accent-enter 1s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes sk-accent-enter {
+      from { opacity: 0; transform: scaleX(0); }
+      to { opacity: 1; transform: scaleX(1); }
+    }
+
+    .accent-dash {
+      width: 32px;
+      height: 3px;
+      background: #ff2d78;
+      box-shadow: 0 0 10px rgba(255, 45, 120, 0.45);
+    }
+
+    .accent-diamond {
+      width: 6px;
+      height: 6px;
+      background: #ffd147;
+      transform: rotate(45deg);
+      box-shadow: 0 0 8px rgba(255, 209, 71, 0.4);
+    }
+
+    .tagline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(0.9rem, 1.9vmin, 1.1rem);
+      letter-spacing: 0.58em;
+      color: rgba(255, 255, 255, 0.3);
+      text-transform: uppercase;
+      padding-left: 0.58em;
+      margin-bottom: 3.5rem;
+      animation: sk-tag-enter 0.8s 0.5s ease both;
+    }
+
+    @keyframes sk-tag-enter {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bar-wrap {
+      width: 82vw;
+      max-width: 960px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+      border-radius: 1px;
+      position: absolute;
+      bottom: clamp(3.5rem, 6vmin, 5rem);
+      left: 50%;
+      transform: translateX(-50%);
+      animation: sk-bar-enter 0.6s 0.7s ease both;
+      z-index: 2;
+    }
+
+    @keyframes sk-bar-enter {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff2d78 0%, #ffd147 60%, #9ee5ff 100%);
+      box-shadow:
+        0 0 6px rgba(255, 209, 71, 0.4),
+        0 0 16px rgba(255, 45, 120, 0.18);
+      border-radius: 1px;
+      transition: width 0.4s ease;
+    }
+
+    .bar-glow {
+      position: absolute;
+      top: -3px;
+      bottom: -3px;
+      left: 0;
+      width: 0%;
+      background: linear-gradient(90deg, transparent 70%, rgba(255, 209, 71, 0.12) 100%);
+      border-radius: 1px;
+      transition: width 0.4s ease;
+      pointer-events: none;
+    }
+
+    .status {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: clamp(0.6rem, 1vmin, 0.72rem);
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      color: rgba(255, 255, 255, 0.18);
+      text-transform: uppercase;
+      padding-left: 0.25em;
+      position: absolute;
+      bottom: clamp(1.8rem, 3.8vmin, 3rem);
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      min-height: 1.2em;
+      transition: color 0.4s ease, text-shadow 0.4s ease;
+      animation: sk-bar-enter 0.6s 0.7s ease both;
+      z-index: 2;
+    }
+
+    .status.is-done {
+      color: rgba(255, 209, 71, 0.65);
+      text-shadow: 0 0 12px rgba(255, 209, 71, 0.2);
+    }
+
+    .version-tag {
+      position: fixed;
+      bottom: clamp(1.2rem, 2.5vmin, 2rem);
+      right: clamp(1.5rem, 3vmin, 2.5rem);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: clamp(0.6rem, 1vmin, 0.7rem);
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.12);
+      z-index: 2;
+      animation: sk-bar-enter 0.6s 1s ease both;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Splash: both logos side-by-side with X divider -->
+  <div id="splashLogos" class="screen">
+    <div class="splash-row">
+      <img class="splash-logo is-919" src="assets/loading/919Logo.png" alt="" draggable="false" />
+      <span class="splash-x">&times;</span>
+      <img class="splash-logo is-envi" src="assets/loading/EnviScriptsLogo.png" alt="" draggable="false" />
+    </div>
+  </div>
+
+  <!-- Controller notice -->
+  <div id="controllerNotice" class="screen">
+    <svg class="notice-icon" viewBox="0 0 24 24" fill="none" stroke="rgba(255,209,71,0.85)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+      <line x1="6" x2="10" y1="11" y2="11"/>
+      <line x1="8" x2="8" y1="9" y2="13"/>
+      <line x1="15" x2="15.01" y1="12" y2="12"/>
+      <line x1="18" x2="18.01" y1="10" y2="10"/>
+      <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/>
+    </svg>
+    <p class="notice-title">Controller Supported</p>
+    <p class="notice-body">This community server has full support for controller throughout all UI and gameplay.</p>
+  </div>
+
+  <!-- Main loading screen -->
+  <div id="loadscreen">
+    <div class="load-content">
+      <h1 class="brand">
+        <span class="brand-street">Street</span>
+        <span class="brand-kings">Kings</span>
+      </h1>
+      <div class="accent-line">
+        <span class="accent-dash"></span>
+        <span class="accent-diamond"></span>
+        <span class="accent-dash"></span>
+      </div>
+      <p class="tagline">Own the Streets</p>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-fill" id="barFill"></div>
+      <div class="bar-glow" id="barGlow"></div>
+    </div>
+    <p class="status" id="statusText">Loading&hellip;</p>
+    <span class="version-tag">Alpha Demo</span>
+  </div>
+
+  <script>
+    var splashLogos      = document.getElementById('splashLogos');
+    var controllerNotice = document.getElementById('controllerNotice');
+    var loadscreen       = document.getElementById('loadscreen');
+    var barFill          = document.getElementById('barFill');
+    var barGlow          = document.getElementById('barGlow');
+    var statusText       = document.getElementById('statusText');
+
+    var FADE_MS = 650;
+    var HOLD_MS = 3000;
+
+    function fadeIn(el, durationMs, cb) {
+      el.style.transition = 'opacity ' + (durationMs / 1000).toFixed(2) + 's ease';
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          el.style.opacity = '1';
+          setTimeout(cb, durationMs);
+        });
+      });
+    }
+
+    function fadeOut(el, durationMs, cb) {
+      el.style.transition = 'opacity ' + (durationMs / 1000).toFixed(2) + 's ease';
+      el.style.opacity = '0';
+      setTimeout(cb, durationMs);
+    }
+
+    function setBarProgress(fraction) {
+      var pct = Math.min(100, Math.max(0, fraction * 100)).toFixed(1) + '%';
+      barFill.style.width = pct;
+      barGlow.style.width = pct;
+    }
+
+    var STATUS_LABELS = {
+      startDataFileEntries:  'Loading data files',
+      onDataFileEntry:       'Loading data files',
+      performMapLoadFunction:'Loading map',
+      startInitFunction:     'Initializing',
+      initFunctionInvoking:  'Initializing',
+      initFunctionInvoked:   'Initializing',
+      endInitFunction:       'Initializing',
+    };
+
+    fadeIn(splashLogos, FADE_MS, function () {
+      setTimeout(function () {
+        fadeOut(splashLogos, FADE_MS, function () {
+          splashLogos.style.display = 'none';
+          fadeIn(controllerNotice, FADE_MS, function () {
+            setTimeout(function () {
+              fadeOut(controllerNotice, FADE_MS, function () {
+                controllerNotice.style.display = 'none';
+                fadeIn(loadscreen, FADE_MS, function () {});
+              });
+            }, HOLD_MS);
+          });
+        });
+      }, HOLD_MS);
+    });
+
+    window.addEventListener('message', function (event) {
+      var data = event.data;
+      if (!data) return;
+
+      if (data.eventName === 'loadProgress') {
+        setBarProgress(data.loadFraction);
+        return;
+      }
+
+      if (data.eventName && STATUS_LABELS[data.eventName]) {
+        statusText.textContent = STATUS_LABELS[data.eventName];
+        return;
+      }
+
+      if (data.action === 'streetkings:fadeOut') {
+        setBarProgress(1);
+        statusText.textContent = 'Done';
+        statusText.classList.add('is-done');
+        setTimeout(function () {
+          fadeOut(loadscreen, 850, function () {});
+        }, 250);
+      }
+    });
+  </script>
+</body>
+</html>

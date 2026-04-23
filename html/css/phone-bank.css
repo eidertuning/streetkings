@@ -1,0 +1,114 @@
+/* -------------------------------------------------------------------------- */
+/* Phone — Bank app                                                            */
+/* -------------------------------------------------------------------------- */
+
+.phone-bank {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* -- Sidebar --------------------------------------------------------------- */
+
+.phone-bank-sidebar {
+  width: 30%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: clamp(0.9rem, 1.4vw, 1.4rem) clamp(0.75rem, 1.1vw, 1.1rem);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.phone-bank-sidebar-eyebrow {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.48rem, 0.65vw, 0.6rem);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.phone-bank-alias {
+  font-family: var(--sk-font-body);
+  font-size: clamp(1rem, 1.55vw, 1.3rem);
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.9);
+  word-break: break-word;
+}
+
+.phone-bank-level {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.68rem, 0.95vw, 0.84rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sk-color-spray);
+  opacity: 0.82;
+}
+
+/* -- Panel ----------------------------------------------------------------- */
+
+.phone-bank-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(0.5rem, 0.75vw, 0.8rem) clamp(0.75rem, 1.1vw, 1.1rem);
+}
+
+.phone-bank-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(0.55rem, 0.8vw, 0.8rem) clamp(0.45rem, 0.65vw, 0.65rem);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.1s ease;
+}
+
+.phone-bank-row:first-child {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.phone-bank-row:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.phone-bank-row--total {
+  margin-top: clamp(0.3rem, 0.45vw, 0.45rem);
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-bottom: none;
+}
+
+.phone-bank-row--total:hover {
+  background: transparent;
+}
+
+.phone-bank-row-label {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.58rem, 0.8vw, 0.72rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.phone-bank-row-amount {
+  font-family: var(--sk-font-body);
+  font-size: clamp(1.4rem, 2.3vw, 1.9rem);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.phone-bank-row-amount--cash  { color: #22c55e; }
+.phone-bank-row-amount--bank  { color: #9ee5ff; }
+
+.phone-bank-row--total .phone-bank-row-label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.phone-bank-row-amount--total {
+  color: var(--sk-color-spray);
+  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+}

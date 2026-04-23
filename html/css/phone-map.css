@@ -1,0 +1,428 @@
+.phone-map {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: clamp(140px, 30%, 200px) minmax(0, 1fr) clamp(220px, 22vw, 320px);
+  gap: 0.65rem;
+  padding: 0.9rem;
+}
+
+.phone-map-sidebar {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 14, 21, 0.92);
+  padding: 0.55rem 0 0.55rem 0.55rem;
+}
+
+.phone-map-sidebar-label {
+  flex-shrink: 0;
+  color: rgba(255, 209, 71, 0.78);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.6rem, 0.78vw, 0.72rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0 0.45rem 0 0.15rem;
+}
+
+.phone-map-sidebar-list {
+  flex: 1;
+  min-height: 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-right: 0.5rem;
+}
+
+.phone-map-sidebar-group-label {
+  margin: 0.35rem 0 0.1rem;
+  padding: 0 0.2rem;
+  color: rgba(255, 209, 71, 0.78);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.56rem, 0.72vw, 0.68rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.phone-map-sidebar-group-label:first-child {
+  margin-top: 0;
+}
+
+.phone-map-sidebar-list::-webkit-scrollbar-track {
+  margin: 0;
+}
+
+.phone-map-sidebar-item {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0.42rem 0.45rem 0.42rem 0.45rem;
+  display: flex;
+  align-items: flex-start;
+  gap:       0.45rem;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.88);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.62rem, 0.78vw, 0.72rem);
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.phone-map-sidebar-item:hover {
+  border-color: rgba(255, 209, 71, 0.2);
+  background: rgba(255, 209, 71, 0.07);
+}
+
+.phone-map-sidebar-item.is-selected {
+  border-color: rgba(255, 209, 71, 0.45);
+  background: rgba(255, 209, 71, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 209, 71, 0.12);
+}
+
+.phone-map-sidebar-dot {
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  margin-top: 0.2em;
+  border-radius: 999px;
+  border: 1px solid rgba(9, 12, 18, 0.85);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.phone-map-sidebar-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.phone-map-sidebar-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+.phone-map-sidebar-type {
+  font-size: 0.85em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.phone-map-stage {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.phone-map-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+}
+
+.phone-map-style-group,
+.phone-map-control-group {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.phone-map-style {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.82);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.62rem, 0.82vw, 0.74rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.phone-map-style.is-active {
+  border-color: rgba(255, 209, 71, 0.3);
+  background: rgba(255, 209, 71, 0.12);
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.phone-map-control {
+  padding: 0.45rem 0.72rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.88);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.66rem, 0.84vw, 0.76rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.phone-map-control:hover {
+  border-color: rgba(255, 209, 71, 0.22);
+  background: rgba(255, 209, 71, 0.08);
+}
+
+.phone-map-canvas-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(4, 7, 12, 0.88);
+  overflow: hidden;
+  cursor: grab;
+}
+
+.phone-map-canvas-wrap.is-dragging {
+  cursor: grabbing;
+}
+
+.phone-map-sidebar-item.is-controller-focused,
+.phone-map-style.is-controller-focused,
+.phone-map-control.is-controller-focused,
+.phone-map-teleport.is-controller-focused {
+  border-color: rgba(255, 209, 71, 0.42);
+  background: rgba(255, 209, 71, 0.09);
+}
+
+.phone-map-loading,
+.phone-map-empty,
+.phone-map-panel-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.65);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.72rem, 0.9vw, 0.84rem);
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.phone-map-loading,
+.phone-map-empty {
+  position: absolute;
+  inset: 0;
+  padding: 1rem;
+}
+
+.phone-map-canvas {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.phone-map-image-source {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.phone-map-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.phone-map-tiles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.phone-map-tile {
+  position: absolute;
+  image-rendering: auto;
+}
+
+.phone-map-route,
+.phone-map-markers {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.phone-map-route {
+  pointer-events: none;
+}
+
+.phone-map-route-line {
+  fill: none;
+  stroke: rgba(255, 209, 71, 0.95);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.65));
+}
+
+.phone-map-route-dot {
+  fill: #ffffff;
+  stroke: rgba(4, 7, 12, 0.92);
+  stroke-width: 3;
+}
+
+.phone-map-route-dot.is-start {
+  fill: #ffd147;
+}
+
+.phone-map-markers {
+  pointer-events: none;
+}
+
+.phone-map-marker {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  aspect-ratio: 1 / 1;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 999px;
+  border: 2px solid rgba(9, 12, 18, 0.94);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.12), 0 4px 18px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transform: translate(-50%, -50%) scale(var(--marker-state-scale, 1));
+  transform-origin: center;
+  --marker-state-scale: 1;
+}
+
+.phone-map-marker:hover {
+  --marker-state-scale: 1.12;
+}
+
+.phone-map-marker.is-selected {
+  --marker-state-scale: 1.22;
+  box-shadow: 0 0 0 3px rgba(255, 209, 71, 0.42), 0 6px 22px rgba(0, 0, 0, 0.55);
+}
+
+.phone-map-panel {
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 14, 21, 0.9);
+  padding: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.phone-map-panel-label {
+  color: rgba(255, 209, 71, 0.78);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.66rem, 0.84vw, 0.78rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.phone-map-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.phone-map-card-title {
+  color: rgba(255, 255, 255, 0.96);
+  font-family: var(--sk-font-display);
+  font-size: clamp(1.15rem, 1.6vw, 1.45rem);
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+.phone-map-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.phone-map-chip {
+  padding: 0.24rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.84);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.6rem, 0.8vw, 0.72rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.phone-map-teleport {
+  margin: 0;
+  padding: 0.5rem 0.65rem;
+  width: 100%;
+  border: 1px solid rgba(255, 209, 71, 0.35);
+  border-radius: 4px;
+  background: rgba(255, 209, 71, 0.14);
+  color: rgba(255, 255, 255, 0.94);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.62rem, 0.8vw, 0.74rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.phone-map-teleport:hover {
+  border-color: rgba(255, 209, 71, 0.55);
+  background: rgba(255, 209, 71, 0.22);
+}
+
+.phone-map-teleport--secondary {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.phone-map-teleport--secondary:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.phone-map-card-stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.45rem;
+}
+
+.phone-map-card-stat {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.phone-map-card-stat-label,
+.phone-map-card-desc {
+  color: rgba(255, 255, 255, 0.62);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.64rem, 0.82vw, 0.76rem);
+  letter-spacing: 0.05em;
+}
+
+.phone-map-card-stat-value {
+  color: rgba(255, 255, 255, 0.92);
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.68rem, 0.9vw, 0.82rem);
+  text-align: right;
+}

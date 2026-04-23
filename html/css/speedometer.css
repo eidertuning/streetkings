@@ -1,0 +1,271 @@
+/* -------------------------------------------------------------------------- */
+/* Speedometer HUD                                                             */
+/* -------------------------------------------------------------------------- */
+
+@keyframes sk-speedo-gear-flash {
+  0%   { transform: scale(1.35); color: var(--sk-color-spray); border-color: var(--sk-color-spray); }
+  50%  { transform: scale(1);   color: var(--sk-color-spray); border-color: var(--sk-color-spray); }
+  100% { transform: scale(1);   color: var(--sk-text-primary); border-color: rgba(255, 255, 255, 0.15); }
+}
+
+@keyframes sk-speedo-redline {
+  0%, 100% { transform: translate(0, 0); }
+  10%      { transform: translate(-0.15vw, 0.12vh); }
+  20%      { transform: translate(0.18vw, -0.10vh); }
+  30%      { transform: translate(-0.12vw, 0.15vh); }
+  40%      { transform: translate(0.16vw, -0.13vh); }
+  50%      { transform: translate(-0.18vw, 0.08vh); }
+  60%      { transform: translate(0.10vw, -0.15vh); }
+  70%      { transform: translate(-0.15vw, 0.12vh); }
+  80%      { transform: translate(0.17vw, -0.09vh); }
+  90%      { transform: translate(-0.11vw, 0.14vh); }
+}
+
+.sk-speedo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  transition: opacity 300ms ease;
+}
+
+.sk-speedo--redline {
+  animation: sk-speedo-redline 80ms linear infinite;
+}
+
+.sk-speedo--hidden {
+  opacity: 0;
+}
+
+.sk-speedo-gear {
+  font-family: var(--sk-font-ui);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sk-text-primary);
+  line-height: 1;
+  min-width: 1.3021vw;
+  text-align: center;
+  padding: 0.2778vh 0.2083vw;
+  border: 0.0521vw solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.1563vw;
+  align-self: flex-end;
+  transition: color 200ms ease, border-color 200ms ease;
+}
+
+.sk-speedo-gear--flash {
+  animation: sk-speedo-gear-flash 450ms ease forwards;
+}
+
+.sk-speedo-main {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  line-height: 1;
+}
+
+.sk-speedo-value {
+  font-family: 'Bungee', var(--sk-font-body);
+  font-size: 5rem;
+  color: var(--sk-text-primary);
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.sk-speedo-unit {
+  font-family: var(--sk-font-ui);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sk-text-soft);
+  margin-bottom: 0.6rem;
+}
+
+.sk-speedo-rpm-track {
+  width: 200px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.sk-speedo-rpm-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--sk-color-spray);
+  border-radius: 2px;
+  transition: width 60ms linear, background-color 200ms ease;
+}
+
+.sk-speedo-rpm-bar[data-rpm="warm"] { background: #f97316; }
+.sk-speedo-rpm-bar[data-rpm="hot"]  {
+  background: #ff0000;
+  box-shadow: 0 0 0.4167vw rgba(255, 0, 0, 0.75), 0 0 0.8333vw rgba(255, 0, 0, 0.4);
+}
+
+.sk-speedo-odometer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 200px;
+  box-sizing: border-box;
+  padding: 0.3519vh 0.5208vw;
+  border: 0.0521vw solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.1563vw;
+  margin-top: 4px;
+}
+
+.sk-speedo-odometer-digits {
+  font-family: var(--sk-font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--sk-color-spray);
+  text-shadow: 0 0 0.4167vw rgba(255, 209, 71, 0.4);
+  line-height: 1;
+}
+
+.sk-speedo-odometer-unit {
+  font-family: var(--sk-font-ui);
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sk-text-dim);
+  line-height: 1;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Digital / Analog variant toggle                                             */
+/* -------------------------------------------------------------------------- */
+
+.sk-speedo-digital { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.sk-speedo-analog  { display: none; flex-direction: column; align-items: center; }
+
+.sk-speedo--analog .sk-speedo-digital { display: none; }
+.sk-speedo--analog .sk-speedo-analog  { display: flex; }
+
+/* -------------------------------------------------------------------------- */
+/* Analog gauge                                                                */
+/* -------------------------------------------------------------------------- */
+
+.sk-speedo-analog-dial {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+.sk-speedo-analog-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.sk-speedo-analog-rpm-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 4;
+  stroke-linecap: round;
+  transform: rotate(135deg);
+  transform-origin: center;
+}
+
+.sk-speedo-analog-rpm-arc {
+  fill: none;
+  stroke: var(--sk-color-spray);
+  stroke-width: 4;
+  stroke-linecap: round;
+  transform: rotate(135deg);
+  transform-origin: center;
+  transition: stroke-dasharray 60ms linear, stroke 200ms ease;
+}
+
+.sk-speedo-analog-rpm-arc[data-rpm="warm"] { stroke: #f97316; }
+.sk-speedo-analog-rpm-arc[data-rpm="hot"]  {
+  stroke: #ff0000;
+  filter: drop-shadow(0 0 4px rgba(255, 0, 0, 0.75));
+}
+
+.sk-speedo-analog-tick-major {
+  stroke: rgba(255, 255, 255, 0.6);
+  stroke-width: 1.5;
+}
+
+.sk-speedo-analog-tick-minor {
+  stroke: rgba(255, 255, 255, 0.2);
+  stroke-width: 0.75;
+}
+
+.sk-speedo-analog-label {
+  fill: var(--sk-text-soft);
+  font-family: var(--sk-font-ui);
+  font-size: 8px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.sk-speedo-analog-needle {
+  stroke: var(--sk-color-spray);
+  stroke-width: 2;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 3px rgba(255, 209, 71, 0.5));
+  transform-origin: 100px 100px;
+  transition: transform 60ms linear;
+  will-change: transform;
+}
+
+.sk-speedo-analog-hub {
+  fill: var(--sk-color-spray);
+  filter: drop-shadow(0 0 3px rgba(255, 209, 71, 0.4));
+}
+
+.sk-speedo-analog-center {
+  position: absolute;
+  top: 65%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.sk-speedo-analog-value {
+  font-family: 'Bungee', var(--sk-font-body);
+  font-size: 1.8rem;
+  color: var(--sk-text-primary);
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.sk-speedo-analog-unit {
+  font-family: var(--sk-font-ui);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sk-text-soft);
+  margin-top: 2px;
+}
+
+.sk-speedo-analog-footer {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.sk-speedo-analog-footer .sk-speedo-gear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sk-speedo-analog-footer .sk-speedo-odometer {
+  width: auto;
+  margin-top: 0;
+}

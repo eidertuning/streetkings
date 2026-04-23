@@ -1,0 +1,207 @@
+.phone-stats-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.phone-stats-loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.75rem, 1vw, 0.9rem);
+  letter-spacing: 0.15em;
+  color: var(--sk-text-muted);
+}
+
+.phone-stats-hero {
+  flex-shrink: 0;
+  padding: clamp(1rem, 1.6vw, 1.5rem) clamp(1rem, 1.4vw, 1.3rem);
+  background: linear-gradient(160deg, rgba(34, 197, 94, 0.14) 0%, rgba(0, 0, 0, 0.25) 60%, rgba(255, 209, 71, 0.04) 100%);
+  border-bottom: 1px solid var(--sk-border-subtle);
+}
+
+.phone-stats-cash {
+  font-family: var(--sk-font-body);
+  font-size: clamp(2rem, 3.2vw, 2.8rem);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: #22c55e;
+  text-shadow: 0 0 1.5vw rgba(34, 197, 94, 0.3);
+}
+
+.phone-stats-level-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.35rem, 0.5vw, 0.5rem);
+  margin-top: clamp(0.4rem, 0.6vw, 0.55rem);
+}
+
+.phone-stats-level-badge {
+  flex-shrink: 0;
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.6rem, 0.82vw, 0.74rem);
+  letter-spacing: 0.18em;
+  color: var(--sk-color-spray);
+  background: rgba(255, 209, 71, 0.1);
+  padding: clamp(0.12rem, 0.2vw, 0.18rem) clamp(0.3rem, 0.45vw, 0.4rem);
+  border: 1px solid rgba(255, 209, 71, 0.2);
+}
+
+.phone-stats-xp-bar {
+  flex: 1;
+  height: clamp(0.2rem, 0.35vw, 0.3rem);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.phone-stats-xp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--sk-color-spray), #ffb800);
+  border-radius: 0.5rem;
+  transition: width 0.4s ease;
+}
+
+.phone-stats-xp-label {
+  flex-shrink: 0;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.5rem, 0.65vw, 0.6rem);
+  color: var(--sk-text-muted);
+  letter-spacing: 0.05em;
+  min-width: clamp(1.4rem, 2vw, 1.8rem);
+  text-align: right;
+}
+
+.phone-stats-xp-meta {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: clamp(0.4rem, 0.8vw, 0.65rem);
+  margin-top: clamp(0.35rem, 0.5vw, 0.45rem);
+}
+
+.phone-stats-xp-meta-this,
+.phone-stats-xp-meta-next {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.52rem, 0.7vw, 0.64rem);
+  letter-spacing: 0.02em;
+  min-width: 0;
+}
+
+.phone-stats-xp-meta-this {
+  color: var(--sk-text-muted);
+  text-align: left;
+}
+
+.phone-stats-xp-meta-next {
+  color: var(--sk-text-dim);
+  font-weight: 600;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.phone-stats-xp-meta--max {
+  justify-content: center;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.52rem, 0.7vw, 0.64rem);
+  color: var(--sk-text-muted);
+  letter-spacing: 0.02em;
+}
+
+.phone-stats-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: clamp(0.4rem, 0.6vw, 0.55rem) 0 clamp(0.8rem, 1.2vw, 1rem);
+}
+
+.phone-stats-body::-webkit-scrollbar {
+  width: 3px;
+}
+
+.phone-stats-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+}
+
+.phone-stats-category {
+  padding: 0 clamp(0.75rem, 1.1vw, 1rem);
+}
+
+.phone-stats-category + .phone-stats-category {
+  margin-top: clamp(0.5rem, 0.8vw, 0.7rem);
+}
+
+.phone-stats-cat-header {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.3rem, 0.45vw, 0.4rem);
+  padding: clamp(0.3rem, 0.5vw, 0.45rem) clamp(0.25rem, 0.4vw, 0.35rem);
+  border-bottom: 1px solid var(--sk-border-subtle);
+  margin-bottom: clamp(0.1rem, 0.15vw, 0.12rem);
+}
+
+.phone-stats-cat-header i {
+  font-size: clamp(0.55rem, 0.75vw, 0.68rem);
+  color: var(--sk-color-spray);
+  opacity: 0.75;
+  width: clamp(0.8rem, 1.1vw, 1rem);
+  text-align: center;
+}
+
+.phone-stats-cat-header span {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.65rem, 0.88vw, 0.78rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sk-text-soft);
+}
+
+.phone-stats-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(0.28rem, 0.42vw, 0.38rem) clamp(0.3rem, 0.45vw, 0.4rem);
+  border-radius: 3px;
+  transition: background 0.1s ease;
+}
+
+.phone-stats-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.phone-stats-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.phone-stats-row-left {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.3rem, 0.45vw, 0.4rem);
+}
+
+.phone-stats-row-left i {
+  font-size: clamp(0.5rem, 0.68vw, 0.62rem);
+  color: var(--sk-text-muted);
+  width: clamp(0.8rem, 1.1vw, 1rem);
+  text-align: center;
+}
+
+.phone-stats-row-left span {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.58rem, 0.78vw, 0.7rem);
+  color: var(--sk-text-dim);
+  letter-spacing: 0.02em;
+}
+
+.phone-stats-row-value {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.68rem, 0.92vw, 0.82rem);
+  letter-spacing: 0.06em;
+  color: var(--sk-text-primary);
+}

@@ -1,0 +1,600 @@
+/* -------------------------------------------------------------------------- */
+/* Multiplayer — race chooser, lobby HUD, live standings                       */
+/* -------------------------------------------------------------------------- */
+
+/* -- Race chooser (center-screen Clock vs Others) ----------------------- */
+
+.sk-race-chooser {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  pointer-events: auto;
+  background:
+    radial-gradient(circle at top, rgba(255, 209, 71, 0.08), transparent 40%),
+    rgba(0, 0, 0, 0.62);
+  z-index: 850;
+}
+
+.sk-race-chooser.is-active {
+  display: flex;
+  animation: skRaceChooserIn 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+@keyframes skRaceChooserIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.sk-race-chooser-panel {
+  width: min(820px, calc(100vw - 4rem));
+  padding: 2rem 2.2rem 1.6rem;
+  background: var(--sk-panel-bg-a);
+  border: 1px solid var(--sk-border-panel);
+  box-shadow: var(--sk-shadow-panel-inset), var(--sk-shadow-panel-drop);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sk-race-chooser-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: center;
+}
+
+.sk-race-chooser-kicker {
+  font-family: var(--sk-font-ui);
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 209, 71, 0.78);
+}
+
+.sk-race-chooser-title {
+  font-family: var(--sk-font-body);
+  font-size: clamp(1.9rem, 3.8vw, 3rem);
+  color: var(--sk-color-spray);
+  letter-spacing: 0.06em;
+  margin: 0;
+  line-height: 1;
+}
+
+.sk-race-chooser-sub {
+  font-family: var(--sk-font-ui);
+  font-size: 0.82rem;
+  color: var(--sk-text-soft);
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+
+.sk-race-chooser-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.sk-race-chooser-card {
+  all: unset;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 1.2rem 1.25rem 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.035);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.sk-race-chooser-card:hover,
+.sk-race-chooser-card.is-hovered {
+  border-color: rgba(255, 209, 71, 0.45);
+  background: rgba(255, 209, 71, 0.08);
+}
+
+.sk-race-chooser-card-kicker {
+  font-family: var(--sk-font-ui);
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.sk-race-chooser-card.is-hovered .sk-race-chooser-card-kicker {
+  color: rgba(255, 209, 71, 0.78);
+}
+
+.sk-race-chooser-card-title {
+  font-family: var(--sk-font-body);
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  color: var(--sk-color-chalk);
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.sk-race-chooser-card.is-hovered .sk-race-chooser-card-title {
+  color: var(--sk-color-spray);
+}
+
+.sk-race-chooser-card-body {
+  font-family: var(--sk-font-ui);
+  font-size: 0.78rem;
+  color: var(--sk-text-soft);
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+}
+
+.sk-race-chooser-cancel {
+  all: unset;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--sk-text-soft);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.sk-race-chooser-cancel:hover,
+.sk-race-chooser-cancel.is-hovered {
+  border-color: rgba(255, 107, 107, 0.55);
+  background: rgba(255, 107, 107, 0.08);
+  color: var(--sk-color-danger);
+}
+
+.sk-mp-setup-panel {
+  width: min(700px, calc(100vw - 4rem));
+}
+
+.sk-mp-setup-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.sk-mp-setup-row {
+  all: unset;
+  box-sizing: border-box;
+}
+
+.sk-mp-setup-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.035);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.sk-mp-setup-row:hover,
+.sk-mp-setup-row.is-hovered,
+.sk-mp-setup-action:hover,
+.sk-mp-setup-action.is-hovered {
+  border-color: rgba(255, 209, 71, 0.45);
+  background: rgba(255, 209, 71, 0.08);
+}
+
+.sk-mp-setup-row-label {
+  font-family: var(--sk-font-ui);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sk-text-soft);
+}
+
+.sk-mp-setup-row-value {
+  font-family: var(--sk-font-body);
+  font-size: clamp(1rem, 1.8vw, 1.35rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sk-color-chalk);
+}
+
+.sk-mp-setup-row.is-hovered .sk-mp-setup-row-value {
+  color: var(--sk-color-spray);
+}
+
+.sk-mp-setup-action {
+  display: block;
+  margin-top: 0.15rem;
+}
+
+/* -- Multiplayer lobby HUD --------------------------------------------- */
+
+.sk-mp-lobby {
+  position: absolute;
+  top: var(--sk-space-shell);
+  right: var(--sk-space-shell);
+  display: none;
+  flex-direction: column;
+  gap: 0.55rem;
+  width: clamp(260px, 22vw, 340px);
+  padding: 1rem 1.15rem 1rem;
+  border: 1px solid rgba(255, 209, 71, 0.18);
+  background: rgba(6, 5, 8, 0.82);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  color: var(--sk-text-primary);
+  pointer-events: none;
+  z-index: 800;
+}
+
+.sk-mp-lobby.is-active {
+  display: flex;
+  animation: skMpPanelIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes skMpPanelIn {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.sk-mp-lobby-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.sk-mp-lobby-kicker {
+  font-family: var(--sk-font-ui);
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 209, 71, 0.82);
+}
+
+.sk-mp-lobby-title {
+  font-family: var(--sk-font-body);
+  font-size: clamp(1.05rem, 1.35vw, 1.3rem);
+  color: var(--sk-color-chalk);
+  letter-spacing: 0.05em;
+  line-height: 1.08;
+}
+
+.sk-mp-lobby-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.2rem;
+}
+
+.sk-mp-lobby-chip {
+  padding: 0.18rem 0.5rem;
+  border: 1px solid rgba(255, 209, 71, 0.18);
+  background: rgba(255, 255, 255, 0.05);
+  font-family: var(--sk-font-body);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.sk-mp-lobby-chip.is-host {
+  border-color: rgba(158, 229, 255, 0.28);
+  color: var(--sk-color-ice);
+}
+
+.sk-mp-lobby-players {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.2rem;
+  max-height: 32vh;
+  overflow-y: auto;
+}
+
+.sk-mp-lobby-players::-webkit-scrollbar { width: 3px; }
+.sk-mp-lobby-players::-webkit-scrollbar-track { background: transparent; }
+.sk-mp-lobby-players::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+
+.sk-mp-lobby-player {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.035);
+  font-family: var(--sk-font-ui);
+  font-size: 0.76rem;
+  color: var(--sk-text-primary);
+}
+
+.sk-mp-lobby-player.is-self {
+  border-color: rgba(255, 209, 71, 0.28);
+  background: rgba(255, 209, 71, 0.08);
+}
+
+.sk-mp-lobby-player-alias {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.sk-mp-lobby-player-badge {
+  font-family: var(--sk-font-body);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sk-color-ice);
+  padding: 0.1rem 0.4rem;
+  border: 1px solid rgba(158, 229, 255, 0.32);
+  background: rgba(158, 229, 255, 0.08);
+}
+
+.sk-mp-lobby-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin-top: 0.15rem;
+}
+
+.sk-mp-lobby-option {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  padding: 0.45rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.sk-mp-lobby-option-label {
+  font-family: var(--sk-font-ui);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sk-text-soft);
+}
+
+.sk-mp-lobby-option-value {
+  font-family: var(--sk-font-body);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sk-color-chalk);
+}
+
+.sk-mp-lobby-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-top: 0.35rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sk-mp-lobby-footer-label {
+  font-family: var(--sk-font-ui);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sk-text-soft);
+}
+
+.sk-mp-lobby-footer-value {
+  font-family: var(--sk-font-body);
+  font-size: clamp(1.35rem, 1.8vw, 1.7rem);
+  letter-spacing: 0.06em;
+  color: var(--sk-color-spray);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.sk-mp-lobby-footer-value.is-expiring {
+  color: var(--sk-color-danger);
+  animation: skMpPulse 0.9s ease-in-out infinite;
+}
+
+@keyframes skMpPulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; }
+}
+
+/* -- Multiplayer race live standings ----------------------------------- */
+
+.sk-mp-standings {
+  position: absolute;
+  top: calc(var(--sk-space-shell) + clamp(128px, 14vw, 180px));
+  right: var(--sk-space-shell);
+  display: none;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: clamp(240px, 20vw, 300px);
+  padding: 0.75rem 0.9rem 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(6, 5, 8, 0.72);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  color: var(--sk-text-primary);
+  pointer-events: none;
+  z-index: 790;
+}
+
+.sk-mp-standings.is-active {
+  display: flex;
+  animation: skMpPanelIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.sk-mp-standings-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.15rem;
+}
+
+.sk-mp-standings-kicker {
+  font-family: var(--sk-font-ui);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 209, 71, 0.82);
+}
+
+.sk-mp-standings-total {
+  font-family: var(--sk-font-ui);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sk-text-muted);
+}
+
+.sk-mp-standings-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.035);
+  font-family: var(--sk-font-ui);
+  font-size: 0.76rem;
+  color: var(--sk-text-primary);
+}
+
+.sk-mp-standings-row.is-self {
+  border-color: rgba(255, 209, 71, 0.28);
+  background: rgba(255, 209, 71, 0.1);
+}
+
+.sk-mp-standings-row.is-finished {
+  opacity: 0.75;
+}
+
+.sk-mp-standings-row.is-forfeit {
+  opacity: 0.45;
+}
+
+.sk-mp-standings-row.is-forfeit .sk-mp-standings-alias {
+  text-decoration: line-through;
+  color: var(--sk-color-danger-muted);
+}
+
+.sk-mp-standings-rank {
+  width: 1.6rem;
+  min-width: 1.6rem;
+  text-align: center;
+  font-family: var(--sk-font-body);
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  color: var(--sk-text-soft);
+  line-height: 1;
+}
+
+.sk-mp-standings-row.is-self .sk-mp-standings-rank {
+  color: var(--sk-color-spray);
+}
+
+.sk-mp-standings-alias {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.sk-mp-standings-cp {
+  font-family: var(--sk-font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sk-text-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.sk-mp-standings-row.is-finished .sk-mp-standings-cp {
+  color: var(--sk-color-ice);
+}
+
+/* -- Phone messages: action button (Join Lobby) ------------------------ */
+
+.phone-msg-bubble-action {
+  margin-top: clamp(0.3rem, 0.5vw, 0.45rem);
+  display: flex;
+  justify-content: flex-start;
+}
+
+.phone-msg-action-btn {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: clamp(0.32rem, 0.5vw, 0.45rem) clamp(0.7rem, 1vw, 0.95rem);
+  border: 1px solid rgba(255, 209, 71, 0.45);
+  background: rgba(255, 209, 71, 0.1);
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.66rem, 0.9vw, 0.78rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sk-color-spray);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.phone-msg-action-btn:hover {
+  background: rgba(255, 209, 71, 0.18);
+  border-color: rgba(255, 209, 71, 0.72);
+  color: var(--sk-color-chalk);
+}
+
+.phone-msg-action-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--sk-text-soft);
+}
+
+/* -- Property invite: two-button layout + expired state ---------------- */
+
+.phone-msg-bubble-action--invite {
+  gap: 0.4rem;
+}
+
+.phone-msg-action-btn--accept {
+  border-color: rgba(255, 209, 71, 0.45);
+  background: rgba(255, 209, 71, 0.1);
+  color: var(--sk-color-spray);
+}
+
+.phone-msg-action-btn--accept:hover:not(:disabled) {
+  background: rgba(255, 209, 71, 0.18);
+  border-color: rgba(255, 209, 71, 0.72);
+}
+
+.phone-msg-action-btn--decline {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.phone-msg-action-btn--decline:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.phone-msg-action-expired {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.66rem, 0.9vw, 0.78rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+}

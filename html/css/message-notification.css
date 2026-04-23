@@ -1,0 +1,160 @@
+/* -------------------------------------------------------------------------- */
+/* New message notification — Street Kings panel styling                       */
+/* -------------------------------------------------------------------------- */
+
+/* Flat bottom edge so the timer bar stays full-width; top keeps a light SK angle. */
+.sk-msg-notif {
+  --sk-msg-notif-mask: polygon(0 0, 100% 2%, 100% 100%, 0 100%);
+
+  position: fixed;
+  top: calc((100vh - min(100vh, calc(100vw * var(--sk-ui-aspect-y) / var(--sk-ui-aspect-x)))) / 2 + 12rem);
+  right: calc((100vw - min(100vw, calc(100vh * var(--sk-ui-aspect-x) / var(--sk-ui-aspect-y)))) / 2 + 6rem);
+  z-index: 8000;
+  width: clamp(300px, 28vw, 440px);
+  background: linear-gradient(145deg, rgba(4, 3, 8, 0.98) 0%, rgba(1, 1, 4, 0.99) 100%);
+  border: 2px solid var(--sk-border-panel);
+  border-top: 4px solid var(--sk-color-spray);
+  border-radius: var(--sk-radius-panel);
+  clip-path: var(--sk-msg-notif-mask);
+  box-shadow: var(--sk-shadow-panel-inset), var(--sk-shadow-panel-drop);
+  pointer-events: none;
+  user-select: none;
+  transform: translateX(calc(100% + 2.5rem));
+  opacity: 0;
+  transition: transform 0.38s var(--sk-menu-transition-ease), opacity 0.28s ease;
+  overflow: hidden;
+}
+
+.sk-msg-notif.is-active {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.sk-msg-notif-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.85rem 0.4rem;
+  border-bottom: 1px solid var(--sk-border-panel);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 209, 71, 0.1) 0%,
+    rgba(255, 209, 71, 0.03) 45%,
+    transparent 75%
+  );
+}
+
+.sk-msg-notif-label {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.78rem, 1.15vw, 0.95rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sk-color-spray);
+  text-shadow: 1px 1px 0 var(--sk-gold-shadow);
+}
+
+.sk-msg-notif-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.6rem, 0.85vw, 0.75rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sk-text-soft);
+}
+
+.sk-msg-notif-hint-glyph {
+  display: inline-flex;
+  align-items: center;
+}
+
+.sk-msg-notif-hint-icon {
+  width: 1rem;
+  height: 1rem;
+  object-fit: contain;
+}
+
+.sk-msg-notif-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.75rem 0.85rem 0.75rem;
+}
+
+.sk-msg-notif-avatar {
+  width: clamp(32px, 3.2vw, 42px);
+  height: clamp(32px, 3.2vw, 42px);
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+  background: rgba(255, 209, 71, 0.1);
+  box-shadow: 0 0 0 2px rgba(255, 209, 71, 0.38);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.sk-msg-notif-avatar img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.sk-msg-notif-avatar span {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.88rem, 1.2vw, 1.05rem);
+  color: var(--sk-color-chalk);
+  letter-spacing: 0.04em;
+}
+
+.sk-msg-notif-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.sk-msg-notif-sender {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.88rem, 1.2vw, 1.05rem);
+  letter-spacing: 0.1em;
+  color: var(--sk-color-chalk);
+}
+
+.sk-msg-notif-preview {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.7rem, 1vw, 0.84rem);
+  line-height: 1.45;
+  color: var(--sk-text-detail);
+  margin: 0;
+  display: -webkit-box;
+  line-clamp: 8;
+  -webkit-line-clamp: 8;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sk-msg-notif-progress {
+  height: 4px;
+  background: linear-gradient(90deg, var(--sk-color-spray) 0%, var(--sk-color-ice) 100%);
+  transform-origin: left center;
+  opacity: 0;
+  box-sizing: border-box;
+}
+
+.sk-msg-notif.is-active .sk-msg-notif-progress {
+  opacity: 1;
+  animation: msgNotifDrain var(--notif-duration, 10s) linear both;
+}
+
+@keyframes msgNotifDrain {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}

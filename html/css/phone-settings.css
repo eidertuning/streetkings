@@ -1,0 +1,740 @@
+/* -------------------------------------------------------------------------- */
+/* Settings app                                                                */
+/* -------------------------------------------------------------------------- */
+
+.phone-settings {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* -- Category sidebar -------------------------------------------------------- */
+
+.phone-settings-cats {
+  width: 28%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  overflow-y: auto;
+  padding: clamp(0.35rem, 0.5vw, 0.5rem) 0;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.phone-settings-cat {
+  all: unset;
+  display: flex;
+  align-items: center;
+  padding: clamp(0.52rem, 0.75vw, 0.75rem) clamp(0.7rem, 1vw, 1rem);
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.58rem, 0.8vw, 0.72rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+  border-left: 2px solid transparent;
+}
+
+.phone-settings-cat:hover {
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.phone-settings-cat.is-active {
+  color: rgba(255, 255, 255, 0.95);
+  border-left-color: var(--sk-color-spray);
+  background: rgba(255, 209, 71, 0.06);
+}
+
+/* -- Settings panel ---------------------------------------------------------- */
+
+.phone-settings-panel {
+  flex: 1;
+  overflow-y: auto;
+  padding: clamp(0.5rem, 0.7vw, 0.7rem) clamp(0.6rem, 0.85vw, 0.85rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.22rem, 0.32vw, 0.32rem);
+}
+
+.phone-settings-panel::-webkit-scrollbar { width: 3px; }
+.phone-settings-panel::-webkit-scrollbar-track { background: transparent; }
+.phone-settings-panel::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); }
+
+/* -- Section group label ----------------------------------------------------- */
+
+.phone-settings-group-label {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.44rem, 0.58vw, 0.54rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--sk-color-spray);
+  opacity: 0.55;
+  padding: clamp(0.5rem, 0.7vw, 0.7rem) clamp(0.45rem, 0.6vw, 0.6rem) clamp(0.14rem, 0.2vw, 0.2rem);
+  border-bottom: 1px solid rgba(255, 209, 71, 0.1);
+  margin-top: clamp(0.3rem, 0.4vw, 0.4rem);
+}
+
+.phone-settings-group-label:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* -- Individual setting row --------------------------------------------------- */
+
+.phone-settings-item {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.22rem, 0.3vw, 0.3rem);
+  padding: clamp(0.38rem, 0.55vw, 0.55rem) clamp(0.45rem, 0.6vw, 0.6rem);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  background: rgba(255, 255, 255, 0.022);
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.phone-settings-item:hover {
+  background: rgba(255, 255, 255, 0.038);
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+.phone-settings-item.is-controller-focused,
+.phone-settings-cat.is-controller-focused,
+.phone-settings-reset.is-controller-focused,
+.phone-settings-action-btn.is-controller-focused,
+.phone-settings-preset-btn.is-controller-focused,
+.phone-settings-event-btn.is-controller-focused,
+.phone-settings-select.is-controller-focused {
+  border-color: rgba(255, 209, 71, 0.42);
+  background: rgba(255, 209, 71, 0.09);
+}
+
+.phone-settings-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.phone-settings-label {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.6rem, 0.82vw, 0.74rem);
+  color: rgba(255, 255, 255, 0.78);
+  letter-spacing: 0.02em;
+}
+
+.phone-settings-value {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.58rem, 0.78vw, 0.7rem);
+  letter-spacing: 0.06em;
+  color: var(--sk-color-spray);
+  min-width: 3.2em;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* -- Slider ------------------------------------------------------------------- */
+
+.phone-settings-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: clamp(3px, 0.35vw, 4px);
+  background: linear-gradient(
+    to right,
+    rgba(255, 209, 71, 0.55) 0%,
+    rgba(255, 209, 71, 0.55) var(--fill, 0%),
+    rgba(255, 255, 255, 0.1) var(--fill, 0%),
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  border-radius: 0;
+  outline: none;
+  cursor: pointer;
+  margin-top: clamp(0.1rem, 0.15vw, 0.15rem);
+}
+
+.phone-settings-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: clamp(9px, 1vw, 12px);
+  height: clamp(9px, 1vw, 12px);
+  background: #fff;
+  border-radius: 0;
+  cursor: pointer;
+  box-shadow: 0 0 0 2px rgba(255, 209, 71, 0.5), 0 1px 4px rgba(0, 0, 0, 0.45);
+  transition: box-shadow 0.15s;
+}
+
+.phone-settings-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 3px rgba(255, 209, 71, 0.7), 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* -- Toggle ------------------------------------------------------------------- */
+
+.phone-settings-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.phone-settings-toggle {
+  position: relative;
+  width: clamp(28px, 2.6vw, 36px);
+  height: clamp(15px, 1.4vw, 20px);
+  flex-shrink: 0;
+}
+
+.phone-settings-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.phone-settings-toggle-track {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: background 0.2s, border-color 0.2s;
+  cursor: pointer;
+}
+
+.phone-settings-toggle input:checked + .phone-settings-toggle-track {
+  background: rgba(255, 209, 71, 0.22);
+  border-color: rgba(255, 209, 71, 0.45);
+}
+
+.phone-settings-toggle-track::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: calc(clamp(15px, 1.4vw, 20px) - 4px);
+  height: calc(clamp(15px, 1.4vw, 20px) - 4px);
+  background: rgba(255, 255, 255, 0.5);
+  transition: transform 0.2s, background 0.2s;
+}
+
+.phone-settings-toggle input:checked + .phone-settings-toggle-track::after {
+  transform: translateX(calc(clamp(28px, 2.6vw, 36px) - clamp(15px, 1.4vw, 20px)));
+  background: var(--sk-color-spray);
+}
+
+/* -- Reset button ------------------------------------------------------------- */
+
+.phone-settings-reset {
+  display: block;
+  width: 100%;
+  margin-top: clamp(0.35rem, 0.5vw, 0.5rem);
+  padding: clamp(0.42rem, 0.6vw, 0.6rem) 1rem;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.32);
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.52rem, 0.7vw, 0.64rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.phone-settings-reset:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.28);
+  color: rgba(239, 68, 68, 0.8);
+}
+
+/* -- Action buttons ----------------------------------------------------------- */
+
+.phone-settings-action-btn {
+  display: block;
+  width: 100%;
+  padding: clamp(0.42rem, 0.6vw, 0.6rem) clamp(0.55rem, 0.75vw, 0.75rem);
+  background: rgba(255, 255, 255, 0.028);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.65);
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.56rem, 0.76vw, 0.68rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.phone-settings-action-btn:hover {
+  background: rgba(255, 255, 255, 0.055);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.phone-settings-action-btn:disabled {
+  opacity: 0.32;
+  cursor: default;
+}
+
+.phone-settings-action-btn--danger {
+  border-color: rgba(239, 68, 68, 0.18);
+  color: rgba(239, 68, 68, 0.6);
+}
+
+.phone-settings-action-btn--danger:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: rgba(239, 68, 68, 0.92);
+}
+
+/* -- Preset buttons ----------------------------------------------------------- */
+
+.phone-settings-preset-row {
+  display: flex;
+  gap: clamp(0.4rem, 0.55vw, 0.55rem);
+  margin-top: clamp(0.1rem, 0.15vw, 0.15rem);
+}
+
+.phone-settings-preset-btn {
+  flex: 1;
+  text-align: center;
+  padding: clamp(0.36rem, 0.5vw, 0.5rem) 0.5rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.52rem, 0.7vw, 0.64rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.phone-settings-preset-btn:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.phone-settings-preset-btn.is-active {
+  background: rgba(255, 209, 71, 0.1);
+  border-color: rgba(255, 209, 71, 0.35);
+  color: var(--sk-color-spray);
+}
+
+/* -- Event teleport row ------------------------------------------------------- */
+
+.phone-settings-event-row {
+  display: flex;
+  gap: clamp(0.4rem, 0.55vw, 0.55rem);
+  margin-top: clamp(0.1rem, 0.15vw, 0.15rem);
+}
+
+.phone-settings-select {
+  flex: 1;
+  min-width: 0;
+  padding: clamp(0.38rem, 0.52vw, 0.52rem) 0.65rem;
+  background: rgba(10, 14, 20, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.88);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.58rem, 0.78vw, 0.7rem);
+  outline: none;
+  color-scheme: dark;
+}
+
+.phone-settings-select option {
+  background: #0e1218;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.phone-settings-select:disabled {
+  opacity: 0.38;
+}
+
+.phone-settings-event-btn {
+  width: auto;
+  min-width: clamp(62px, 5.5vw, 82px);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.phone-vehicles {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 0.7rem;
+  padding: 0.75rem;
+}
+
+.phone-vehicles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex: 0 0 20%;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.phone-vehicles-list-item {
+  all: unset;
+  display: block;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.phone-vehicles-list-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.phone-vehicles-list-item.is-selected {
+  border-color: rgba(255, 209, 71, 0.35);
+  background: rgba(255, 209, 71, 0.08);
+}
+
+.phone-vehicles-list-item.is-selected:hover {
+  background: rgba(255, 209, 71, 0.15);
+  border-color: rgba(255, 209, 71, 0.55);
+}
+
+.phone-vehicles-list-item.is-active {
+  box-shadow: inset 2px 0 0 rgba(255, 209, 71, 0.8);
+}
+
+.phone-vehicles-list-top,
+.phone-vehicles-list-meta,
+.phone-vehicles-section-head,
+.phone-vehicles-progress-top,
+.phone-vehicles-mod-top,
+.phone-vehicles-event-row,
+.phone-vehicles-future-row,
+.phone-vehicles-tags,
+.phone-vehicles-summary-grid {
+  display: flex;
+}
+
+.phone-vehicles-list-top,
+.phone-vehicles-list-meta,
+.phone-vehicles-section-head,
+.phone-vehicles-progress-top,
+.phone-vehicles-mod-top,
+.phone-vehicles-event-row {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.phone-vehicles-list-name,
+.phone-vehicles-name,
+.phone-vehicles-section-title,
+.phone-vehicles-mod-name,
+.phone-vehicles-event-name,
+.phone-vehicles-mod-count,
+.phone-vehicles-future-mod {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.phone-vehicles-list-name {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.64rem, 0.9vw, 0.8rem);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.phone-vehicles-list-level,
+.phone-vehicles-list-badge,
+.phone-vehicles-tag,
+.phone-vehicles-section-stat,
+.phone-vehicles-summary-label,
+.phone-vehicles-mod-count,
+.phone-vehicles-future-level,
+.phone-vehicles-event-goal {
+  font-family: var(--sk-font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.phone-vehicles-list-level,
+.phone-vehicles-list-badge,
+.phone-vehicles-tag,
+.phone-vehicles-future-level {
+  color: #ffd147;
+}
+
+.phone-vehicles-list-model,
+.phone-vehicles-eyebrow,
+.phone-vehicles-mod-current,
+.phone-vehicles-mod-unlocked,
+.phone-vehicles-mod-next,
+.phone-vehicles-future-option,
+.phone-vehicles-empty,
+.phone-vehicles-progress-xp {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.phone-vehicles-list-model {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.54rem, 0.72vw, 0.62rem);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.phone-vehicles-list-badge {
+  font-size: clamp(0.5rem, 0.7vw, 0.6rem);
+}
+
+.phone-vehicles-panel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding-right: 0.1rem;
+}
+
+.phone-vehicles-dashboard,
+.phone-vehicles-main-col,
+.phone-vehicles-side-col,
+.phone-vehicles-mod-grid,
+.phone-vehicles-compact-grid,
+.phone-vehicles-next-grid {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.phone-vehicles-dashboard {
+  grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.95fr);
+  align-items: start;
+}
+
+.phone-vehicles-main-col,
+.phone-vehicles-side-col {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.phone-vehicles-mod-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.phone-vehicles-compact-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.45rem;
+}
+
+.phone-vehicles-next-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.phone-vehicles-next-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.phone-vehicles-event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+ }
+
+.phone-vehicles-hero,
+.phone-vehicles-section,
+.phone-vehicles-summary-card,
+.phone-vehicles-mod-card,
+.phone-vehicles-future-row,
+.phone-vehicles-event-row,
+.phone-vehicles-progress-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.phone-vehicles-hero,
+.phone-vehicles-section {
+  padding: 0.8rem;
+}
+
+.phone-vehicles-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr);
+  align-items: start;
+  gap: 0.75rem;
+}
+
+.phone-vehicles-eyebrow {
+  display: block;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.52rem, 0.68vw, 0.62rem);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.phone-vehicles-name {
+  margin: 0;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.98rem, 1.45vw, 1.22rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.phone-vehicles-tags {
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.45rem;
+}
+
+.phone-vehicles-tag {
+  padding: 0.2rem 0.4rem;
+  border: 1px solid rgba(255, 209, 71, 0.22);
+  background: rgba(255, 209, 71, 0.08);
+  font-size: clamp(0.48rem, 0.68vw, 0.58rem);
+}
+
+.phone-vehicles-tag.is-active {
+  color: #9ee5ff;
+  border-color: rgba(158, 229, 255, 0.22);
+  background: rgba(158, 229, 255, 0.08);
+}
+
+.phone-vehicles-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.phone-vehicles-summary-card {
+  padding: 0.55rem 0.6rem;
+}
+
+.phone-vehicles-summary-label {
+  display: block;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.5rem, 0.68vw, 0.58rem);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 0.18rem;
+}
+
+.phone-vehicles-summary-value,
+.phone-vehicles-progress-level,
+.phone-vehicles-event-time {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.7rem, 1.05vw, 0.86rem);
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.04em;
+}
+
+.phone-vehicles-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.phone-vehicles-section-title {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.66rem, 0.92vw, 0.78rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.phone-vehicles-section-stat {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.5rem, 0.7vw, 0.58rem);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.phone-vehicles-progress-card {
+  padding: 0.65rem;
+}
+
+.phone-vehicles-progress-bar {
+  height: 0.38rem;
+  margin-top: 0.45rem;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.phone-vehicles-progress-fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #ffd147 0%, #f59e0b 100%);
+}
+
+.phone-vehicles-mod-card,
+.phone-vehicles-future-row,
+.phone-vehicles-event-row {
+  padding: 0.6rem 0.65rem;
+}
+
+.phone-vehicles-mod-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.phone-vehicles-mod-current,
+.phone-vehicles-mod-unlocked,
+.phone-vehicles-mod-next,
+.phone-vehicles-future-option,
+.phone-vehicles-event-goal,
+.phone-vehicles-empty {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.55rem, 0.76vw, 0.65rem);
+  line-height: 1.45;
+}
+
+.phone-vehicles-mod-current,
+.phone-vehicles-mod-unlocked,
+.phone-vehicles-mod-next,
+.phone-vehicles-future-option {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.phone-vehicles-future-row {
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.phone-vehicles-future-copy,
+.phone-vehicles-event-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.14rem;
+  min-width: 0;
+}
+
+.phone-vehicles-event-copy {
+  padding-right: 0.75rem;
+}
+
+.phone-vehicles-event-goal.is-pass {
+  color: #22c55e;
+}
+
+.phone-vehicles-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 4rem;
+  text-align: center;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.phone-vehicles-empty--section {
+  min-height: 3rem;
+}

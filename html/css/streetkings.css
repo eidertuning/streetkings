@@ -1,0 +1,69 @@
+/* Street Kings NUI — entry sheet; partials live alongside this file. */
+
+@import url("tokens.css");
+@import url("shell.css");
+@import url("main-menu.css");
+@import url("avatar.css");
+@import url("initiation.css");
+@import url("you-died.css");
+@import url("arrested.css");
+@import url("phone.css");
+@import url("toasts.css");
+@import url("phone-stats.css");
+@import url("phone-realestate.css");
+@import url("phone-badge.css");
+@import url("phone-messages.css");
+@import url("message-notification.css");
+@import url("phone-settings.css");
+@import url("phone-leaderboards.css");
+@import url("phone-map.css");
+@import url("modshop.css");
+@import url("hud-prompt.css");
+@import url("garage.css");
+@import url("bust-countdown.css");
+@import url("events.css");
+@import url("multiplayer.css");
+@import url("speedometer.css");
+@import url("soundtrack.css");
+@import url("dealership.css");
+@import url("performance-shop.css");
+@import url("stunts.css");
+@import url("tutorial.css");
+@import url("missions.css");
+@import url("controller-keyboard.css");
+
+html,
+body,
+body * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html,
+body,
+body * {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 209, 71, 0.5) rgba(255, 255, 255, 0.04);
+}
+
+body *::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+body *::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+body *::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(255, 209, 71, 0.78) 0%, rgba(158, 229, 255, 0.58) 100%);
+  border-radius: 999px;
+}
+
+body *::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(255, 209, 71, 0.92) 0%, rgba(158, 229, 255, 0.72) 100%);
+}
+
+body *::-webkit-scrollbar-corner {
+  background: transparent;
+}

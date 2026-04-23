@@ -1,0 +1,27 @@
+/* -------------------------------------------------------------------------- */
+/* Phone — app icon badge                                                      */
+/* -------------------------------------------------------------------------- */
+
+.phone-app-icon {
+  position: relative;
+}
+
+.phone-app-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  background: #ff2d78;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.69rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}

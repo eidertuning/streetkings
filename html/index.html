@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en" class="sk-transparent">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Street Kings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Inter:wght@400;500;600;700&family=Oswald:wght@400;600;700&family=Permanent+Marker&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/streetkings.css" />
+  <link rel="stylesheet" href="css/pausemenu.css" />
+  <link rel="stylesheet" href="css/property-invite.css" />
+</head>
+<body>
+  <div id="app" class="sk-root">
+    <div class="sk-ui-frame sk-letterbox">
+      <div class="menu-views-stack">
+        <div id="viewMain" class="menu-view is-active">
+          <div class="panel">
+            <h1 class="brand">Street<span>Kings</span></h1>
+            <p id="mainMenuVersion" class="brand-version"></p>
+            <ul class="menu">
+              <li><button type="button" id="btnContinue">Continue</button></li>
+              <li><button type="button" id="btnPlay">Play</button></li>
+              <li><button type="button" id="btnCustomizeAvatar">Customize Avatar</button></li>
+              <li><button type="button" id="btnCredits">Credits</button></li>
+            </ul>
+          </div>
+        </div>
+        <div id="viewSaves" class="menu-view is-off-right">
+          <div class="panel">
+            <div class="saves-head">
+              <button type="button" class="btn-back" id="btnSaveBack">← Back</button>
+              <h2 class="saves-title">Choose a save</h2>
+              <p class="saves-sub">Pick a slot</p>
+            </div>
+            <div class="save-cards" id="saveCards"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="viewDeleteConfirm" class="name-input-overlay">
+      <div class="panel name-input-panel">
+        <p class="saves-sub">Delete save</p>
+        <h2 class="saves-title">Are you sure?</h2>
+        <p class="save-delete-warning">This will permanently delete <strong id="deleteConfirmName"></strong>. This cannot be undone.</p>
+        <div class="name-input-actions">
+          <button type="button" id="btnDeleteCancel" class="btn-back">← Cancel</button>
+          <button type="button" id="btnDeleteConfirm" class="btn-delete-confirm">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="viewNameInput" class="name-input-overlay">
+      <div class="panel name-input-panel">
+        <p class="saves-sub">New save</p>
+        <h2 class="saves-title">Name your save</h2>
+        <input type="text" id="saveNameInput" class="save-name-field" maxlength="32" placeholder="Enter a name..." autocomplete="off" spellcheck="false" />
+        <p id="saveNameError" class="save-name-error"></p>
+        <div class="name-input-actions">
+          <button type="button" id="btnNameCancel" class="btn-back">← Cancel</button>
+          <button type="button" id="btnNameConfirm" class="btn-name-confirm">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="viewCredits" class="name-input-overlay">
+      <div class="panel credits-panel">
+        <div class="credits-scroll-mask">
+          <div id="creditsScroll" class="credits-scroll">
+            <div id="creditsSpacerTop" class="credits-spacer" aria-hidden="true"></div>
+            <div class="credits-logo" aria-hidden="true">Street<span>Kings</span></div>
+            <div class="credits-section">
+              <h3 class="credits-section-title">A COLLABORATION BETWEEN</h3>
+              <p class="credits-line">919DESIGN</p>
+              <p class="credits-line">Envi-Scripts</p>
+            </div>
+            <div class="credits-section">
+              <h3 class="credits-section-title">Core Team</h3>
+              <p class="credits-line">NineLives</p>
+              <p class="credits-line">Envi-Scripts</p>
+            </div>
+            <div class="credits-section">
+              <h3 class="credits-section-title">Design</h3>
+              <p class="credits-line">NineLives</p>
+              <p class="credits-line">Envi-Scripts</p>
+            </div>
+            <div class="credits-section">
+              <h3 class="credits-section-title">Programming</h3>
+              <p class="credits-line">NineLives</p>
+              <p class="credits-line">Envi-Scripts</p>
+              <p class="credits-line">t.dot.</p>
+            </div>
+            <div class="credits-section">
+              <h3 class="credits-section-title">UI / UX</h3>
+              <p class="credits-line">NineLives</p>
+              <p class="credits-line">Envi-Scripts</p>
+            </div>
+            <div class="credits-section">
+              <h3 class="credits-section-title">Audio</h3>
+              <p class="credits-line">NineLives</p>
+            </div>
+            <div class="credits-section">
+              <h3 class="credits-section-title">Testing</h3>
+              <p class="credits-line">0nlyjim</p>
+              <p class="credits-line">cf3cruse</p>
+              <p class="credits-line">davidtexture</p>
+              <p class="credits-line">Devexity</p>
+              <p class="credits-line">drcroll</p>
+              <p class="credits-line">magnets.</p>
+              <p class="credits-line">NickSparx</p>
+              <p class="credits-line">ProGamerDude</p>
+              <p class="credits-line">zStretz</p>
+              <p class="credits-line">t.dot.</p>
+              <p class="credits-line">OGChroma</p>
+            </div>
+            <div class="credits-section">
+              <h3 class="credits-section-title">Special Thanks</h3>
+              <p class="credits-line">Rockstar Games & Cfx.re</p>
+            </div>
+            <div class="credits-section">
+              <h3 class="credits-section-title">Third-Party Tools</h3>
+              <p class="credits-line">ox_lib</p>
+              <p class="credits-line">oxmysql</p>
+              <p class="credits-line">pma-voice</p>
+            </div>
+            <div id="creditsSpacer" class="credits-spacer" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="viewAvatar" class="sk-avatar" style="display:none">
+    <div class="sk-avatar-shell">
+      <div class="sk-avatar-topbar">
+        <div class="sk-avatar-header">
+          <button type="button" id="avatarBack" class="btn-back">← Back</button>
+          <h2 class="sk-avatar-title">Customize Avatar</h2>
+        </div>
+        <div class="sk-avatar-topbar-tools">
+          <div class="sk-avatar-camera-wrap">
+            <span class="sk-avatar-camera-label">Camera Height</span>
+            <input type="range" id="avatarCameraHeight" class="sk-avatar-camera-slider" min="0" max="1" step="0.01" value="0.5" />
+          </div>
+          <button type="button" id="avatarSpotlight" class="sk-avatar-spotlight-btn">Spotlight</button>
+          <div class="sk-avatar-balance-wrap">
+            <span class="sk-avatar-balance-label">GearCoins</span>
+            <span class="sk-avatar-balance-value" id="avatarBalance">0</span>
+          </div>
+        </div>
+      </div>
+      <div class="sk-avatar-layout">
+        <aside class="sk-avatar-panel sk-avatar-panel--left">
+          <div class="sk-avatar-gender-switch" id="avatarGenderSwitch"></div>
+          <div class="sk-avatar-tabs" id="avatarTabs"></div>
+          <div class="sk-avatar-panel-copy" id="avatarPanelCopy">
+            <p class="sk-avatar-preview-eyebrow" id="avatarPanelEyebrow">Face</p>
+            <h3 class="sk-avatar-preview-title" id="avatarPanelTitle">Shape, skin, and detail</h3>
+            <p class="sk-avatar-preview-copy" id="avatarPanelDescription">Refine the overall look first, then move into individual face features or clothing.</p>
+          </div>
+          <div class="sk-avatar-controls" id="avatarControls"></div>
+        </aside>
+        <div class="sk-avatar-viewport" id="avatarViewport"></div>
+        <aside class="sk-avatar-panel sk-avatar-panel--right">
+          <p class="sk-avatar-preview-eyebrow" id="avatarPreviewEyebrow">Face</p>
+          <h3 class="sk-avatar-preview-title" id="avatarPreviewTitle">Customize your look</h3>
+          <p class="sk-avatar-preview-copy" id="avatarPreviewCopy">Rotate the camera with drag and refine your character from every angle.</p>
+          <div class="sk-avatar-tabs sk-avatar-tabs--browser" id="avatarBrowseTabs"></div>
+          <div class="sk-avatar-browser" id="avatarBrowser"></div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <div id="viewInitiation" class="sk-initiation">
+    <div id="initiationOverlay" class="initiation-overlay"></div>
+
+    <div class="initiation-header">
+      <p class="initiation-header-eyebrow">Street Kings</p>
+      <h1 class="initiation-header-title">Choose Your Starter Car</h1>
+      <p class="initiation-header-sub">Hover over a vehicle to inspect it &mdash; click to select</p>
+    </div>
+
+    <div id="initiationVehicleInfo" class="initiation-info-panel">
+      <div class="initiation-info-identity">
+        <p class="initiation-info-brand" id="initiationVehicleBrand"></p>
+        <h2 class="initiation-info-name" id="initiationVehicleName"></h2>
+      </div>
+      <div class="initiation-divider"></div>
+      <div class="initiation-stats">
+        <div class="initiation-stat-col">
+          <span class="initiation-stat-label">Top Speed</span>
+          <span class="initiation-stat-bar-wrap"><span class="initiation-stat-bar" id="statTopSpeed"></span></span>
+        </div>
+        <div class="initiation-stat-col">
+          <span class="initiation-stat-label">Acceleration</span>
+          <span class="initiation-stat-bar-wrap"><span class="initiation-stat-bar" id="statAccel"></span></span>
+        </div>
+        <div class="initiation-stat-col">
+          <span class="initiation-stat-label">Handling</span>
+          <span class="initiation-stat-bar-wrap"><span class="initiation-stat-bar" id="statHandling"></span></span>
+        </div>
+        <div class="initiation-stat-col">
+          <span class="initiation-stat-label">Braking</span>
+          <span class="initiation-stat-bar-wrap"><span class="initiation-stat-bar" id="statBraking"></span></span>
+        </div>
+      </div>
+      <div class="initiation-divider"></div>
+      <p class="initiation-info-value">$<span id="initiationVehicleValue"></span></p>
+    </div>
+
+    <div id="initiationConfirmModal" class="initiation-confirm-modal">
+      <div class="initiation-confirm-box">
+        <h3 class="initiation-confirm-title">Choose this vehicle?</h3>
+        <p class="initiation-confirm-body">This cannot be undone once a starter vehicle is chosen.</p>
+        <div class="initiation-confirm-actions">
+          <button type="button" id="initiationConfirmNo" class="initiation-confirm-btn initiation-confirm-btn--secondary">Cancel</button>
+          <button type="button" id="initiationConfirmYes" class="initiation-confirm-btn">Yes, Choose</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="viewYouDied" class="sk-you-died">
+    <div class="you-died-content">
+      <h1 class="you-died-title">You Died</h1>
+      <p class="you-died-sub">$1000 Hospital Bill</p>
+    </div>
+    <div class="you-died-footer">
+      <span class="you-died-spinner"></span>
+    </div>
+  </div>
+
+  <div id="viewToBeContinued" class="sk-tbc">
+    <div class="tbc-content">
+      <h1 class="tbc-title">To Be Continued</h1>
+      <p class="tbc-sub">Chapter 2 - Coming Soon..</p>
+    </div>
+  </div>
+
+  <div id="viewArrested" class="sk-arrested">
+    <div class="arrested-light arrested-light--blue"></div>
+    <div class="arrested-light arrested-light--red"></div>
+    <div class="arrested-content">
+      <h1 class="arrested-title">Arrested</h1>
+      <p class="arrested-sub">Fined $1000</p>
+    </div>
+    <div class="arrested-footer">
+      <span class="arrested-spinner"></span>
+    </div>
+  </div>
+
+  <div id="viewPhone" class="sk-phone" data-slide="bottom">
+    <div class="phone-backdrop"></div>
+    <div class="phone-frame">
+      <div class="phone-status-bar">
+        <span class="phone-time" id="phoneTime">12:00</span>
+        <span class="phone-balance" id="phoneBalance">$0</span>
+        <div class="phone-status-icons">
+          <div class="phone-signal">
+            <span class="phone-signal-bar"></span>
+            <span class="phone-signal-bar"></span>
+            <span class="phone-signal-bar"></span>
+            <span class="phone-signal-bar"></span>
+          </div>
+          <div class="phone-battery">
+            <div class="phone-battery-body"></div>
+            <div class="phone-battery-tip"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phone-screen">
+        <div class="phone-wallpaper-wordmark">STREETKINGS</div>
+        <div class="phone-screen-frost"></div>
+        <div class="phone-view phone-home is-active" id="phoneHome">
+          <div class="phone-apps-grid">
+            <button class="phone-app" data-app="Messages">
+              <div class="phone-app-icon" style="--app-color:#3b82f6">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span class="phone-app-badge" id="msgBadge" style="display:none"></span>
+              </div>
+              <span class="phone-app-label">Messages</span>
+            </button>
+            <button class="phone-app" data-app="Map">
+              <div class="phone-app-icon" style="--app-color:#22c55e">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+              </div>
+              <span class="phone-app-label">Map</span>
+            </button>
+            <button class="phone-app" data-app="Vehicles">
+              <div class="phone-app-icon" style="--app-color:#ffd147">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              </div>
+              <span class="phone-app-label">Vehicles</span>
+            </button>
+            <button class="phone-app" data-app="Stats">
+              <div class="phone-app-icon" style="--app-color:#f97316">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20V14"/><path d="M10 20V10"/><path d="M14 20V4"/><path d="M18 20V8"/></svg>
+              </div>
+              <span class="phone-app-label">Stats</span>
+            </button>
+            <button class="phone-app" data-app="RealEstate">
+              <div class="phone-app-icon" style="--app-color:#ec4899">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+              </div>
+              <span class="phone-app-label">Properties</span>
+            </button>
+            <button class="phone-app" data-app="Towing">
+              <div class="phone-app-icon" style="--app-color:#6366f1">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+              </div>
+              <span class="phone-app-label">Towing</span>
+            </button>
+            <button class="phone-app" data-app="Leaderboards">
+              <div class="phone-app-icon" style="--app-color:#ffd147">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7 4 7 7 7 7"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5C17 4 17 7 17 7"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+              </div>
+              <span class="phone-app-label">Rankings</span>
+            </button>
+            <button class="phone-app" data-app="Settings">
+              <div class="phone-app-icon" style="--app-color:#78716c">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+              </div>
+              <span class="phone-app-label">Settings</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="phone-view" id="phoneAppEvent">
+          <div class="phone-app-header">
+            <span class="phone-app-title" id="phoneEventTitle">Event Menu</span>
+          </div>
+          <div class="phone-event">
+            <div class="phone-event-card">
+              <div class="phone-event-label">In Event</div>
+              <div class="phone-event-name" id="phoneEventName">Active Run</div>
+              <div class="phone-event-copy" id="phoneEventCopy">Choose an action to recover your run or leave the event.</div>
+            </div>
+            <div class="phone-event-actions">
+              <button type="button" class="phone-event-action" id="phoneEventRecover">Recover to Last Checkpoint</button>
+              <button type="button" class="phone-event-action phone-event-action--danger" id="phoneEventForfeit">Forfeit Event</button>
+            </div>
+            <div class="phone-event-note" id="phoneEventNote"></div>
+          </div>
+        </div>
+
+        <div class="phone-view" id="phoneAppMission">
+          <div class="phone-app-header">
+            <span class="phone-app-title">Mission</span>
+          </div>
+          <div class="phone-event">
+            <div class="phone-event-card">
+              <div class="phone-event-label">Active Mission</div>
+              <div class="phone-event-name" id="phoneMissionName">Current Mission</div>
+              <div class="phone-event-copy">Leave the current mission and return to free roam. Your mission progress will be reset.</div>
+            </div>
+            <div class="phone-event-actions">
+              <button type="button" class="phone-event-action phone-event-action--danger" id="phoneMissionForfeit">Leave Mission</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="phone-view" id="phoneAppMessages">
+          <div class="phone-app-header">
+            <button class="phone-app-back">← Back</button>
+            <span class="phone-app-title">Messages</span>
+          </div>
+          <div class="phone-messages">
+            <div class="phone-messages-list" id="msgList"></div>
+            <div class="phone-messages-pane">
+              <div class="phone-msg-empty" id="msgEmpty">
+                <span>Select a conversation</span>
+              </div>
+              <div class="phone-msg-thread" id="msgThread" style="display:none"></div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-view" id="phoneAppMap">
+          <div class="phone-app-header">
+            <button class="phone-app-back">← Back</button>
+            <span class="phone-app-title">Map</span>
+          </div>
+          <div class="phone-map">
+            <aside class="phone-map-sidebar" id="phoneMapSidebar" aria-label="Events list">
+              <div class="phone-map-sidebar-label">Events</div>
+              <div class="phone-map-sidebar-list" id="phoneMapEventList" role="list"></div>
+            </aside>
+            <div class="phone-map-stage">
+              <div class="phone-map-toolbar" id="phoneMapStyleTabs">
+                <div class="phone-map-style-group">
+                  <button type="button" class="phone-map-style is-active" data-style="satellite">Satellite</button>
+                  <button type="button" class="phone-map-style" data-style="regular">Road</button>
+                  <button type="button" class="phone-map-style" data-style="atlas">Atlas</button>
+                </div>
+                <div class="phone-map-control-group">
+                  <button type="button" class="phone-map-control" id="phoneMapZoomOut" aria-label="Zoom out">-</button>
+                  <button type="button" class="phone-map-control" id="phoneMapResetView">Reset</button>
+                  <button type="button" class="phone-map-control" id="phoneMapZoomIn" aria-label="Zoom in">+</button>
+                </div>
+              </div>
+              <div class="phone-map-canvas-wrap" id="phoneMapViewport">
+                <div class="phone-map-loading" id="phoneMapLoading">Loading map...</div>
+                <div class="phone-map-empty" id="phoneMapEmpty" style="display:none">No events available.</div>
+                <div class="phone-map-canvas" id="phoneMapCanvas" style="display:none">
+                  <img id="phoneMapImage" class="phone-map-image-source" src="assets/satellite_map.webp" alt="StreetKings map source" draggable="false" />
+                  <div class="phone-map-tiles" id="phoneMapTiles"></div>
+                </div>
+                <div class="phone-map-overlay" id="phoneMapOverlay" style="display:none">
+                  <svg id="phoneMapRoute" class="phone-map-route" preserveAspectRatio="none" aria-hidden="true">
+                    <polyline id="phoneMapRouteLine" class="phone-map-route-line" points=""></polyline>
+                    <g id="phoneMapRoutePoints"></g>
+                  </svg>
+                  <div class="phone-map-markers" id="phoneMapMarkers"></div>
+                </div>
+              </div>
+            </div>
+            <div class="phone-map-panel">
+              <div class="phone-map-panel-label">Route Preview</div>
+              <div class="phone-map-panel-empty" id="phoneMapPanelEmpty">Select an event start to preview its route.</div>
+              <div class="phone-map-card" id="phoneMapCard" style="display:none">
+                <div class="phone-map-card-title" id="phoneMapTitle"></div>
+                <div class="phone-map-card-meta">
+                  <span class="phone-map-chip" id="phoneMapType"></span>
+                  <span class="phone-map-chip" id="phoneMapScheme"></span>
+                </div>
+                <div class="phone-map-card-stats">
+                  <div class="phone-map-card-stat">
+                    <span class="phone-map-card-stat-label">Start</span>
+                    <span class="phone-map-card-stat-value" id="phoneMapStart"></span>
+                  </div>
+                  <div class="phone-map-card-stat">
+                    <span class="phone-map-card-stat-label">Checkpoints</span>
+                    <span class="phone-map-card-stat-value" id="phoneMapStops"></span>
+                  </div>
+                  <div class="phone-map-card-stat">
+                    <span class="phone-map-card-stat-label">Goal</span>
+                    <span class="phone-map-card-stat-value" id="phoneMapGoal"></span>
+                  </div>
+                </div>
+                <button type="button" class="phone-map-teleport phone-map-teleport--secondary" id="phoneMapMarkOnMap" style="display:none">Mark On Map</button>
+                <button type="button" class="phone-map-teleport" id="phoneMapTeleportStart" style="display:none">Teleport to start</button>
+                <div class="phone-map-card-desc" id="phoneMapDesc"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-view" id="phoneAppVehicles">
+          <div class="phone-app-header">
+            <button class="phone-app-back">← Back</button>
+            <span class="phone-app-title">Vehicles</span>
+          </div>
+          <div class="phone-vehicles">
+            <div class="phone-vehicles-list" id="vehiclesList">
+              <div class="phone-vehicles-empty">Loading...</div>
+            </div>
+            <div class="phone-vehicles-panel" id="vehiclesPanel">
+              <div class="phone-vehicles-empty">Select a vehicle</div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-view" id="phoneAppStats">
+          <div class="phone-app-header">
+            <button class="phone-app-back">← Back</button>
+            <span class="phone-app-title">Stats</span>
+          </div>
+          <div id="phoneAppStatsContent" class="phone-stats-content"></div>
+        </div>
+        <div class="phone-view" id="phoneAppRealEstate">
+          <div class="phone-app-header">
+            <button class="phone-app-back">← Back</button>
+            <span class="phone-app-title">Real Estate</span>
+          </div>
+          <div class="phone-realestate">
+            <div class="phone-realestate-sidebar">
+              <div class="phone-realestate-sidebar-label">Listings</div>
+              <div class="phone-realestate-sidebar-balance">Cash <span id="realEstateCash">$0</span></div>
+              <div class="phone-realestate-list" id="realEstateList">
+                <div class="phone-realestate-empty">Loading properties...</div>
+              </div>
+            </div>
+            <div class="phone-realestate-panel" id="realEstatePanel">
+              <div class="phone-realestate-empty">Select a property</div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-view" id="phoneAppStore">
+          <div class="phone-app-header">
+            <button class="phone-app-back">← Back</button>
+            <span class="phone-app-title">Store</span>
+          </div>
+          <div class="phone-app-body"></div>
+        </div>
+        <div class="phone-view" id="phoneAppTowing">
+          <div class="phone-app-header">
+            <button class="phone-app-back">← Back</button>
+            <span class="phone-app-title">Towing</span>
+          </div>
+          <div class="phone-event">
+            <div class="phone-event-card">
+              <div class="phone-event-label">Roadside Assistance</div>
+              <div class="phone-event-name">Need a reset?</div>
+              <div class="phone-event-copy">Jump to your last used garage for $200 or recover to the nearest road for free.</div>
+            </div>
+            <div class="phone-event-actions">
+              <button type="button" class="phone-event-action" id="phoneTowingGarage">Tow To Last Garage ($200)</button>
+              <button type="button" class="phone-event-action" id="phoneTowingRecover">Recover To Nearest Road (Free)</button>
+            </div>
+            <div class="phone-event-note">GET ON YOUR WAY WITH OUR TOWING SERVICE.</div>
+          </div>
+        </div>
+        <div class="phone-view" id="phoneAppSettings">
+          <div class="phone-app-header">
+            <button class="phone-app-back">← Back</button>
+            <span class="phone-app-title">Settings</span>
+          </div>
+          <div class="phone-settings">
+            <div class="phone-settings-cats" id="settingsCats"></div>
+            <div class="phone-settings-panel" id="settingsPanel"></div>
+          </div>
+        </div>
+        <div class="phone-view" id="phoneAppLeaderboards">
+          <div class="phone-app-header">
+            <button class="phone-app-back">← Back</button>
+            <span class="phone-app-title">Rankings</span>
+          </div>
+          <div class="phone-lb">
+            <div class="phone-lb-cats" id="lbCats"></div>
+            <div class="phone-lb-panel" id="lbPanel">
+              <div class="phone-lb-header">
+                <span class="phone-lb-title" id="lbTitle"></span>
+                <div class="phone-lb-tabs" id="lbTabs">
+                  <button type="button" class="phone-lb-tab is-active" data-period="all">All Time</button>
+                  <button type="button" class="phone-lb-tab" data-period="month">Month</button>
+                  <button type="button" class="phone-lb-tab" data-period="week">Week</button>
+                  <button type="button" class="phone-lb-tab" data-period="day">Today</button>
+                </div>
+              </div>
+              <div class="phone-lb-list" id="lbList"></div>
+              <div class="phone-lb-personal" id="lbPersonal" style="display:none"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phone-home-bar">
+        <button class="phone-home-btn"></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="viewModShop" class="sk-modshop" style="display:none">
+    <div class="sk-modshop-viewport"></div>
+
+    <div class="sk-modshop-top">
+      <div class="sk-modshop-title-block">
+        <span class="sk-modshop-kicker">Custom Shop</span>
+        <h1 class="sk-modshop-heading" id="modshopTitle">Visual Mods</h1>
+        <p class="sk-modshop-subtitle">Vehicle XP unlocks more parts. Locked parts show the required level before you can install them.</p>
+      </div>
+      <div class="sk-modshop-status">
+        <div class="sk-modshop-wallet">
+          <span class="sk-modshop-wallet-label">Cash</span>
+          <span class="sk-modshop-wallet-amount" id="modshopBalance"></span>
+        </div>
+        <div class="sk-modshop-progress-card">
+          <div class="sk-modshop-progress-head">
+            <span class="sk-modshop-progress-label">Vehicle Level</span>
+            <span class="sk-modshop-progress-level" id="modshopVehicleLevel">Lv. 1</span>
+          </div>
+          <div class="sk-modshop-progress-track">
+            <div class="sk-modshop-progress-fill" id="modshopXpFill"></div>
+          </div>
+          <div class="sk-modshop-progress-meta">
+            <span id="modshopXpText">0 / 0 XP</span>
+            <span id="modshopUnlockSummary">0 / 0 unlocked</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sk-modshop-side" id="modshopSide">
+      <div class="sk-modshop-selection-card">
+        <span class="sk-modshop-selection-label">Selected</span>
+        <div class="sk-modshop-selection-title" id="modshopSelectedTitle">Choose a category</div>
+        <div class="sk-modshop-selection-subtitle" id="modshopSelectedSubtitle">Select a part to preview its unlock state and install cost.</div>
+      </div>
+      <div class="sk-modshop-options" id="modshopOptions"></div>
+      <div class="sk-modshop-install" id="modshopInstall">
+        <div class="sk-modshop-install-copy">
+          <span class="sk-modshop-price" id="modshopPrice"></span>
+          <span class="sk-modshop-install-note" id="modshopInstallNote">Select a part to preview it.</span>
+        </div>
+        <button class="sk-modshop-buy" id="modshopBuy">Install</button>
+      </div>
+    </div>
+
+    <div class="sk-modshop-strip">
+      <div class="sk-modshop-controller-hint" aria-hidden="true">
+        <img class="sk-modshop-controller-hint-icon" data-sk-glyph-key="LB" src="assets/XboxSeriesX_LB.png" alt="" />
+        <img class="sk-modshop-controller-hint-icon" data-sk-glyph-key="RB" src="assets/XboxSeriesX_RB.png" alt="" />
+        <span class="sk-modshop-controller-hint-text">TO NAVIGATE</span>
+      </div>
+      <div class="sk-modshop-strip-inner" id="modshopCategories"></div>
+    </div>
+
+    <button class="sk-modshop-close" id="modshopClose">✕</button>
+  </div>
+
+  <div id="viewPerformanceShop" class="sk-perfshop" style="display:none">
+    <div class="sk-perfshop-viewport"></div>
+    <div class="sk-perfshop-top">
+      <div class="sk-perfshop-title-block">
+        <span class="sk-perfshop-kicker">Tuning Bay</span>
+        <h1 class="sk-perfshop-heading" id="perfshopTitle">Performance Shop</h1>
+        <p class="sk-perfshop-subtitle">Vehicle XP unlocks new upgrade stages. Drag to pan around your ride while you preview and install tuning parts.</p>
+      </div>
+      <div class="sk-perfshop-status">
+        <div class="sk-perfshop-wallet">
+          <span class="sk-perfshop-wallet-label">Cash</span>
+          <span class="sk-perfshop-wallet-amount" id="perfshopBalance"></span>
+        </div>
+        <div class="sk-perfshop-progress-card">
+          <div class="sk-perfshop-progress-head">
+            <span class="sk-perfshop-progress-label">Vehicle Level</span>
+            <span class="sk-perfshop-progress-level" id="perfshopVehicleLevel">Lv. 1</span>
+          </div>
+          <div class="sk-perfshop-progress-track">
+            <div class="sk-perfshop-progress-fill" id="perfshopXpFill"></div>
+          </div>
+          <div class="sk-perfshop-progress-meta">
+            <span id="perfshopXpText">0 / 0 XP</span>
+            <span id="perfshopUnlockSummary">0 / 0 unlocked</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sk-perfshop-side" id="perfshopSide">
+      <div class="sk-perfshop-selection-card">
+        <span class="sk-perfshop-selection-label">Selected</span>
+        <div class="sk-perfshop-selection-title" id="perfshopSelectedTitle">Choose a category</div>
+        <div class="sk-perfshop-selection-subtitle" id="perfshopSelectedSubtitle">Select a tuning stage to preview install cost and unlock state.</div>
+      </div>
+      <div class="sk-perfshop-options" id="perfshopOptions"></div>
+      <div class="sk-perfshop-install" id="perfshopInstall">
+        <div class="sk-perfshop-install-copy">
+          <span class="sk-perfshop-price" id="perfshopPrice"></span>
+          <span class="sk-perfshop-install-note" id="perfshopInstallNote">Select a stage to preview it.</span>
+        </div>
+        <button class="sk-perfshop-buy" id="perfshopBuy">Install</button>
+      </div>
+    </div>
+
+    <div class="sk-perfshop-strip">
+      <div class="sk-perfshop-controller-hint" aria-hidden="true">
+        <img class="sk-perfshop-controller-hint-icon" data-sk-glyph-key="LB" src="assets/XboxSeriesX_LB.png" alt="" />
+        <img class="sk-perfshop-controller-hint-icon" data-sk-glyph-key="RB" src="assets/XboxSeriesX_RB.png" alt="" />
+        <span class="sk-perfshop-controller-hint-text">TO NAVIGATE</span>
+      </div>
+      <div class="sk-perfshop-strip-inner" id="perfshopCategories"></div>
+    </div>
+
+    <button class="sk-perfshop-close" id="perfshopClose">✕</button>
+  </div>
+
+  <div id="viewGarage" class="sk-garage" style="display:none">
+    <div class="sk-garage-viewport"></div>
+
+    <div class="sk-garage-top">
+      <div class="sk-garage-top-copy">
+        <h1 class="sk-garage-heading" id="garageTitle">Garage</h1>
+        <p class="sk-garage-hint">Drag to rotate &middot; Scroll to zoom &middot; ESC to leave</p>
+      </div>
+      <div class="sk-garage-top-status">
+        <div class="sk-garage-wallet">
+          <span class="sk-garage-wallet-label">Cash</span>
+          <span class="sk-garage-wallet-amount" id="garagePlayerMoney"></span>
+        </div>
+        <div class="sk-garage-player-card">
+          <div class="sk-garage-player-head">
+            <span class="sk-garage-player-label">Player Level</span>
+            <span class="sk-garage-player-level" id="garagePlayerLevel">Lv. 1</span>
+          </div>
+          <div class="sk-garage-player-track">
+            <div class="sk-garage-player-fill" id="garagePlayerXpFill"></div>
+          </div>
+          <div class="sk-garage-player-meta">
+            <span id="garagePlayerXpText">0 / 0 XP</span>
+            <span id="garagePlayerLevelCap">Max 50</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sk-garage-side" id="garageSide">
+      <div class="sk-garage-card">
+        <span class="sk-garage-card-label">Selected</span>
+        <h2 class="sk-garage-car-display-name" id="garageCarName"></h2>
+        <span class="sk-garage-active-badge" id="garageActiveBadge">Active Ride</span>
+        <div class="sk-garage-level-card">
+          <div class="sk-garage-level-head">
+            <span class="sk-garage-level-label">Vehicle Level</span>
+            <span class="sk-garage-level-value" id="garageVehicleLevel">Lv. 1</span>
+          </div>
+          <div class="sk-garage-level-track">
+            <div class="sk-garage-level-fill" id="garageVehicleXpFill"></div>
+          </div>
+          <div class="sk-garage-level-meta">
+            <span id="garageVehicleXpText">0 / 0 XP</span>
+            <span id="garageVehicleLevelCap">Max 10</span>
+          </div>
+        </div>
+      </div>
+      <div class="sk-garage-actions" id="garageActions"></div>
+    </div>
+
+    <div class="sk-garage-strip">
+      <div class="sk-garage-strip-inner" id="garageList"></div>
+    </div>
+  </div>
+
+  <div id="viewDealership" class="sk-dealership" style="display:none">
+    <div class="sk-dealership-viewport"></div>
+
+    <div class="sk-dealership-top">
+      <h1 class="sk-dealership-heading" id="dealershipTitle"></h1>
+      <div class="sk-dealership-wallet">
+        <span class="sk-dealership-wallet-label">Cash</span>
+        <span class="sk-dealership-wallet-amount" id="dealershipBalance"></span>
+      </div>
+    </div>
+
+    <div class="sk-dealership-side" id="dealershipSide">
+      <div class="sk-dealership-card">
+        <span class="sk-dealership-car-brand" id="dealershipCarBrand"></span>
+        <h2 class="sk-dealership-car-name" id="dealershipCarName"></h2>
+        <span class="sk-dealership-class-badge" id="dealershipClassBadge"></span>
+        <div class="sk-dealership-customizability">
+          <span class="sk-dealership-customizability-label">Customizability</span>
+          <div class="sk-dealership-customizability-stars" id="dealershipCustomizability"></div>
+        </div>
+      </div>
+      <div class="sk-dealership-actions" id="dealershipActions"></div>
+    </div>
+
+    <div class="sk-dealership-strip">
+      <div class="sk-dealership-class-tabs" id="dealershipClassTabs"></div>
+      <div class="sk-dealership-list" id="dealershipList"></div>
+    </div>
+  </div>
+
+  <div class="sk-hud-frame">
+    <div class="sk-hud-inner">
+      <div id="skPrompt" class="sk-prompt" style="display:none">
+        <div class="sk-prompt-key" id="skPromptKey"></div>
+        <div class="sk-prompt-content">
+          <span class="sk-prompt-text" id="skPromptText"></span>
+          <div class="sk-prompt-rich" id="skPromptRich" style="display:none">
+            <div class="sk-prompt-rich-label">Event</div>
+            <div class="sk-prompt-rich-title" id="skPromptTitle"></div>
+            <div class="sk-prompt-rich-meta">
+              <span class="sk-prompt-rich-chip" id="skPromptType"></span>
+              <span class="sk-prompt-rich-chip" id="skPromptClass" style="display:none"></span>
+              <span class="sk-prompt-rich-chip" id="skPromptPb"></span>
+            </div>
+            <div class="sk-prompt-rich-action" id="skPromptAction"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live timer HUD: anchored top-right within the 16:9 safe area -->
+      <div id="evTimer" class="ev-timer" style="display:none">
+        <div class="ev-timer-time" id="evTimerTime">0:00.00</div>
+        <div class="ev-timer-goal" id="evTimerGoal" style="display:none"></div>
+        <div class="ev-timer-meta" id="evTimerMeta" style="display:none">
+          <div class="ev-timer-progress" id="evTimerCheckpoint"></div>
+          <div class="ev-timer-progress" id="evTimerLap" style="display:none"></div>
+        </div>
+      </div>
+
+      <div class="sk-speedo-cluster">
+        <div class="sk-speedo-anchor">
+          <div id="skSoundtrackPlayer" class="sk-soundtrack-player sk-soundtrack-player--hidden">
+            <div class="sk-soundtrack-player-disc-wrap" aria-hidden="true">
+              <div class="sk-soundtrack-player-disc">
+                <div class="sk-soundtrack-player-disc-ring"></div>
+                <div class="sk-soundtrack-player-disc-core"></div>
+              </div>
+            </div>
+            <div class="sk-soundtrack-player-content">
+              <div class="sk-soundtrack-player-head">
+                <span class="sk-soundtrack-player-label">Soundtrack</span>
+                <span class="sk-soundtrack-player-time">
+                  <span id="skSoundtrackCurrent">00:00</span>
+                  <span>/</span>
+                  <span id="skSoundtrackDuration">00:00</span>
+                </span>
+              </div>
+              <div id="skSoundtrackTitle" class="sk-soundtrack-player-title">
+                <span id="skSoundtrackTitleText" class="sk-soundtrack-player-title-text"></span>
+              </div>
+              <div class="sk-soundtrack-player-track">
+                <div id="skSoundtrackProgress" class="sk-soundtrack-player-progress"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Speedometer: anchored bottom-right within the 16:9 safe area -->
+          <div id="skSpeedo" class="sk-speedo sk-speedo--hidden sk-speedo--analog">
+
+            <!-- Digital variant -->
+            <div class="sk-speedo-digital">
+              <div id="skSpeedoGear" class="sk-speedo-gear"></div>
+              <div class="sk-speedo-main">
+                <span id="skSpeedoValue" class="sk-speedo-value">0</span>
+                <span id="skSpeedoUnit" class="sk-speedo-unit">mph</span>
+              </div>
+              <div class="sk-speedo-rpm-track">
+                <div id="skSpeedoRpm" class="sk-speedo-rpm-bar"></div>
+              </div>
+              <div class="sk-speedo-odometer">
+                <span id="skSpeedoOdometerDigits" class="sk-speedo-odometer-digits">000,000</span>
+                <span id="skSpeedoOdometerUnit" class="sk-speedo-odometer-unit">KM</span>
+              </div>
+            </div>
+
+            <!-- Analog variant -->
+            <div class="sk-speedo-analog">
+              <div class="sk-speedo-analog-dial">
+                <svg class="sk-speedo-analog-svg" viewBox="0 0 200 200">
+                  <!-- RPM arc (outer ring) -->
+                  <circle id="skAnalogRpmTrack" class="sk-speedo-analog-rpm-track" cx="100" cy="100" r="93" />
+                  <circle id="skAnalogRpmArc" class="sk-speedo-analog-rpm-arc" cx="100" cy="100" r="93" />
+                  <!-- Gauge ticks + labels generated by JS -->
+                  <g id="skAnalogTicks" class="sk-speedo-analog-ticks"></g>
+                  <!-- Needle -->
+                  <line id="skAnalogNeedle" class="sk-speedo-analog-needle" x1="100" y1="100" x2="100" y2="28" />
+                  <circle class="sk-speedo-analog-hub" cx="100" cy="100" r="5" />
+                </svg>
+                <div class="sk-speedo-analog-center">
+                  <span id="skAnalogValue" class="sk-speedo-analog-value">0</span>
+                  <span id="skAnalogUnit" class="sk-speedo-analog-unit">mph</span>
+                </div>
+              </div>
+              <div class="sk-speedo-analog-footer">
+                <div id="skAnalogGear" class="sk-speedo-gear"></div>
+                <div class="sk-speedo-odometer">
+                  <span id="skAnalogOdometerDigits" class="sk-speedo-odometer-digits">000,000</span>
+                  <span id="skAnalogOdometerUnit" class="sk-speedo-odometer-unit">KM</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Multiplayer lobby HUD: anchored top-right within the 16:9 safe area -->
+      <div id="skMpLobby" class="sk-mp-lobby" aria-hidden="true">
+        <div class="sk-mp-lobby-head">
+          <span class="sk-mp-lobby-kicker">Multiplayer Lobby</span>
+          <div class="sk-mp-lobby-title" id="skMpLobbyTitle"></div>
+          <div class="sk-mp-lobby-meta">
+            <span class="sk-mp-lobby-chip" id="skMpLobbyType">Sprint</span>
+            <span class="sk-mp-lobby-chip" id="skMpLobbyClass">— Class</span>
+            <span class="sk-mp-lobby-chip" id="skMpLobbyCount">0 / 2</span>
+          </div>
+        </div>
+        <div class="sk-mp-lobby-options">
+          <div class="sk-mp-lobby-option">
+            <span class="sk-mp-lobby-option-label">Laps</span>
+            <span class="sk-mp-lobby-option-value" id="skMpLobbyLaps">1 Lap</span>
+          </div>
+          <div class="sk-mp-lobby-option">
+            <span class="sk-mp-lobby-option-label">Collision</span>
+            <span class="sk-mp-lobby-option-value" id="skMpLobbyCollision">On</span>
+          </div>
+          <div class="sk-mp-lobby-option">
+            <span class="sk-mp-lobby-option-label">Timeout</span>
+            <span class="sk-mp-lobby-option-value" id="skMpLobbyTimeout">3m</span>
+          </div>
+        </div>
+        <div class="sk-mp-lobby-players" id="skMpLobbyPlayers"></div>
+        <div class="sk-mp-lobby-footer">
+          <span class="sk-mp-lobby-footer-label" id="skMpLobbyFooterLabel">Closes in</span>
+          <span class="sk-mp-lobby-footer-value" id="skMpLobbyFooterValue">05:00</span>
+        </div>
+      </div>
+
+      <!-- Multiplayer live standings: anchored top-right during race -->
+      <div id="skMpStandings" class="sk-mp-standings" aria-hidden="true">
+        <div class="sk-mp-standings-head">
+          <span class="sk-mp-standings-kicker">Standings</span>
+          <span class="sk-mp-standings-total" id="skMpStandingsTotal"></span>
+        </div>
+        <div id="skMpStandingsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="sk-toasts"></div>
+
+  <div id="skBustCountdown" class="sk-bust-countdown" style="display:none" aria-hidden="true">
+    <div class="sk-bust-countdown-light sk-bust-countdown-light--blue"></div>
+    <div class="sk-bust-countdown-light sk-bust-countdown-light--red"></div>
+    <div class="sk-bust-countdown-content">
+      <span class="sk-bust-countdown-label">Busted in</span>
+      <span id="skBustCountdownNum" class="sk-bust-countdown-num">3</span>
+    </div>
+  </div>
+
+  <!-- Event overlays ----------------------------------------------------->
+
+  <!-- Countdown: shows 3 / 2 / 1 / GO! centered on screen -->
+  <div id="skTutorialHud" class="sk-tutorial-hud" style="display:none">
+    <div class="sk-tutorial-timer">
+      <span class="sk-tutorial-timer-label">Time Remaining</span>
+      <span class="sk-tutorial-timer-value" id="tutorialTimerValue">60</span>
+    </div>
+    <div class="sk-tutorial-checklist" id="tutorialChecklist"></div>
+    <div class="sk-tutorial-counter" id="tutorialCounter">
+      <span class="sk-tutorial-counter-num" id="tutorialCounterNum">0/9</span> complete
+    </div>
+    <div class="sk-tutorial-countdown" id="tutorialCountdown" style="display:none"></div>
+    <div class="sk-tutorial-result" id="tutorialResult" style="display:none">
+      <h1 class="sk-tutorial-result-title" id="tutorialResultTitle"></h1>
+      <p class="sk-tutorial-result-sub" id="tutorialResultSub"></p>
+      <div class="sk-tutorial-result-actions" id="tutorialResultActions"></div>
+    </div>
+  </div>
+
+  <div id="skRampageHud" class="sk-rampage-hud" style="display:none">
+    <div class="sk-rampage-time-wrap">
+      <span class="sk-rampage-time-label">TIME</span>
+      <span class="sk-rampage-time" id="skRampageTime">60</span>
+    </div>
+    <div class="sk-rampage-score-wrap">
+      <span class="sk-rampage-score-label">SCORE</span>
+      <span class="sk-rampage-score" id="skRampageScore">0</span>
+    </div>
+    <div class="sk-rampage-combo" id="skRampageCombo" style="display:none"></div>
+    <div class="sk-rampage-gained" id="skRampageGained" style="display:none"></div>
+  </div>
+
+  <div id="evCountdown" class="ev-countdown" style="display:none">
+    <span id="evCountdownNum" class="ev-countdown-num"></span>
+  </div>
+
+  <!-- Race chooser: singleplayer vs multiplayer -->
+  <div id="skRaceChooser" class="sk-race-chooser" aria-hidden="true">
+    <div class="sk-race-chooser-panel">
+      <div class="sk-race-chooser-head">
+        <span class="sk-race-chooser-kicker" id="skRaceChooserKicker">Race</span>
+        <h2 class="sk-race-chooser-title" id="skRaceChooserTitle"></h2>
+        <p class="sk-race-chooser-sub" id="skRaceChooserSub"></p>
+      </div>
+      <div class="sk-race-chooser-cards">
+        <button type="button" class="sk-race-chooser-card is-hovered" data-choice="singleplayer">
+          <span class="sk-race-chooser-card-kicker">Singleplayer</span>
+          <div class="sk-race-chooser-card-title">Race the Clock</div>
+          <p class="sk-race-chooser-card-body">Post your best time. Solo run against the leaderboards.</p>
+        </button>
+        <button type="button" class="sk-race-chooser-card" data-choice="multiplayer">
+          <span class="sk-race-chooser-card-kicker">Multiplayer</span>
+          <div class="sk-race-chooser-card-title">Race Others</div>
+          <p class="sk-race-chooser-card-body">Open a live lobby and race up to <span id="skRaceChooserMaxPlayers">20</span> drivers head-to-head.</p>
+        </button>
+      </div>
+      <button type="button" id="skRaceChooserCancel" class="sk-race-chooser-cancel">Cancel</button>
+    </div>
+  </div>
+
+  <div id="skMpSetup" class="sk-race-chooser" aria-hidden="true">
+    <div class="sk-race-chooser-panel sk-mp-setup-panel">
+      <div class="sk-race-chooser-head">
+        <span class="sk-race-chooser-kicker" id="skMpSetupKicker">Multiplayer Setup</span>
+        <h2 class="sk-race-chooser-title" id="skMpSetupTitle"></h2>
+        <p class="sk-race-chooser-sub" id="skMpSetupSub"></p>
+      </div>
+      <div class="sk-mp-setup-list">
+        <button type="button" class="sk-mp-setup-row is-hovered" data-key="laps">
+          <span class="sk-mp-setup-row-label">Laps</span>
+          <span class="sk-mp-setup-row-value" id="skMpSetupLapsValue">1 Lap</span>
+        </button>
+        <button type="button" class="sk-mp-setup-row" data-key="collision">
+          <span class="sk-mp-setup-row-label">Collision</span>
+          <span class="sk-mp-setup-row-value" id="skMpSetupCollisionValue">On</span>
+        </button>
+        <button type="button" class="sk-mp-setup-row" data-key="lobbyTimeoutSeconds">
+          <span class="sk-mp-setup-row-label">Race Start Timeout</span>
+          <span class="sk-mp-setup-row-value" id="skMpSetupTimeoutValue">3m</span>
+        </button>
+        <button type="button" class="sk-race-chooser-cancel sk-mp-setup-action" id="skMpSetupConfirm" data-key="confirm">Create Lobby</button>
+        <button type="button" class="sk-race-chooser-cancel sk-mp-setup-action" id="skMpSetupCancel" data-key="cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Results overlay: shown when the event ends -->
+  <div id="evResults" class="ev-results" style="display:none">
+    <div class="ev-results-panel">
+      <div class="ev-results-layout">
+        <div class="ev-results-main">
+          <div class="ev-results-head">
+            <div class="ev-results-head-copy">
+              <span class="ev-results-kicker" id="evResultsKicker">Event Complete</span>
+              <h2 class="ev-results-name" id="evResultsName"></h2>
+            </div>
+            <div class="ev-results-head-meta">
+              <span class="ev-results-class" id="evResultsClass" style="display:none"></span>
+              <div class="ev-results-verdict" id="evResultsVerdict" style="display:none"></div>
+            </div>
+          </div>
+          <div class="ev-results-time-card">
+            <span class="ev-results-time-label" id="evResultsTimeLabel">Final Time</span>
+            <div class="ev-results-time" id="evResultsTime"></div>
+            <div class="ev-results-goal" id="evResultsGoal" style="display:none"></div>
+            <div class="sk-stunt-breakdown" id="skStuntBreakdown" style="display:none"></div>
+          </div>
+          <div class="ev-results-rewards" id="evResultsRewards" style="display:none">
+            <div class="ev-results-section-head">
+              <span class="ev-results-section-kicker">Rewards</span>
+            </div>
+            <div class="ev-results-reward-grid">
+              <div class="ev-results-reward-row" id="evResultsCashRow" style="display:none">
+                <span class="ev-results-reward-label">Cash</span>
+                <span class="ev-results-reward-value" id="evResultsCash">+$0</span>
+              </div>
+              <div class="ev-results-reward-row" id="evResultsCosmeticCurrencyRow" style="display:none">
+                <span class="ev-results-reward-label">GearCoins</span>
+                <span class="ev-results-reward-value" id="evResultsCosmeticCurrency">+0</span>
+              </div>
+              <div class="ev-results-reward-row" id="evResultsPlayerXpRow" style="display:none">
+                <span class="ev-results-reward-label">Player XP</span>
+                <span class="ev-results-reward-value" id="evResultsPlayerXp">+0 XP</span>
+              </div>
+              <div class="ev-results-reward-row" id="evResultsVehicleXpRow" style="display:none">
+                <span class="ev-results-reward-label">Vehicle XP</span>
+                <span class="ev-results-reward-value" id="evResultsVehicleXp">+0 XP</span>
+              </div>
+            </div>
+          </div>
+          <div class="ev-results-progression" id="evResultsProgression" style="display:none">
+            <div class="ev-results-section-head">
+              <span class="ev-results-section-kicker">Level Ups</span>
+            </div>
+            <div class="ev-results-progression-list">
+              <div class="ev-results-progression-row" id="evResultsPlayerLevelRow" style="display:none">
+                <span class="ev-results-reward-label">Player Level</span>
+                <span class="ev-results-reward-value" id="evResultsPlayerLevel">Lv. 1 -> Lv. 2</span>
+              </div>
+              <div class="ev-results-progression-row" id="evResultsVehicleLevelRow" style="display:none">
+                <span class="ev-results-reward-label">Vehicle Level</span>
+                <span class="ev-results-reward-value" id="evResultsVehicleLevel">Lv. 1 -> Lv. 2</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="evLeaderboard" class="ev-leaderboard" style="display:none">
+          <div class="ev-results-section-head">
+            <span class="ev-results-section-kicker">Leaderboard</span>
+            <span class="ev-leaderboard-title" id="evLeaderboardTitle">All-Time Board</span>
+          </div>
+          <div class="ev-leaderboard-pb" id="evLeaderboardPb" style="display:none"></div>
+          <div class="ev-leaderboard-list-wrap">
+            <div class="ev-leaderboard-list" id="evLeaderboardList"></div>
+          </div>
+        </div>
+      </div>
+      <p class="ev-results-hint">Press <kbd id="evResultsContinueKey">E</kbd> to continue</p>
+    </div>
+  </div>
+
+  <div id="skStuntdevPanel" class="sk-stuntdev-panel" style="display:none">
+    <div class="sk-stuntdev-header">
+      <span class="sk-stuntdev-title" id="skStuntdevTitle">STUNT JUMP CREATOR</span>
+      <span class="sk-stuntdev-subtitle" id="skStuntdevSubtitle"></span>
+    </div>
+    <div class="sk-stuntdev-divider"></div>
+    <div class="sk-stuntdev-mode-section">
+      <span class="sk-stuntdev-mode-name" id="skStuntdevModeName"></span>
+      <span class="sk-stuntdev-mode-detail" id="skStuntdevModeDetail"></span>
+    </div>
+    <div class="sk-stuntdev-divider"></div>
+    <div class="sk-stuntdev-props-card" id="skStuntdevPropsCard"></div>
+    <div class="sk-stuntdev-divider"></div>
+    <div class="sk-stuntdev-checklist" id="skStuntdevChecklist"></div>
+    <div class="sk-stuntdev-spacer"></div>
+    <div class="sk-stuntdev-divider"></div>
+    <div class="sk-stuntdev-controls" id="skStuntdevControls"></div>
+  </div>
+  <div id="skStuntdevCrosshair" class="sk-stuntdev-crosshair" style="display:none"></div>
+
+  <div id="skDevConfirm" class="sk-devtool-overlay" style="display:none">
+    <div class="sk-devtool-panel">
+      <p class="sk-devtool-eyebrow" id="skDevConfirmEyebrow"></p>
+      <h2 class="sk-devtool-title" id="skDevConfirmTitle"></h2>
+      <p class="sk-devtool-body" id="skDevConfirmBody"></p>
+      <div class="sk-devtool-actions">
+        <button id="skDevConfirmNo" class="sk-devtool-btn sk-devtool-btn--cancel">No, skip</button>
+        <button id="skDevConfirmYes" class="sk-devtool-btn sk-devtool-btn--confirm">Yes, place</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="skDevInput" class="sk-devtool-overlay" style="display:none">
+    <div class="sk-devtool-panel">
+      <p class="sk-devtool-eyebrow" id="skDevInputEyebrow"></p>
+      <h2 class="sk-devtool-title" id="skDevInputTitle"></h2>
+      <input id="skDevInputField" class="sk-devtool-input-field" type="text" maxlength="48"
+             autocomplete="off" spellcheck="false" placeholder="Enter a name..." />
+      <p id="skDevInputError" class="sk-devtool-input-error"></p>
+      <div class="sk-devtool-actions">
+        <button id="skDevInputCancel" class="sk-devtool-btn sk-devtool-btn--cancel">Cancel</button>
+        <button id="skDevInputConfirm" class="sk-devtool-btn sk-devtool-btn--confirm">Save Jump</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="skSpeedcam" class="sk-speedcam" style="display:none">
+    <div class="sk-speedcam-flash-white"></div>
+    <div class="sk-speedcam-scanlines"></div>
+    <div class="sk-speedcam-vignette"></div>
+    <div class="sk-speedcam-corner sk-speedcam-corner--tl"></div>
+    <div class="sk-speedcam-corner sk-speedcam-corner--tr"></div>
+    <div class="sk-speedcam-corner sk-speedcam-corner--bl"></div>
+    <div class="sk-speedcam-corner sk-speedcam-corner--br"></div>
+    <div class="sk-speedcam-hud">
+      <div class="sk-speedcam-hud-tl">
+        <span class="sk-speedcam-cam-id" id="skSpeedcamCamId">CAM-01</span>
+        <span class="sk-speedcam-cam-loc" id="skSpeedcamName"></span>
+      </div>
+      <div class="sk-speedcam-hud-tr">
+        <span class="sk-speedcam-rec-dot"></span>
+        <span class="sk-speedcam-rec-label">REC</span>
+      </div>
+      <div class="sk-speedcam-readout">
+        <div class="sk-speedcam-violation-bar"></div>
+        <span class="sk-speedcam-speed" id="skSpeedcamSpeed">0</span>
+        <span class="sk-speedcam-unit">MPH DETECTED</span>
+      </div>
+      <div class="sk-speedcam-hud-bl">
+        <span class="sk-speedcam-timestamp" id="skSpeedcamTimestamp"></span>
+      </div>
+    </div>
+  </div>
+
+  <div id="msgNotif" class="sk-msg-notif">
+    <div class="sk-msg-notif-header">
+      <span class="sk-msg-notif-label">New Message</span>
+      <span class="sk-msg-notif-hint">TAB to open</span>
+    </div>
+    <div class="sk-msg-notif-body">
+      <div class="sk-msg-notif-avatar">
+        <img id="msgNotifImg" src="" alt="" onerror="this.style.display='none'">
+        <span id="msgNotifInitial"></span>
+      </div>
+      <div class="sk-msg-notif-content">
+        <span class="sk-msg-notif-sender" id="msgNotifSender"></span>
+        <p class="sk-msg-notif-preview" id="msgNotifPreview"></p>
+      </div>
+    </div>
+    <div class="sk-msg-notif-progress" id="msgNotifProgress"></div>
+  </div>
+
+  <div id="skMissionsHud" class="sk-missions" style="display:none">
+    <div class="sk-missions-banner" id="skMissionsBanner" style="display:none">
+      <div class="sk-missions-banner-inner">
+        <span class="sk-missions-banner-kicker" id="skMissionsBannerKicker">New Mission</span>
+        <span class="sk-missions-banner-title" id="skMissionsBannerTitle"></span>
+        <span class="sk-missions-banner-sub" id="skMissionsBannerSub"></span>
+      </div>
+    </div>
+    <div class="sk-missions-tracker" id="skMissionsTracker" style="display:none">
+      <div class="sk-missions-tracker-head">
+        <span class="sk-missions-tracker-giver" id="skMissionsTrackerGiver"></span>
+        <span class="sk-missions-tracker-title" id="skMissionsTrackerTitle"></span>
+      </div>
+      <div class="sk-missions-tracker-objective">
+        <span class="sk-missions-tracker-step" id="skMissionsTrackerStep"></span>
+        <span class="sk-missions-tracker-text" id="skMissionsTrackerText"></span>
+      </div>
+      <div class="sk-missions-tracker-timer" id="skMissionsTrackerTimer" style="display:none"></div>
+    </div>
+    <div class="sk-missions-subtitle" id="skMissionsSubtitle" style="display:none">
+      <span class="sk-missions-subtitle-speaker" id="skMissionsSubtitleSpeaker"></span>
+      <span class="sk-missions-subtitle-body" id="skMissionsSubtitleBody"></span>
+    </div>
+    <div class="sk-missions-tail" id="skMissionsTail" style="display:none">
+      <div class="sk-missions-tail-label" id="skMissionsTailLabel">Following Target</div>
+      <div class="sk-missions-tail-bar">
+        <div class="sk-missions-tail-zone sk-missions-tail-zone--danger-close"></div>
+        <div class="sk-missions-tail-zone sk-missions-tail-zone--warn-close"></div>
+        <div class="sk-missions-tail-zone sk-missions-tail-zone--safe"></div>
+        <div class="sk-missions-tail-zone sk-missions-tail-zone--warn-far"></div>
+        <div class="sk-missions-tail-zone sk-missions-tail-zone--danger-far"></div>
+        <div class="sk-missions-tail-marker" id="skMissionsTailMarker"></div>
+      </div>
+      <div class="sk-missions-tail-meta">
+        <span class="sk-missions-tail-dist" id="skMissionsTailDist"></span>
+        <span class="sk-missions-tail-status" id="skMissionsTailStatus">Tailing</span>
+      </div>
+      <div class="sk-missions-tail-alert" id="skMissionsTailAlert"></div>
+    </div>
+    <div class="sk-missions-complete" id="skMissionsComplete" style="display:none">
+      <div class="sk-missions-complete-inner">
+        <span class="sk-missions-complete-kicker" id="skMissionsCompleteKicker">Mission Complete</span>
+        <span class="sk-missions-complete-title" id="skMissionsCompleteTitle"></span>
+        <div class="sk-missions-complete-rewards" id="skMissionsCompleteRewards"></div>
+        <span class="sk-missions-complete-hint" id="skMissionsCompleteHint">You'll hear from them soon.</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="skControllerKeyboard" class="sk-ck" style="display:none">
+    <div class="sk-ck-panel">
+      <p class="sk-ck-title" id="skCkTitle">Enter Text</p>
+      <div class="sk-ck-input-row">
+        <span class="sk-ck-input" id="skCkInput"></span>
+        <span class="sk-ck-cursor">|</span>
+      </div>
+      <div class="sk-ck-keys" id="skCkKeys"></div>
+      <p class="sk-ck-shift-indicator" id="skCkShiftIndicator">SHIFT</p>
+      <div class="sk-ck-actions">
+        <span class="sk-ck-hint" id="skCkHintConfirm"></span>
+        <span class="sk-ck-hint" id="skCkHintBack"></span>
+        <span class="sk-ck-hint" id="skCkHintDelete"></span>
+        <span class="sk-ck-hint" id="skCkHintShift"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pause Menu Overlay -->
+  <div id="sk-pausemenu-overlay">
+    <div id="sk-pausemenu-panel">
+      <div id="sk-pausemenu-logo">
+        <span class="pm-logo-street">STREET</span>
+        <span class="pm-logo-kings">KINGS</span>
+        <span class="pm-beta-badge">BETA</span>
+      </div>
+      <nav id="sk-pausemenu-nav">
+        <button class="pm-menu-item" id="pm-btn-continue">CONTINUE</button>
+        <button class="pm-menu-item" id="pm-btn-map">MAP</button>
+        <button class="pm-menu-item" id="pm-btn-settings">SETTINGS</button>
+        <button class="pm-menu-item" id="pm-btn-exit">EXIT GAME</button>
+      </nav>
+      <div id="sk-pausemenu-mid">
+        <div id="pm-stats-grid">
+          <div class="pm-stat-card">
+            <span class="pm-stat-label">LEVEL</span>
+            <span class="pm-stat-value pm-accent" id="pm-stat-level">—</span>
+          </div>
+          <div class="pm-stat-card">
+            <span class="pm-stat-label">CASH</span>
+            <span class="pm-stat-value" id="pm-stat-cash">—</span>
+          </div>
+          <div class="pm-stat-card">
+            <span class="pm-stat-label">MILES DRIVEN</span>
+            <span class="pm-stat-value" id="pm-stat-miles">—</span>
+          </div>
+          <div class="pm-stat-card">
+            <span class="pm-stat-label">RACES WON</span>
+            <span class="pm-stat-value pm-accent" id="pm-stat-races">—</span>
+          </div>
+        </div>
+        <button id="pm-btn-store"><span>VISIT STORE</span><span id="pm-store-arrow">→</span></button>
+        <div id="pm-patchnotes">
+          <div id="pm-patchnotes-header">
+            <span id="pm-patchnotes-title">PATCH NOTES</span>
+            <span id="pm-patchnotes-version">LATEST</span>
+          </div>
+          <ul id="pm-patchnotes-list">
+            <li>New waypoint system with distance tracking</li>
+            <li>Cinematic pause menu added</li>
+            <li>Performance improvements across all modules</li>
+          </ul>
+        </div>
+      </div>
+      <div id="sk-pausemenu-bottom">
+        <div id="pm-location-block">
+          <span id="pm-game-time">00:00</span>
+          <span id="pm-street-name">—</span>
+          <span id="pm-zone-name">—</span>
+        </div>
+        <div id="pm-player-name-row">
+          <span class="pm-info-label">PLAYER</span>
+          <span class="pm-info-value" id="pm-info-name">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->  
+
+  <script src="vendor/jquery.min.js"></script>
+  <script src="js/modules/nui-core.js"></script>
+  <script src="js/modules/controllerfriendly.js"></script>
+  <script src="js/modules/controller-keyboard.js"></script>
+  <script src="js/modules/mainmenu.js"></script>
+  <script src="js/modules/avatar.js"></script>
+  <script src="js/modules/initiation.js"></script>
+  <script src="js/modules/freeroam.js"></script>
+  <script src="js/modules/phone.js"></script>
+  <script src="js/modules/stats.js"></script>
+  <script src="js/modules/realestate.js"></script>
+  <script src="js/modules/towing.js"></script>
+  <script src="js/modules/messages.js"></script>
+  <script src="js/modules/notify.js"></script>
+  <script src="js/modules/settings.js"></script>
+  <script src="js/modules/leaderboard.js"></script>
+  <script src="js/modules/map.js"></script>
+  <script src="js/modules/modshop.js"></script>
+  <script src="js/modules/performance_shop.js"></script>
+  <script src="js/modules/garage.js"></script>
+  <script src="js/modules/vehicles.js"></script>
+  <script src="js/modules/dealership.js"></script>
+  <script src="js/modules/events.js"></script>
+  <script src="js/modules/multiplayer.js"></script>
+  <script src="js/modules/speedometer.js"></script>
+  <script src="js/modules/soundtrack.js"></script>
+  <script src="js/modules/tutorial.js"></script>
+  <script src="js/modules/stunts.js"></script>
+  <script src="js/modules/missions.js"></script>
+  <script src="js/modules/pausemenu.js"></script>
+</body>
+</html>

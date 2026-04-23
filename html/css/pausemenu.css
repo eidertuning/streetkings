@@ -1,0 +1,373 @@
+#sk-pausemenu-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(0, 0, 0, 0.70);
+    align-items: stretch;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+#sk-pausemenu-overlay.is-visible {
+    display: flex;
+    pointer-events: all;
+}
+
+#sk-pausemenu-overlay.is-faded-in {
+    opacity: 1;
+}
+
+#sk-pausemenu-panel {
+    width: 420px;
+    min-height: 100%;
+    background: rgba(0, 0, 0, 0.82);
+    border-right: 1px solid rgba(255, 208, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    padding: 48px 52px 36px 52px;
+}
+
+#sk-pausemenu-logo {
+    font-family: 'Permanent Marker', cursive;
+    line-height: 1;
+    margin-bottom: 36px;
+    user-select: none;
+}
+
+#sk-pausemenu-logo .pm-logo-street {
+    display: block;
+    font-size: 4.8rem;
+    color: #ffffff;
+    letter-spacing: 0.02em;
+}
+
+#sk-pausemenu-logo .pm-logo-kings {
+    display: block;
+    font-size: 4.8rem;
+    color: #FFD000;
+    letter-spacing: 0.02em;
+    margin-top: -12px;
+}
+
+#sk-pausemenu-logo .pm-beta-badge {
+    display: inline-block;
+    margin-top: 16px;
+    background: #FFD000;
+    color: #111;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.18em;
+    padding: 6px 14px;
+}
+
+#sk-pausemenu-nav {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 32px;
+}
+
+.pm-menu-item {
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 1.3rem;
+    letter-spacing: 0.14em;
+    text-align: left;
+    padding: 24px 0;
+    cursor: pointer;
+    transition: color 0.15s ease, padding-left 0.15s ease, background 0.15s ease;
+    position: relative;
+}
+
+.pm-menu-item:first-child {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pm-menu-item::before {
+    content: '';
+    position: absolute;
+    left: -52px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #FFD000;
+    transform: scaleY(0);
+    transition: transform 0.15s ease;
+    transform-origin: center;
+}
+
+.pm-menu-item:hover {
+    color: #FFD000;
+    padding-left: 12px;
+    background: rgba(255, 208, 0, 0.06);
+}
+
+.pm-menu-item:hover::before {
+    transform: scaleY(1);
+}
+
+.pm-menu-item:active {
+    color: #c9a600;
+}
+
+#pm-btn-exit:hover {
+    color: #ff5c5c;
+}
+
+#pm-btn-exit:hover::before {
+    background: #ff5c5c;
+}
+
+#sk-pausemenu-mid {
+    display: flex;
+    flex-direction: column;
+    margin: 18px 0;
+}
+
+#pm-patchnotes {
+    display: flex;
+    flex-direction: column;
+    margin-top: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 12px 14px;
+    max-height: 120px;
+    overflow: hidden;
+}
+
+#pm-patchnotes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#pm-patchnotes-title {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    color: #ffffff;
+}
+
+#pm-patchnotes-version {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 400;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    color: #FFD000;
+}
+
+#pm-patchnotes-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0;
+    margin: 0;
+}
+
+#pm-patchnotes-list li {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 400;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.7);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.5;
+}
+
+#pm-patchnotes-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 4px;
+    height: 4px;
+    background: #FFD000;
+}
+
+#pm-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pm-stat-card {
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 14px;
+}
+
+.pm-stat-label {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 400;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.55);
+    text-transform: uppercase;
+}
+
+.pm-stat-value {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+}
+
+.pm-stat-value.pm-accent {
+    color: #FFD000;
+}
+
+#pm-btn-store {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    padding: 10px 16px;
+    background: #FFD000;
+    color: #111;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    letter-spacing: 0.2em;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+#pm-btn-store:hover {
+    background: #ffffff;
+}
+
+#pm-store-arrow {
+    font-size: 1rem;
+    transition: transform 0.15s ease;
+}
+
+#pm-btn-store:hover #pm-store-arrow {
+    transform: translateX(4px);
+}
+
+#sk-pausemenu-bottom {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+#pm-location-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 24px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#pm-game-time {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: 0.08em;
+    color: #ffffff;
+    line-height: 1;
+}
+
+#pm-street-name {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    color: #FFD000;
+    text-transform: uppercase;
+    margin-top: 8px;
+}
+
+#pm-zone-name {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 400;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    color: rgba(255, 255, 255, 0.35);
+    text-transform: uppercase;
+}
+
+#pm-player-name-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pm-info-label {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 400;
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+}
+
+.pm-info-value {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    color: #d0d0d0;
+    text-transform: uppercase;
+}
+
+#sk-pausemenu-overlay.is-pausemenu-controller-nav .pm-menu-item.is-controller-focused {
+    color: #FFD000;
+    padding-left: 12px;
+    background: rgba(255, 208, 0, 0.06);
+}
+
+#sk-pausemenu-overlay.is-pausemenu-controller-nav .pm-menu-item.is-controller-focused::before {
+    transform: scaleY(1);
+}
+
+#sk-pausemenu-overlay.is-pausemenu-controller-nav .pm-menu-item#pm-btn-exit.is-controller-focused {
+    color: #ff5c5c;
+}
+
+#sk-pausemenu-overlay.is-pausemenu-controller-nav .pm-menu-item#pm-btn-exit.is-controller-focused::before {
+    background: #ff5c5c;
+}
+
+#sk-pausemenu-overlay.is-pausemenu-controller-nav.is-glyph-xbox .pm-menu-item.is-controller-focused::after,
+#sk-pausemenu-overlay.is-pausemenu-controller-nav.is-glyph-ps5 .pm-menu-item.is-controller-focused::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 1.9rem;
+    height: 1.9rem;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
+    transform: translateY(-50%);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+#sk-pausemenu-overlay.is-pausemenu-controller-nav.is-glyph-xbox .pm-menu-item.is-controller-focused::after {
+    background-image: url("../assets/XboxSeriesX_A.png");
+}
+
+#sk-pausemenu-overlay.is-pausemenu-controller-nav.is-glyph-ps5 .pm-menu-item.is-controller-focused::after {
+    background-image: url("../assets/PS5_Cross.png");
+}

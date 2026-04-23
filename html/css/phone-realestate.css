@@ -1,0 +1,395 @@
+.phone-realestate {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  gap: 0;
+  padding: 0;
+}
+
+.phone-realestate-sidebar {
+  width: 30%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  padding: clamp(0.45rem, 0.65vw, 0.65rem) 0;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.phone-realestate-sidebar-label {
+  padding: 0 clamp(0.7rem, 1vw, 1rem);
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.48rem, 0.65vw, 0.6rem);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--sk-color-spray);
+}
+
+.phone-realestate-sidebar-balance {
+  padding: clamp(0.28rem, 0.45vw, 0.45rem) clamp(0.7rem, 1vw, 1rem) clamp(0.6rem, 0.85vw, 0.85rem);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.58rem, 0.78vw, 0.7rem);
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.phone-realestate-sidebar-balance span {
+  color: var(--sk-color-spray);
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.75rem, 0.95vw, 0.88rem);
+  letter-spacing: 0.08em;
+}
+
+.phone-realestate-list {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.phone-realestate-card {
+  all: unset;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid transparent;
+  border-right: 0;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.03);
+  display: block;
+  padding: 0.65rem 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.phone-realestate-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.phone-realestate-card.is-active {
+  background: rgba(255, 209, 71, 0.08);
+  border-color: rgba(255, 209, 71, 0.28);
+  border-left-color: var(--sk-color-spray);
+}
+
+.phone-realestate-card-head,
+.phone-realestate-card-meta,
+.phone-realestate-detail-meta,
+.phone-realestate-detail-actions,
+.phone-realestate-section-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.phone-realestate-card-head {
+  justify-content: space-between;
+}
+
+.phone-realestate-card-title,
+.phone-realestate-detail-title {
+  font-family: var(--sk-font-ui);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.phone-realestate-card-title {
+  font-size: clamp(0.64rem, 0.9vw, 0.8rem);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.phone-realestate-card-building,
+.phone-realestate-detail-building,
+.phone-realestate-detail-copy,
+.phone-realestate-empty {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.phone-realestate-card-building {
+  margin-top: 0.24rem;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.54rem, 0.72vw, 0.62rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.phone-realestate-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: auto;
+  padding: 0.18rem 0.42rem;
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.48rem, 0.62vw, 0.58rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.phone-realestate-pill.is-owned {
+  border-color: rgba(74, 222, 128, 0.3);
+  background: rgba(74, 222, 128, 0.14);
+  color: #9df2b1;
+}
+
+.phone-realestate-pill.is-available {
+  border-color: rgba(255, 209, 71, 0.34);
+  background: rgba(255, 209, 71, 0.14);
+  color: #ffd147;
+}
+
+.phone-realestate-card-category,
+.phone-realestate-eyebrow,
+.phone-realestate-detail-price-label,
+.phone-realestate-section-stat,
+.phone-realestate-detail-stat-label {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.48rem, 0.62vw, 0.58rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.phone-realestate-card-category,
+.phone-realestate-eyebrow,
+.phone-realestate-detail-price-label,
+.phone-realestate-section-stat,
+.phone-realestate-detail-stat-label {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.phone-realestate-card-price {
+  margin-top: 0.45rem;
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.72rem, 0.95vw, 0.86rem);
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.phone-realestate-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  gap: 0.7rem;
+  padding: 0.75rem;
+  position: relative;
+}
+
+.phone-realestate-panel-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.phone-realestate-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.phone-realestate-hero,
+.phone-realestate-section,
+.phone-realestate-detail-stat {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.phone-realestate-hero,
+.phone-realestate-section {
+  padding: 0.8rem;
+}
+
+.phone-realestate-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.9rem;
+}
+
+.phone-realestate-hero-copy,
+.phone-realestate-hero-price {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.phone-realestate-hero-price {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.phone-realestate-detail-title {
+  font-size: clamp(1rem, 1.35vw, 1.15rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.phone-realestate-detail-copy {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.68rem, 0.9vw, 0.8rem);
+  line-height: 1.6;
+}
+
+.phone-realestate-detail-price {
+  font-family: var(--sk-font-body);
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  letter-spacing: 0.05em;
+  color: var(--sk-color-spray);
+}
+
+.phone-realestate-detail-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.phone-realestate-detail-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.65rem 0.75rem;
+}
+
+.phone-realestate-section-head {
+  justify-content: space-between;
+  margin-bottom: 0.55rem;
+}
+
+.phone-realestate-section-title,
+.phone-realestate-detail-stat-value {
+  font-family: var(--sk-font-ui);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.phone-realestate-section-title {
+  font-size: clamp(0.72rem, 0.95vw, 0.86rem);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.phone-realestate-detail-stat-value {
+  font-size: clamp(0.68rem, 0.9vw, 0.8rem);
+  font-weight: 600;
+}
+
+.phone-realestate-action {
+  min-width: clamp(150px, 11vw, 220px);
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.68rem, 0.9vw, 0.8rem);
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.04);
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.phone-realestate-action:hover {
+  background: rgba(255, 209, 71, 0.1);
+  border-color: rgba(255, 209, 71, 0.28);
+  transform: translateY(-1px);
+}
+
+.phone-realestate-action:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.phone-realestate-action--secondary {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.phone-realestate-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.6rem, 0.82vw, 0.74rem);
+  letter-spacing: 0.04em;
+}
+
+.phone-realestate-confirm-modal {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(4, 7, 12, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2;
+}
+
+.phone-realestate-confirm-box {
+  width: min(100%, 360px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 14, 21, 0.96);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.phone-realestate-confirm-title {
+  margin: 0;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.88rem, 1.1vw, 1rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.94);
+}
+
+.phone-realestate-confirm-body {
+  margin: 0;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.68rem, 0.9vw, 0.8rem);
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.phone-realestate-confirm-actions {
+  display: flex;
+  gap: 0.55rem;
+  justify-content: flex-end;
+}
+
+.phone-realestate-confirm-btn {
+  min-width: 130px;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(255, 209, 71, 0.22);
+  background: rgba(255, 209, 71, 0.12);
+  color: rgba(255, 255, 255, 0.94);
+  cursor: pointer;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.66rem, 0.86vw, 0.78rem);
+  letter-spacing: 0.08em;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.phone-realestate-confirm-btn:hover {
+  background: rgba(255, 209, 71, 0.18);
+  border-color: rgba(255, 209, 71, 0.34);
+}
+
+.phone-realestate-confirm-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.phone-realestate-confirm-btn--secondary {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+}

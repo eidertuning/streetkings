@@ -1,0 +1,594 @@
+/* -------------------------------------------------------------------------- */
+/* Garage                                                                      */
+/* -------------------------------------------------------------------------- */
+
+.sk-garage {
+  position: fixed;
+  inset: 0;
+  z-index: 800;
+  pointer-events: none;
+}
+
+.sk-garage-viewport {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+  pointer-events: all;
+}
+
+.sk-garage-viewport:active {
+  cursor: grabbing;
+}
+
+/* -- Top overlay ----------------------------------------------------------- */
+
+.sk-garage-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: clamp(1.8rem, 3.5vh, 3rem) clamp(2rem, 4vw, 4rem);
+  background: linear-gradient(180deg, rgba(0,0,0,0.72) 0%, transparent 100%);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  pointer-events: none;
+}
+
+.sk-garage-top-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.sk-garage-heading {
+  font-family: var(--sk-font-display);
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  color: var(--sk-color-spray);
+  text-shadow: 0 2px 16px rgba(255, 209, 71, 0.35);
+  margin: 0;
+  line-height: 1;
+}
+
+.sk-garage-hint {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.65rem, 0.85vw, 0.82rem);
+  font-weight: 500;
+  color: rgba(255,255,255,0.38);
+  letter-spacing: 0.06em;
+  margin: 0.5rem 0 0;
+}
+
+.sk-garage-top-status {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.sk-garage-wallet {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 0.9rem 1rem;
+  background: rgba(8, 6, 12, 0.84);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.sk-garage-wallet-label {
+  font-family: var(--sk-font-ui);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+
+.sk-garage-wallet-amount {
+  font-family: var(--sk-font-display);
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  line-height: 1.2;
+  color: #22c55e;
+}
+
+.sk-garage-player-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.9rem 1rem;
+  background: rgba(8, 6, 12, 0.84);
+  border: 1px solid rgba(158, 229, 255, 0.14);
+  min-width: clamp(280px, 20vw, 360px);
+}
+
+.sk-garage-player-head,
+.sk-garage-player-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sk-garage-player-label {
+  font-family: var(--sk-font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.38);
+}
+
+.sk-garage-player-level {
+  font-family: var(--sk-font-display);
+  font-size: clamp(1.05rem, 1.6vw, 1.4rem);
+  color: var(--sk-color-ice);
+}
+
+.sk-garage-player-track {
+  width: 100%;
+  height: 0.5rem;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+
+.sk-garage-player-fill {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--sk-color-ice) 0%, var(--sk-color-spray) 100%);
+  transition: width 0.2s ease;
+}
+
+.sk-garage-player-meta {
+  font-family: var(--sk-font-ui);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.58);
+}
+
+/* -- Side panel (right, floating card) ------------------------------------- */
+
+.sk-garage-side {
+  position: absolute;
+  right: clamp(1.5rem, 3vw, 3rem);
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(280px, 21vw, 360px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: all;
+  animation: garageSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes garageSlideIn {
+  from { opacity: 0; transform: translateY(-50%) translateX(24px); }
+  to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+
+.sk-garage-card {
+  background: rgba(8, 6, 12, 0.82);
+  border: 1px solid rgba(255, 209, 71, 0.18);
+  padding: 1.25rem 1.3rem;
+}
+
+.sk-garage-card-label {
+  display: block;
+  font-family: var(--sk-font-ui);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 0.35rem;
+}
+
+.sk-garage-car-display-name {
+  font-family: var(--sk-font-display);
+  font-size: clamp(1.3rem, 2vw, 1.8rem);
+  color: var(--sk-text-primary);
+  margin: 0;
+  line-height: 1.1;
+}
+
+.sk-garage-active-badge {
+  display: inline-block;
+  margin-top: 0.6rem;
+  padding: 0.2rem 0.6rem;
+  font-family: var(--sk-font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.85);
+  background: var(--sk-color-spray);
+  border-radius: 2px;
+}
+
+.sk-garage-level-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.sk-garage-level-head,
+.sk-garage-level-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sk-garage-level-label {
+  font-family: var(--sk-font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+
+.sk-garage-level-value {
+  font-family: var(--sk-font-display);
+  font-size: clamp(1rem, 1.45vw, 1.25rem);
+  color: var(--sk-color-spray);
+}
+
+.sk-garage-level-track {
+  width: 100%;
+  height: 0.5rem;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+
+.sk-garage-level-fill {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--sk-color-ice) 0%, var(--sk-color-spray) 100%);
+  transition: width 0.2s ease;
+}
+
+.sk-garage-level-meta {
+  font-family: var(--sk-font-ui);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.58);
+}
+
+.sk-garage-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sk-garage-btn {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.68rem, 0.8vw, 0.78rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+}
+
+.sk-garage-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.sk-garage-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.sk-garage-btn--primary {
+  background: rgba(255, 209, 71, 0.14);
+  border-color: rgba(255, 209, 71, 0.4);
+  color: var(--sk-color-spray);
+}
+
+.sk-garage-btn--primary:hover:not(:disabled) {
+  background: rgba(255, 209, 71, 0.26);
+  border-color: rgba(255, 209, 71, 0.6);
+}
+
+.sk-garage.is-controller-nav .sk-garage-btn.is-controller-focused {
+  outline: none;
+  box-shadow:
+    0 0 0 2px rgba(255, 209, 71, 0.78),
+    0 0 18px rgba(255, 209, 71, 0.18);
+}
+
+.sk-garage-btn--exit {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.5);
+}
+
+.sk-garage-btn--exit:hover:not(:disabled) {
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.8);
+  border-color: rgba(255,255,255,0.22);
+}
+
+.sk-garage-settings-modal {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.68);
+  pointer-events: all;
+  z-index: 3;
+}
+
+.sk-garage-settings-box {
+  width: min(640px, calc(100vw - 3rem));
+  padding: 1.35rem;
+  background: rgba(8, 6, 12, 0.96);
+  border: 1px solid rgba(255, 209, 71, 0.24);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.34);
+}
+
+.sk-garage-settings-title {
+  margin: 0 0 0.45rem;
+  font-family: var(--sk-font-display);
+  font-size: clamp(1.3rem, 1.9vw, 1.7rem);
+  color: var(--sk-color-spray);
+}
+
+.sk-garage-settings-body {
+  margin: 0 0 1rem;
+  font-family: var(--sk-font-ui);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.7);
+}
+
+.sk-garage-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.sk-garage-settings-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.sk-garage-settings-btn {
+  min-width: 0;
+  padding: 0.75rem 0.9rem;
+  font-family: var(--sk-font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.72);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.sk-garage-settings-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.24);
+  color: rgba(255,255,255,0.92);
+}
+
+.sk-garage-settings-btn.is-active {
+  background: rgba(255, 209, 71, 0.16);
+  border-color: rgba(255, 209, 71, 0.45);
+  color: var(--sk-color-spray);
+}
+
+.sk-garage-settings-btn--close {
+  min-width: 132px;
+}
+
+.sk-garage.is-controller-nav .sk-garage-settings-btn.is-controller-focused {
+  outline: none;
+  box-shadow:
+    0 0 0 2px rgba(255, 209, 71, 0.78),
+    0 0 18px rgba(255, 209, 71, 0.18);
+}
+
+.sk-garage-confirm-modal {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  pointer-events: all;
+  z-index: 3;
+}
+
+.sk-garage-confirm-box {
+  width: min(420px, calc(100vw - 3rem));
+  padding: 1.3rem;
+  background: rgba(8, 6, 12, 0.96);
+  border: 1px solid rgba(255, 209, 71, 0.24);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.34);
+}
+
+.sk-garage-confirm-title {
+  margin: 0 0 0.5rem;
+  font-family: var(--sk-font-display);
+  font-size: clamp(1.25rem, 1.8vw, 1.6rem);
+  color: var(--sk-color-spray);
+}
+
+.sk-garage-confirm-body {
+  margin: 0;
+  font-family: var(--sk-font-ui);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.72);
+}
+
+.sk-garage-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.sk-garage-confirm-btn {
+  min-width: 132px;
+  padding: 0.7rem 1rem;
+  font-family: var(--sk-font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid rgba(255, 209, 71, 0.45);
+  background: rgba(255, 209, 71, 0.14);
+  color: var(--sk-color-spray);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.sk-garage-confirm-btn:hover:not(:disabled) {
+  background: rgba(255, 209, 71, 0.26);
+  border-color: rgba(255, 209, 71, 0.62);
+}
+
+.sk-garage-confirm-btn--secondary {
+  border-color: rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.7);
+}
+
+.sk-garage-confirm-btn--secondary:hover:not(:disabled) {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.24);
+  color: rgba(255,255,255,0.9);
+}
+
+.sk-garage.is-controller-nav .sk-garage-confirm-btn.is-controller-focused {
+  outline: none;
+  box-shadow:
+    0 0 0 2px rgba(255, 209, 71, 0.78),
+    0 0 18px rgba(255, 209, 71, 0.18);
+}
+
+/* -- Bottom car strip ------------------------------------------------------ */
+
+.sk-garage-strip {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0 clamp(2rem, 4vw, 4rem) clamp(1.2rem, 2.5vh, 2rem);
+  background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.sk-garage-strip-inner {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.6rem 0;
+  scrollbar-width: none;
+  pointer-events: all;
+}
+
+.sk-garage-strip-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.sk-garage-thumb {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.18rem;
+  padding: 0.6rem 1.1rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
+  min-width: clamp(90px, 8vw, 120px);
+}
+
+.sk-garage-thumb:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-2px);
+}
+
+.sk-garage.is-controller-nav .sk-garage-thumb.is-controller-focused {
+  outline: none;
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255, 209, 71, 0.58);
+  box-shadow:
+    0 0 0 2px rgba(255, 209, 71, 0.28),
+    0 0 18px rgba(255, 209, 71, 0.14);
+  transform: translateY(-2px);
+}
+
+.sk-garage-thumb.is-preview {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(255,255,255,0.35);
+}
+
+.sk-garage-thumb.is-active {
+  border-color: var(--sk-color-spray);
+  background: rgba(255, 209, 71, 0.1);
+}
+
+.sk-garage-thumb.is-active.is-preview {
+  border-color: var(--sk-color-spray);
+  background: rgba(255, 209, 71, 0.16);
+}
+
+.sk-garage-thumb-name {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.62rem, 0.72vw, 0.72rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sk-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
+}
+
+.sk-garage-thumb-tag {
+  font-family: var(--sk-font-ui);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--sk-color-spray);
+  min-height: 0.7rem;
+}
+
+.sk-garage-thumb-level {
+  font-family: var(--sk-font-ui);
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(158, 229, 255, 0.8);
+}
+
+@media (min-width: 2560px) {
+  .sk-garage-heading       { font-size: clamp(2.5rem, 5vw, 4.5rem); }
+  .sk-garage-hint          { font-size: clamp(0.81rem, 1.06vw, 1.025rem); }
+  .sk-garage-card-label    { font-size: 0.75rem; }
+  .sk-garage-car-display-name { font-size: clamp(1.625rem, 2.5vw, 2.25rem); }
+  .sk-garage-active-badge  { font-size: 0.725rem; }
+  .sk-garage-btn           { font-size: clamp(0.85rem, 1vw, 0.975rem); }
+  .sk-garage-thumb-name    { font-size: clamp(0.775rem, 0.9vw, 0.9rem); }
+  .sk-garage-thumb-tag     { font-size: 0.625rem; }
+}

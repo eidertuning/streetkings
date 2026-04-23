@@ -1,0 +1,110 @@
+/* -------------------------------------------------------------------------- */
+/* Arrested — full-screen arrested screen                                      */
+/* -------------------------------------------------------------------------- */
+
+.sk-arrested {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #08090d;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sk-arrested.is-active {
+  display: flex;
+}
+
+.arrested-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.arrested-light--blue {
+  background: radial-gradient(ellipse 70% 60% at 20% 0%, rgba(30, 120, 255, 0.72) 0%, transparent 70%);
+  animation: arrestedFlashBlue 1.2s steps(1, end) infinite;
+}
+
+.arrested-light--red {
+  background: radial-gradient(ellipse 70% 60% at 80% 0%, rgba(220, 30, 30, 0.72) 0%, transparent 70%);
+  animation: arrestedFlashRed 1.2s steps(1, end) infinite;
+}
+
+.arrested-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  animation: youDiedIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.arrested-title {
+  font-family: var(--sk-font-display);
+  font-size: clamp(5rem, 14vw, 11rem);
+  line-height: 1;
+  margin: 0;
+  color: #fff;
+  text-shadow:
+    0 0 40px rgba(255, 255, 255, 0.6),
+    0 0 100px rgba(80, 160, 255, 0.45),
+    4px 6px 0 rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.02em;
+  animation: arrestedTitleFlash 1.2s steps(1, end) infinite;
+}
+
+.arrested-sub {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.8rem, 1.8vw, 1.05rem);
+  letter-spacing: 0.55em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0;
+  padding-left: 0.55em;
+}
+
+.arrested-footer {
+  position: fixed;
+  bottom: 2.5rem;
+  right: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  animation: youDiedIn 1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+}
+
+.arrested-spinner {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: rgba(80, 160, 255, 0.85);
+  border-radius: 50%;
+  animation: spinnerTurn 0.9s linear infinite;
+}
+
+@keyframes arrestedFlashBlue {
+  0%   { opacity: 1; }
+  25%  { opacity: 0; }
+  50%  { opacity: 0; }
+  75%  { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes arrestedFlashRed {
+  0%   { opacity: 0; }
+  25%  { opacity: 0; }
+  50%  { opacity: 1; }
+  75%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+@keyframes arrestedTitleFlash {
+  0%  { color: #fff; text-shadow: 0 0 40px rgba(255,255,255,0.6), 0 0 100px rgba(80,160,255,0.45), 4px 6px 0 rgba(0,0,0,0.8); }
+  50% { color: #ffaaaa; text-shadow: 0 0 40px rgba(255,100,100,0.7), 0 0 100px rgba(220,30,30,0.45), 4px 6px 0 rgba(0,0,0,0.8); }
+}

@@ -1,0 +1,84 @@
+/* -------------------------------------------------------------------------- */
+/* Document shell — use on pages that overlay the game (transparent root)      */
+/* -------------------------------------------------------------------------- */
+
+.sk-shell,
+html.sk-transparent,
+html.sk-transparent body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+html.sk-transparent body {
+  font-family: var(--sk-font-body), system-ui, sans-serif;
+}
+
+/* -------------------------------------------------------------------------- */
+/* App host + invisible 16:9 letterbox (transparent mattes; clicks pass         */
+/* through outside the safe frame in CEF).                                    */
+/* -------------------------------------------------------------------------- */
+
+#app.sk-root,
+#app {
+  display: none;
+  box-sizing: border-box;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+#app.sk-root.visible,
+#app.visible {
+  display: flex;
+  opacity: 1;
+  transition: opacity 0.22s ease;
+}
+
+#app.sk-root.is-leaving,
+#app.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sk-ui-frame,
+.sk-letterbox {
+  box-sizing: border-box;
+  aspect-ratio: 16 / 9;
+  width: min(100vw, calc(100vh * var(--sk-ui-aspect-x) / var(--sk-ui-aspect-y)));
+  height: min(100vh, calc(100vw * var(--sk-ui-aspect-y) / var(--sk-ui-aspect-x)));
+  max-width: 100vw;
+  max-height: 100vh;
+  position: relative;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: var(--sk-space-shell);
+  background: transparent;
+  container-type: inline-size;
+  container-name: sk-ui;
+}
+
+#app.is-mainmenu-controller-nav,
+#app.is-mainmenu-controller-nav *,
+.sk-phone.is-controller-nav,
+.sk-phone.is-controller-nav *,
+.sk-garage.is-controller-nav,
+.sk-garage.is-controller-nav *,
+.sk-modshop.is-controller-nav,
+.sk-modshop.is-controller-nav *,
+.sk-perfshop.is-controller-nav,
+.sk-perfshop.is-controller-nav *,
+.sk-dealership.is-controller-nav,
+.sk-dealership.is-controller-nav * {
+  cursor: none !important;
+}

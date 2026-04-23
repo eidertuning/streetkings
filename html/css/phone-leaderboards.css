@@ -1,0 +1,194 @@
+/* -------------------------------------------------------------------------- */
+/* Leaderboards (phone app)                                                    */
+/* -------------------------------------------------------------------------- */
+
+.phone-lb {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+}
+
+.phone-lb-cats {
+  width: 30%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  border-right: 0.0521vw solid rgba(255, 255, 255, 0.06);
+  padding: clamp(0.3rem, 0.5vw, 0.5rem) 0;
+}
+
+.phone-lb-group-label {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.48rem, 0.65vw, 0.6rem);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--sk-color-spray);
+  padding: clamp(0.5rem, 0.7vw, 0.7rem) clamp(0.7rem, 1vw, 1rem) clamp(0.15rem, 0.2vw, 0.2rem);
+  margin-top: clamp(0.2rem, 0.3vw, 0.3rem);
+}
+
+.phone-lb-group-label:first-child {
+  margin-top: 0;
+}
+
+.phone-lb-cat {
+  all: unset;
+  display: flex;
+  align-items: center;
+  padding: clamp(0.35rem, 0.5vw, 0.5rem) clamp(0.7rem, 1vw, 1rem);
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: clamp(0.6rem, 0.82vw, 0.74rem);
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  border-left: 0.1563vw solid transparent;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.phone-lb-cat:hover {
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.phone-lb-cat.is-active {
+  color: #fff;
+  border-left-color: var(--sk-color-spray);
+  background: rgba(255, 209, 71, 0.08);
+}
+
+.phone-lb-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: clamp(0.5rem, 0.7vw, 0.7rem) clamp(0.7rem, 1vw, 1rem);
+}
+
+.phone-lb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: clamp(0.4rem, 0.5vw, 0.5rem);
+  flex-shrink: 0;
+}
+
+.phone-lb-title {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.9rem, 1.3vw, 1.1rem);
+  color: var(--sk-color-spray);
+  letter-spacing: 0.06em;
+}
+
+.phone-lb-tabs {
+  display: flex;
+  gap: 0.3125vw;
+}
+
+.phone-lb-tab {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.48rem, 0.6vw, 0.56rem);
+  color: var(--sk-text-soft);
+  background: none;
+  border: 0.0521vw solid var(--sk-border-subtle);
+  padding: 0.2778vh 0.4167vw;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.phone-lb-tab:hover {
+  color: var(--sk-text-primary);
+  border-color: var(--sk-border-panel);
+}
+
+.phone-lb-tab.is-active {
+  color: var(--sk-color-spray);
+  border-color: var(--sk-border-glow);
+}
+
+.phone-lb-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.0926vh;
+}
+
+.phone-lb-row {
+  display: flex;
+  align-items: center;
+  padding: 0.3704vh 0.4167vw;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.55rem, 0.7vw, 0.65rem);
+  color: var(--sk-text-dim);
+  transition: background 0.1s ease;
+}
+
+.phone-lb-row:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.phone-lb-row.is-self {
+  color: var(--sk-color-spray);
+  background: rgba(255, 209, 71, 0.06);
+}
+
+.phone-lb-rank {
+  width: 1.3021vw;
+  text-align: center;
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.6rem, 0.78vw, 0.72rem);
+  color: var(--sk-text-soft);
+  flex-shrink: 0;
+}
+
+.phone-lb-row.is-self .phone-lb-rank {
+  color: var(--sk-color-spray);
+}
+
+.phone-lb-rank-medal {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.6rem, 0.78vw, 0.72rem);
+}
+
+.phone-lb-alias {
+  flex: 1;
+  text-align: left;
+  padding: 0 0.4167vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.phone-lb-score {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.6rem, 0.78vw, 0.72rem);
+  color: var(--sk-color-chalk);
+  flex-shrink: 0;
+  letter-spacing: 0.04em;
+}
+
+.phone-lb-personal {
+  flex-shrink: 0;
+  margin-top: 0.5556vh;
+  padding-top: 0.5556vh;
+  border-top: 0.0521vw solid var(--sk-border-subtle);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.5rem, 0.65vw, 0.58rem);
+  color: var(--sk-color-ice);
+  text-align: center;
+  letter-spacing: 0.06em;
+}
+
+.phone-lb-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.55rem, 0.72vw, 0.64rem);
+  color: var(--sk-text-muted);
+  letter-spacing: 0.04em;
+}

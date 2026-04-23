@@ -1,0 +1,139 @@
+/* -------------------------------------------------------------------------- */
+/* You Died — full-screen death screen                                         */
+/* -------------------------------------------------------------------------- */
+
+.sk-you-died {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.sk-you-died.is-active {
+  display: flex;
+}
+
+.you-died-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  animation: youDiedIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.you-died-title {
+  font-family: var(--sk-font-display);
+  font-size: clamp(5rem, 14vw, 11rem);
+  line-height: 1;
+  margin: 0;
+  color: #c0392b;
+  text-shadow:
+    0 0 40px rgba(192, 57, 43, 0.9),
+    0 0 120px rgba(192, 57, 43, 0.4),
+    4px 6px 0 rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.02em;
+  animation: youDiedPulse 3s ease-in-out 0.8s infinite;
+}
+
+.you-died-sub {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.8rem, 1.8vw, 1.05rem);
+  letter-spacing: 0.55em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0;
+  padding-left: 0.55em;
+}
+
+.you-died-footer {
+  position: fixed;
+  bottom: 2.5rem;
+  right: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  animation: youDiedIn 1s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+}
+
+.you-died-spinner {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: rgba(192, 57, 43, 0.85);
+  border-radius: 50%;
+  animation: spinnerTurn 0.9s linear infinite;
+}
+
+@keyframes youDiedIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes youDiedPulse {
+  0%, 100% { text-shadow: 0 0 40px rgba(192, 57, 43, 0.9),  0 0 120px rgba(192, 57, 43, 0.4),  4px 6px 0 rgba(0,0,0,0.8); }
+  50%       { text-shadow: 0 0 60px rgba(220, 57, 43, 1.0),  0 0 180px rgba(192, 57, 43, 0.65), 4px 6px 0 rgba(0,0,0,0.8); }
+}
+
+@keyframes spinnerTurn {
+  to { transform: rotate(360deg); }
+}
+
+/* -------------------------------------------------------------------------- */
+/* To Be Continued                                                            */
+/* -------------------------------------------------------------------------- */
+
+.sk-tbc {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.sk-tbc.is-active {
+  display: flex;
+}
+
+.tbc-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2vh;
+  animation: tbcIn 1.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.tbc-title {
+  font-family: var(--sk-font-display);
+  font-size: clamp(4rem, 10vw, 8rem);
+  line-height: 1;
+  margin: 0;
+  color: #d4a843;
+  text-shadow: 0.3vh 0.5vh 0 rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tbc-sub {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.7rem, 1.4vw, 0.95rem);
+  letter-spacing: 0.55em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.25);
+  margin: 0;
+  padding-left: 0.55em;
+}
+
+@keyframes tbcIn {
+  from { opacity: 0; transform: translateY(2vh) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}

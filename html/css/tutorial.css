@@ -1,0 +1,366 @@
+.sk-tutorial-hud {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 850;
+}
+
+.sk-tutorial-hud.is-result-active .sk-tutorial-timer,
+.sk-tutorial-hud.is-result-active .sk-tutorial-checklist,
+.sk-tutorial-hud.is-result-active .sk-tutorial-counter,
+.sk-tutorial-hud.is-result-active .sk-tutorial-countdown {
+  display: none;
+}
+
+.sk-tutorial-timer {
+  position: absolute;
+  top: var(--sk-space-shell);
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  background: var(--sk-panel-bg-a);
+  border: 0.1vw solid var(--sk-border-subtle);
+  padding: 0.8vh 1.5vw;
+}
+
+.sk-tutorial-timer-label {
+  display: block;
+  font-family: var(--sk-font-ui);
+  font-size: 1.2vh;
+  font-weight: 600;
+  letter-spacing: 0.2vw;
+  text-transform: uppercase;
+  color: var(--sk-text-soft);
+}
+
+.sk-tutorial-timer-value {
+  display: block;
+  font-family: var(--sk-font-body);
+  font-size: 5.5vh;
+  color: var(--sk-color-spray);
+  text-shadow: 0 0 1.5vw rgba(255, 209, 71, 0.35);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.sk-tutorial-timer-value.is-urgent {
+  color: var(--sk-color-danger);
+  text-shadow: 0 0 1.5vw rgba(255, 80, 80, 0.5);
+  animation: tutorial-timer-pulse 0.5s ease-in-out infinite;
+}
+
+@keyframes tutorial-timer-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+
+.sk-tutorial-checklist {
+  position: absolute;
+  top: 50%;
+  left: 2.5vw;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8vh;
+}
+
+.sk-tutorial-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6vw;
+  padding: 0.5vh 0.8vw;
+  background: var(--sk-panel-bg-a);
+  border-left: 0.25vw solid rgba(255, 255, 255, 0.15);
+  transition: background 0.3s ease, border-left-color 0.3s ease;
+  animation: tutorial-item-in 0.3s ease backwards;
+}
+
+@keyframes tutorial-item-in {
+  from {
+    opacity: 0;
+    transform: translateX(-1vw);
+  }
+}
+
+.sk-tutorial-item-check {
+  width: 1.8vh;
+  height: 1.8vh;
+  border: 0.15vw solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: 'Courier New', monospace;
+  font-size: 1.2vh;
+  color: transparent;
+  transition: all 0.3s ease;
+}
+
+.sk-tutorial-item-label {
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 1.6vh;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15vw;
+  color: var(--sk-text-muted);
+  transition: color 0.3s ease, text-decoration-color 0.3s ease;
+}
+
+.sk-tutorial-item.is-done {
+  border-left-color: #4ade80;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.sk-tutorial-item.is-done .sk-tutorial-item-check {
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+.sk-tutorial-item.is-done .sk-tutorial-item-label {
+  color: #4ade80;
+  text-decoration: line-through;
+  text-decoration-color: rgba(74, 222, 128, 0.5);
+}
+
+.sk-tutorial-item.is-just-done {
+  animation: tutorial-flash 0.5s ease;
+}
+
+@keyframes tutorial-flash {
+  0%   { background: rgba(74, 222, 128, 0.3); transform: scale(1.04); }
+  100% { background: rgba(0, 0, 0, 0.55); transform: scale(1); }
+}
+
+.sk-tutorial-counter {
+  position: absolute;
+  bottom: var(--sk-space-shell);
+  left: 2.5vw;
+  font-family: var(--sk-font-body);
+  font-size: 2.2vh;
+  text-transform: uppercase;
+  letter-spacing: 0.15vw;
+  color: var(--sk-text-soft);
+}
+
+.sk-tutorial-counter-num {
+  color: var(--sk-color-spray);
+  font-variant-numeric: tabular-nums;
+}
+
+.sk-tutorial-countdown {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--sk-font-display);
+  font-size: 14vh;
+  color: var(--sk-color-spray);
+  text-shadow:
+    0 0 4vw rgba(255, 209, 71, 0.7),
+    0 0.4vh 0 var(--sk-gold-shadow);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.sk-tutorial-countdown.is-pop {
+  animation: tutorial-countdown-pop 0.35s cubic-bezier(0.22, 1.8, 0.5, 1);
+}
+
+@keyframes tutorial-countdown-pop {
+  from { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+  to   { transform: translate(-50%, -50%) scale(1);   opacity: 1; }
+}
+
+.sk-tutorial-result {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--sk-panel-bg-a);
+  z-index: 860;
+  pointer-events: auto;
+  opacity: 0;
+}
+
+.sk-tutorial-result.is-animate-in {
+  animation: tutorial-result-in 0.4s cubic-bezier(0.33, 1, 0.68, 1) forwards;
+}
+
+@keyframes tutorial-result-in {
+  from { opacity: 0; transform: translateY(2vh); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.sk-tutorial-result-title {
+  font-family: var(--sk-font-display);
+  font-size: 7vh;
+  text-transform: uppercase;
+  letter-spacing: 0.3vw;
+  line-height: 1;
+  margin-bottom: 2vh;
+}
+
+.sk-tutorial-result-title.is-success {
+  color: #4ade80;
+  text-shadow:
+    0 0 2vw rgba(74, 222, 128, 0.5),
+    0 0.3vh 0 rgba(0, 60, 20, 0.6);
+}
+
+.sk-tutorial-result-title.is-fail {
+  color: var(--sk-color-danger);
+  text-shadow:
+    0 0 2vw rgba(255, 80, 80, 0.4),
+    0 0.3vh 0 rgba(80, 0, 0, 0.6);
+}
+
+.sk-tutorial-result-sub {
+  font-family: var(--sk-font-ui);
+  font-size: 1.8vh;
+  font-weight: 500;
+  color: var(--sk-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.2vw;
+  margin-bottom: 3vh;
+}
+
+.sk-tutorial-result-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Fail screen — warning + styled buttons */
+.sk-tutorial-result-warning {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 2.5vh;
+  font-family: var(--sk-font-ui);
+  font-size: 1.3vh;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: 0.1vw;
+  color: var(--sk-color-danger-muted);
+}
+
+.sk-tutorial-fail-actions {
+  display: flex;
+  gap: 2vw;
+  align-items: center;
+  justify-content: center;
+}
+
+.sk-tutorial-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4vw;
+  padding: 1vh 2vw;
+  border: 0.1vw solid var(--sk-border-glow);
+  background: rgba(255, 209, 71, 0.1);
+  font-family: var(--sk-font-ui);
+  font-size: 1.5vh;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15vw;
+  color: var(--sk-color-spray);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  outline: none;
+}
+
+.sk-tutorial-btn-primary:hover,
+.sk-tutorial-btn-primary:focus-visible,
+.sk-tutorial-btn-primary.is-controller-focused {
+  background: rgba(255, 209, 71, 0.22);
+  box-shadow: 0 0 1.5vw rgba(255, 209, 71, 0.25);
+  transform: scale(1.04);
+}
+
+.sk-tutorial-btn-primary:active {
+  transform: scale(0.97);
+}
+
+.sk-tutorial-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4vw;
+  padding: 1vh 2vw;
+  border: 0.1vw solid var(--sk-border-subtle);
+  background: rgba(255, 255, 255, 0.03);
+  font-family: var(--sk-font-ui);
+  font-size: 1.5vh;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.15vw;
+  color: var(--sk-text-muted);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease, border-color 0.15s ease;
+  outline: none;
+}
+
+.sk-tutorial-btn-ghost:hover,
+.sk-tutorial-btn-ghost:focus-visible,
+.sk-tutorial-btn-ghost.is-controller-focused {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: scale(1.04);
+}
+
+.sk-tutorial-btn-ghost:active {
+  transform: scale(0.97);
+}
+
+/* Reward grid — shown on success */
+.sk-tutorial-reward-grid {
+  display: flex;
+  gap: 1.5vw;
+  margin-top: 1vh;
+}
+
+.sk-tutorial-reward-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5vh;
+  padding: 1.2vh 1.5vw;
+  border: 0.1vw solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  min-width: 7vw;
+  animation: tutorial-reward-pop 0.4s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+
+.sk-tutorial-reward-cell:nth-child(1) { animation-delay: 0.1s; }
+.sk-tutorial-reward-cell:nth-child(2) { animation-delay: 0.25s; }
+.sk-tutorial-reward-cell:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes tutorial-reward-pop {
+  from { opacity: 0; transform: translateY(1vh) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.sk-tutorial-reward-label {
+  font-family: var(--sk-font-ui);
+  font-size: 1.1vh;
+  font-weight: 600;
+  letter-spacing: 0.15vw;
+  text-transform: uppercase;
+  color: var(--sk-text-soft);
+}
+
+.sk-tutorial-reward-value {
+  font-family: var(--sk-font-body);
+  font-size: 3vh;
+  line-height: 1;
+  color: var(--sk-color-ice);
+  font-variant-numeric: tabular-nums;
+}
+
+.sk-tutorial-reward-value.is-cash {
+  color: var(--sk-color-spray);
+}
+

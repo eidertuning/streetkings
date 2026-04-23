@@ -1,0 +1,926 @@
+.sk-perfshop {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 153, 0, 0.18), transparent 35%),
+    radial-gradient(circle at 80% 25%, rgba(255, 94, 0, 0.12), transparent 30%),
+    linear-gradient(180deg, rgba(8, 10, 14, 0.2) 0%, rgba(8, 10, 14, 0.8) 100%);
+}
+
+.sk-perfshop-viewport {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+}
+
+.sk-perfshop-viewport:active {
+  cursor: grabbing;
+}
+
+.sk-perfshop-shell {
+  position: absolute;
+  inset: 0;
+  padding: clamp(1.6rem, 3vh, 2.8rem) clamp(1.8rem, 4vw, 4rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  pointer-events: none;
+}
+
+.sk-perfshop-top,
+.sk-perfshop-body,
+.sk-perfshop-install {
+  pointer-events: all;
+}
+
+.sk-perfshop-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.sk-perfshop-copy {
+  max-width: min(44rem, 48vw);
+}
+
+.sk-perfshop-kicker,
+.sk-perfshop-focus-label,
+.sk-perfshop-wallet-label,
+.sk-perfshop-progress-label {
+  display: block;
+  font-family: var(--sk-font-ui);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+}
+
+.sk-perfshop-heading {
+  margin: 0.3rem 0 0;
+  font-family: var(--sk-font-display);
+  font-size: clamp(2.4rem, 4.4vw, 4.8rem);
+  line-height: 0.95;
+  color: var(--sk-text-primary);
+  text-transform: uppercase;
+}
+
+.sk-perfshop-subtitle {
+  margin: 0.7rem 0 0;
+  max-width: 38rem;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.72rem, 0.92vw, 0.92rem);
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.62);
+}
+
+.sk-perfshop-wallet,
+.sk-perfshop-progress-card,
+.sk-perfshop-focus-card,
+.sk-perfshop-install {
+  background: rgba(0,0,0,0.52);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.sk-perfshop-wallet {
+  padding: 0.9rem 1rem;
+}
+
+.sk-perfshop-wallet-amount {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: var(--sk-font-display);
+  font-size: clamp(1.4rem, 2.2vw, 2.2rem);
+  line-height: 1;
+  color: var(--sk-color-spray);
+}
+
+.sk-perfshop-progress-card {
+  padding: 0.9rem 1rem;
+}
+
+.sk-perfshop-progress-head,
+.sk-perfshop-progress-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.sk-perfshop-progress-level {
+  font-family: var(--sk-font-display);
+  font-size: 1.05rem;
+  color: var(--sk-text-primary);
+}
+
+.sk-perfshop-progress-track {
+  margin: 0.6rem 0 0.5rem;
+  height: 0.5rem;
+  background: rgba(255,255,255,0.08);
+}
+
+.sk-perfshop-progress-fill {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #ff7a18 0%, var(--sk-color-spray) 100%);
+}
+
+.sk-perfshop-progress-meta {
+  font-family: var(--sk-font-ui);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+}
+
+.sk-perfshop-body {
+  min-height: 0;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.sk-perfshop-cats,
+.sk-perfshop-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: none;
+}
+
+.sk-perfshop-cats::-webkit-scrollbar,
+.sk-perfshop-options::-webkit-scrollbar {
+  display: none;
+}
+
+.sk-perfshop-cat {
+  width: 100%;
+  padding: 0.85rem 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: rgba(0,0,0,0.52);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--sk-text-primary);
+  font-family: var(--sk-font-ui);
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.15s, background 0.15s;
+}
+
+.sk-perfshop-cat:hover {
+  transform: translateX(2px);
+  border-color: rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+}
+
+.sk-perfshop-cat.is-active {
+  border-color: rgba(255, 153, 0, 0.55);
+  background: rgba(255, 122, 24, 0.16);
+}
+
+.sk-perfshop-cat-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sk-perfshop-cat-price {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sk-color-spray);
+}
+
+.sk-perfshop-main {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.sk-perfshop-focus-card {
+  padding: 1rem 1.1rem;
+}
+
+.sk-perfshop-focus-title {
+  margin-top: 0.35rem;
+  font-family: var(--sk-font-display);
+  font-size: clamp(1.2rem, 1.8vw, 1.8rem);
+  line-height: 1.05;
+  color: var(--sk-text-primary);
+  text-transform: uppercase;
+}
+
+.sk-perfshop-focus-subtitle {
+  margin-top: 0.45rem;
+  max-width: 42rem;
+  font-family: var(--sk-font-ui);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.62);
+}
+
+.sk-perfshop-options {
+  flex: 1;
+}
+
+.sk-perfshop-option {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.9rem;
+  background: rgba(0,0,0,0.52);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--sk-text-primary);
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.15s, background 0.15s;
+}
+
+.sk-perfshop-option:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+}
+
+.sk-perfshop-option.is-selected {
+  border-color: rgba(255, 153, 0, 0.55);
+  background: rgba(255, 122, 24, 0.16);
+}
+
+.sk-perfshop-option.is-owned {
+  border-color: rgba(34, 197, 94, 0.45);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.sk-perfshop-option.is-locked {
+  opacity: 0.72;
+}
+
+.sk-perfshop-option-stage,
+.sk-perfshop-option-tag {
+  font-family: var(--sk-font-ui);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sk-perfshop-option-stage {
+  color: rgba(255,255,255,0.44);
+}
+
+.sk-perfshop-option-title {
+  font-family: var(--sk-font-ui);
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.sk-perfshop-option-meta {
+  font-family: var(--sk-font-ui);
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.58);
+}
+
+.sk-perfshop-option-tag {
+  color: var(--sk-color-spray);
+}
+
+.sk-perfshop-option.is-owned .sk-perfshop-option-tag {
+  color: #22c55e;
+}
+
+.sk-perfshop-option.is-locked .sk-perfshop-option-tag {
+  color: rgba(255,255,255,0.48);
+}
+
+.sk-perfshop-install {
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sk-perfshop-install-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.sk-perfshop-price {
+  font-family: var(--sk-font-display);
+  font-size: 1rem;
+  color: var(--sk-color-spray);
+  text-transform: uppercase;
+}
+
+.sk-perfshop-install-note {
+  font-family: var(--sk-font-ui);
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.55);
+}
+
+.sk-perfshop-buy {
+  padding: 0.5rem 1.3rem;
+  background: linear-gradient(90deg, #ff7a18 0%, var(--sk-color-spray) 100%);
+  border: none;
+  color: rgba(0,0,0,0.82);
+  font-family: var(--sk-font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.sk-perfshop-buy:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.sk-perfshop-buy:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.sk-perfshop-close {
+  position: absolute;
+  top: clamp(1.6rem, 3vh, 2.6rem);
+  right: clamp(1.8rem, 4vw, 4rem);
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.48);
+  cursor: pointer;
+  pointer-events: all;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sk-perfshop-close:hover {
+  background: rgba(255,255,255,0.14);
+  color: var(--sk-text-primary);
+}
+
+@media (max-width: 1400px) {
+  .sk-perfshop-body {
+    grid-template-columns: 1fr;
+  }
+
+  .sk-perfshop-cats {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .sk-perfshop-cat {
+    min-width: 220px;
+  }
+}
+
+.sk-perfshop {
+  z-index: 800;
+  pointer-events: none;
+}
+
+.sk-perfshop-viewport {
+  pointer-events: all;
+}
+
+.sk-perfshop-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: clamp(1.8rem, 3.5vh, 3rem) clamp(2rem, 4vw, 4rem);
+  background: linear-gradient(180deg, rgba(0,0,0,0.72) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.sk-perfshop-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  max-width: 42rem;
+}
+
+.sk-perfshop-kicker {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.72rem, 0.92vw, 0.86rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 168, 76, 0.88);
+}
+
+.sk-perfshop-heading {
+  margin: 0;
+  font-family: var(--sk-font-display);
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  line-height: 1;
+  color: #ff9f43;
+  text-shadow: 0 2px 16px rgba(255, 122, 24, 0.32);
+  text-transform: none;
+}
+
+.sk-perfshop-subtitle {
+  margin: 0;
+  max-width: 34rem;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.74rem, 0.96vw, 0.9rem);
+  line-height: 1.5;
+  color: rgba(255,255,255,0.66);
+}
+
+.sk-perfshop-status {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: start;
+  gap: 0.75rem;
+  width: min(44rem, 42vw);
+}
+
+.sk-perfshop-wallet {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: 0 0 clamp(170px, 12vw, 220px);
+  padding: 0.9rem 1rem;
+  background: rgba(10, 7, 10, 0.84);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.sk-perfshop-wallet-label {
+  font-family: var(--sk-font-ui);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+}
+
+.sk-perfshop-wallet-amount {
+  font-family: var(--sk-font-display);
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  line-height: 1.2;
+  color: #ff9f43;
+}
+
+.sk-perfshop-progress-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+  gap: 0.55rem;
+  padding: 0.9rem 1rem 1rem;
+  background: rgba(10, 7, 10, 0.84);
+  border: 1px solid rgba(255, 168, 76, 0.16);
+}
+
+.sk-perfshop-progress-head,
+.sk-perfshop-progress-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sk-perfshop-progress-label {
+  font-family: var(--sk-font-ui);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+
+.sk-perfshop-progress-level {
+  font-family: var(--sk-font-display);
+  font-size: clamp(1.05rem, 1.55vw, 1.35rem);
+  color: #ffb347;
+}
+
+.sk-perfshop-progress-track {
+  position: relative;
+  width: 100%;
+  height: 0.55rem;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+
+.sk-perfshop-progress-fill {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #ff7a18 0%, #ffb347 100%);
+  transition: width 0.2s ease;
+}
+
+.sk-perfshop-progress-meta {
+  font-family: var(--sk-font-ui);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.62);
+  text-transform: none;
+}
+
+.sk-perfshop-side {
+  position: absolute;
+  right: clamp(1.5rem, 3vw, 3rem);
+  top: clamp(9.5rem, 18vh, 12rem);
+  bottom: calc(clamp(1.2rem, 2.5vh, 2rem) + 6.5rem);
+  width: clamp(300px, 23vw, 390px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  pointer-events: all;
+  animation: perfshopSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes perfshopSlideIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.sk-perfshop-selection-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.95rem 1rem 1rem;
+  background: rgba(10, 7, 10, 0.84);
+  border: 1px solid rgba(255, 168, 76, 0.16);
+}
+
+.sk-perfshop-selection-label {
+  font-family: var(--sk-font-ui);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.38);
+}
+
+.sk-perfshop-selection-title {
+  font-family: var(--sk-font-display);
+  font-size: clamp(1rem, 1.5vw, 1.35rem);
+  line-height: 1.05;
+  color: #ffd5a3;
+}
+
+.sk-perfshop-selection-subtitle {
+  font-family: var(--sk-font-ui);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.62);
+}
+
+.sk-perfshop-options {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  background: rgba(10, 7, 10, 0.82);
+  border: 1px solid rgba(255, 168, 76, 0.16);
+  padding: 0.7rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.12) transparent;
+}
+
+.sk-perfshop-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.22rem;
+  width: 100%;
+  padding: 0.78rem 0.85rem 0.82rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.82);
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.12s, background 0.12s, border-color 0.12s, transform 0.12s;
+}
+
+.sk-perfshop-option:hover {
+  color: var(--sk-text-primary);
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.18);
+  transform: translateY(-1px);
+}
+
+.sk-perfshop-option.is-selected {
+  color: var(--sk-text-primary);
+  background: rgba(255, 159, 67, 0.1);
+  border-color: rgba(255, 159, 67, 0.45);
+}
+
+.sk-perfshop-option.is-owned {
+  border-color: rgba(255, 209, 71, 0.24);
+  background: rgba(255, 209, 71, 0.06);
+}
+
+.sk-perfshop-option.is-selected.is-owned {
+  border-color: rgba(255, 209, 71, 0.46);
+}
+
+.sk-perfshop-option.is-locked {
+  color: rgba(255,255,255,0.5);
+  border-color: rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.025);
+}
+
+.sk-perfshop-option.is-locked:hover {
+  color: rgba(255,255,255,0.65);
+}
+
+.sk-perfshop-option-stage {
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 168, 76, 0.85);
+}
+
+.sk-perfshop-option.is-owned .sk-perfshop-option-stage {
+  color: rgba(255, 209, 71, 0.96);
+}
+
+.sk-perfshop-option.is-locked .sk-perfshop-option-stage {
+  color: rgba(255,255,255,0.38);
+}
+
+.sk-perfshop-option-title {
+  font-family: var(--sk-font-display);
+  font-size: clamp(0.9rem, 1.05vw, 1rem);
+  color: inherit;
+  line-height: 1;
+  text-transform: none;
+}
+
+.sk-perfshop-option-meta {
+  font-family: var(--sk-font-ui);
+  font-size: 0.67rem;
+  line-height: 1.4;
+  color: rgba(255,255,255,0.55);
+}
+
+.sk-perfshop-option-tag {
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 168, 76, 0.82);
+}
+
+.sk-perfshop-option.is-owned .sk-perfshop-option-tag {
+  color: rgba(255, 209, 71, 0.96);
+}
+
+.sk-perfshop-option.is-locked .sk-perfshop-option-tag {
+  color: rgba(255,255,255,0.38);
+}
+
+.sk-perfshop-install {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  background: rgba(10, 7, 10, 0.82);
+  border: 1px solid rgba(255, 168, 76, 0.16);
+}
+
+.sk-perfshop-install-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+}
+
+.sk-perfshop-price {
+  font-family: var(--sk-font-display);
+  font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+  letter-spacing: 0.04em;
+  color: #ffd5a3;
+}
+
+.sk-perfshop-install-note {
+  font-family: var(--sk-font-ui);
+  font-size: 0.64rem;
+  line-height: 1.45;
+  color: rgba(255,255,255,0.48);
+}
+
+.sk-perfshop-buy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.45rem 1.2rem;
+  background: linear-gradient(90deg, #ff7a18 0%, #ffb347 100%);
+  border: none;
+  color: rgba(0,0,0,0.85);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.62rem, 0.74vw, 0.72rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.sk-perfshop-buy:hover:not(:disabled) {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.sk-perfshop-buy:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.sk-perfshop-buy:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.sk-controller-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+.sk-controller-btn-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sk-controller-btn-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.sk-perfshop-strip {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0 clamp(2rem, 4vw, 4rem) clamp(1.2rem, 2.5vh, 2rem);
+  background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.sk-perfshop-controller-hint {
+  display: none;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.45rem;
+  pointer-events: none;
+}
+
+.sk-perfshop.is-controller-nav .sk-perfshop-controller-hint {
+  display: inline-flex;
+}
+
+.sk-perfshop-controller-hint-icon {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.32));
+}
+
+.sk-perfshop-controller-hint-text {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.64rem, 0.76vw, 0.76rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.72);
+}
+
+.sk-perfshop-strip-inner {
+  display: flex;
+  gap: 0.4rem;
+  margin-right: calc(clamp(300px, 23vw, 390px) + clamp(0.5rem, 1vw, 1rem));
+  overflow-x: auto;
+  padding: 0.6rem 0;
+  scrollbar-width: none;
+  pointer-events: all;
+}
+
+.sk-perfshop-strip-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.sk-perfshop-cat {
+  flex-shrink: 0;
+  width: auto;
+  padding: 0.55rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.65rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.55);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.62rem, 0.72vw, 0.72rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.12s;
+}
+
+.sk-perfshop-cat:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
+  color: var(--sk-text-primary);
+  transform: translateY(-2px);
+}
+
+.sk-perfshop-cat.is-active {
+  border-color: #ff9f43;
+  background: rgba(255, 159, 67, 0.14);
+  color: #ffb347;
+}
+
+.sk-perfshop-cat-name {
+  font-weight: 600;
+}
+
+.sk-perfshop-cat-price {
+  color: rgba(255, 211, 133, 0.9);
+}
+
+.sk-perfshop-close {
+  position: absolute;
+  top: clamp(1.8rem, 3.5vh, 3rem);
+  right: clamp(2rem, 4vw, 4rem);
+  width: 2.2rem;
+  height: 2.2rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.45);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  z-index: 10;
+  pointer-events: all;
+}
+
+.sk-perfshop-close:hover {
+  background: rgba(255,255,255,0.14);
+  color: var(--sk-text-primary);
+}
+
+@media (min-width: 2560px) {
+  .sk-perfshop-heading        { font-size: clamp(2.5rem, 5vw, 4.5rem); }
+  .sk-perfshop-wallet-label   { font-size: 0.725rem; }
+  .sk-perfshop-wallet-amount  { font-size: clamp(1.5rem, 2.5vw, 2.25rem); }
+  .sk-perfshop-option         { font-size: clamp(0.81rem, 0.975vw, 0.95rem); }
+  .sk-perfshop-price          { font-size: clamp(0.81rem, 0.975vw, 0.95rem); }
+  .sk-perfshop-buy            { font-size: clamp(0.775rem, 0.925vw, 0.9rem); }
+  .sk-perfshop-cat            { font-size: clamp(0.775rem, 0.9vw, 0.9rem); }
+}
+
+.sk-perfshop.is-controller-nav .sk-perfshop-cat.is-controller-focused,
+.sk-perfshop.is-controller-nav .sk-perfshop-option.is-controller-focused,
+.sk-perfshop.is-controller-nav .sk-perfshop-buy.is-controller-focused,
+.sk-perfshop.is-controller-nav .sk-perfshop-close.is-controller-focused {
+  outline: none;
+  border-color: rgba(255, 209, 71, 0.72);
+  box-shadow:
+    0 0 0 2px rgba(255, 209, 71, 0.28),
+    0 0 18px rgba(255, 209, 71, 0.16);
+}

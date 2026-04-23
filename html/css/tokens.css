@@ -1,0 +1,60 @@
+/* -------------------------------------------------------------------------- */
+/* Design tokens — tweak the whole game from here                             */
+/* -------------------------------------------------------------------------- */
+
+:root {
+  --sk-font-display: 'Permanent Marker', cursive;
+  --sk-font-body: 'Bebas Neue', sans-serif;
+  --sk-font-ui: 'Inter', system-ui, sans-serif;
+
+  --sk-color-chalk: #f5f0e6;
+  --sk-color-spray: #ffd147;
+  --sk-color-pink: #ff2d78;
+  --sk-color-ice: #9ee5ff;
+  --sk-color-danger: #ff6b6b;
+  --sk-color-danger-muted: rgba(255, 160, 160, 0.82);
+
+  --sk-ink: #1a1a1a;
+  --sk-gold-shadow: #3d2800;
+
+  --sk-text-primary: rgba(255, 255, 255, 0.92);
+  --sk-text-soft: rgba(255, 255, 255, 0.45);
+  --sk-text-muted: rgba(255, 255, 255, 0.42);
+  --sk-text-dim: rgba(255, 255, 255, 0.55);
+  --sk-text-detail: rgba(255, 255, 255, 0.5);
+
+  --sk-border-subtle: rgba(255, 255, 255, 0.1);
+  --sk-border-panel: rgba(255, 255, 255, 0.14);
+  --sk-border-glow: rgba(255, 209, 71, 0.55);
+  --sk-border-ice: rgba(120, 220, 255, 0.4);
+
+  --sk-panel-bg-a: rgba(12, 10, 14, 0.42);
+  --sk-panel-bg-b: rgba(6, 5, 8, 0.32);
+  --sk-card-bg-a: rgba(18, 14, 22, 0.5);
+  --sk-card-bg-b: rgba(8, 6, 12, 0.38);
+
+  /* vmin: stable padding in mattes + short viewports (not tied to ultrawide vw). */
+  --sk-space-shell: clamp(1.5rem, 2.75vmin, 4rem);
+  --sk-space-panel-x: 1.85rem;
+  --sk-space-panel-y: 2.25rem;
+  --sk-radius-panel: 0;
+
+  --sk-shadow-panel-inset: inset 0 2px 0 rgba(255, 255, 255, 0.07);
+  --sk-shadow-panel-drop: 0 18px 56px rgba(0, 0, 0, 0.4);
+  --sk-shadow-card-inset: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  --sk-ease: 0.15s ease;
+  --sk-menu-transition-duration: 0.32s;
+  --sk-menu-transition-ease: cubic-bezier(0.33, 1, 0.68, 1);
+  --sk-menu-shift: 28px;
+  --sk-mask-panel: polygon(0 0, 100% 2%, 98% 96%, 3% 100%, 0 88%);
+
+  --sk-panel-max: 520px;
+  --sk-shell-max-width: 520px;
+
+  /* Safe / letterbox region — all HUD-style UI lives inside this aspect box. */
+  --sk-ui-aspect-x: 16;
+  --sk-ui-aspect-y: 9;
+
+  font-size: 125%;
+}
