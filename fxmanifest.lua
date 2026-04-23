@@ -139,6 +139,7 @@ server_scripts {
 shared_scripts {
     '@ox_lib/init.lua',
     'data/sk_config.lua',
+    'data/repair_stations.lua',
     'data/waypoints_config.lua',
     'shared/vehicles.lua',
     'data/environment.lua',
