@@ -593,3 +593,6 @@ Key events that third-party resources can listen to.
 | `streetkings:freeroam:enter` | none | Player entered freeroam |
 | `streetkings:freeroam:exit` | none | Player left freeroam |
 | `streetkings:environment:sync` | `{ h, m, s, weather, prevWeather, transitionPct }` | Time/weather sync broadcast |
+
+
+## Special Thanks to CFX.re & Rockstar Games
