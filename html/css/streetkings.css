@@ -31,6 +31,8 @@
 @import url("tutorial.css");
 @import url("missions.css");
 @import url("controller-keyboard.css");
+@import url("gearbox-stall.css");
+@import url("responsive.css");
 
 html,
 body,

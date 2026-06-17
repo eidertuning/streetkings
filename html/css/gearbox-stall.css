@@ -1,0 +1,179 @@
+.sk-stall-restart {
+  position: absolute;
+  bottom: var(--sk-space-shell);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20vw;
+  padding: 1.4815vh 1.25vw 1.6667vh;
+  background: linear-gradient(160deg, var(--sk-panel-bg-a) 0%, var(--sk-panel-bg-b) 100%);
+  border: 0.0521vw solid rgba(255, 107, 107, 0.45);
+  clip-path: var(--sk-mask-panel);
+  box-shadow: var(--sk-shadow-panel-drop), var(--sk-shadow-panel-inset);
+  pointer-events: none;
+  user-select: none;
+  animation: stallIn 0.22s cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+
+.sk-stall-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8333vh;
+  position: relative;
+  z-index: 1;
+}
+
+.sk-stall-restart::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -12deg,
+    transparent,
+    transparent 3px,
+    rgba(255, 255, 255, 0.02) 3px,
+    rgba(255, 255, 255, 0.02) 4px
+  );
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+.sk-stall-restart > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes stallIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(1.1111vh); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Per-press feedback handled via Web Animations API in gearbox.js */
+
+/* Header row: kicker left, status right */
+.sk-stall-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sk-stall-kicker {
+  font-family: var(--sk-font-body);
+  font-size: 0.5208vw;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sk-color-danger);
+}
+
+.sk-stall-key-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625vw;
+}
+
+.sk-stall-key {
+  width: 2.0833vw;
+  height: 2.0833vw;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 209, 71, 0.18);
+  border: 0.0521vw solid rgba(255, 209, 71, 0.5);
+  font-family: var(--sk-font-body);
+  font-size: 0.9375vw;
+  letter-spacing: 0.08em;
+  color: var(--sk-color-spray);
+}
+
+/* When showing a controller glyph: transparent bg, no border, image fills box */
+.sk-stall-key.is-controller {
+  background: transparent;
+  border-color: transparent;
+}
+
+.sk-stall-key-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.sk-stall-label {
+  font-family: var(--sk-font-body);
+  font-size: 1.1458vw;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sk-text-primary);
+  line-height: 1;
+}
+
+.sk-stall-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3704vh;
+}
+
+.sk-stall-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.4167vw;
+}
+
+.sk-stall-bar-label {
+  font-family: var(--sk-font-ui);
+  font-size: 0.4688vw;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sk-text-soft);
+  width: 3.125vw;
+  flex-shrink: 0;
+}
+
+.sk-stall-bar-track {
+  flex: 1;
+  height: 0.3704vh;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.sk-stall-bar-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.08s ease;
+}
+
+.sk-stall-bar-fill--progress {
+  background: linear-gradient(90deg, var(--sk-color-spray), #ff9900);
+}
+
+.sk-stall-bar-fill--timer {
+  width: 100%;
+  background: var(--sk-color-danger);
+  transition: width 0.1s linear;
+}
+
+/* Status — shown top-right; changes colour on state */
+.sk-stall-status {
+  font-family: var(--sk-font-ui);
+  font-size: 0.4688vw;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sk-text-soft);
+  transition: color 0.15s ease;
+}
+
+.sk-stall-status.is-success   { color: #5fff7c; }
+.sk-stall-status.is-countdown { color: var(--sk-color-danger-muted); }
+
+/* Success flash — border turns green */
+.sk-stall-restart.is-success {
+  border-color: rgba(95, 255, 124, 0.4);
+}
+
+/* Countdown mode dims the interactive elements */
+.sk-stall-restart.is-countdown .sk-stall-key,
+.sk-stall-restart.is-countdown .sk-stall-label {
+  opacity: 0.35;
+}

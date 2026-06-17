@@ -32,6 +32,23 @@
   position: relative;
 }
 
+.sk-speedo-scale {
+  transform-origin: bottom right;
+  font-size: 100%;
+}
+
+@media (min-width: 2560px) and (min-height: 1440px) {
+  .sk-speedo-scale {
+    font-size: 60%;
+  }
+}
+
+@media (min-width: 3840px) and (min-height: 2160px) {
+  .sk-speedo-scale {
+    font-size: 40%;
+  }
+}
+
 .sk-soundtrack-player {
   position: absolute;
   right: calc(100% + 0.625vw);

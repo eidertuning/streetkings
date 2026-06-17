@@ -56,7 +56,7 @@
 
     .splash-logo.is-919,
     .splash-logo.is-envi {
-      max-width: min(240px, 30vw);
+      max-width: min(15rem, 30vw);
     }
 
     .splash-x {
@@ -71,8 +71,8 @@
     /* -- Controller notice -- */
 
     .notice-icon {
-      width: clamp(56px, 8vmin, 80px);
-      height: clamp(56px, 8vmin, 80px);
+      width: clamp(3.5rem, 8vmin, 5rem);
+      height: clamp(3.5rem, 8vmin, 5rem);
       margin-bottom: 1.75rem;
       opacity: 0.82;
     }
@@ -96,7 +96,7 @@
       line-height: 1.6;
       color: rgba(255, 255, 255, 0.48);
       text-align: center;
-      max-width: min(440px, 72vw);
+      max-width: min(27.5rem, 72vw);
     }
 
     /* -- Loading screen -- */
@@ -213,15 +213,15 @@
     }
 
     .accent-dash {
-      width: 32px;
+      width: 2rem;
       height: 3px;
       background: #ff2d78;
       box-shadow: 0 0 10px rgba(255, 45, 120, 0.45);
     }
 
     .accent-diamond {
-      width: 6px;
-      height: 6px;
+      width: 0.375rem;
+      height: 0.375rem;
       background: #ffd147;
       transform: rotate(45deg);
       box-shadow: 0 0 8px rgba(255, 209, 71, 0.4);
@@ -245,7 +245,7 @@
 
     .bar-wrap {
       width: 82vw;
-      max-width: 960px;
+      max-width: 60rem;
       height: 2px;
       background: rgba(255, 255, 255, 0.06);
       overflow: hidden;
@@ -322,6 +322,26 @@
       color: rgba(255, 255, 255, 0.12);
       z-index: 2;
       animation: sk-bar-enter 0.6s 1s ease both;
+    }
+
+    @media (min-width: 2560px) and (min-height: 1440px) {
+      html {
+        font-size: 166.667%;
+      }
+
+      .bar-wrap {
+        height: 3px;
+      }
+    }
+
+    @media (min-width: 3840px) and (min-height: 2160px) {
+      html {
+        font-size: 250%;
+      }
+
+      .bar-wrap {
+        height: 4px;
+      }
     }
   </style>
 </head>
