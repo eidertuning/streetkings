@@ -321,9 +321,7 @@
 }
 
 .phone-app-header:has(.phone-app-back) {
-  justify-content: center;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 6rem;
 }
 
 .phone-app-back {
@@ -356,15 +354,6 @@
 }
 
 .phone-app-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  max-width: 52%;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  pointer-events: none;
   font-family: system-ui, -apple-system, sans-serif;
   font-size: clamp(0.81rem, 1.25vw, 1.03rem);
   font-weight: 600;

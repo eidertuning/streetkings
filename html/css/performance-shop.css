@@ -904,6 +904,16 @@
   color: var(--sk-text-primary);
 }
 
+@media (min-width: 2560px) {
+  .sk-perfshop-heading        { font-size: clamp(2.5rem, 5vw, 4.5rem); }
+  .sk-perfshop-wallet-label   { font-size: 0.725rem; }
+  .sk-perfshop-wallet-amount  { font-size: clamp(1.5rem, 2.5vw, 2.25rem); }
+  .sk-perfshop-option         { font-size: clamp(0.81rem, 0.975vw, 0.95rem); }
+  .sk-perfshop-price          { font-size: clamp(0.81rem, 0.975vw, 0.95rem); }
+  .sk-perfshop-buy            { font-size: clamp(0.775rem, 0.925vw, 0.9rem); }
+  .sk-perfshop-cat            { font-size: clamp(0.775rem, 0.9vw, 0.9rem); }
+}
+
 .sk-perfshop.is-controller-nav .sk-perfshop-cat.is-controller-focused,
 .sk-perfshop.is-controller-nav .sk-perfshop-option.is-controller-focused,
 .sk-perfshop.is-controller-nav .sk-perfshop-buy.is-controller-focused,

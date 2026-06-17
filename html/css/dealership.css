@@ -75,7 +75,7 @@
   right: clamp(1.5rem, 3vw, 3rem);
   top: 50%;
   transform: translateY(-50%);
-  width: clamp(300px, 22vw, 380px);
+  width: clamp(200px, 17vw, 290px);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -361,6 +361,19 @@
 .sk-dealership-thumb.is-owned .sk-dealership-thumb-tag {
   color: #22c55e;
 }
+
+@media (min-width: 2560px) {
+  .sk-dealership-heading        { font-size: clamp(2.5rem, 5vw, 4.5rem); }
+  .sk-dealership-wallet-amount  { font-size: clamp(1.75rem, 2.75vw, 2.5rem); }
+  .sk-dealership-car-brand      { font-size: 0.725rem; }
+  .sk-dealership-car-name       { font-size: clamp(1.625rem, 2.5vw, 2.25rem); }
+  .sk-dealership-class-badge    { font-size: 0.725rem; }
+  .sk-dealership-btn            { font-size: clamp(0.85rem, 1vw, 0.975rem); }
+  .sk-dealership-class-tab      { font-size: 0.775rem; }
+  .sk-dealership-thumb-name     { font-size: clamp(0.775rem, 0.9vw, 0.9rem); }
+  .sk-dealership-thumb-tag      { font-size: 0.625rem; }
+}
+
 .sk-dealership.is-controller-nav .sk-dealership-class-tab.is-controller-focused,
 .sk-dealership.is-controller-nav .sk-dealership-thumb.is-controller-focused,
 .sk-dealership.is-controller-nav .sk-dealership-btn.is-controller-focused {
