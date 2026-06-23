@@ -54,12 +54,6 @@ local function triggerSpeedCam(cam, speedMph, camIndex)
 
     SKCamera.disable()
 
-    for i = 10, 4, -1 do
-        SetTimeScale(i / 10)
-        Wait(12)
-    end
-    SetTimeScale(0.4)
-
     local cinCam = CreateCam('DEFAULT_SCRIPTED_CAMERA', true)
     SetCamCoord(cinCam, cam.camCoords.x, cam.camCoords.y, cam.camCoords.z)
     PointCamAtEntity(cinCam, playerVeh, 0.0, 0.2, 0.0, true)
@@ -81,23 +75,15 @@ local function triggerSpeedCam(cam, speedMph, camIndex)
 
     local submitResult = lib.callback.await('streetkings:events:submitTime', false, cam.id, math.floor(speedMph), SK.GetVehicleModelLabel(playerVeh))
     PlaySoundFrontend(-1, 'speedcamera', 'sk_soundset', true)
-    Wait(2500)
+    Wait(1250)
     cleanupCinematic(cinCam)
-
-    for i = 4, 10, 1 do
-        SetTimeScale(i / 10)
-        Wait(12)
-    end
-    SetTimeScale(1.0)
 
     local veh = GetVehiclePedIsIn(PlayerPedId(), false)
     if veh ~= 0 then
-        SKCamera.delayEnable(veh, 150)
+        SKCamera.delayEnable(veh, 75)
     end
     Cinematic = false
 
-    -- Fire the XP/reward toast only once we're back to normal gameplay, so it
-    -- doesn't land in the middle of the slow-mo flash cinematic.
     if submitResult and submitResult.reward and submitResult.reward.summary ~= '' then
         SKNotify({
             type     = 'success',
@@ -130,7 +116,6 @@ local function onCamEnter(cam, camIndex)
     CreateThread(function()
         local ok, err = pcall(triggerSpeedCam, cam, speedMph, camIndex)
         if not ok then
-            SetTimeScale(1.0)
             ClearTimecycleModifier()
             RenderScriptCams(false, true, 0, true, true)
             SendNUIMessage({ type = 'speedcam:flash', show = false })

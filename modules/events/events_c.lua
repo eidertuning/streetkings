@@ -428,7 +428,10 @@ local function runEvent(def)
         submitResult = lib.callback.await('streetkings:events:submitTime', false, activeEventId, math.floor(elapsed * 1000), SK.GetVehicleModelLabel(veh))
     end
 
-    SetTimeScale(0.05)
+    DoScreenFadeOut(500)
+    Wait(550)
+    DoScreenFadeIn(500)
+    while not IsScreenFadedIn() do Wait(0) end
 
     local leaderboardData = {}
     local personalBest = nil
@@ -473,7 +476,6 @@ local function runEvent(def)
         Wait(0)
     end
 
-    SetTimeScale(1.0)
     SendNUIMessage({ type = 'event:hide' })
     SKC.SetGameState(GameState.FREEROAM)
 end

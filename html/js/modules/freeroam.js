@@ -145,7 +145,7 @@
         elSc.style.display = 'block';
         scTimer = setTimeout(function () {
           elSc.style.display = 'none';
-        }, 2500);
+        }, 1250);
       } else {
         if (scTimer) { clearTimeout(scTimer); scTimer = null; }
         elSc.style.display = 'none';

@@ -299,7 +299,6 @@ local function runRace(ctx, start, checkpoints)
         return false
     end
 
-    SetTimeScale(0.05)
     Wait(250)
 
     if won then
@@ -308,7 +307,6 @@ local function runRace(ctx, start, checkpoints)
         SKNotify({ title = 'You Lost! Mission restarting...', type = 'error', duration = 4000 })
     end
 
-    SetTimeScale(1.0)
     Wait(1500)
     cleanupRace()
 

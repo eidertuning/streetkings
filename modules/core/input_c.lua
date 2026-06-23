@@ -71,5 +71,7 @@ end
 ---@return boolean
 function SKInput.isInteractJustReleased()
     local padIndex = SKInput.getActivePadIndex()
-    return IsControlJustReleased(padIndex, SKInput.getInteractControl(padIndex))
+    local control = SKInput.getInteractControl(padIndex)
+    return IsControlJustReleased(padIndex, control)
+        or IsDisabledControlJustReleased(padIndex, control)
 end

@@ -436,7 +436,7 @@
   position: absolute;
   inset: 0;
   background: #fff;
-  animation: skSpeedcamWhiteFlash 0.5s ease-out forwards;
+  animation: skSpeedcamWhiteFlash 0.25s ease-out forwards;
   z-index: 5;
 }
 
@@ -551,7 +551,7 @@
   height: 0.8333vh;
   border-radius: 50%;
   background: #e03030;
-  animation: skSpeedcamBlink 1s steps(1, end) infinite;
+  animation: skSpeedcamBlink 0.5s steps(1, end) infinite;
 }
 
 @keyframes skSpeedcamBlink {
@@ -575,7 +575,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  animation: skSpeedcamReadoutIn 0.35s cubic-bezier(0.33, 1, 0.68, 1);
+  animation: skSpeedcamReadoutIn 0.175s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 @keyframes skSpeedcamReadoutIn {
@@ -589,7 +589,7 @@
   background: #ff2020;
   margin-bottom: 1.1111vh;
   box-shadow: 0 0 0.5208vw rgba(255, 40, 40, 0.7);
-  animation: skSpeedcamViolationPulse 0.75s ease-in-out infinite;
+  animation: skSpeedcamViolationPulse 0.375s ease-in-out infinite;
 }
 
 @keyframes skSpeedcamViolationPulse {

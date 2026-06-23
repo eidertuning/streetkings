@@ -181,9 +181,10 @@ function SKRampage.run(def, vehicle, ped)
     local wasted = isPlayerWasted(vehicle)
 
     if not wasted then
-        SetTimeScale(0.3)
-        Wait(400)
-        SetTimeScale(1.0)
+        DoScreenFadeOut(500)
+        Wait(550)
+        DoScreenFadeIn(500)
+        while not IsScreenFadedIn() do Wait(0) end
     end
 
     local submitResult
@@ -218,7 +219,6 @@ function SKRampage.run(def, vehicle, ped)
         scoreType    = 'points',
         eventId      = def.id,
     })
-
 
     local continueKey = SKInput.getInteractLabel()
     while not SKInput.isInteractJustReleased() do

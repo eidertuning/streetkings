@@ -882,7 +882,11 @@ RegisterNetEvent('streetkings:mp:raceResults', function(payload)
     CreateThread(function()
         if SKC.GetGameState() ~= GameState.MULTIPLAYER_EVENT then return end
 
-        SetTimeScale(0.2)
+        DoScreenFadeOut(500)
+        Wait(550)
+        DoScreenFadeIn(500)
+        while not IsScreenFadedIn() do Wait(0) end
+
         SendNUIMessage({ type = 'mp:standingsHide' })
 
         local my = payload.myResult
@@ -938,7 +942,6 @@ RegisterNetEvent('streetkings:mp:raceResults', function(payload)
             Wait(0)
         end
 
-        SetTimeScale(1.0)
         SendNUIMessage({ type = 'event:hide' })
         local claimResult = lib.callback.await('streetkings:mp:claimRaceReturn', false)
         pendingSeamlessReturn = claimResult ~= nil and claimResult.seamless == true

@@ -1,6 +1,20 @@
+local hectorPhoneHintShown = false
+
 RegisterNetEvent('streetkings:messages:newMessage', function(msg)
     SKSettings.playSelectedMessageNotificationSound()
     SendNUIMessage({ type = 'messages:newMessage', msg = msg })
+    SetTimeout(7500, function()
+        if type(msg) == 'table' and msg.sender == 'Hector' and not hectorPhoneHintShown then
+            hectorPhoneHintShown = true
+            local phoneKey = SKInput.isUsingKeyboard() and 'TAB' or 'DPAD UP'
+            SendNUIMessage({
+                type = 'missions:subtitle',
+                speaker = '',
+                body = ('Use [%s] to open your phone!'):format(phoneKey),
+                duration = 5000,
+            })
+        end
+    end)
 end)
 
 ---@return boolean

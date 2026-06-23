@@ -334,8 +334,10 @@ local function startChallenge(npcVeh, npcPed)
         end
     end
 
-    SetTimeScale(0.05)
-    Wait(250)
+    DoScreenFadeOut(500)
+    Wait(550)
+    DoScreenFadeIn(500)
+    while not IsScreenFadedIn() do Wait(0) end
 
     local vehicleModelLabel = SK.GetVehicleModelLabel(playerVeh)
     local amount
@@ -375,7 +377,6 @@ local function startChallenge(npcVeh, npcPed)
         Wait(0)
     end
 
-    SetTimeScale(1.0)
     SendNUIMessage({ type = 'event:hide' })
     cleanup()
 
