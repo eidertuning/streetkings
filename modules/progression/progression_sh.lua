@@ -34,7 +34,7 @@ SKProgression.MOD_TYPE_NAMES = {
     [13] = 'Transmission',
     [15] = 'Suspension',
     [18] = 'Turbo',
-    [21] = 'Xenon Lights',
+    [22] = 'Xenon Lights',
     [23] = 'Wheels',
     [24] = 'Rear Wheels',
     [25] = 'Plate Holder',
@@ -61,6 +61,8 @@ SKProgression.MOD_TYPE_NAMES = {
     [46] = 'Windows',
     [47] = 'Mirrors',
     [48] = 'Livery',
+    [50] = 'Neons',
+    [51] = 'Nitrous',
 }
 
 ---@param maxLevel integer

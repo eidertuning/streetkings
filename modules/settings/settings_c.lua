@@ -23,6 +23,7 @@ local GENERAL_DEFAULTS = {
     mapWaypointMode = 'wholeRoute',
     speedometerStyle = 'analog',
     speedometerScale = '100',
+    speedometerShakeEnabled = true,
     musicDisabled = false,
     nametagsEnabled = true,
     soundtrackEnabled = true,
@@ -37,6 +38,7 @@ local CONTROLLER_GLYPH_STYLE_KVP = 'sk_general_controllerGlyphStyle'
 local MAP_WAYPOINT_MODE_KVP = 'sk_general_mapWaypointMode'
 local SPEEDOMETER_STYLE_KVP = 'sk_general_speedometerStyle'
 local SPEEDOMETER_SCALE_KVP = 'sk_general_speedometerScale'
+local SPEEDOMETER_SHAKE_ENABLED_KVP = 'sk_general_speedometerShakeEnabled'
 local NAMETAGS_ENABLED_KVP = 'sk_general_nametagsEnabled'
 local MUSIC_DISABLED_KVP = 'sk_general_musicDisabled'
 local SOUNDTRACK_ENABLED_KVP = 'sk_general_soundtrackEnabled'
@@ -120,6 +122,13 @@ local function loadGeneralConfig()
         generalConfig.speedometerScale = GENERAL_DEFAULTS.speedometerScale
     end
 
+    local speedometerShakeEnabled = parseBooleanKvp(GetResourceKvpString(SPEEDOMETER_SHAKE_ENABLED_KVP))
+    if speedometerShakeEnabled == nil then
+        generalConfig.speedometerShakeEnabled = GENERAL_DEFAULTS.speedometerShakeEnabled
+    else
+        generalConfig.speedometerShakeEnabled = speedometerShakeEnabled
+    end
+
     local nametagsEnabled = parseBooleanKvp(GetResourceKvpString(NAMETAGS_ENABLED_KVP))
     if nametagsEnabled == nil then
         generalConfig.nametagsEnabled = GENERAL_DEFAULTS.nametagsEnabled
@@ -165,7 +174,7 @@ local function pushGeneralConfigToNui()
     })
 end
 
----@return { checkpointSound: string, messageNotificationSound: string, controllerGlyphStyle: string, mapWaypointMode: string, nametagsEnabled: boolean, musicDisabled: boolean, soundtrackEnabled: boolean, soundtrackNowPlayingUiEnabled: boolean, soundtrackNowPlayingUiAlwaysVisible: boolean }
+---@return { checkpointSound: string, messageNotificationSound: string, controllerGlyphStyle: string, mapWaypointMode: string, speedometerStyle: string, speedometerScale: string, speedometerShakeEnabled: boolean, nametagsEnabled: boolean, musicDisabled: boolean, soundtrackEnabled: boolean, soundtrackNowPlayingUiEnabled: boolean, soundtrackNowPlayingUiAlwaysVisible: boolean }
 function SKSettings.getGeneralConfig()
     return {
         checkpointSound = generalConfig.checkpointSound,
@@ -174,6 +183,7 @@ function SKSettings.getGeneralConfig()
         mapWaypointMode = generalConfig.mapWaypointMode,
         speedometerStyle = generalConfig.speedometerStyle,
         speedometerScale = generalConfig.speedometerScale,
+        speedometerShakeEnabled = generalConfig.speedometerShakeEnabled,
         nametagsEnabled = generalConfig.nametagsEnabled,
         musicDisabled = generalConfig.musicDisabled,
         soundtrackEnabled = generalConfig.soundtrackEnabled,
@@ -265,6 +275,14 @@ function SKSettings.setGeneralValue(key, value)
 
         generalConfig.speedometerScale = value
         SetResourceKvp(SPEEDOMETER_SCALE_KVP, value)
+        return true
+    end
+
+    if key == 'speedometerShakeEnabled' then
+        if type(value) ~= 'boolean' then return false end
+
+        generalConfig.speedometerShakeEnabled = value
+        SetResourceKvp(SPEEDOMETER_SHAKE_ENABLED_KVP, value and 'true' or 'false')
         return true
     end
 

@@ -55,7 +55,7 @@ end)
 ---@param source integer
 ---@return table, string, table
 local function getActiveVehicleEntry(source)
-    local document = SKSaves.getDocument(source)
+    local document = assert(SKSaves.getDocument(source), 'Missing save document')
     local vehicleId = document.garage.activeVehicleId
     local entry = document.garage.vehicles[vehicleId]
     return document, vehicleId, entry
@@ -96,14 +96,75 @@ local function hasModOption(entry, modType, modIndex)
 end
 
 local VALID_COLOR_SLOTS = { primary = true, secondary = true }
+local VALID_NEON_SIDES = { front = true, back = true, left = true, right = true }
 
-lib.callback.register('streetkings:shop:purchaseColor', function(source, slot, r, g, b)
+---@param value number
+---@return integer
+local function clampColor(value)
+    return math.min(255, math.max(0, math.floor(value)))
+end
+
+---@param value number
+---@return integer
+local function clampPaintType(value)
+    return math.min(5, math.max(0, math.floor(value)))
+end
+
+---@param color table
+---@return boolean
+local function isValidColor(color)
+    return type(color) == 'table'
+        and type(color.r) == 'number'
+        and type(color.g) == 'number'
+        and type(color.b) == 'number'
+end
+
+---@param sides table
+---@return boolean
+local function isValidNeonSides(sides)
+    if type(sides) ~= 'table' then
+        return false
+    end
+
+    for side in pairs(VALID_NEON_SIDES) do
+        if type(sides[side]) ~= 'boolean' then
+            return false
+        end
+    end
+
+    return true
+end
+
+---@param color table
+---@param sides table
+---@return table
+local function buildNeonData(color, sides)
+    return {
+        enabled = true,
+        color = {
+            r = clampColor(color.r),
+            g = clampColor(color.g),
+            b = clampColor(color.b),
+        },
+        sides = {
+            front = sides.front,
+            back  = sides.back,
+            left  = sides.left,
+            right = sides.right,
+        },
+    }
+end
+
+lib.callback.register('streetkings:shop:purchaseColor', function(source, slot, r, g, b, paintType)
     if not VALID_COLOR_SLOTS[slot] then
         return { ok = false, reason = 'invalid_slot' }
     end
 
-    if type(r) ~= 'number' or type(g) ~= 'number' or type(b) ~= 'number' then
+    if not isValidColor({ r = r, g = g, b = b }) then
         return { ok = false, reason = 'invalid_color' }
+    end
+    if type(paintType) ~= 'number' then
+        return { ok = false, reason = 'invalid_paint_type' }
     end
 
     local document, vehicleId, entry = getActiveVehicleEntry(source)
@@ -116,16 +177,77 @@ lib.callback.register('streetkings:shop:purchaseColor', function(source, slot, r
 
     document.economy.cash = cash - SKShopShared.COLOR_PRICE
     entry.data.colors[slot] = {
-        r = math.min(255, math.max(0, math.floor(r))),
-        g = math.min(255, math.max(0, math.floor(g))),
-        b = math.min(255, math.max(0, math.floor(b))),
+        r = clampColor(r),
+        g = clampColor(g),
+        b = clampColor(b),
+        paintType = clampPaintType(paintType),
     }
 
     SKSaves.write(source, 'economy.cash', document.economy.cash)
     SKSaves.write(source, 'garage.vehicles.' .. vehicleId .. '.data', entry.data)
     SKStats.increment(source, 'totalCashSpent', SKShopShared.COLOR_PRICE)
 
-    return { ok = true, balance = document.economy.cash }
+    return { ok = true, balance = document.economy.cash, color = entry.data.colors[slot] }
+end)
+
+lib.callback.register('streetkings:shop:getActiveVehicleNeons', function(source)
+    local document, vehicleId = getActiveVehicleEntry(source)
+    local entry = document.garage.vehicles[vehicleId]
+    return entry.data.neons
+end)
+
+lib.callback.register('streetkings:shop:purchaseNeons', function(source, enabled)
+    if type(enabled) ~= 'boolean' then
+        return { ok = false, reason = 'invalid_state' }
+    end
+
+    local document, vehicleId, entry = getActiveVehicleEntry(source)
+    local cash = document.economy.cash
+    local alreadyInstalled = type(entry.data.neons) == 'table'
+    local price = enabled and not alreadyInstalled and SKShopShared.NEON_PRICE or 0
+    local unlockKey = SKProgression.getModOptionKey(SKShopShared.NEON_UNLOCK_MOD_TYPE, SKShopShared.NEON_UNLOCK_MOD_INDEX)
+
+    if enabled and not entry.data.unlocks[unlockKey] then
+        return { ok = false, reason = 'locked', unlockLevel = getUnlockLevel(entry, unlockKey) }
+    end
+
+    if price > 0 and cash < price then
+        return { ok = false, reason = 'insufficient_funds' }
+    end
+
+    document.economy.cash = cash - price
+    if enabled and not alreadyInstalled then
+        entry.data.neons = buildNeonData(SKShopShared.DEFAULT_NEONS.color, SKShopShared.DEFAULT_NEONS.sides)
+    elseif not enabled then
+        entry.data.neons = nil
+    end
+
+    SKSaves.write(source, 'economy.cash', document.economy.cash)
+    SKSaves.write(source, 'garage.vehicles.' .. vehicleId .. '.data', entry.data)
+    if price > 0 then
+        SKStats.increment(source, 'totalCashSpent', price)
+    end
+
+    return { ok = true, balance = document.economy.cash, neons = entry.data.neons }
+end)
+
+lib.callback.register('streetkings:shop:updateNeons', function(source, color, sides)
+    if not isValidColor(color) then
+        return { ok = false, reason = 'invalid_color' }
+    end
+    if not isValidNeonSides(sides) then
+        return { ok = false, reason = 'invalid_sides' }
+    end
+
+    local document, vehicleId, entry = getActiveVehicleEntry(source)
+    if type(entry.data.neons) ~= 'table' then
+        return { ok = false, reason = 'not_installed' }
+    end
+
+    entry.data.neons = buildNeonData(color, sides)
+    SKSaves.write(source, 'garage.vehicles.' .. vehicleId .. '.data', entry.data)
+
+    return { ok = true, neons = entry.data.neons }
 end)
 
 lib.callback.register('streetkings:shop:purchaseMod', function(source, shopTypeKey, modType, modIndex)
@@ -163,4 +285,87 @@ lib.callback.register('streetkings:shop:purchaseMod', function(source, shopTypeK
     SKStats.increment(source, 'totalCashSpent', price)
 
     return { ok = true, balance = document.economy.cash, price = price }
+end)
+
+-- ─── Gearbox callbacks ────────────────────────────────────────────────────────
+
+lib.callback.register('streetkings:shop:getActiveVehicleGearbox', function(source)
+    local document  = SKSaves.getDocument(source)
+    local vehicleId = document.garage.activeVehicleId
+    local entry     = document.garage.vehicles[vehicleId]
+    return entry.data.gearbox or 'none'
+end)
+
+local VALID_GEARBOX_TYPES = { none = true, beginner = true, expert = true }
+
+lib.callback.register('streetkings:shop:purchaseGearbox', function(source, gearboxType)
+    if not VALID_GEARBOX_TYPES[gearboxType] then
+        return { ok = false, reason = 'invalid_type' }
+    end
+
+    local document, vehicleId, entry = getActiveVehicleEntry(source)
+    local cash  = document.economy.cash
+    local price = 0
+
+    if gearboxType ~= 'none' then
+        -- Swapping to a different type still costs the full upgrade price
+        price = SKShopShared.GEARBOX_PRICES[gearboxType] or 0
+        if cash < price then
+            return { ok = false, reason = 'insufficient_funds' }
+        end
+    end
+
+    document.economy.cash = cash - price
+    entry.data.gearbox    = gearboxType ~= 'none' and gearboxType or nil
+
+    SKSaves.write(source, 'economy.cash', document.economy.cash)
+    SKSaves.write(source, 'garage.vehicles.' .. vehicleId .. '.data', entry.data)
+    if price > 0 then
+        SKStats.increment(source, 'totalCashSpent', price)
+    end
+
+    return { ok = true, balance = document.economy.cash }
+end)
+
+lib.callback.register('streetkings:shop:getActiveVehicleNitrous', function(source)
+    local document  = SKSaves.getDocument(source)
+    local vehicleId = document.garage.activeVehicleId
+    local entry     = document.garage.vehicles[vehicleId]
+    return entry.data.nitrous or 'none'
+end)
+
+local VALID_NITROUS_TYPES = { none = true, street = true, sport = true, race = true }
+
+lib.callback.register('streetkings:shop:purchaseNitrous', function(source, nitrousType)
+    if not VALID_NITROUS_TYPES[nitrousType] then
+        return { ok = false, reason = 'invalid_type' }
+    end
+
+    local document, vehicleId, entry = getActiveVehicleEntry(source)
+    local cash  = document.economy.cash
+    local price = 0
+
+    if nitrousType ~= 'none' then
+        local unlock = SKShopShared.NITROUS_UNLOCKS[nitrousType]
+        local unlockKey = SKProgression.getModOptionKey(SKShopShared.NITROUS_UNLOCK_MOD_TYPE, unlock.index)
+        if not entry.data.unlocks[unlockKey] then
+            return { ok = false, reason = 'locked', unlockLevel = getUnlockLevel(entry, unlockKey) }
+        end
+
+        price = SKShopShared.NITROUS_PRICES[nitrousType] or 0
+        if cash < price then
+            return { ok = false, reason = 'insufficient_funds' }
+        end
+    end
+
+    document.economy.cash = cash - price
+    entry.data.nitrous    = nitrousType ~= 'none' and nitrousType or nil
+
+    SKSaves.write(source, 'economy.cash', document.economy.cash)
+    SKSaves.write(source, 'garage.vehicles.' .. vehicleId .. '.data', entry.data)
+    if price > 0 then
+        SKStats.increment(source, 'totalCashSpent', price)
+    end
+
+    return { ok = true, balance = document.economy.cash }
 end)

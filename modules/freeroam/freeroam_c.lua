@@ -112,12 +112,8 @@ function SKFreeroam.restoreToReturnPosition()
                 SKShopShared.applyVehicleMod(activeVehicle, numericModType, modIndex)
             end
         end
-        if savedColors.primary then
-            SetVehicleCustomPrimaryColour(activeVehicle, savedColors.primary.r, savedColors.primary.g, savedColors.primary.b)
-        end
-        if savedColors.secondary then
-            SetVehicleCustomSecondaryColour(activeVehicle, savedColors.secondary.r, savedColors.secondary.g, savedColors.secondary.b)
-        end
+        SKShop.applyVehicleColor(activeVehicle, 'primary', savedColors.primary)
+        SKShop.applyVehicleColor(activeVehicle, 'secondary', savedColors.secondary)
 
         lib.callback.await('streetkings:progression:syncActiveVehicleMods', false, SKProgression.collectVehicleAvailability(activeVehicle))
 
@@ -294,6 +290,10 @@ SKC.RegisterGameState(GameState.FREEROAM, {
                 TriggerEvent('streetkings:repair:freeroamEnter')
                 TriggerEvent('streetkings:avatar:freeroamEnter')
                 TriggerEvent('streetkings:hangoutzones:freeroamEnter')
+                TriggerEvent('streetkings:gearbox:forceRestartAfterTransition', activeVehicle)
+                TriggerEvent('streetkings:gearbox:freeroamEnter')
+                TriggerEvent('streetkings:nitrous:freeroamEnter')
+                startSpawnProtection()
                 return
             end
 
@@ -325,6 +325,10 @@ SKC.RegisterGameState(GameState.FREEROAM, {
                 TriggerEvent('streetkings:repair:freeroamEnter')
                 TriggerEvent('streetkings:avatar:freeroamEnter')
                 TriggerEvent('streetkings:hangoutzones:freeroamEnter')
+                TriggerEvent('streetkings:gearbox:forceRestartAfterTransition', activeVehicle)
+                TriggerEvent('streetkings:gearbox:freeroamEnter')
+                TriggerEvent('streetkings:nitrous:freeroamEnter')
+                startSpawnProtection()
                 return
             end
 
@@ -352,6 +356,7 @@ SKC.RegisterGameState(GameState.FREEROAM, {
 
             local savedMods    = lib.callback.await('streetkings:shop:getVehicleMods', false)
             local savedColors  = lib.callback.await('streetkings:shop:getVehicleColors', false)
+            local savedNeons   = lib.callback.await('streetkings:shop:getActiveVehicleNeons', false)
             SetVehicleModKit(activeVehicle, 0)
             for modType, modIndex in pairs(savedMods) do
                 local numericModType = tonumber(modType)
@@ -359,12 +364,9 @@ SKC.RegisterGameState(GameState.FREEROAM, {
                     SKShopShared.applyVehicleMod(activeVehicle, numericModType, modIndex)
                 end
             end
-            if savedColors.primary then
-                SetVehicleCustomPrimaryColour(activeVehicle, savedColors.primary.r, savedColors.primary.g, savedColors.primary.b)
-            end
-            if savedColors.secondary then
-                SetVehicleCustomSecondaryColour(activeVehicle, savedColors.secondary.r, savedColors.secondary.g, savedColors.secondary.b)
-            end
+            SKShop.applyVehicleColor(activeVehicle, 'primary', savedColors.primary)
+            SKShop.applyVehicleColor(activeVehicle, 'secondary', savedColors.secondary)
+            SKShop.applyVehicleNeons(activeVehicle, savedNeons)
 
             lib.callback.await('streetkings:progression:syncActiveVehicleMods', false, SKProgression.collectVehicleAvailability(activeVehicle))
 
@@ -388,6 +390,9 @@ SKC.RegisterGameState(GameState.FREEROAM, {
             TriggerEvent('streetkings:repair:freeroamEnter')
             TriggerEvent('streetkings:avatar:freeroamEnter')
             TriggerEvent('streetkings:hangoutzones:freeroamEnter')
+            TriggerEvent('streetkings:gearbox:forceRestartAfterTransition', activeVehicle)
+            TriggerEvent('streetkings:gearbox:freeroamEnter')
+            TriggerEvent('streetkings:nitrous:freeroamEnter')
 
             SKSpeedo.setEnabled(true)
             SetVehRadioStation(activeVehicle, math.random(2) == 1 and "RADIO_03_HIPHOP_NEW" or "RADIO_09_HIPHOP_OLD")
@@ -418,6 +423,7 @@ SKC.RegisterGameState(GameState.FREEROAM, {
             TriggerEvent('streetkings:event:freeroamExit', nextState)
             TriggerEvent('streetkings:property:freeroamExit')
             TriggerEvent('streetkings:hangoutzones:freeroamExit')
+            TriggerEvent('streetkings:nitrous:freeroamExit', nextState)
             local ped = PlayerPedId()
             SetEntityMaxHealth(ped, 200)
             SetEntityHealth(ped, 200)
@@ -435,6 +441,8 @@ SKC.RegisterGameState(GameState.FREEROAM, {
         TriggerEvent('streetkings:repair:freeroamExit')
         TriggerEvent('streetkings:avatar:freeroamExit')
         TriggerEvent('streetkings:hangoutzones:freeroamExit')
+        TriggerEvent('streetkings:gearbox:freeroamExit', nextState)
+        TriggerEvent('streetkings:nitrous:freeroamExit', nextState)
         local ped = PlayerPedId()
         SetEntityMaxHealth(ped, 200)
         SetEntityHealth(ped, 200)

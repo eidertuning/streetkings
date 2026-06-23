@@ -3,7 +3,7 @@ game 'gta5'
 
 author '919DESIGN & Envi-Scripts'
 description 'StreetKings txAdmin Recipe'
-version '1.0 BETA'
+version '1.1.0'
 
 dependencies {
     'oxmysql',
@@ -45,6 +45,8 @@ client_scripts {
     'modules/freeroam/freeroam_c.lua',
     'modules/stunts/stunt_jump_c.lua',
     'modules/devtools/stunt_devtool_c.lua',
+    'modules/gearbox/gearbox_c.lua',
+    'modules/nitrous/nitrous_c.lua',
     'modules/events/rampage_c.lua',
     'modules/events/event_preview_c.lua',
     'modules/events/events_freeroam_markers_c.lua',

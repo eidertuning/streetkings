@@ -2,6 +2,21 @@ SKShopShared = SKShopShared or {}
 
 SKShopShared.VISUAL_MOD_PRICE = 500 -- Price for visual mods
 SKShopShared.COLOR_PRICE = 200 -- Price for colors
+SKShopShared.NEON_PRICE = 2500 -- Price for neon kit
+SKShopShared.NEON_UNLOCK_MOD_TYPE = 50
+SKShopShared.NEON_UNLOCK_MOD_INDEX = 0
+SKShopShared.NITROUS_UNLOCK_MOD_TYPE = 51
+SKShopShared.NITROUS_UNLOCKS = {
+    street = { index = 0, level = 3 },
+    sport  = { index = 1, level = 5 },
+    race   = { index = 2, level = 8 },
+}
+
+SKShopShared.DEFAULT_NEONS = {
+    enabled = true,
+    color = { r = 0, g = 180, b = 255 },
+    sides = { front = true, back = true, left = true, right = true },
+}
 
 SKShopShared.PERFORMANCE_MOD_PRICES = { -- Price for performance mods
     [11] = 3500, -- Price for ENGINE
@@ -9,6 +24,18 @@ SKShopShared.PERFORMANCE_MOD_PRICES = { -- Price for performance mods
     [13] = 3200, -- Price for TRANSMISSION
     [15] = 2400, -- Price for SUSPENSION
     [18] = 4000, -- Price for TURBO
+}
+
+-- Gearbox upgrade prices (not a native vehicle mod — handled separately)
+SKShopShared.GEARBOX_PRICES = {
+    beginner = 2500,
+    expert   = 3500,
+}
+
+SKShopShared.NITROUS_PRICES = {
+    street = 3500,
+    sport  = 6500,
+    race   = 8500,
 }
 
 SKShopShared.TYPES = {

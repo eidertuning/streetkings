@@ -273,6 +273,7 @@ local function runSequentialLoop(def, checkpoints, ped, vehicle)
             local pos = GetEntityCoords(ped)
             if #(pos - cp) < CHECKPOINT_PICKUP_RADIUS then
                 TriggerServerEvent('streetkings:events:checkpointHit', activeEventId, i)
+                TriggerEvent('streetkings:nitrous:checkpointCleared')
                 SKSettings.playSelectedCheckpointSound()
                 break
             end
@@ -328,6 +329,7 @@ local function runUnorderedLoop(def, checkpoints, ped, vehicle)
         for i = #remaining, 1, -1 do
             if #(pos - remaining[i]) < CHECKPOINT_PICKUP_RADIUS then
                 TriggerServerEvent('streetkings:events:checkpointHit', activeEventId, remainingRouteIndexes[i])
+                TriggerEvent('streetkings:nitrous:checkpointCleared')
                 SKSettings.playSelectedCheckpointSound()
                 lastHit = remaining[i]
                 setRecoveryPoint(lastHit, GetEntityHeading(vehicle))

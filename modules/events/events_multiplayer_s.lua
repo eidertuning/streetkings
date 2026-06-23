@@ -102,7 +102,7 @@ end
 
 ---@param def table
 ---@param options table|nil
----@return { laps: integer, collision: boolean, lobbyTimeoutSeconds: integer }
+---@return { laps: integer, collision: boolean, nitrousEnabled: boolean, trafficDensityPct: integer, lobbyTimeoutSeconds: integer }
 local function normalizeRaceOptions(def, options)
     local defaults = SKEventsConfig.MULTIPLAYER_SETUP_DEFAULTS or {}
     local timeoutOptions = SKEventsConfig.MULTIPLAYER_SETUP_TIMEOUT_OPTIONS or { 180, 300, 600 }
@@ -117,6 +117,17 @@ local function normalizeRaceOptions(def, options)
     if type(options) == 'table' and type(options.collision) == 'boolean' then
         collision = options.collision
     end
+
+    local nitrousEnabled = defaults.nitrousEnabled ~= false
+    if type(options) == 'table' and type(options.nitrousEnabled) == 'boolean' then
+        nitrousEnabled = options.nitrousEnabled
+    end
+
+    local trafficDensityPct = type(options) == 'table' and tonumber(options.trafficDensityPct)
+        or tonumber(defaults.trafficDensityPct)
+        or 20
+    trafficDensityPct = math.floor(trafficDensityPct / 10) * 10
+    trafficDensityPct = math.max(0, math.min(trafficDensityPct, 100))
 
     local lobbyTimeoutSeconds = type(options) == 'table' and tonumber(options.lobbyTimeoutSeconds)
         or tonumber(defaults.lobbyTimeoutSeconds)
@@ -137,12 +148,14 @@ local function normalizeRaceOptions(def, options)
     return {
         laps = laps,
         collision = collision,
+        nitrousEnabled = nitrousEnabled,
+        trafficDensityPct = trafficDensityPct,
         lobbyTimeoutSeconds = lobbyTimeoutSeconds,
     }
 end
 
 ---@param def table
----@param raceOptions { laps: integer, collision: boolean, lobbyTimeoutSeconds: integer }
+---@param raceOptions { laps: integer, collision: boolean, nitrousEnabled: boolean, trafficDensityPct: integer, lobbyTimeoutSeconds: integer }
 ---@return vector3[] checkpoints, integer checkpointsPerLap, integer lapTotal
 local function buildRaceCheckpoints(def, raceOptions)
     local baseCheckpoints = SKEventRoute.buildCheckpointList(def)
@@ -263,6 +276,8 @@ local function announceLobbyOpenMessage(lobby)
     local timeoutMinutes = math.floor((lobby.raceOptions.lobbyTimeoutSeconds or SKEventsConfig.MULTIPLAYER_LOBBY_EXPIRY_SECONDS) / 60)
     local lapsLine = lobby.raceOptions.laps == 1 and '1 lap' or (tostring(lobby.raceOptions.laps) .. ' laps')
     local collisionLine = lobby.raceOptions.collision and 'On' or 'Off'
+    local nitrousLine = lobby.raceOptions.nitrousEnabled and 'On' or 'Off'
+    local trafficLine = tostring(lobby.raceOptions.trafficDensityPct) .. '%'
     local body = ([[%s is hosting a live race.
 
 Event: %s
@@ -270,6 +285,8 @@ Type: %s
 Class: %s
 Laps: %s
 Collision: %s
+NOS: %s
+Traffic: %s
 Lobby closes in %d minutes.]]):format(
         lobby.hostAlias,
         lobby.eventName,
@@ -277,6 +294,8 @@ Lobby closes in %d minutes.]]):format(
         lobby.vehicleClass,
         lapsLine,
         collisionLine,
+        nitrousLine,
+        trafficLine,
         timeoutMinutes
     )
 
@@ -497,6 +516,8 @@ startRace = function(lobby)
             checkpointsPerLap = checkpointsPerLap,
             lapTotal = lapTotal,
             collision = lobby.raceOptions.collision,
+            nitrousEnabled = lobby.raceOptions.nitrousEnabled,
+            trafficDensityPct = lobby.raceOptions.trafficDensityPct,
         })
     end
 

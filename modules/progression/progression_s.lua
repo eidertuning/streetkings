@@ -122,6 +122,21 @@ local function normalizeAvailableMods(availableMods)
     return normalized
 end
 
+---@param modType integer
+---@param modIndex integer
+---@return integer|nil
+local function getFixedUnlockLevel(modType, modIndex)
+    if modType ~= SKShopShared.NITROUS_UNLOCK_MOD_TYPE then
+        return nil
+    end
+
+    for _, unlock in pairs(SKShopShared.NITROUS_UNLOCKS) do
+        if unlock.index == modIndex then
+            return unlock.level
+        end
+    end
+end
+
 ---@param vehicleData table
 local function rebuildUnlockSchedule(vehicleData)
     local flattened = {}
@@ -137,6 +152,8 @@ local function rebuildUnlockSchedule(vehicleData)
             local unlockLevel = SKProgression.getVehicleUnlockLevel(index, #mod.options)
             local unlockModName = mod.name
             local packIndex = nil
+            local fixedUnlockLevel = getFixedUnlockLevel(mod.modType, option.index)
+            if fixedUnlockLevel then unlockLevel = fixedUnlockLevel end
 
             if SKProgression.isWheelModType(mod.modType) then
                 packIndex = SKProgression.getWheelPackIndex(index, #mod.options)

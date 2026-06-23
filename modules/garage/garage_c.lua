@@ -178,12 +178,9 @@ local function applyVehicleData(vehicle, vehicleData)
             SKShopShared.applyVehicleMod(vehicle, numericModType, modIndex)
         end
     end
-    if colors.primary then
-        SetVehicleCustomPrimaryColour(vehicle, colors.primary.r, colors.primary.g, colors.primary.b)
-    end
-    if colors.secondary then
-        SetVehicleCustomSecondaryColour(vehicle, colors.secondary.r, colors.secondary.g, colors.secondary.b)
-    end
+    SKShop.applyVehicleColor(vehicle, 'primary', colors.primary)
+    SKShop.applyVehicleColor(vehicle, 'secondary', colors.secondary)
+    SKShop.applyVehicleNeons(vehicle, vehicleData.neons)
 end
 
 ---@param modelName string

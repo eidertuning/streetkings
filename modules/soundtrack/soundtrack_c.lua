@@ -15,7 +15,7 @@ local RADIO_DISABLED_CONTROLS = {
     85,
 }
 
-local INPUT_CONTROLLER_FACE_X = 179
+local INPUT_FRONTEND_SELECT = 217
 
 local STATIC_EMITTERS_FILE_PATH = 'modules/soundtrack/staticemitters.json'
 
@@ -672,8 +672,8 @@ CreateThread(function()
             local padIndex = SKInput.getActivePadIndex()
             if SKInput.isUsingKeyboard(padIndex) then
                 Wait(50)
-            elseif IsDisabledControlJustPressed(padIndex, INPUT_CONTROLLER_FACE_X)
-                or IsControlJustPressed(padIndex, INPUT_CONTROLLER_FACE_X)
+            elseif IsDisabledControlJustPressed(padIndex, INPUT_FRONTEND_SELECT)
+                or IsControlJustPressed(padIndex, INPUT_FRONTEND_SELECT)
             then
                 SKSoundtrack.SkipCurrentTrack()
                 Wait(250)

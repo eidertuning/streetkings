@@ -28,6 +28,7 @@ local blips = {}
 local pendingModel  = nil
 local pendingMods   = {}
 local pendingColors = {}
+local pendingNeons  = nil
 local pendingPlate  = ''
 local currentLocation = nil
 local shopVehicle   = nil
@@ -41,6 +42,37 @@ local installedMods = {}
 local lastPreviewedModType = nil
 local shopControllerModeEnabled = false
 local shopControllerTracker = SKControllerFriendly.newTracker()
+
+local NEON_SIDE_TO_INDEX = {
+    left  = 0,
+    right = 1,
+    front = 2,
+    back  = 3,
+}
+
+---@param vehicle integer
+---@param slot 'primary'|'secondary'
+---@param color table|nil
+function SKShop.applyVehicleColor(vehicle, slot, color)
+    if type(color) ~= 'table' then return end
+    if slot ~= 'primary' and slot ~= 'secondary' then return end
+
+    local paintType = type(color.paintType) == 'number' and math.floor(color.paintType) or nil
+    if paintType ~= nil then
+        if slot == 'primary' then
+            local pearlescentColor = GetVehicleExtraColours(vehicle)
+            SetVehicleModColor_1(vehicle, paintType, 0, pearlescentColor)
+        else
+            SetVehicleModColor_2(vehicle, paintType, 0)
+        end
+    end
+
+    if slot == 'primary' then
+        SetVehicleCustomPrimaryColour(vehicle, color.r, color.g, color.b)
+    else
+        SetVehicleCustomSecondaryColour(vehicle, color.r, color.g, color.b)
+    end
+end
 
 -- Helpers -------------------------------------------------------------------
 
@@ -234,6 +266,22 @@ function SKShop.isShopState(stateId)
     return false
 end
 
+---@param vehicle integer
+---@param neons table|nil
+function SKShop.applyVehicleNeons(vehicle, neons)
+    if not neons or neons.enabled ~= true then
+        for _, index in pairs(NEON_SIDE_TO_INDEX) do
+            SetVehicleNeonLightEnabled(vehicle, index, false)
+        end
+        return
+    end
+
+    SetVehicleNeonLightsColour(vehicle, neons.color.r, neons.color.g, neons.color.b)
+    for side, index in pairs(NEON_SIDE_TO_INDEX) do
+        SetVehicleNeonLightEnabled(vehicle, index, neons.sides[side])
+    end
+end
+
 -- Game state factory --------------------------------------------------------
 
 ---@param shopTypeKey string
@@ -265,12 +313,9 @@ function SKShop.registerShopState(shopTypeKey)
                     end
                 end
 
-                if pendingColors.primary then
-                    SetVehicleCustomPrimaryColour(shopVehicle, pendingColors.primary.r, pendingColors.primary.g, pendingColors.primary.b)
-                end
-                if pendingColors.secondary then
-                    SetVehicleCustomSecondaryColour(shopVehicle, pendingColors.secondary.r, pendingColors.secondary.g, pendingColors.secondary.b)
-                end
+                SKShop.applyVehicleColor(shopVehicle, 'primary', pendingColors.primary)
+                SKShop.applyVehicleColor(shopVehicle, 'secondary', pendingColors.secondary)
+                SKShop.applyVehicleNeons(shopVehicle, pendingNeons)
 
                 SetVehicleNumberPlateText(shopVehicle, pendingPlate)
                 SetVehicleDirtLevel(shopVehicle, 0.0)
@@ -297,8 +342,76 @@ function SKShop.registerShopState(shopTypeKey)
                 currentVehicleProgression = currentVehicleProgression and currentVehicleProgression.vehicle or nil
                 local mods = buildModList(shopVehicle, shopTypeKey, currentVehicleProgression)
 
+                if shopTypeKey == 'performance' then -- These two aren't base game mods, they're custom scripted mods.
+                    -- So they need to be injected manually into the performance shop mods list.
+                    local gearboxType  = lib.callback.await('streetkings:shop:getActiveVehicleGearbox', false)
+                    local gearboxIndex = ({ beginner = 0, expert = 1 })[gearboxType] or -1
+                    local nitrousType  = lib.callback.await('streetkings:shop:getActiveVehicleNitrous', false)
+                    local nitrousIndex = ({ street = 0, sport = 1, race = 2 })[nitrousType] or -1
+                    local nitrousUnlockKeys = {
+                        street = SKProgression.getModOptionKey(SKShopShared.NITROUS_UNLOCK_MOD_TYPE, SKShopShared.NITROUS_UNLOCKS.street.index),
+                        sport = SKProgression.getModOptionKey(SKShopShared.NITROUS_UNLOCK_MOD_TYPE, SKShopShared.NITROUS_UNLOCKS.sport.index),
+                        race = SKProgression.getModOptionKey(SKShopShared.NITROUS_UNLOCK_MOD_TYPE, SKShopShared.NITROUS_UNLOCKS.race.index),
+                    }
+                    local nitrousUnlockLevels = {
+                        street = currentVehicleProgression and currentVehicleProgression.unlockLevels[nitrousUnlockKeys.street] or nil,
+                        sport = currentVehicleProgression and currentVehicleProgression.unlockLevels[nitrousUnlockKeys.sport] or nil,
+                        race = currentVehicleProgression and currentVehicleProgression.unlockLevels[nitrousUnlockKeys.race] or nil,
+                    }
+                    local nitrousLocked = {
+                        street = nitrousUnlockLevels.street ~= nil and not (currentVehicleProgression and currentVehicleProgression.unlocks[nitrousUnlockKeys.street]),
+                        sport = nitrousUnlockLevels.sport ~= nil and not (currentVehicleProgression and currentVehicleProgression.unlocks[nitrousUnlockKeys.sport]),
+                        race = nitrousUnlockLevels.race ~= nil and not (currentVehicleProgression and currentVehicleProgression.unlocks[nitrousUnlockKeys.race]),
+                    }
+                    table.insert(mods, {
+                        modType   = 'gearbox',
+                        name      = 'Gearbox',
+                        current   = gearboxIndex,
+                        isGearbox = true,
+                        basePrice = SKShopShared.GEARBOX_PRICES.beginner,
+                        options   = {
+                            { index = -1, key = 'gearbox:none',     name = 'Stock (Automatic)', price = 0,                                    locked = false },
+                            { index = 0,  key = 'gearbox:beginner', name = 'Beginner Manual',   price = SKShopShared.GEARBOX_PRICES.beginner,  locked = false },
+                            { index = 1,  key = 'gearbox:expert',   name = 'Expert Manual',     price = SKShopShared.GEARBOX_PRICES.expert,    locked = false },
+                        },
+                    })
+                    table.insert(mods, {
+                        modType   = 'nitrous',
+                        name      = 'Nitrous',
+                        current   = nitrousIndex,
+                        isNitrous = true,
+                        basePrice = SKShopShared.NITROUS_PRICES.street,
+                        options   = {
+                            { index = -1, key = 'nitrous:none',            name = 'No Nitrous',     price = 0,                                  locked = false },
+                            { index = 0,  key = nitrousUnlockKeys.street,  name = 'Street Nitrous', price = SKShopShared.NITROUS_PRICES.street, locked = nitrousLocked.street, unlockLevel = nitrousUnlockLevels.street },
+                            { index = 1,  key = nitrousUnlockKeys.sport,   name = 'Sport Nitrous',  price = SKShopShared.NITROUS_PRICES.sport,  locked = nitrousLocked.sport,  unlockLevel = nitrousUnlockLevels.sport },
+                            { index = 2,  key = nitrousUnlockKeys.race,    name = 'Race Nitrous',   price = SKShopShared.NITROUS_PRICES.race,   locked = nitrousLocked.race,   unlockLevel = nitrousUnlockLevels.race },
+                        },
+                    })
+                end
+                if shopTypeKey == 'visual' then
+                    local neons = lib.callback.await('streetkings:shop:getActiveVehicleNeons', false)
+                    local neonUnlockKey = SKProgression.getModOptionKey(SKShopShared.NEON_UNLOCK_MOD_TYPE, SKShopShared.NEON_UNLOCK_MOD_INDEX)
+                    local neonUnlockLevel = currentVehicleProgression and currentVehicleProgression.unlockLevels[neonUnlockKey] or nil
+                    local neonLocked = neonUnlockLevel ~= nil and not (currentVehicleProgression and currentVehicleProgression.unlocks[neonUnlockKey])
+                    table.insert(mods, {
+                        modType   = 'neons',
+                        name      = 'Neons',
+                        current   = neons and 0 or -1,
+                        isNeon    = true,
+                        basePrice = SKShopShared.NEON_PRICE,
+                        neons     = neons,
+                        options   = {
+                            { index = -1, key = 'neons:none', name = 'No Neons', locked = false, price = 0 },
+                            { index = 0,  key = neonUnlockKey, name = 'Neon Kit', locked = neonLocked, unlockLevel = neonUnlockLevel, price = SKShopShared.NEON_PRICE },
+                        },
+                    })
+                end
+
                 local pr, pg, pb = GetVehicleCustomPrimaryColour(shopVehicle)
                 local sr, sg, sb = GetVehicleCustomSecondaryColour(shopVehicle)
+                local primaryPaintType = GetVehicleModColor_1(shopVehicle)
+                local secondaryPaintType = GetVehicleModColor_2(shopVehicle)
 
                 SetEntityVisible(ped, false, false)
                 DisplayHud(false)
@@ -320,9 +433,10 @@ function SKShop.registerShopState(shopTypeKey)
                 }
                 if config.allowsColors then
                     payload.colors = {
-                        primary = { r = pr, g = pg, b = pb },
-                        secondary = { r = sr, g = sg, b = sb },
+                        primary = { r = pr, g = pg, b = pb, paintType = primaryPaintType },
+                        secondary = { r = sr, g = sg, b = sb, paintType = secondaryPaintType },
                     }
+                    payload.neons = pendingNeons
                 end
                 SendNUIMessage(payload)
 
@@ -384,6 +498,7 @@ function SKShop.registerShopState(shopTypeKey)
             pendingModel  = nil
             pendingMods   = {}
             pendingColors = {}
+            pendingNeons  = nil
             pendingPlate  = ''
             currentLocation = nil
             currentVehicleProgression = nil
@@ -431,6 +546,7 @@ function SKShop.enter(location)
             r = vehicleData.colors.primary.r,
             g = vehicleData.colors.primary.g,
             b = vehicleData.colors.primary.b,
+            paintType = vehicleData.colors.primary.paintType,
         }
     end
     if vehicleData.colors.secondary then
@@ -438,8 +554,10 @@ function SKShop.enter(location)
             r = vehicleData.colors.secondary.r,
             g = vehicleData.colors.secondary.g,
             b = vehicleData.colors.secondary.b,
+            paintType = vehicleData.colors.secondary.paintType,
         }
     end
+    pendingNeons = vehicleData.neons
 
     SendNUIMessage({ type = 'prompt:hide' })
     SKC.SetGameState(config.gameState)
@@ -650,24 +768,80 @@ end
 
 RegisterNUICallback('modshop:previewColor', function(data, cb)
     if shopVehicle and DoesEntityExist(shopVehicle) then
-        if data.slot == 'primary' then
-            SetVehicleCustomPrimaryColour(shopVehicle, data.r, data.g, data.b)
-        else
-            SetVehicleCustomSecondaryColour(shopVehicle, data.r, data.g, data.b)
-        end
+        SKShop.applyVehicleColor(shopVehicle, data.slot, data)
     end
     cb({})
 end)
 
 RegisterNUICallback('modshop:purchaseColor', function(data, cb)
-    local result = lib.callback.await('streetkings:shop:purchaseColor', false, data.slot, data.r, data.g, data.b)
+    local result = lib.callback.await('streetkings:shop:purchaseColor', false, data.slot, data.r, data.g, data.b, data.paintType)
     if result.ok and shopVehicle and DoesEntityExist(shopVehicle) then
-        if data.slot == 'primary' then
-            SetVehicleCustomPrimaryColour(shopVehicle, data.r, data.g, data.b)
-        else
-            SetVehicleCustomSecondaryColour(shopVehicle, data.r, data.g, data.b)
-        end
+        SKShop.applyVehicleColor(shopVehicle, data.slot, result.color)
     end
+    cb(result)
+end)
+
+RegisterNUICallback('modshop:previewNeons', function(data, cb)
+    if shopVehicle and DoesEntityExist(shopVehicle) then
+        SKShop.applyVehicleNeons(shopVehicle, data.neons)
+    end
+    cb({ ok = true })
+end)
+
+RegisterNUICallback('modshop:purchaseNeons', function(data, cb)
+    local result = lib.callback.await('streetkings:shop:purchaseNeons', false, data.enabled == true)
+
+    if result.ok and shopVehicle and DoesEntityExist(shopVehicle) then
+        SKShop.applyVehicleNeons(shopVehicle, result.neons)
+        pendingNeons = result.neons
+        PlaySoundFrontend(-1, 'airwrench' .. math.random(1, 3), 'sk_soundset', true)
+    end
+
+    cb(result)
+end)
+
+RegisterNUICallback('modshop:updateNeons', function(data, cb)
+    local result = lib.callback.await('streetkings:shop:updateNeons', false, data.color, data.sides)
+
+    if result.ok and shopVehicle and DoesEntityExist(shopVehicle) then
+        SKShop.applyVehicleNeons(shopVehicle, result.neons)
+        pendingNeons = result.neons
+        PlaySoundFrontend(-1, 'airwrench' .. math.random(1, 3), 'sk_soundset', true)
+    end
+
+    cb(result)
+end)
+
+local VALID_GEARBOX_TYPES_CLIENT = { none = true, beginner = true, expert = true }
+local VALID_NITROUS_TYPES_CLIENT = { none = true, street = true, sport = true, race = true }
+
+RegisterNUICallback('perfshop:purchaseGearbox', function(data, cb)
+    if not VALID_GEARBOX_TYPES_CLIENT[data.type] then
+        cb({ ok = false, reason = 'invalid_type' })
+        return
+    end
+
+    local result = lib.callback.await('streetkings:shop:purchaseGearbox', false, data.type)
+
+    if result.ok then
+        PlaySoundFrontend(-1, 'airwrench' .. math.random(1, 3), 'sk_soundset', true)
+    end
+
+    cb(result)
+end)
+
+RegisterNUICallback('perfshop:purchaseNitrous', function(data, cb)
+    if not VALID_NITROUS_TYPES_CLIENT[data.type] then
+        cb({ ok = false, reason = 'invalid_type' })
+        return
+    end
+
+    local result = lib.callback.await('streetkings:shop:purchaseNitrous', false, data.type)
+
+    if result.ok then
+        PlaySoundFrontend(-1, 'airwrench' .. math.random(1, 3), 'sk_soundset', true)
+    end
+
     cb(result)
 end)
 

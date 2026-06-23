@@ -11,6 +11,8 @@ SKEventsConfig = {
     MULTIPLAYER_SETUP_TIMEOUT_OPTIONS = { 180, 300, 600 }, -- The timeout options for a multiplayer lobby
     MULTIPLAYER_SETUP_DEFAULTS = { -- The default setup options for a multiplayer lobby
         collision = true,
+        nitrousEnabled = true,
+        trafficDensityPct = 20,
         lobbyTimeoutSeconds = 180,
     },
     MULTIPLAYER_START_COUNTDOWN_SECONDS = 10, -- The time in seconds for the countdown to start before the race starts

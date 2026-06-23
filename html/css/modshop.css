@@ -511,42 +511,173 @@
 
 .sk-modshop-color-row {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 0.85rem 1rem;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.075);
+}
+
+.sk-modshop-color-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
   gap: 0.75rem;
-  padding: 0.65rem 1rem;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 .sk-modshop-color-label {
-  flex: 1;
   font-family: var(--sk-font-ui);
   font-size: clamp(0.65rem, 0.78vw, 0.76rem);
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--sk-text-primary);
 }
 
-.sk-modshop-color-picker {
-  width: 2rem;
-  height: 2rem;
-  padding: 2px;
+.sk-modshop-color-hint {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.52rem, 0.62vw, 0.6rem);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.42);
+  white-space: nowrap;
+}
+
+.sk-modshop-color-controls {
+  display: block;
+  min-width: 0;
+}
+
+.sk-modshop-color-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.sk-modshop-color-field--finish {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.65rem;
+  padding-top: 0.15rem;
+}
+
+.sk-modshop-color-field-label {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.5rem, 0.58vw, 0.56rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(158, 229, 255, 0.58);
+}
+
+.sk-modshop-color-editor {
+  display: grid;
+  grid-template-columns: 3.2rem minmax(0, 1fr);
+  gap: 0.65rem;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.sk-modshop-color-swatch {
+  min-height: 5.4rem;
   border: 1px solid rgba(255,255,255,0.14);
-  background: transparent;
+  box-shadow:
+    inset 0 0 0 2px rgba(0,0,0,0.45),
+    0 0 18px rgba(255,255,255,0.06);
+}
+
+.sk-modshop-color-channels {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.sk-modshop-color-channel {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr) 2.2rem;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.sk-modshop-color-channel-label,
+.sk-modshop-color-channel-value {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.52rem, 0.62vw, 0.6rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.58);
+}
+
+.sk-modshop-color-channel-value {
+  color: var(--sk-text-primary);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.sk-modshop-color-range {
+  width: 100%;
+  min-width: 0;
+  height: 0.35rem;
+  accent-color: var(--sk-color-spray);
   cursor: pointer;
+}
+
+.sk-modshop-color-range--r { accent-color: #ff4f6a; }
+.sk-modshop-color-range--g { accent-color: #5dfc8d; }
+.sk-modshop-color-range--b { accent-color: #5ea8ff; }
+
+.sk-modshop-color-range:focus {
+  outline: none;
+}
+
+.sk-modshop-paint-type {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  width: 100%;
+  min-width: 0;
+  height: 2.25rem;
+  padding: 0.35rem 0.65rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: var(--sk-text-primary);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.58rem, 0.7vw, 0.68rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: left;
+}
+
+.sk-modshop-paint-type:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.22);
+}
+
+.sk-modshop-paint-type-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sk-modshop-paint-type-arrows {
+  color: rgba(158, 229, 255, 0.72);
+  font-size: 0.7em;
+  letter-spacing: 0.18em;
   flex-shrink: 0;
 }
 
-.sk-modshop-color-picker::-webkit-color-swatch-wrapper {
-  padding: 0;
-}
-
-.sk-modshop-color-picker::-webkit-color-swatch {
-  border: none;
-}
-
 .sk-modshop-color-buy {
-  padding: 0.35rem 0.75rem;
+  width: 100%;
+  padding: 0.45rem 0.75rem;
   background: rgba(255, 209, 71, 0.12);
   border: 1px solid rgba(255, 209, 71, 0.3);
   color: var(--sk-color-spray);
@@ -556,7 +687,6 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
-  flex-shrink: 0;
   transition: background 0.15s, opacity 0.15s;
 }
 
@@ -569,24 +699,71 @@
   cursor: default;
 }
 
-/* -- Modshop 1440p+ scale -------------------------------------------------- */
+.sk-modshop-neon-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.75rem;
+  background: rgba(158, 229, 255, 0.05);
+  border: 1px solid rgba(158, 229, 255, 0.16);
+}
 
-@media (min-width: 2560px) {
-  .sk-modshop-heading        { font-size: clamp(2.5rem, 5vw, 4.5rem); }
-  .sk-modshop-wallet-label   { font-size: 0.725rem; }
-  .sk-modshop-wallet-amount  { font-size: clamp(1.5rem, 2.5vw, 2.25rem); }
-  .sk-modshop-option         { font-size: clamp(0.81rem, 0.975vw, 0.95rem); }
-  .sk-modshop-price          { font-size: clamp(0.81rem, 0.975vw, 0.95rem); }
-  .sk-modshop-buy            { font-size: clamp(0.775rem, 0.925vw, 0.9rem); }
-  .sk-modshop-cat            { font-size: clamp(0.775rem, 0.9vw, 0.9rem); }
-  .sk-modshop-color-label    { font-size: clamp(0.81rem, 0.975vw, 0.95rem); }
-  .sk-modshop-color-buy      { font-size: clamp(0.725rem, 0.875vw, 0.85rem); }
+.sk-modshop-neon-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.4rem 0.2rem;
+}
+
+.sk-modshop-neon-color-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.4rem 0.2rem 0.65rem;
+}
+
+.sk-modshop-neon-label {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.65rem, 0.78vw, 0.76rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sk-text-primary);
+}
+
+.sk-modshop-neon-side {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: rgb(158, 229, 255);
+}
+
+.sk-modshop-neon-save {
+  margin-top: 0.3rem;
+  padding: 0.45rem 0.75rem;
+  background: rgba(158, 229, 255, 0.12);
+  border: 1px solid rgba(158, 229, 255, 0.32);
+  color: var(--sk-color-ice);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.58rem, 0.7vw, 0.68rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.sk-modshop-neon-save:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 
 .sk-modshop.is-controller-nav .sk-modshop-cat.is-controller-focused,
 .sk-modshop.is-controller-nav .sk-modshop-option.is-controller-focused,
-.sk-modshop.is-controller-nav .sk-modshop-color-picker.is-controller-focused,
+.sk-modshop.is-controller-nav .sk-modshop-color-range.is-controller-focused,
+.sk-modshop.is-controller-nav .sk-modshop-paint-type.is-controller-focused,
 .sk-modshop.is-controller-nav .sk-modshop-color-buy.is-controller-focused,
+.sk-modshop.is-controller-nav .sk-modshop-neon-side.is-controller-focused,
+.sk-modshop.is-controller-nav .sk-modshop-neon-save.is-controller-focused,
 .sk-modshop.is-controller-nav .sk-modshop-buy.is-controller-focused,
 .sk-modshop.is-controller-nav .sk-modshop-close.is-controller-focused {
   outline: none;

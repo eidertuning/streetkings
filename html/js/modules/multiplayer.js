@@ -77,6 +77,8 @@
   var elSetupLapsRow = elSetup ? elSetup.querySelector('[data-key="laps"]') : null;
   var elSetupLapsValue = document.getElementById('skMpSetupLapsValue');
   var elSetupCollisionValue = document.getElementById('skMpSetupCollisionValue');
+  var elSetupNitrousValue = document.getElementById('skMpSetupNitrousValue');
+  var elSetupTrafficValue = document.getElementById('skMpSetupTrafficValue');
   var elSetupTimeoutValue = document.getElementById('skMpSetupTimeoutValue');
   var setupRows = elSetup ? elSetup.querySelectorAll('[data-key]') : [];
   var setupFocusKey = 'laps';
@@ -92,6 +94,15 @@
 
   function formatSetupCollision(enabled) {
     return enabled ? 'On' : 'Off';
+  }
+
+  function formatSetupNitrous(enabled) {
+    return enabled ? 'On' : 'Off';
+  }
+
+  function formatTrafficDensity(pct) {
+    var value = pct == null ? 20 : pct;
+    return Math.max(0, Math.min(100, Math.floor(value))) + '%';
   }
 
   function setSetupFocus(key) {
@@ -111,6 +122,8 @@
     }
     if (elSetupLapsValue) elSetupLapsValue.textContent = formatSetupLaps(payload.laps || 1);
     if (elSetupCollisionValue) elSetupCollisionValue.textContent = formatSetupCollision(payload.collision !== false);
+    if (elSetupNitrousValue) elSetupNitrousValue.textContent = formatSetupNitrous(payload.nitrousEnabled !== false);
+    if (elSetupTrafficValue) elSetupTrafficValue.textContent = formatTrafficDensity(payload.trafficDensityPct);
     if (elSetupTimeoutValue) elSetupTimeoutValue.textContent = formatTimeoutMinutes(payload.lobbyTimeoutSeconds || 180);
     setSetupFocus(payload.focusKey || (payload.showLaps === false ? 'collision' : 'laps'));
   }
@@ -162,6 +175,8 @@
   var elLobbyCount   = document.getElementById('skMpLobbyCount');
   var elLobbyLaps    = document.getElementById('skMpLobbyLaps');
   var elLobbyCollision = document.getElementById('skMpLobbyCollision');
+  var elLobbyNitrous = document.getElementById('skMpLobbyNitrous');
+  var elLobbyTraffic = document.getElementById('skMpLobbyTraffic');
   var elLobbyTimeout = document.getElementById('skMpLobbyTimeout');
   var elLobbyPlayers = document.getElementById('skMpLobbyPlayers');
   var elLobbyLabel   = document.getElementById('skMpLobbyFooterLabel');
@@ -200,6 +215,8 @@
     elLobbyCount.textContent = (data.playerCount || 0) + ' / ' + (data.maxPlayers || 2);
     if (elLobbyLaps) elLobbyLaps.textContent = formatSetupLaps(data.raceOptions && data.raceOptions.laps || 1);
     if (elLobbyCollision) elLobbyCollision.textContent = formatSetupCollision(!data.raceOptions || data.raceOptions.collision !== false);
+    if (elLobbyNitrous) elLobbyNitrous.textContent = formatSetupNitrous(!data.raceOptions || data.raceOptions.nitrousEnabled !== false);
+    if (elLobbyTraffic) elLobbyTraffic.textContent = formatTrafficDensity(data.raceOptions && data.raceOptions.trafficDensityPct);
     if (elLobbyTimeout) elLobbyTimeout.textContent = formatTimeoutMinutes(data.raceOptions && data.raceOptions.lobbyTimeoutSeconds || 180);
     renderLobbyPlayers(data.players || [], data.selfServerId);
 

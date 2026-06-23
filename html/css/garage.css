@@ -581,14 +581,3 @@
   text-transform: uppercase;
   color: rgba(158, 229, 255, 0.8);
 }
-
-@media (min-width: 2560px) {
-  .sk-garage-heading       { font-size: clamp(2.5rem, 5vw, 4.5rem); }
-  .sk-garage-hint          { font-size: clamp(0.81rem, 1.06vw, 1.025rem); }
-  .sk-garage-card-label    { font-size: 0.75rem; }
-  .sk-garage-car-display-name { font-size: clamp(1.625rem, 2.5vw, 2.25rem); }
-  .sk-garage-active-badge  { font-size: 0.725rem; }
-  .sk-garage-btn           { font-size: clamp(0.85rem, 1vw, 0.975rem); }
-  .sk-garage-thumb-name    { font-size: clamp(0.775rem, 0.9vw, 0.9rem); }
-  .sk-garage-thumb-tag     { font-size: 0.625rem; }
-}

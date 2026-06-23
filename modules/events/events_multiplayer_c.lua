@@ -15,6 +15,8 @@ SKMultiplayer = SKMultiplayer or {}
 ---@field checkpointsPerLap integer
 ---@field lapTotal integer
 ---@field collision boolean
+---@field nitrousEnabled boolean
+---@field trafficDensityPct integer
 ---@field def table
 ---@field myCpIndex integer
 ---@field peerSnapshots table<integer, table>
@@ -364,6 +366,7 @@ local function runRaceCheckpointLoop(race, ped)
             if #(pos - cp) < CHECKPOINT_PICKUP_RADIUS then
                 local result = lib.callback.await('streetkings:mp:checkpointHit', false, i)
                 if result and result.ok then
+                    TriggerEvent('streetkings:nitrous:checkpointCleared')
                     SKSettings.playSelectedCheckpointSound()
                     race.myCpIndex = i
                     break
@@ -438,6 +441,8 @@ local function enterRace(data)
         checkpointsPerLap = data.checkpointsPerLap or #checkpoints,
         lapTotal = data.lapTotal or 1,
         collision = data.collision ~= false,
+        nitrousEnabled = data.nitrousEnabled ~= false,
+        trafficDensityPct = data.trafficDensityPct or 20,
         def = def,
         myCpIndex = 0,
         peerSnapshots = {},
@@ -456,6 +461,8 @@ end
 ---@param prevState string|nil
 local function onRaceEnter(prevState)
     assert(activeRace, 'onRaceEnter called with no active race')
+    TriggerEvent('streetkings:nitrous:setMultiplayerRaceDisabled', activeRace.nitrousEnabled == false)
+    TriggerEvent('streetkings:environment:setMultiplayerTrafficDensity', activeRace.trafficDensityPct / 100.0)
     DeleteWaypoint()
     raceDeathHandled = false
     SKNametags.setRoster(activeRace.roster)
@@ -556,6 +563,8 @@ local function onRaceExit(nextState)
     SKWaypoint.RemoveAll()
     activeVehicleNetId = nil
     SKSpeedo.setEnabled(false)
+    TriggerEvent('streetkings:nitrous:setMultiplayerRaceDisabled', false)
+    TriggerEvent('streetkings:environment:setMultiplayerTrafficDensity', nil)
     SetTimeScale(1.0)
     if SKPhone.isOpen() then SKPhone.close() end
     if not IsScreenFadedIn() then DoScreenFadeIn(500) end
@@ -944,7 +953,7 @@ SKC.RegisterGameState(GameState.MULTIPLAYER_LOBBY, {
     onEnter = onLobbyEnter,
     onExit  = onLobbyExit,
     onTick  = onLobbyTick,
-    tickWait = 250,
+    tickWait = 0,
 })
 
 SKC.RegisterGameState(GameState.MULTIPLAYER_EVENT, {

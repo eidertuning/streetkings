@@ -254,6 +254,10 @@ local function setupFreeroamPoints()
                     return
                 end
 
+                if SKGearbox.isStallInteractionBlocked() then
+                    return
+                end
+
                 if SKInput.isInteractJustReleased() then
                     chooserCooldownUntil = GetGameTimer() + 300000
                     SendNUIMessage({ type = 'prompt:hide' })

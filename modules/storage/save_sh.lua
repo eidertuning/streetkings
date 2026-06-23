@@ -182,6 +182,31 @@ local function requireNonNegativeInt(value, name)
     end
 end
 
+---@param value any
+---@return boolean
+local function isValidVehicleNeons(value)
+    if type(value) ~= 'table' or value.enabled ~= true then
+        return false
+    end
+    if type(value.color) ~= 'table'
+        or type(value.color.r) ~= 'number'
+        or type(value.color.g) ~= 'number'
+        or type(value.color.b) ~= 'number'
+    then
+        return false
+    end
+    if type(value.sides) ~= 'table'
+        or type(value.sides.front) ~= 'boolean'
+        or type(value.sides.back) ~= 'boolean'
+        or type(value.sides.left) ~= 'boolean'
+        or type(value.sides.right) ~= 'boolean'
+    then
+        return false
+    end
+
+    return true
+end
+
 ---@param vehicleData table
 ---@return table
 local function normalizeVehicleData(vehicleData)
@@ -208,6 +233,9 @@ local function normalizeVehicleData(vehicleData)
     end
     if type(vehicleData.colors) ~= 'table' then
         vehicleData.colors = {}
+    end
+    if vehicleData.neons ~= nil and not isValidVehicleNeons(vehicleData.neons) then
+        vehicleData.neons = nil
     end
     return vehicleData
 end
@@ -319,6 +347,7 @@ function SKSaves.validateDocument(document)
         assert(type(v.data.bestActivityScores) == 'table', 'streetkings: invalid save document vehicle.bestActivityScores')
         assert(type(v.data.mods) == 'table', 'streetkings: invalid save document vehicle.mods')
         assert(type(v.data.colors) == 'table', 'streetkings: invalid save document vehicle.colors')
+        assert(v.data.neons == nil or isValidVehicleNeons(v.data.neons), 'streetkings: invalid save document vehicle.neons')
     end
     assert(type(document.economy) == 'table', 'streetkings: invalid save document economy')
     requireNonNegativeInt(document.economy.cash, 'economy.cash')

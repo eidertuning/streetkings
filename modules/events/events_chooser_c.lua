@@ -4,6 +4,8 @@ SKRaceChooser = {}
 ---@class SKMultiplayerSetupOptions
 ---@field laps integer
 ---@field collision boolean
+---@field nitrousEnabled boolean
+---@field trafficDensityPct integer
 ---@field lobbyTimeoutSeconds integer
 
 local activeResolve = nil
@@ -82,9 +84,9 @@ end
 ---@return string[]
 local function buildSetupFocusKeys(def)
     if def.scheme == CheckpointScheme.CIRCUIT then
-        return { 'laps', 'collision', 'lobbyTimeoutSeconds', 'confirm', 'cancel' }
+        return { 'laps', 'collision', 'nitrousEnabled', 'trafficDensityPct', 'lobbyTimeoutSeconds', 'confirm', 'cancel' }
     end
-    return { 'collision', 'lobbyTimeoutSeconds', 'confirm', 'cancel' }
+    return { 'collision', 'nitrousEnabled', 'trafficDensityPct', 'lobbyTimeoutSeconds', 'confirm', 'cancel' }
 end
 
 ---@param def table
@@ -105,6 +107,15 @@ local function normalizeSetupOptions(def, options)
         collision = options.collision
     end
 
+    local nitrousEnabled = defaults.nitrousEnabled ~= false
+    if type(options) == 'table' and type(options.nitrousEnabled) == 'boolean' then
+        nitrousEnabled = options.nitrousEnabled
+    end
+
+    local trafficDensityPct = type(options) == 'table' and tonumber(options.trafficDensityPct) or tonumber(defaults.trafficDensityPct) or 20
+    trafficDensityPct = math.floor(trafficDensityPct / 10) * 10
+    trafficDensityPct = math.max(0, math.min(trafficDensityPct, 100))
+
     local timeout = type(options) == 'table' and tonumber(options.lobbyTimeoutSeconds) or tonumber(defaults.lobbyTimeoutSeconds) or 180
     timeout = math.floor(timeout)
     local timeoutValid = false
@@ -121,6 +132,8 @@ local function normalizeSetupOptions(def, options)
     return {
         laps = laps,
         collision = collision,
+        nitrousEnabled = nitrousEnabled,
+        trafficDensityPct = trafficDensityPct,
         lobbyTimeoutSeconds = timeout,
     }
 end
@@ -149,6 +162,8 @@ local function pushSetupState()
         focusKey = activeSetupState.focusKeys[activeSetupState.focusIndex],
         laps = activeSetupState.options.laps,
         collision = activeSetupState.options.collision,
+        nitrousEnabled = activeSetupState.options.nitrousEnabled,
+        trafficDensityPct = activeSetupState.options.trafficDensityPct,
         lobbyTimeoutSeconds = activeSetupState.options.lobbyTimeoutSeconds,
     })
 end
@@ -172,6 +187,19 @@ local function adjustSetupOption(key, delta)
 
     if key == 'collision' then
         activeSetupState.options.collision = not activeSetupState.options.collision
+        return
+    end
+
+    if key == 'nitrousEnabled' then
+        activeSetupState.options.nitrousEnabled = not activeSetupState.options.nitrousEnabled
+        return
+    end
+
+    if key == 'trafficDensityPct' then
+        local nextTraffic = activeSetupState.options.trafficDensityPct + (delta * 10)
+        if nextTraffic < 0 then nextTraffic = 100 end
+        if nextTraffic > 100 then nextTraffic = 0 end
+        activeSetupState.options.trafficDensityPct = nextTraffic
         return
     end
 
@@ -334,6 +362,8 @@ function SKRaceChooser.prompt(def, state)
         focusKey = activeSetupState.focusKeys[1],
         laps = activeSetupState.options.laps,
         collision = activeSetupState.options.collision,
+        nitrousEnabled = activeSetupState.options.nitrousEnabled,
+        trafficDensityPct = activeSetupState.options.trafficDensityPct,
         lobbyTimeoutSeconds = activeSetupState.options.lobbyTimeoutSeconds,
     })
     SetNuiFocus(true, true)

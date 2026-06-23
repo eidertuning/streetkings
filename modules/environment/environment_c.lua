@@ -88,6 +88,7 @@ exports('GetCurrentWeather', function() return currentWeather end)
 
 local TRAFFIC_DENSITY_FREEROAM = 0.4
 local TRAFFIC_DENSITY_EVENT = 0.2
+local multiplayerTrafficDensityOverride = nil
 
 local function trafficDensityApplies(state)
     return state == GameState.FREEROAM 
@@ -98,6 +99,10 @@ local function trafficDensityApplies(state)
 end
 
 local function getTrafficDensityMultiplier(state)
+    if state == GameState.MULTIPLAYER_EVENT and multiplayerTrafficDensityOverride ~= nil then
+        return multiplayerTrafficDensityOverride
+    end
+
     if state == GameState.EVENT 
     or state == GameState.MISSION
     or state == GameState.MULTIPLAYER_EVENT
@@ -107,6 +112,16 @@ local function getTrafficDensityMultiplier(state)
     end
     return TRAFFIC_DENSITY_FREEROAM
 end
+
+---@param multiplier number|nil
+AddEventHandler('streetkings:environment:setMultiplayerTrafficDensity', function(multiplier)
+    if multiplier == nil then
+        multiplayerTrafficDensityOverride = nil
+        return
+    end
+
+    multiplayerTrafficDensityOverride = math.max(0.0, math.min(multiplier, 1.0))
+end)
 
 CreateThread(function()
     while true do

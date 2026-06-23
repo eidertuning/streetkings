@@ -3,13 +3,13 @@ SKShopShared = SKShopShared or {}
 ---@param modType integer
 ---@return boolean
 function SKShopShared.isExcludedModType(modType)
-    return modType == 14 or modType == 16 -- Horn and armour respectively
+    return modType == 14 or modType == 16 or modType == 21 -- Horn, armour and hydraulics respectively
 end
 
 ---@param modType integer
 ---@return boolean
 function SKShopShared.isToggleModType(modType)
-    return modType == 18 -- Turbo
+    return modType == 18 or modType == 22 -- Turbo, Xenon Lights
 end
 
 ---@param vehicle integer
@@ -76,6 +76,7 @@ end
 ---@return boolean
 function SKShopShared.isPerformanceModType(modType)
     return SKShopShared.PERFORMANCE_MOD_PRICES[modType] ~= nil
+        or modType == SKShopShared.NITROUS_UNLOCK_MOD_TYPE
 end
 
 ---@param modType integer

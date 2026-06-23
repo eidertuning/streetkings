@@ -32,6 +32,10 @@
   position: relative;
 }
 
+.sk-speedo-scale {
+  transform-origin: bottom right;
+}
+
 .sk-soundtrack-player {
   position: absolute;
   right: calc(100% + 0.625vw);

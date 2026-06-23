@@ -8,7 +8,7 @@ local CAMERA_PRESETS = {
         baseFov                   = 45.0,
         baseForwardOffset         = -5.05,
         sideOffset                = 0.0,
-        upOffset                  = 0.55,
+        upOffset                  = 0.50,
         pivotHeightOffset         = 0.9,
         velocityBlendRatio        = 0.98,
         velocityDirSmoothing      = 0.40,
@@ -26,10 +26,12 @@ local CAMERA_PRESETS = {
         accelSmoothing            = 0.25,
         maxSpeedForEffects        = 60.0,
         speedFovMultiplier        = 1.0,
+        fovTargetInterpolation    = 1.0,
         effectInterpolation       = 0.07,
         accelPositionMultiplier   = 1.2,
         cameraRollInterpolation   = 0.22,
         cameraPitchInterpolation  = 0.22,
+        neutralPitchLookInfluence = 1.0,
         lowSpeedEffects           = 15,
         brakingFovLimit           = 15.0,
     },
@@ -37,7 +39,7 @@ local CAMERA_PRESETS = {
         baseFov                   = 45.0,
         baseForwardOffset         = -5.05,
         sideOffset                = 0.0,
-        upOffset                  = 0.55,
+        upOffset                  = 0.50,
         pivotHeightOffset         = 0.9,
         velocityBlendRatio        = 0.98,
         velocityDirSmoothing      = 0.40,
@@ -55,10 +57,12 @@ local CAMERA_PRESETS = {
         accelSmoothing            = 0.25,
         maxSpeedForEffects        = 60.0,
         speedFovMultiplier        = 1.0,
+        fovTargetInterpolation    = 1.0,
         effectInterpolation       = 0.07,
         accelPositionMultiplier   = 1.2,
         cameraRollInterpolation   = 0.22,
         cameraPitchInterpolation  = 0.22,
+        neutralPitchLookInfluence = 1.0,
         lowSpeedEffects           = 100,
         brakingFovLimit           = 15.0,
     },
@@ -66,7 +70,7 @@ local CAMERA_PRESETS = {
         baseFov                   = 45.0,
         baseForwardOffset         = -5.05,
         sideOffset                = 0.0,
-        upOffset                  = 0.55,
+        upOffset                  = 0.50,
         pivotHeightOffset         = 0.9,
         velocityBlendRatio        = 0.82,
         velocityDirSmoothing      = 0.14,
@@ -78,16 +82,18 @@ local CAMERA_PRESETS = {
         lateralEffectMultiplier   = 0.25,
         shakeIntensityMultiplier  = 0.18,
         gearPullbackEnabled       = true,
-        gearPullbackStrength      = 1.10,
+        gearPullbackStrength      = 1.70,
         gearPullbackAttack        = 0.018,
         gearPullbackDecay         = 0.016,
         accelSmoothing            = 0.14,
         maxSpeedForEffects        = 80.0,
-        speedFovMultiplier        = 0.85,
+        speedFovMultiplier        = 0.55,
+        fovTargetInterpolation    = 0.045,
         effectInterpolation       = 0.045,
         accelPositionMultiplier   = 0.45,
         cameraRollInterpolation   = 0.12,
         cameraPitchInterpolation  = 0.12,
+        neutralPitchLookInfluence = 0.45,
         lowSpeedEffects           = 100,
         brakingFovLimit           = 13.0,
     },
@@ -178,6 +184,8 @@ local currentSpeed           = 0.0   -- shared with handleInput
 local currentAcceleration    = 0.0
 local smoothedAcceleration   = 0.0
 local smoothedBrakingAccel   = 0.0
+local smoothedFovSpeedRatio  = 0.0
+local smoothedFovBraking     = 0.0
 
 local svdX, svdY, svdZ = 0.0, 1.0, 0.0   -- smoothedVelocityDirection (plain components, no alloc)
 local lateralVelocity  = 0.0
@@ -274,6 +282,8 @@ local function resetState(cancelDelayedEnable)
     lastFovSent          = config.baseFov
 
     smoothedBrakingAccel = 0.0
+    smoothedFovSpeedRatio = 0.0
+    smoothedFovBraking = 0.0
     svdX, svdY, svdZ     = 0.0, 1.0, 0.0
     lateralVelocity      = 0.0
     verticalVelocity     = 0.0
@@ -336,6 +346,8 @@ local function primeDynamicState(vehicle)
     currentAcceleration = 0.0
     smoothedAcceleration = 0.0
     smoothedBrakingAccel = 0.0
+    smoothedFovSpeedRatio = math.min(speed / config.maxSpeedForEffects, 1.0)
+    smoothedFovBraking = 0.0
     gearPullback = 0.0
     gearPullbackTarget = 0.0
     currentFov = getBaseTargetFov(speed)
@@ -480,9 +492,12 @@ local function calcSpeedEffects(vehicle, velX, velY, velZ, speed, vehPos, fwdX, 
     local brakingFov = isEnviPreset
         and math.max(-config.brakingFovLimit, math.abs(smoothedBrakingAccel) * -58.0 * speedFactor)
         or math.max(-config.brakingFovLimit, math.abs(smoothedBrakingAccel) * -58.0)
-    local targetFov  = config.baseFov * lerp(1.0, 0.75, speedRatio)
-                       + speedRatio * config.speedFovMultiplier * 25.0
-                       + brakingFov
+    local fovTargetInterpolation = config.fovTargetInterpolation or 1.0
+    smoothedFovSpeedRatio = lerp(smoothedFovSpeedRatio, speedRatio, fovTargetInterpolation)
+    smoothedFovBraking = lerp(smoothedFovBraking, brakingFov, fovTargetInterpolation)
+    local targetFov  = config.baseFov * lerp(1.0, 0.75, smoothedFovSpeedRatio)
+                       + smoothedFovSpeedRatio * config.speedFovMultiplier * 25.0
+                       + smoothedFovBraking
     currentFov = lerp(currentFov, targetFov, config.effectInterpolation)
 
     local accelEffect    = math.max(-5.0, math.min(5.0, smoothedAcceleration * config.accelPositionMultiplier))
@@ -704,8 +719,12 @@ tick = function(vehicle)
 
     local finalPitch
     if math.abs(userTilt) < 0.1 then
-        -- At rest: always lerp directly toward the geometrically correct look-at pitch
-        finalPitch = lerp(currentRot.x, lookPitch, config.cameraPitchInterpolation)
+        local neutralLookInfluence = config.neutralPitchLookInfluence or 1.0
+        if neutralLookInfluence >= 1.0 then
+            finalPitch = lerp(currentRot.x, lookPitch, config.cameraPitchInterpolation)
+        else
+            finalPitch = lerp(basePitch, lookPitch, neutralLookInfluence)
+        end
     else
         local tiltRatio     = math.abs(userTilt) / 80.0
         local tiltInfluence = math.min(1.0, (tiltRatio ^ 0.2) * 1.5)

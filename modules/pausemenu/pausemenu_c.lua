@@ -1,5 +1,7 @@
 if SKConfig.DisablePauseMenu then return end
 
+SKPauseMenu = SKPauseMenu or {}
+
 local menuOpen    = false
 local menuOpening = false
 local cineCam  = nil
@@ -7,6 +9,11 @@ local controllerTracker = SKControllerFriendly.newTracker()
 local controllerModeEnabled = false
 
 local STORE_URL = 'https://streetkings.com/store'
+
+---@return boolean
+function SKPauseMenu.isOpen()
+    return menuOpen or menuOpening
+end
 
 local shots = {
     { radius = 3.6, baseHeight = 1.2, heightAmp = 0.0,  fov = 55.0, speed = 0.016, lookZ = 0.5, startAngle = 160.0, duration = 8000  },

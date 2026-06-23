@@ -5,6 +5,8 @@
   var $value          = null;
   var $unit           = null;
   var $rpmBar         = null;
+  var $nitrousTrack   = null;
+  var $nitrousBar     = null;
   var $gear           = null;
   var $odometerDigits = null;
   var $odometerUnit   = null;
@@ -16,12 +18,15 @@
   var $analogOdoUnit  = null;
   var analogNeedle    = null;
   var analogRpmArc    = null;
+  var analogNitrousTrack = null;
+  var analogNitrousArc = null;
   var analogTicksG    = null;
 
   var lastGear        = null;
   var lastMetric      = false;
   var currentStyle    = 'analog';
   var currentScale    = '100';
+  var speedometerShakeEnabled = true;
 
   var ANALOG_SWEEP    = 270;
   var ANALOG_START    = -135;
@@ -30,6 +35,9 @@
   var RPM_ARC_RADIUS  = 93;
   var RPM_ARC_CIRCUM  = 2 * Math.PI * RPM_ARC_RADIUS;
   var RPM_ARC_SWEEP   = RPM_ARC_CIRCUM * (ANALOG_SWEEP / 360);
+  var NITROUS_ARC_RADIUS = 87;
+  var NITROUS_ARC_CIRCUM = 2 * Math.PI * NITROUS_ARC_RADIUS;
+  var NITROUS_ARC_SWEEP = NITROUS_ARC_CIRCUM * (ANALOG_SWEEP / 360);
 
   var ticksBuilt      = false;
   var ticksMetric     = false;
@@ -102,6 +110,25 @@
     analogRpmArc.style.strokeDasharray = filled + ' ' + gap;
   }
 
+  function setNitrousArc(pct) {
+    var filled = pct * NITROUS_ARC_SWEEP;
+    var gap = NITROUS_ARC_CIRCUM - filled;
+    analogNitrousArc.style.strokeDasharray = filled + ' ' + gap;
+  }
+
+  function updateNitrous(active, pct, boosting) {
+    var clamped = Math.max(0, Math.min(1, pct || 0));
+
+    $nitrousTrack.toggleClass('is-active', !!active);
+    $nitrousTrack.toggleClass('is-boosting', !!boosting);
+    $nitrousBar.css('width', (clamped * 100).toFixed(1) + '%');
+
+    analogNitrousTrack.classList.toggle('is-active', !!active);
+    analogNitrousArc.classList.toggle('is-active', !!active);
+    analogNitrousArc.classList.toggle('is-boosting', !!boosting);
+    setNitrousArc(clamped);
+  }
+
   function applyStyle(style) {
     if (style === currentStyle) return;
     currentStyle = style;
@@ -118,9 +145,10 @@
   function applyScale(scale) {
     if (scale === currentScale) return;
     currentScale = scale;
-    var cluster = document.querySelector('.sk-speedo-cluster');
-    if (!cluster) return;
-    cluster.style.transform = scale === '100' ? '' : 'scale(' + (parseInt(scale, 10) / 100) + ')';
+    var scaleRoot = document.querySelector('.sk-speedo-scale');
+    if (!scaleRoot) return;
+    scaleRoot.style.transform = '';
+    scaleRoot.style.zoom = scale === '100' ? '' : String(parseInt(scale, 10) / 100);
   }
 
   $(function () {
@@ -128,6 +156,8 @@
     $value          = $('#skSpeedoValue');
     $unit           = $('#skSpeedoUnit');
     $rpmBar         = $('#skSpeedoRpm');
+    $nitrousTrack   = $('#skSpeedoNitrousTrack');
+    $nitrousBar     = $('#skSpeedoNitrous');
     $gear           = $('#skSpeedoGear');
     $odometerDigits = $('#skSpeedoOdometerDigits');
     $odometerUnit   = $('#skSpeedoOdometerUnit');
@@ -139,6 +169,8 @@
     $analogOdoUnit  = $('#skAnalogOdometerUnit');
     analogNeedle    = document.getElementById('skAnalogNeedle');
     analogRpmArc    = document.getElementById('skAnalogRpmArc');
+    analogNitrousTrack = document.getElementById('skAnalogNitrousTrack');
+    analogNitrousArc = document.getElementById('skAnalogNitrousArc');
     analogTicksG    = document.getElementById('skAnalogTicks');
 
     var rpmTrack = document.getElementById('skAnalogRpmTrack');
@@ -148,6 +180,12 @@
     if (analogRpmArc) {
       analogRpmArc.style.strokeDasharray = '0 ' + RPM_ARC_CIRCUM;
     }
+    if (analogNitrousTrack) {
+      analogNitrousTrack.style.strokeDasharray = NITROUS_ARC_SWEEP + ' ' + (NITROUS_ARC_CIRCUM - NITROUS_ARC_SWEEP);
+    }
+    if (analogNitrousArc) {
+      analogNitrousArc.style.strokeDasharray = '0 ' + NITROUS_ARC_CIRCUM;
+    }
   });
 
   window.addEventListener('message', function (e) {
@@ -156,6 +194,15 @@
     if (d.type === 'settings:generalConfig' && d.config) {
       if (d.config.speedometerStyle) applyStyle(d.config.speedometerStyle);
       if (d.config.speedometerScale) applyScale(d.config.speedometerScale);
+      if (typeof d.config.speedometerShakeEnabled === 'boolean') {
+        speedometerShakeEnabled = d.config.speedometerShakeEnabled;
+        if (!speedometerShakeEnabled && $speedo) $speedo.removeClass('sk-speedo--redline');
+      }
+      return;
+    }
+
+    if (d.type === 'nitrous:update') {
+      updateNitrous(d.active, d.pct, d.boosting);
       return;
     }
 
@@ -195,7 +242,7 @@
         }
       }
 
-      if (rpm >= 90) {
+      if (speedometerShakeEnabled && rpm >= 90) {
         $speedo.addClass('sk-speedo--redline');
       } else {
         $speedo.removeClass('sk-speedo--redline');
@@ -224,6 +271,7 @@
 
     } else if (d.type === 'speedometer:hide') {
       $speedo.addClass('sk-speedo--hidden').removeClass('sk-speedo--redline');
+      updateNitrous(false, 0, false);
       lastGear = null;
     }
   });

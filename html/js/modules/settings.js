@@ -59,6 +59,13 @@
       ]
     },
     {
+      key: 'speedometerShakeEnabled',
+      label: 'Speedometer Shake',
+      type: 'toggle',
+      def: true,
+      group: 'HUD'
+    },
+    {
       key: 'checkpointSound',
       label: 'Checkpoint Sound',
       type: 'choice',

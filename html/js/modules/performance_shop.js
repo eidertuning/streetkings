@@ -241,9 +241,21 @@
     var title = document.createElement('span');
     var meta = document.createElement('span');
     var tag = document.createElement('span');
-    var stageText = opt.index < 0 ? 'Stock' : 'Stage ' + (opt.index + 1);
+    var stageText;
+    if (mod.isGearbox) {
+      var gearboxStageLabels = { '-1': 'Auto', '0': 'Beginner', '1': 'Expert' };
+      stageText = gearboxStageLabels[String(opt.index)] || 'Auto';
+    } else if (mod.isNitrous) {
+      var nitrousStageLabels = { '-1': 'Stock', '0': 'Level 1', '1': 'Level 2', '2': 'Level 3' };
+      stageText = nitrousStageLabels[String(opt.index)] || 'Stock';
+    } else {
+      stageText = opt.index < 0 ? 'Stock' : 'Stage ' + (opt.index + 1);
+    }
     var optionPrice = getOptionPrice(mod, opt);
-    var metaText = 'Install for ' + fmt(optionPrice);
+    var metaText = (mod.isGearbox && opt.index < 0) ? 'Remove and restore automatic.' : 'Install for ' + fmt(optionPrice);
+    if (mod.isNitrous && opt.index < 0) {
+      metaText = 'Remove the nitrous kit.';
+    }
     var tagText = 'Ready';
 
     btn.className = 'sk-perfshop-option';
@@ -289,14 +301,36 @@
         return;
       }
 
-      SK.nui.post('perfshop:previewMod', { modType: mod.modType, modIndex: opt.index });
+      if (!mod.isGearbox && !mod.isNitrous) {
+        SK.nui.post('perfshop:previewMod', { modType: mod.modType, modIndex: opt.index });
+      }
 
       if (opt.index === mod.current) {
         setSelection(opt.name, 'This tuning stage is already fitted to your active vehicle.');
         setInstallState('Installed', 'Select another stage to preview a different setup.', 'Installed', true);
+      } else if (mod.isGearbox && opt.index < 0) {
+        setSelection(opt.name, 'Remove the manual gearbox and restore automatic transmission.');
+        setInstallState('Free', 'No cost to remove.', 'Remove', false);
+      } else if (mod.isNitrous && opt.index < 0) {
+        setSelection(opt.name, 'Remove the installed nitrous system.');
+        setInstallState('Free', 'No cost to remove.', 'Remove', false);
       } else {
-        setSelection(opt.name, mod.name + ' upgrade ready to install.');
-        setInstallState(fmt(optionPrice), 'Install this stage on your active vehicle.', 'Install', false);
+        var subtitle;
+        if (mod.isGearbox) {
+          subtitle = opt.index === 0
+            ? 'Beginner manual - forgiving shift timing, no engine stall.'
+            : 'Expert manual - clutch required, engine can stall at low RPM.';
+        } else if (mod.isNitrous) {
+          subtitle = [
+            'Entry bottle with a short boost window.',
+            'Larger bottle with a longer boost window.',
+            'Largest bottle with the longest boost window.'
+          ][opt.index];
+        } else {
+          subtitle = mod.name + ' upgrade ready to install.';
+        }
+        setSelection(opt.name, subtitle);
+        setInstallState(fmt(optionPrice), 'Install this upgrade on your active vehicle.', 'Install', false);
       }
 
       els.buy.dataset.modType = mod.modType;
@@ -413,10 +447,52 @@
     state.drag.active = false;
   }
 
+  var GEARBOX_INDEX_TO_TYPE = { '-1': 'none', '0': 'beginner', '1': 'expert' };
+  var NITROUS_INDEX_TO_TYPE = { '-1': 'none', '0': 'street', '1': 'sport', '2': 'race' };
+
   function onBuyClick() {
-    var modType = parseInt(els.buy.dataset.modType, 10);
+    var modTypeStr = els.buy.dataset.modType;
     var modIndex = parseInt(els.buy.dataset.modIndex, 10);
 
+    if (modTypeStr === 'gearbox') {
+      els.buy.disabled = true;
+      var gearboxType = GEARBOX_INDEX_TO_TYPE[String(modIndex)] || 'none';
+      SK.nui.post('perfshop:purchaseGearbox', { type: gearboxType }).done(function (result) {
+        if (!result.ok) {
+          els.buy.disabled = false;
+          return;
+        }
+        els.balance.textContent = fmt(result.balance);
+        if (state.selectedMod) {
+          state.selectedMod.current = modIndex;
+          selectCategory(state.selectedMod, modIndex);
+        }
+      });
+      return;
+    }
+
+    if (modTypeStr === 'nitrous') {
+      els.buy.disabled = true;
+      var nitrousType = NITROUS_INDEX_TO_TYPE[String(modIndex)] || 'none';
+      SK.nui.post('perfshop:purchaseNitrous', { type: nitrousType }).done(function (result) {
+        if (!result.ok) {
+          if (result.reason === 'locked' && result.unlockLevel) {
+            setInstallState(fmtUnlock(result.unlockLevel), 'This stage is still locked for your vehicle.', 'Locked', true);
+            return;
+          }
+          els.buy.disabled = false;
+          return;
+        }
+        els.balance.textContent = fmt(result.balance);
+        if (state.selectedMod) {
+          state.selectedMod.current = modIndex;
+          selectCategory(state.selectedMod, modIndex);
+        }
+      });
+      return;
+    }
+
+    var modType = parseInt(modTypeStr, 10);
     els.buy.disabled = true;
 
     SK.nui.post('perfshop:purchaseMod', { modType: modType, modIndex: modIndex }).done(function (result) {

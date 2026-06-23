@@ -40,6 +40,39 @@ function SKProgression.collectVehicleAvailability(vehicle)
         end
     end
 
+    availableMods[#availableMods + 1] = {
+        modType = SKShopShared.NEON_UNLOCK_MOD_TYPE,
+        name = SKProgression.MOD_TYPE_NAMES[SKShopShared.NEON_UNLOCK_MOD_TYPE],
+        options = {
+            {
+                index = SKShopShared.NEON_UNLOCK_MOD_INDEX,
+                name = 'Neon Kit',
+                key = SKProgression.getModOptionKey(SKShopShared.NEON_UNLOCK_MOD_TYPE, SKShopShared.NEON_UNLOCK_MOD_INDEX),
+            },
+        },
+    }
+    availableMods[#availableMods + 1] = {
+        modType = SKShopShared.NITROUS_UNLOCK_MOD_TYPE,
+        name = SKProgression.MOD_TYPE_NAMES[SKShopShared.NITROUS_UNLOCK_MOD_TYPE],
+        options = {
+            {
+                index = SKShopShared.NITROUS_UNLOCKS.street.index,
+                name = 'Street Nitrous',
+                unlockLevel = SKShopShared.NITROUS_UNLOCKS.street.level,
+            },
+            {
+                index = SKShopShared.NITROUS_UNLOCKS.sport.index,
+                name = 'Sport Nitrous',
+                unlockLevel = SKShopShared.NITROUS_UNLOCKS.sport.level,
+            },
+            {
+                index = SKShopShared.NITROUS_UNLOCKS.race.index,
+                name = 'Race Nitrous',
+                unlockLevel = SKShopShared.NITROUS_UNLOCKS.race.level,
+            },
+        },
+    }
+
     return availableMods
 end
 

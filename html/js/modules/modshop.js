@@ -4,6 +4,25 @@
   var SK = window.StreetKings;
 
   var COLOR_PRICE = 200;
+  var PAINT_TYPES = [
+    { value: 0, label: 'Gloss' },
+    { value: 1, label: 'Metallic' },
+    { value: 2, label: 'Pearl' },
+    { value: 3, label: 'Matte' },
+    { value: 4, label: 'Metal' },
+    { value: 5, label: 'Chrome' },
+  ];
+  var DEFAULT_NEONS = {
+    enabled: true,
+    color: { r: 0, g: 180, b: 255 },
+    sides: { front: true, back: true, left: true, right: true },
+  };
+  var NEON_SIDE_ROWS = [
+    { key: 'front', label: 'Front' },
+    { key: 'back', label: 'Back' },
+    { key: 'left', label: 'Left' },
+    { key: 'right', label: 'Right' },
+  ];
 
   var state = {
     shopType:    null,
@@ -11,6 +30,7 @@
     selectedMod: null,
     mods:        [],
     colors:      null,
+    neons:       null,
     drag:        { active: false, lastX: 0, lastY: 0 },
   };
 
@@ -42,18 +62,169 @@
     els.selectedSubtitle = document.getElementById('modshopSelectedSubtitle');
   }
 
-  function rgbToHex(r, g, b) {
-    return '#' + [r, g, b].map(function (v) {
-      return ('0' + Math.max(0, Math.min(255, v)).toString(16)).slice(-2);
-    }).join('');
+  function clampColorChannel(value) {
+    return Math.max(0, Math.min(255, Math.floor(value)));
   }
 
-  function hexToRgb(hex) {
+  function normalizeColor(color) {
     return {
-      r: parseInt(hex.slice(1, 3), 16),
-      g: parseInt(hex.slice(3, 5), 16),
-      b: parseInt(hex.slice(5, 7), 16),
+      r: clampColorChannel(color && typeof color.r === 'number' ? color.r : 255),
+      g: clampColorChannel(color && typeof color.g === 'number' ? color.g : 255),
+      b: clampColorChannel(color && typeof color.b === 'number' ? color.b : 255),
     };
+  }
+
+  function getPaintType(color) {
+    return color && typeof color.paintType === 'number' ? color.paintType : 0;
+  }
+
+  function buildColorPayload(slot, colorEditor, paintTypeControl) {
+    var rgb = colorEditor.getColor();
+    rgb.slot = slot;
+    rgb.paintType = getPaintTypeControlValue(paintTypeControl);
+    return rgb;
+  }
+
+  function getPaintTypeIndexByValue(value) {
+    for (var i = 0; i < PAINT_TYPES.length; i++) {
+      if (PAINT_TYPES[i].value === value) return i;
+    }
+    return 0;
+  }
+
+  function getPaintTypeControlValue(control) {
+    return parseInt(control.dataset.value || '0', 10);
+  }
+
+  function setPaintTypeControlValue(control, value) {
+    var index = getPaintTypeIndexByValue(value);
+    var type = PAINT_TYPES[index];
+    control.dataset.value = String(type.value);
+    control.querySelector('.sk-modshop-paint-type-value').textContent = type.label;
+  }
+
+  function stepPaintTypeControl(control, direction) {
+    var current = getPaintTypeIndexByValue(getPaintTypeControlValue(control));
+    var delta = direction === 'right' ? 1 : -1;
+    var next = (current + delta + PAINT_TYPES.length) % PAINT_TYPES.length;
+    setPaintTypeControlValue(control, PAINT_TYPES[next].value);
+    control.dispatchEvent(new Event('change', { bubbles: true }));
+    return true;
+  }
+
+  function createPaintTypeControl(value) {
+    var control = document.createElement('button');
+    control.type = 'button';
+    control.className = 'sk-modshop-paint-type';
+    control.dataset.controllerType = 'paint-type';
+
+    var valueEl = document.createElement('span');
+    valueEl.className = 'sk-modshop-paint-type-value';
+
+    var arrows = document.createElement('span');
+    arrows.className = 'sk-modshop-paint-type-arrows';
+    arrows.textContent = '< >';
+
+    control.appendChild(valueEl);
+    control.appendChild(arrows);
+    setPaintTypeControlValue(control, value);
+    control.addEventListener('click', function () {
+      stepPaintTypeControl(control, 'right');
+    });
+
+    return control;
+  }
+
+  function createColorEditor(initialColor, onChange) {
+    var color = normalizeColor(initialColor);
+    var root = document.createElement('div');
+    root.className = 'sk-modshop-color-editor';
+
+    var swatch = document.createElement('div');
+    swatch.className = 'sk-modshop-color-swatch';
+
+    var channels = document.createElement('div');
+    channels.className = 'sk-modshop-color-channels';
+
+    function applySwatch() {
+      swatch.style.background = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
+    }
+
+    function emitChange() {
+      applySwatch();
+      if (onChange) {
+        onChange({ r: color.r, g: color.g, b: color.b });
+      }
+    }
+
+    [
+      { key: 'r', label: 'Red' },
+      { key: 'g', label: 'Green' },
+      { key: 'b', label: 'Blue' },
+    ].forEach(function (channel) {
+      var row = document.createElement('label');
+      row.className = 'sk-modshop-color-channel';
+
+      var label = document.createElement('span');
+      label.className = 'sk-modshop-color-channel-label';
+      label.textContent = channel.label;
+
+      var input = document.createElement('input');
+      input.type = 'range';
+      input.className = 'sk-modshop-color-range sk-modshop-color-range--' + channel.key;
+      input.min = '0';
+      input.max = '255';
+      input.step = '5';
+      input.value = String(color[channel.key]);
+
+      var value = document.createElement('span');
+      value.className = 'sk-modshop-color-channel-value';
+      value.textContent = String(color[channel.key]);
+
+      input.addEventListener('input', function () {
+        color[channel.key] = clampColorChannel(parseInt(input.value, 10));
+        value.textContent = String(color[channel.key]);
+        emitChange();
+      });
+
+      row.appendChild(label);
+      row.appendChild(input);
+      row.appendChild(value);
+      channels.appendChild(row);
+    });
+
+    applySwatch();
+    root.appendChild(swatch);
+    root.appendChild(channels);
+
+    return {
+      el: root,
+      getColor: function () {
+        return { r: color.r, g: color.g, b: color.b };
+      },
+    };
+  }
+
+  function cloneNeons(neons) {
+    if (!neons) return null;
+    return {
+      enabled: true,
+      color: { r: neons.color.r, g: neons.color.g, b: neons.color.b },
+      sides: {
+        front: neons.sides.front,
+        back: neons.sides.back,
+        left: neons.sides.left,
+        right: neons.sides.right,
+      },
+    };
+  }
+
+  function buildDefaultNeons() {
+    return cloneNeons(DEFAULT_NEONS);
+  }
+
+  function previewNeons(neons) {
+    SK.nui.post('modshop:previewNeons', { neons: neons });
   }
 
   function fmtUnlock(level) {
@@ -77,8 +248,11 @@
 
   function collectFocusables() {
     var query = '#modshopOptions .sk-modshop-option, ' +
-      '#modshopOptions .sk-modshop-color-picker, ' +
+      '#modshopOptions .sk-modshop-color-range, ' +
+      '#modshopOptions .sk-modshop-paint-type, ' +
       '#modshopOptions .sk-modshop-color-buy, ' +
+      '#modshopOptions .sk-modshop-neon-side, ' +
+      '#modshopOptions .sk-modshop-neon-save, ' +
       (controllerEnabled ? '' : '#modshopBuy, ') +
       '#modshopClose';
     var nodes = document.querySelectorAll(query);
@@ -183,6 +357,12 @@
         el.click();
       }
     },
+    onDirection: function (direction, el) {
+      if (el && el.dataset.controllerType === 'paint-type' && (direction === 'left' || direction === 'right')) {
+        return stepPaintTypeControl(el, direction);
+      }
+      return false;
+    },
     onAction: function (action) {
       if (action === 'face_x' && controllerEnabled && els.install.style.display !== 'none' && !els.buy.disabled) {
         onBuyClick();
@@ -257,6 +437,7 @@
 
   function selectColors() {
     SK.nui.post('modshop:previewCategory', {});
+    previewNeons(state.neons);
     var cats = els.categories.querySelectorAll('.sk-modshop-cat');
     cats.forEach(function (btn) {
       btn.classList.toggle('is-active', btn.dataset.colorCat === 'true');
@@ -273,43 +454,63 @@
       { slot: 'secondary', label: 'Secondary Color' },
     ].forEach(function (row) {
       var current = state.colors[row.slot] || { r: 255, g: 255, b: 255 };
-      var hex     = rgbToHex(current.r, current.g, current.b);
+      var paintTypeValue = getPaintType(current);
 
       var wrap = document.createElement('div');
       wrap.className = 'sk-modshop-color-row';
+
+      var header = document.createElement('div');
+      header.className = 'sk-modshop-color-header';
 
       var label = document.createElement('span');
       label.className   = 'sk-modshop-color-label';
       label.textContent = row.label;
 
-      var picker = document.createElement('input');
-      picker.type      = 'color';
-      picker.className = 'sk-modshop-color-picker';
-      picker.value     = hex;
+      var controls = document.createElement('div');
+      controls.className = 'sk-modshop-color-controls';
 
-      picker.addEventListener('input', function () {
-        var rgb = hexToRgb(picker.value);
-        SK.nui.post('modshop:previewColor', { slot: row.slot, r: rgb.r, g: rgb.g, b: rgb.b });
+      var paintField = document.createElement('div');
+      paintField.className = 'sk-modshop-color-field sk-modshop-color-field--finish';
+
+      var paintLabel = document.createElement('span');
+      paintLabel.className = 'sk-modshop-color-field-label';
+      paintLabel.textContent = 'Finish';
+
+      var paintType = createPaintTypeControl(paintTypeValue);
+
+      var colorEditor = createColorEditor(current, function () {
+        previewColor();
       });
+
+      function previewColor() {
+        SK.nui.post('modshop:previewColor', buildColorPayload(row.slot, colorEditor, paintType));
+      }
+
+      paintType.addEventListener('change', previewColor);
 
       var buyBtn = document.createElement('button');
       buyBtn.className   = 'sk-modshop-color-buy';
       buyBtn.textContent = fmt(COLOR_PRICE);
 
       buyBtn.addEventListener('click', function () {
-        var rgb = hexToRgb(picker.value);
+        var payload = buildColorPayload(row.slot, colorEditor, paintType);
         buyBtn.disabled = true;
-        SK.nui.post('modshop:purchaseColor', { slot: row.slot, r: rgb.r, g: rgb.g, b: rgb.b }).done(function (result) {
+        SK.nui.post('modshop:purchaseColor', payload).done(function (result) {
           buyBtn.disabled = false;
           if (result.ok) {
             els.balance.textContent = fmt(result.balance);
-            state.colors[row.slot]  = rgb;
+            state.colors[row.slot]  = result.color || payload;
           }
         });
       });
 
-      wrap.appendChild(label);
-      wrap.appendChild(picker);
+      header.appendChild(label);
+      paintField.appendChild(paintLabel);
+      paintField.appendChild(paintType);
+      controls.appendChild(colorEditor.el);
+      wrap.appendChild(header);
+      wrap.appendChild(controls);
+      wrap.appendChild(paintField);
       wrap.appendChild(buyBtn);
       els.options.appendChild(wrap);
     });
@@ -317,6 +518,75 @@
     if (controllerEnabled) {
       scheduleControllerRefresh({ retainCurrent: false });
     }
+  }
+
+  function renderNeonControls(mod, neons) {
+    var draft = cloneNeons(neons);
+
+    var panel = document.createElement('div');
+    panel.className = 'sk-modshop-neon-panel';
+
+    var colorRow = document.createElement('div');
+    colorRow.className = 'sk-modshop-neon-color-row';
+
+    var colorLabel = document.createElement('span');
+    colorLabel.className = 'sk-modshop-neon-label';
+    colorLabel.textContent = 'Glow Color';
+
+    var glowEditor = createColorEditor(draft.color, function (color) {
+      draft.color = color;
+      previewNeons(draft);
+    });
+
+    colorRow.appendChild(colorLabel);
+    colorRow.appendChild(glowEditor.el);
+    panel.appendChild(colorRow);
+
+    NEON_SIDE_ROWS.forEach(function (side) {
+      var row = document.createElement('label');
+      row.className = 'sk-modshop-neon-row';
+
+      var label = document.createElement('span');
+      label.className = 'sk-modshop-neon-label';
+      label.textContent = side.label;
+
+      var toggle = document.createElement('input');
+      toggle.type = 'checkbox';
+      toggle.className = 'sk-modshop-neon-side';
+      toggle.checked = draft.sides[side.key];
+      toggle.addEventListener('change', function () {
+        draft.sides[side.key] = toggle.checked;
+        previewNeons(draft);
+      });
+
+      row.appendChild(label);
+      row.appendChild(toggle);
+      panel.appendChild(row);
+    });
+
+    var saveBtn = document.createElement('button');
+    saveBtn.className = 'sk-modshop-neon-save';
+    saveBtn.textContent = 'Save Neon Setup';
+    saveBtn.addEventListener('click', function () {
+      saveBtn.disabled = true;
+      SK.nui.post('modshop:updateNeons', { color: draft.color, sides: draft.sides }).done(function (result) {
+        saveBtn.disabled = false;
+        if (!result.ok) return;
+        state.neons = cloneNeons(result.neons);
+        mod.neons = cloneNeons(result.neons);
+        mod.current = 0;
+        selectCategory(mod, 0);
+      });
+    });
+
+    panel.appendChild(saveBtn);
+    els.options.appendChild(panel);
+  }
+
+  function clearNeonControls() {
+    els.options.querySelectorAll('.sk-modshop-neon-panel').forEach(function (panel) {
+      panel.remove();
+    });
   }
 
   function buildOptionButton(mod, opt) {
@@ -328,10 +598,16 @@
     var subtitle = 'Ready to install for ' + fmt(mod.basePrice);
 
     btn.className = 'sk-modshop-option';
+    if (mod.isNeon && opt.index < 0) {
+      subtitle = 'Remove the underglow kit from this vehicle.';
+    } else if (mod.isNeon) {
+      subtitle = 'Install underglow, then choose color and active sides.';
+    }
+
     if (opt.index === mod.current) {
       btn.classList.add('is-owned');
       statusText = 'Installed';
-      subtitle = 'Already installed on this vehicle.';
+      subtitle = mod.isNeon && opt.index < 0 ? 'No neon kit installed.' : 'Already installed on this vehicle.';
     } else if (opt.locked) {
       btn.classList.add('is-locked');
       statusText = 'Locked';
@@ -358,6 +634,7 @@
       els.options.querySelectorAll('.sk-modshop-option').forEach(function (b) {
         b.classList.remove('is-selected');
       });
+      clearNeonControls();
       btn.classList.add('is-selected');
 
       if (opt.locked) {
@@ -366,11 +643,27 @@
         return;
       }
 
-      SK.nui.post('modshop:previewMod', { modType: mod.modType, modIndex: opt.index });
+      if (mod.isNeon) {
+        previewNeons(opt.index >= 0 ? cloneNeons(mod.neons || state.neons) || buildDefaultNeons() : null);
+      } else {
+        SK.nui.post('modshop:previewMod', { modType: mod.modType, modIndex: opt.index });
+      }
 
       if (opt.index === mod.current) {
-        setSelection(opt.name, 'Installed on your vehicle right now.');
-        setInstallState('Installed', 'Select another option to preview a different look.', 'Installed', true);
+        if (mod.isNeon && opt.index >= 0) {
+          setSelection(opt.name, 'Choose the underglow color and which sides are enabled.');
+          setInstallState('Installed', 'Use Save Neon Setup after changing color or sides.', 'Installed', true);
+          renderNeonControls(mod, cloneNeons(mod.neons || state.neons) || buildDefaultNeons());
+        } else {
+          setSelection(opt.name, 'Installed on your vehicle right now.');
+          setInstallState('Installed', 'Select another option to preview a different look.', 'Installed', true);
+        }
+      } else if (mod.isNeon && opt.index < 0) {
+        setSelection(opt.name, 'Remove the neon kit from this vehicle.');
+        setInstallState('Free', 'No cost to remove.', 'Remove', false);
+      } else if (mod.isNeon) {
+        setSelection(opt.name, 'Install underglow and start with the default blue setup.');
+        setInstallState(fmt(opt.price), 'Install the kit, then tune color and sides.', 'Install', false);
       } else {
         setSelection(opt.name, 'Unlocked and ready to install.');
         setInstallState(fmt(mod.basePrice), 'Unlocked part. Install it now for your current ride.', 'Install', false);
@@ -384,7 +677,10 @@
   }
 
   function selectCategory(mod, focusIndex) {
-    SK.nui.post('modshop:previewCategory', { modType: mod.modType });
+    if (!mod.isNeon) {
+      previewNeons(state.neons);
+      SK.nui.post('modshop:previewCategory', { modType: mod.modType });
+    }
     state.selectedMod = mod;
     els.install.style.display = '';
     setSelection(mod.name, mod.options.length + ' options in this category. Locked parts clearly show their required vehicle level.');
@@ -423,6 +719,7 @@
     state.progression = data.vehicleProgression || null;
     state.mods     = data.mods;
     state.colors   = data.colors || null;
+    state.neons    = cloneNeons(data.neons);
 
     els.title.textContent   = data.label;
     els.balance.textContent = fmt(data.balance);
@@ -470,6 +767,7 @@
     setInstallState('', '', 'Install', true);
     state.selectedMod         = null;
     state.colors              = null;
+    state.neons               = null;
     state.progression         = null;
     state.drag.active         = false;
     controllerNav.disconnectObserver();
@@ -505,10 +803,30 @@
   }
 
   function onBuyClick() {
-    var modType  = parseInt(els.buy.dataset.modType, 10);
+    var modTypeStr = els.buy.dataset.modType;
     var modIndex = parseInt(els.buy.dataset.modIndex, 10);
 
     els.buy.disabled = true;
+
+    if (modTypeStr === 'neons') {
+      SK.nui.post('modshop:purchaseNeons', { enabled: modIndex >= 0 }).done(function (result) {
+        if (!result.ok) {
+          els.buy.disabled = false;
+          return;
+        }
+
+        els.balance.textContent = fmt(result.balance);
+        state.neons = cloneNeons(result.neons);
+        if (state.selectedMod) {
+          state.selectedMod.current = modIndex;
+          state.selectedMod.neons = cloneNeons(result.neons);
+          selectCategory(state.selectedMod, modIndex);
+        }
+      });
+      return;
+    }
+
+    var modType = parseInt(modTypeStr, 10);
 
     SK.nui.post('modshop:purchaseMod', { modType: modType, modIndex: modIndex }).done(function (result) {
       if (!result.ok) {
