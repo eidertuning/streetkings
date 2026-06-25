@@ -68,6 +68,28 @@
       padding: 0 clamp(1.5rem, 4vw, 3rem);
     }
 
+    .splash-powered {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(1.25rem, 3vmin, 2rem);
+    }
+
+    .splash-powered-label {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: clamp(0.72rem, 1.25vmin, 0.88rem);
+      font-weight: 600;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.28);
+      padding-left: 0.42em;
+    }
+
+    .splash-logo.is-prism {
+      max-height: 22vh;
+      max-width: min(320px, 42vw);
+    }
+
     /* -- Controller notice -- */
 
     .notice-icon {
@@ -334,6 +356,10 @@
         max-width: min(12rem, 30vw);
       }
 
+      .splash-logo.is-prism {
+        max-width: min(16rem, 42vw);
+      }
+
       .accent-dash {
         width: 4rem;
         height: 6px;
@@ -367,6 +393,14 @@
       <img class="splash-logo is-919" src="assets/loading/919Logo.png" alt="" draggable="false" />
       <span class="splash-x">&times;</span>
       <img class="splash-logo is-envi" src="assets/loading/EnviScriptsLogo.png" alt="" draggable="false" />
+    </div>
+  </div>
+
+  <!-- Splash: powered by PRISM -->
+  <div id="splashPrism" class="screen">
+    <div class="splash-powered">
+      <p class="splash-powered-label">Powered by:</p>
+      <img class="splash-logo is-prism" src="assets/loading/PRISM_LOGO_FULL_BLU.png" alt="" draggable="false" />
     </div>
   </div>
 
@@ -407,6 +441,7 @@
 
   <script>
     var splashLogos      = document.getElementById('splashLogos');
+    var splashPrism      = document.getElementById('splashPrism');
     var controllerNotice = document.getElementById('controllerNotice');
     var loadscreen       = document.getElementById('loadscreen');
     var barFill          = document.getElementById('barFill');
@@ -448,20 +483,23 @@
       endInitFunction:       'Initializing',
     };
 
-    fadeIn(splashLogos, FADE_MS, function () {
-      setTimeout(function () {
-        fadeOut(splashLogos, FADE_MS, function () {
-          splashLogos.style.display = 'none';
-          fadeIn(controllerNotice, FADE_MS, function () {
-            setTimeout(function () {
-              fadeOut(controllerNotice, FADE_MS, function () {
-                controllerNotice.style.display = 'none';
-                fadeIn(loadscreen, FADE_MS, function () {});
-              });
-            }, HOLD_MS);
+    function showScreen(el, next) {
+      fadeIn(el, FADE_MS, function () {
+        setTimeout(function () {
+          fadeOut(el, FADE_MS, function () {
+            el.style.display = 'none';
+            if (next) next();
           });
+        }, HOLD_MS);
+      });
+    }
+
+    showScreen(splashLogos, function () {
+      showScreen(splashPrism, function () {
+        showScreen(controllerNotice, function () {
+          fadeIn(loadscreen, FADE_MS, function () {});
         });
-      }, HOLD_MS);
+      });
     });
 
     window.addEventListener('message', function (event) {
