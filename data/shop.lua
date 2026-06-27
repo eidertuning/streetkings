@@ -38,6 +38,16 @@ SKShopShared.NITROUS_PRICES = {
     race   = 8500,
 }
 
+-- Visual mod VIP gates. Use nil/omit for public mods, or one of:
+-- vip, vipplus, vipplusplus. Server callbacks enforce these rules.
+SKShopShared.VIP_MOD_REQUIREMENTS = {
+    neons = 'vip',
+    [22] = 'vip', -- Xenon lights
+    [23] = 'vip', -- Wheels
+    [24] = 'vip', -- Rear wheels
+    [48] = 'vipplus', -- Liveries
+}
+
 SKShopShared.TYPES = {
     visual = {
         key = 'visual',

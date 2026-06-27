@@ -5,12 +5,12 @@
 
   var COLOR_PRICE = 200;
   var PAINT_TYPES = [
-    { value: 0, label: 'Gloss' },
-    { value: 1, label: 'Metallic' },
-    { value: 2, label: 'Pearl' },
-    { value: 3, label: 'Matte' },
-    { value: 4, label: 'Metal' },
-    { value: 5, label: 'Chrome' },
+    { value: 0, labelKey: 'modshop.paint_gloss', fallback: 'Gloss' },
+    { value: 1, labelKey: 'modshop.paint_metallic', fallback: 'Metallic' },
+    { value: 2, labelKey: 'modshop.paint_pearl', fallback: 'Pearl' },
+    { value: 3, labelKey: 'modshop.paint_matte', fallback: 'Matte' },
+    { value: 4, labelKey: 'modshop.paint_metal', fallback: 'Metal' },
+    { value: 5, labelKey: 'modshop.paint_chrome', fallback: 'Chrome' },
   ];
   var DEFAULT_NEONS = {
     enabled: true,
@@ -18,58 +18,98 @@
     sides: { front: true, back: true, left: true, right: true },
   };
   var NEON_SIDE_ROWS = [
-    { key: 'front', label: 'Front' },
-    { key: 'back', label: 'Back' },
-    { key: 'left', label: 'Left' },
-    { key: 'right', label: 'Right' },
+    { key: 'front', labelKey: 'modshop.side_front', fallback: 'Front' },
+    { key: 'back', labelKey: 'modshop.side_back', fallback: 'Back' },
+    { key: 'left', labelKey: 'modshop.side_left', fallback: 'Left' },
+    { key: 'right', labelKey: 'modshop.side_right', fallback: 'Right' },
   ];
   var CATEGORY_ICONS = {
-    colors: 'CL',
-    neons: 'NE',
-    gearbox: 'GB',
-    nitrous: 'NX',
-    0: 'SP',
-    1: 'FB',
-    2: 'RB',
-    3: 'SS',
-    4: 'EX',
-    5: 'FR',
-    6: 'GR',
-    7: 'HD',
-    8: 'LF',
-    9: 'RF',
-    10: 'RO',
-    11: 'EN',
-    12: 'BR',
-    13: 'TR',
-    15: 'SU',
-    18: 'TB',
-    22: 'XL',
-    23: 'WH',
-    24: 'RW',
-    25: 'PL',
-    26: 'VP',
-    27: 'TD',
-    28: 'OR',
-    29: 'DB',
-    30: 'DL',
-    31: 'DS',
-    32: 'ST',
-    33: 'SW',
-    34: 'SL',
-    35: 'PQ',
-    36: 'IC',
-    37: 'BS',
-    39: 'EB',
-    40: 'AF',
-    41: 'SB',
-    42: 'AC',
-    43: 'AR',
-    44: 'TM',
-    45: 'TK',
-    46: 'WN',
-    47: 'MR',
-    48: 'LV',
+    colors: 'palette',
+    neons: 'spark',
+    gearbox: 'gear',
+    nitrous: 'bolt',
+    0: 'wing',
+    1: 'front',
+    2: 'rear',
+    3: 'side',
+    4: 'exhaust',
+    5: 'frame',
+    6: 'grille',
+    7: 'hood',
+    8: 'fender',
+    9: 'fender',
+    10: 'roof',
+    11: 'engine',
+    12: 'brake',
+    13: 'gear',
+    15: 'suspension',
+    18: 'turbo',
+    22: 'light',
+    23: 'wheel',
+    24: 'wheel',
+    25: 'plate',
+    26: 'plate',
+    27: 'trim',
+    28: 'ornament',
+    29: 'dash',
+    30: 'gauge',
+    31: 'speaker',
+    32: 'seat',
+    33: 'steering',
+    34: 'lever',
+    35: 'badge',
+    36: 'speaker',
+    37: 'speaker',
+    39: 'engine',
+    40: 'filter',
+    41: 'brace',
+    42: 'arch',
+    43: 'antenna',
+    44: 'trim',
+    45: 'tank',
+    46: 'window',
+    47: 'mirror',
+    48: 'livery',
+  };
+  var ICON_PATHS = {
+    palette: '<path d="M12 3a9 9 0 0 0 0 18h1.2a1.8 1.8 0 0 0 1.2-3.1 1.7 1.7 0 0 1 1.1-3h1.2A4.3 4.3 0 0 0 21 10.6C21 6.4 17 3 12 3Z"/><circle cx="7.7" cy="10" r="1.2"/><circle cx="10.4" cy="7.2" r="1.2"/><circle cx="14.1" cy="7.4" r="1.2"/><circle cx="16.5" cy="10.3" r="1.2"/>',
+    spark: '<path d="M12 2l1.5 6.1L19 12l-5.5 3.9L12 22l-1.5-6.1L5 12l5.5-3.9L12 2Z"/><path d="M4 4l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3Z"/>',
+    gear: '<path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Z"/><path d="M19.4 13.5v-3l-2-.6a6.2 6.2 0 0 0-.8-1.8l1-1.8-2.1-2.1-1.8 1a6.2 6.2 0 0 0-1.8-.8l-.6-2h-3l-.6 2a6.2 6.2 0 0 0-1.8.8l-1.8-1-2.1 2.1 1 1.8a6.2 6.2 0 0 0-.8 1.8l-2 .6v3l2 .6c.2.6.4 1.2.8 1.8l-1 1.8 2.1 2.1 1.8-1c.6.4 1.2.6 1.8.8l.6 2h3l.6-2c.6-.2 1.2-.4 1.8-.8l1.8 1 2.1-2.1-1-1.8c.4-.6.6-1.2.8-1.8l2-.6Z"/>',
+    bolt: '<path d="M13 2 4 13h6l-1 9 9-12h-6l1-8Z"/>',
+    wing: '<path d="M4 8h16v3H4z"/><path d="M7 11v6M17 11v6"/><path d="M5 17h14"/>',
+    front: '<path d="M5 10l2-4h10l2 4v7H5v-7Z"/><path d="M7 14h3M14 14h3M8 6l-1 4h10l-1-4"/>',
+    rear: '<path d="M5 9h14v8H5z"/><path d="M7 12h3M14 12h3M8 17v2M16 17v2"/>',
+    side: '<path d="M3 13h18l-2-4h-4l-2-2H8L6 9H4l-1 4Z"/><circle cx="7" cy="15" r="2"/><circle cx="17" cy="15" r="2"/>',
+    exhaust: '<path d="M3 14h11v4H3z"/><path d="M14 13h5a2 2 0 0 1 0 4h-5"/><path d="M19 7c2 1 2 3 0 4M16 6c1.5 1.2 1.5 2.8 0 4"/>',
+    frame: '<path d="M5 6h14v12H5z"/><path d="M5 10h14M9 6v12M15 6v12"/>',
+    grille: '<path d="M5 7h14v10H5z"/><path d="M8 7v10M11 7v10M14 7v10M17 7v10"/>',
+    hood: '<path d="M6 5h12l2 14H4L6 5Z"/><path d="M8 9h8M9 13h6"/>',
+    fender: '<path d="M4 15a8 8 0 0 1 16 0h-4a4 4 0 0 0-8 0H4Z"/><path d="M8 15h8"/>',
+    roof: '<path d="M6 14 9 6h6l3 8H6Z"/><path d="M8 14h8"/>',
+    engine: '<path d="M7 8h10v8H7z"/><path d="M10 8V5h4v3M5 11H3M21 11h-2M9 16v3M15 16v3"/>',
+    brake: '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/><path d="M5 5l3 3M19 5l-3 3M5 19l3-3M19 19l-3-3"/>',
+    suspension: '<path d="M7 4v16M17 4v16"/><path d="M7 7h10M7 12h10M7 17h10"/>',
+    turbo: '<path d="M8 14a5 5 0 1 1 5-5v5H8Z"/><path d="M13 9h6v4h-6M17 13v5h-5"/>',
+    light: '<path d="M4 12c3-5 9-5 12 0-3 5-9 5-12 0Z"/><path d="M17 8l4-2M18 12h4M17 16l4 2"/>',
+    wheel: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2"/><path d="M12 4v6M12 14v6M4 12h6M14 12h6M6.4 6.4l4.2 4.2M13.4 13.4l4.2 4.2M17.6 6.4l-4.2 4.2M10.6 13.4l-4.2 4.2"/>',
+    plate: '<path d="M4 8h16v8H4z"/><path d="M7 12h4M14 12h3"/>',
+    trim: '<path d="M4 7h16M4 12h16M4 17h16"/><path d="M8 5v14M16 5v14"/>',
+    ornament: '<path d="M12 4l3 6 6 .8-4.5 4.4 1 6.2L12 18.3l-5.5 3.1 1-6.2L3 10.8 9 10l3-6Z"/>',
+    dash: '<path d="M4 15a8 8 0 0 1 16 0v3H4v-3Z"/><path d="M8 14h8M11 11h2"/>',
+    gauge: '<path d="M5 16a7 7 0 0 1 14 0"/><path d="M12 16l4-5"/><circle cx="12" cy="16" r="1.5"/>',
+    speaker: '<path d="M5 9h4l5-4v14l-5-4H5z"/><path d="M17 9a5 5 0 0 1 0 6"/>',
+    seat: '<path d="M8 4h6l2 8H9L8 4Z"/><path d="M9 12h8v6H7v-4a2 2 0 0 1 2-2Z"/>',
+    steering: '<circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 12v8M8 12l-2 5M16 12l2 5"/>',
+    lever: '<path d="M12 4v9"/><circle cx="12" cy="4" r="2"/><path d="M8 20h8M10 13h4l1 7H9l1-7Z"/>',
+    badge: '<path d="M12 3l7 4v6c0 4-3 7-7 8-4-1-7-4-7-8V7l7-4Z"/><path d="M9 12h6"/>',
+    filter: '<path d="M4 8h14v8H4z"/><path d="M18 10h3v4h-3M7 8v8M10 8v8M13 8v8"/>',
+    brace: '<path d="M4 18 20 6M4 6l16 12"/><path d="M4 6h16v12H4z"/>',
+    arch: '<path d="M4 16a8 8 0 0 1 16 0"/><path d="M7 16a5 5 0 0 1 10 0"/>',
+    antenna: '<path d="M12 20V6"/><path d="M12 6l5-3"/><circle cx="12" cy="20" r="2"/>',
+    tank: '<path d="M7 5h10v14H7z"/><path d="M10 5V3h4v2M17 9h2v6h-2"/>',
+    window: '<path d="M5 16 8 6h8l3 10H5Z"/><path d="M10 6v10M14 6v10"/>',
+    mirror: '<path d="M5 10h7v5H5z"/><path d="M12 12h4l3-3v8l-3-3h-4"/>',
+    livery: '<path d="M4 5h16v14H4z"/><path d="M4 15 15 5M9 19 20 8"/>',
   };
 
   var state = {
@@ -79,6 +119,7 @@
     mods:        [],
     colors:      null,
     neons:       null,
+    playerVipTier: 'none',
     drag:        { active: false, lastX: 0, lastY: 0 },
   };
 
@@ -88,6 +129,20 @@
 
   function fmt(n) {
     return '$' + Math.floor(n).toLocaleString('en-US');
+  }
+
+  function t(key, replacements, fallback) {
+    if (SK.i18n && SK.i18n.t) {
+      var value = SK.i18n.t(key, replacements);
+      if (value && value !== key) return value;
+    }
+    var text = fallback || key;
+    if (replacements) {
+      Object.keys(replacements).forEach(function (name) {
+        text = text.replace(new RegExp('\\{' + name + '\\}', 'g'), replacements[name]);
+      });
+    }
+    return text;
   }
 
   function resolveEls() {
@@ -214,7 +269,7 @@
     var index = getPaintTypeIndexByValue(value);
     var type = PAINT_TYPES[index];
     control.dataset.value = String(type.value);
-    control.querySelector('.sk-modshop-paint-type-value').textContent = type.label;
+    control.querySelector('.sk-modshop-paint-type-value').textContent = t(type.labelKey, null, type.fallback);
   }
 
   function stepPaintTypeControl(control, direction) {
@@ -278,7 +333,7 @@
     hex.className = 'sk-modshop-color-hex';
     hex.maxLength = 7;
     hex.spellcheck = false;
-    hex.setAttribute('aria-label', 'Hex color');
+    hex.setAttribute('aria-label', t('modshop.hex_color', null, 'Hex color'));
 
     function applySwatch() {
       swatch.style.background = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
@@ -366,9 +421,11 @@
 
   function setCategoryButtonContent(button, icon, label) {
     button.innerHTML = '';
+    button.title = label;
+    button.setAttribute('aria-label', label);
     var iconEl = document.createElement('span');
     iconEl.className = 'sk-modshop-cat-icon';
-    iconEl.textContent = icon || 'SK';
+    iconEl.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + (ICON_PATHS[icon] || ICON_PATHS.palette) + '</svg>';
 
     var textEl = document.createElement('span');
     textEl.className = 'sk-modshop-cat-text';
@@ -407,7 +464,7 @@
   }
 
   function fmtUnlock(level) {
-    return 'Unlocks at Lv. ' + level;
+    return t('modshop.unlocks_at_level', { level: level }, 'Unlocks at Lv. {level}');
   }
 
   function fmtPackUnlock(opt) {
@@ -625,13 +682,13 @@
 
     els.install.style.display = 'none';
     state.selectedMod = null;
-    setSelection('Paint', 'Apply custom colors instantly. Visual parts still unlock from vehicle XP.');
+    setSelection(t('modshop.paint', null, 'Paint'), t('modshop.paint_copy', null, 'Apply custom colors instantly. Visual parts still unlock from vehicle XP.'));
 
     els.options.innerHTML = '';
 
     [
-      { slot: 'primary',   label: 'Primary Color'   },
-      { slot: 'secondary', label: 'Secondary Color' },
+      { slot: 'primary',   label: t('modshop.primary_color', null, 'Primary Color') },
+      { slot: 'secondary', label: t('modshop.secondary_color', null, 'Secondary Color') },
     ].forEach(function (row) {
       var current = state.colors[row.slot] || { r: 255, g: 255, b: 255 };
       var paintTypeValue = getPaintType(current);
@@ -654,7 +711,7 @@
 
       var paintLabel = document.createElement('span');
       paintLabel.className = 'sk-modshop-color-field-label';
-      paintLabel.textContent = 'Finish';
+      paintLabel.textContent = t('modshop.finish', null, 'Finish');
 
       var paintType = createPaintTypeControl(paintTypeValue);
 
@@ -711,7 +768,7 @@
 
     var colorLabel = document.createElement('span');
     colorLabel.className = 'sk-modshop-neon-label';
-    colorLabel.textContent = 'Glow Color';
+    colorLabel.textContent = t('modshop.glow_color', null, 'Glow Color');
 
     var glowEditor = createColorEditor(draft.color, function (color) {
       draft.color = color;
@@ -728,7 +785,7 @@
 
       var label = document.createElement('span');
       label.className = 'sk-modshop-neon-label';
-      label.textContent = side.label;
+      label.textContent = t(side.labelKey, null, side.fallback);
 
       var toggle = document.createElement('input');
       toggle.type = 'checkbox';
@@ -746,7 +803,7 @@
 
     var saveBtn = document.createElement('button');
     saveBtn.className = 'sk-modshop-neon-save';
-    saveBtn.textContent = 'Save Neon Setup';
+    saveBtn.textContent = t('modshop.save_neon_setup', null, 'Save Neon Setup');
     saveBtn.addEventListener('click', function () {
       saveBtn.disabled = true;
       SK.nui.post('modshop:updateNeons', { color: draft.color, sides: draft.sides }).done(function (result) {
@@ -774,24 +831,31 @@
     var status = document.createElement('span');
     var title = document.createElement('span');
     var meta = document.createElement('span');
-    var statusText = 'Available';
-    var subtitle = 'Ready to install for ' + fmt(mod.basePrice);
+    var statusText = t('modshop.available', null, 'Available');
+    var subtitle = t('modshop.ready_to_install', { price: fmt(mod.basePrice) }, 'Ready to install for {price}');
+    var requiredVipTier = opt.requiredVipTier || mod.requiredVipTier;
+    var vipLocked = requiredVipTier && !hasVipAccess(requiredVipTier);
 
     btn.className = 'sk-modshop-option';
+    btn.dataset.wheelGroup = opt.packName || t('modshop.wheel_group_stock', null, 'Stock');
     if (mod.isNeon && opt.index < 0) {
-      subtitle = 'Remove the underglow kit from this vehicle.';
+      subtitle = t('modshop.remove_neon_copy', null, 'Remove the underglow kit from this vehicle.');
     } else if (mod.isNeon) {
-      subtitle = 'Install underglow, then choose color and active sides.';
+      subtitle = t('modshop.install_neon_copy', null, 'Install underglow, then choose color and active sides.');
     }
 
     if (opt.index === mod.current) {
       btn.classList.add('is-owned');
-      statusText = 'Installed';
-      subtitle = mod.isNeon && opt.index < 0 ? 'No neon kit installed.' : 'Already installed on this vehicle.';
+      statusText = t('modshop.installed', null, 'Installed');
+      subtitle = mod.isNeon && opt.index < 0 ? t('modshop.no_neon_installed', null, 'No neon kit installed.') : t('modshop.already_installed', null, 'Already installed on this vehicle.');
     } else if (opt.locked) {
       btn.classList.add('is-locked');
-      statusText = 'Locked';
+      statusText = t('modshop.locked', null, 'Locked');
       subtitle = fmtPackUnlock(opt);
+    } else if (vipLocked) {
+      btn.classList.add('is-locked', 'is-vip-locked');
+      statusText = t('modshop.vip_required_short', { tier: vipLabel(requiredVipTier) }, '{tier}');
+      subtitle = t('modshop.vip_required_copy', { tier: vipLabel(requiredVipTier) }, '{tier} required for this mod.');
     }
 
     btn.dataset.modType = mod.modType;
@@ -818,8 +882,14 @@
       btn.classList.add('is-selected');
 
       if (opt.locked) {
-        setSelection(opt.name, (opt.packName ? opt.packName + ' unlocks ' : 'Locked until ') + 'at vehicle level ' + opt.unlockLevel + '. Earn more vehicle XP to unlock this part.');
-        setInstallState(fmtPackUnlock(opt), 'Locked part. Keep driving and winning to unlock it.', 'Locked', true);
+        setSelection(opt.name, (opt.packName ? opt.packName + ' ' : '') + t('modshop.locked_until_level_copy', { level: opt.unlockLevel }, 'Locked until vehicle level {level}. Earn more vehicle XP to unlock this part.'));
+        setInstallState(fmtPackUnlock(opt), t('modshop.locked_part_note', null, 'Locked part. Keep driving and winning to unlock it.'), t('modshop.locked', null, 'Locked'), true);
+        return;
+      }
+
+      if (vipLocked) {
+        setSelection(opt.name, t('modshop.vip_required_copy', { tier: vipLabel(requiredVipTier) }, '{tier} required for this mod.'));
+        setInstallState(vipLabel(requiredVipTier), t('modshop.vip_required_note', null, 'VIP mod. Upgrade your access to install it.'), t('modshop.locked', null, 'Locked'), true);
         return;
       }
 
@@ -831,22 +901,22 @@
 
       if (opt.index === mod.current) {
         if (mod.isNeon && opt.index >= 0) {
-          setSelection(opt.name, 'Choose the underglow color and which sides are enabled.');
-          setInstallState('Installed', 'Use Save Neon Setup after changing color or sides.', 'Installed', true);
+          setSelection(opt.name, t('modshop.choose_neon_sides', null, 'Choose the underglow color and which sides are enabled.'));
+          setInstallState(t('modshop.installed', null, 'Installed'), t('modshop.neon_save_note', null, 'Use Save Neon Setup after changing color or sides.'), t('modshop.installed', null, 'Installed'), true);
           renderNeonControls(mod, cloneNeons(mod.neons || state.neons) || buildDefaultNeons());
         } else {
-          setSelection(opt.name, 'Installed on your vehicle right now.');
-          setInstallState('Installed', 'Select another option to preview a different look.', 'Installed', true);
+          setSelection(opt.name, t('modshop.installed_now', null, 'Installed on your vehicle right now.'));
+          setInstallState(t('modshop.installed', null, 'Installed'), t('modshop.select_other_preview', null, 'Select another option to preview a different look.'), t('modshop.installed', null, 'Installed'), true);
         }
       } else if (mod.isNeon && opt.index < 0) {
-        setSelection(opt.name, 'Remove the neon kit from this vehicle.');
-        setInstallState('Free', 'No cost to remove.', 'Remove', false);
+        setSelection(opt.name, t('modshop.remove_neon_copy', null, 'Remove the underglow kit from this vehicle.'));
+        setInstallState(t('modshop.free', null, 'Free'), t('modshop.no_cost_remove', null, 'No cost to remove.'), t('modshop.remove', null, 'Remove'), false);
       } else if (mod.isNeon) {
-        setSelection(opt.name, 'Install underglow and start with the default blue setup.');
-        setInstallState(fmt(opt.price), 'Install the kit, then tune color and sides.', 'Install', false);
+        setSelection(opt.name, t('modshop.install_neon_start', null, 'Install underglow and start with the default blue setup.'));
+        setInstallState(fmt(opt.price), t('modshop.install_neon_note', null, 'Install the kit, then tune color and sides.'), t('modshop.install', null, 'Install'), false);
       } else {
-        setSelection(opt.name, 'Unlocked and ready to install.');
-        setInstallState(fmt(mod.basePrice), 'Unlocked part. Install it now for your current ride.', 'Install', false);
+        setSelection(opt.name, t('modshop.unlocked_ready', null, 'Unlocked and ready to install.'));
+        setInstallState(fmt(mod.basePrice), t('modshop.unlocked_part_note', null, 'Unlocked part. Install it now for your current ride.'), t('modshop.install', null, 'Install'), false);
       }
 
       els.buy.dataset.modType = mod.modType;
@@ -854,6 +924,19 @@
     });
 
     return btn;
+  }
+
+  function vipLabel(tier) {
+    return ({ vip: 'VIP', vipplus: 'VIP+', vipplusplus: 'VIP++' })[tier] || tier || 'VIP';
+  }
+
+  function hasVipAccess(requiredTier) {
+    var ranks = { none: 0, vip: 1, vipplus: 2, vipplusplus: 3 };
+    return (ranks[state.playerVipTier || 'none'] || 0) >= (ranks[requiredTier || 'none'] || 0);
+  }
+
+  function isWheelCategory(mod) {
+    return mod && (mod.modType === 23 || mod.modType === 24);
   }
 
   function selectCategory(mod, focusIndex) {
@@ -864,7 +947,7 @@
     }
     state.selectedMod = mod;
     els.install.style.display = '';
-    setSelection(mod.name, mod.options.length + ' options in this category. Locked parts clearly show their required vehicle level.');
+    setSelection(mod.name, t('modshop.category_option_count', { count: mod.options.length }, '{count} options in this category. Locked parts clearly show their required vehicle level.'));
 
     var cats = els.categories.querySelectorAll('.sk-modshop-cat');
     cats.forEach(function (btn) {
@@ -872,17 +955,52 @@
     });
 
     els.options.innerHTML = '';
+    var wheelGroups = [];
+    var activeWheelGroup = null;
+
+    if (isWheelCategory(mod)) {
+      mod.options.forEach(function (opt) {
+        var group = opt.packName || t('modshop.wheel_group_stock', null, 'Stock');
+        if (wheelGroups.indexOf(group) === -1) wheelGroups.push(group);
+        if (opt.index === mod.current) activeWheelGroup = group;
+      });
+      activeWheelGroup = activeWheelGroup || wheelGroups[0];
+
+      var tabs = document.createElement('div');
+      tabs.className = 'sk-modshop-wheel-tabs';
+      wheelGroups.forEach(function (group) {
+        var tab = document.createElement('button');
+        tab.type = 'button';
+        tab.className = 'sk-modshop-wheel-tab' + (group === activeWheelGroup ? ' is-active' : '');
+        tab.textContent = group;
+        tab.addEventListener('click', function () {
+          activeWheelGroup = group;
+          tabs.querySelectorAll('.sk-modshop-wheel-tab').forEach(function (node) {
+            node.classList.toggle('is-active', node === tab);
+          });
+          els.options.querySelectorAll('.sk-modshop-option').forEach(function (node) {
+            node.classList.toggle('is-hidden', node.dataset.wheelGroup !== activeWheelGroup);
+          });
+        });
+        tabs.appendChild(tab);
+      });
+      els.options.appendChild(tabs);
+    }
+
     var initialBtn = null;
 
     mod.options.forEach(function (opt) {
       var btn = buildOptionButton(mod, opt);
+      if (activeWheelGroup && btn.dataset.wheelGroup !== activeWheelGroup) {
+        btn.classList.add('is-hidden');
+      }
       if ((focusIndex !== undefined && opt.index === focusIndex) || (focusIndex === undefined && opt.index === mod.current)) {
         initialBtn = btn;
       }
       els.options.appendChild(btn);
     });
 
-    setInstallState('', 'Select a part to preview it.', 'Install', true);
+    setInstallState('', t('modshop.select_part_preview', null, 'Select a part to preview it.'), t('modshop.install', null, 'Install'), true);
     if (!initialBtn) {
       initialBtn = els.options.querySelector('.sk-modshop-option');
     }
@@ -901,6 +1019,7 @@
     state.mods     = data.mods;
     state.colors   = data.colors || null;
     state.neons    = cloneNeons(data.neons);
+    state.playerVipTier = data.playerVipTier || 'none';
 
     els.title.textContent   = data.label;
     els.balance.textContent = fmt(data.balance);
@@ -912,7 +1031,7 @@
       var colorBtn = document.createElement('button');
       colorBtn.className        = 'sk-modshop-cat';
       colorBtn.dataset.colorCat = 'true';
-      setCategoryButtonContent(colorBtn, CATEGORY_ICONS.colors, 'Colors');
+      setCategoryButtonContent(colorBtn, CATEGORY_ICONS.colors, t('modshop.colors', null, 'Colors'));
       colorBtn.addEventListener('click', selectColors);
       els.categories.appendChild(colorBtn);
     }
@@ -991,10 +1110,14 @@
 
     if (modTypeStr === 'neons') {
       SK.nui.post('modshop:purchaseNeons', { enabled: modIndex >= 0 }).done(function (result) {
-        if (!result.ok) {
-          els.buy.disabled = false;
+      if (!result.ok) {
+        if (result.reason === 'vip_required' && result.requiredVipTier) {
+          setInstallState(vipLabel(result.requiredVipTier), t('modshop.vip_required_note', null, 'VIP mod. Upgrade your access to install it.'), t('modshop.locked', null, 'Locked'), true);
           return;
         }
+        els.buy.disabled = false;
+        return;
+      }
 
         els.balance.textContent = fmt(result.balance);
         state.neons = cloneNeons(result.neons);
@@ -1012,7 +1135,11 @@
     SK.nui.post('modshop:purchaseMod', { modType: modType, modIndex: modIndex }).done(function (result) {
       if (!result.ok) {
         if (result.reason === 'locked' && result.unlockLevel) {
-          setInstallState(fmtUnlock(result.unlockLevel), 'This part is still locked for your vehicle.', 'Locked', true);
+          setInstallState(fmtUnlock(result.unlockLevel), t('modshop.still_locked_vehicle', null, 'This part is still locked for your vehicle.'), t('modshop.locked', null, 'Locked'), true);
+          return;
+        }
+        if (result.reason === 'vip_required' && result.requiredVipTier) {
+          setInstallState(vipLabel(result.requiredVipTier), t('modshop.vip_required_note', null, 'VIP mod. Upgrade your access to install it.'), t('modshop.locked', null, 'Locked'), true);
           return;
         }
         els.buy.disabled = false;

@@ -179,5 +179,11 @@ end
 ---@param packIndex integer
 ---@return string
 function SKProgression.getWheelPackName(packIndex)
-    return 'Wheels Pack ' .. tostring(packIndex)
+    local names = {
+        [1] = 'Street Wheels',
+        [2] = 'Sport Wheels',
+        [3] = 'Track Wheels',
+        [4] = 'Elite Wheels',
+    }
+    return names[packIndex] or ('Wheels Pack ' .. tostring(packIndex))
 end

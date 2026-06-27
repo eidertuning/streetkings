@@ -1,5 +1,37 @@
 SKShopShared = SKShopShared or {}
 
+SKShopShared.VIP_TIERS = {
+    none = 0,
+    vip = 1,
+    vipplus = 2,
+    vipplusplus = 3,
+}
+
+---@param tier string|nil
+---@return integer
+function SKShopShared.getVipRank(tier)
+    return SKShopShared.VIP_TIERS[tier or 'none'] or 0
+end
+
+---@param playerTier string|nil
+---@param requiredTier string|nil
+---@return boolean
+function SKShopShared.hasVipAccess(playerTier, requiredTier)
+    return SKShopShared.getVipRank(playerTier) >= SKShopShared.getVipRank(requiredTier)
+end
+
+---@param modType integer|string|nil
+---@param modIndex integer|nil
+---@return string|nil
+function SKShopShared.getRequiredVipTier(modType, modIndex)
+    local requirements = SKShopShared.VIP_MOD_REQUIREMENTS or {}
+    local modReq = requirements[modType]
+    if type(modReq) == 'table' then
+        return modReq[modIndex] or modReq.default
+    end
+    return modReq
+end
+
 ---@param modType integer
 ---@return boolean
 function SKShopShared.isExcludedModType(modType)

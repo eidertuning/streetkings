@@ -2,6 +2,25 @@ lib.callback.register('streetkings:shop:getBalance', function(source)
     return SKSaves.read(source, 'economy.cash')
 end)
 
+local function getPlayerVipTier(source, document)
+    local savedTier = document and document.profile and document.profile.vipTier
+    local bestTier = type(savedTier) == 'string' and savedTier or 'none'
+
+    if IsPlayerAceAllowed(source, 'streetkings.vipplusplus') then
+        bestTier = 'vipplusplus'
+    elseif IsPlayerAceAllowed(source, 'streetkings.vipplus') and SKShopShared.getVipRank(bestTier) < SKShopShared.getVipRank('vipplus') then
+        bestTier = 'vipplus'
+    elseif IsPlayerAceAllowed(source, 'streetkings.vip') and SKShopShared.getVipRank(bestTier) < SKShopShared.getVipRank('vip') then
+        bestTier = 'vip'
+    end
+
+    return bestTier
+end
+
+lib.callback.register('streetkings:shop:getVipTier', function(source)
+    return getPlayerVipTier(source, SKSaves.getDocument(source))
+end)
+
 lib.callback.register('streetkings:shop:loadDiscovered', function(source)
     local world = SKSaves.read(source, 'world.state')
     return world.discoveredShops or {}
@@ -202,6 +221,11 @@ lib.callback.register('streetkings:shop:purchaseNeons', function(source, enabled
     end
 
     local document, vehicleId, entry = getActiveVehicleEntry(source)
+    local requiredVipTier = SKShopShared.getRequiredVipTier('neons')
+    if enabled and requiredVipTier and not SKShopShared.hasVipAccess(getPlayerVipTier(source, document), requiredVipTier) then
+        return { ok = false, reason = 'vip_required', requiredVipTier = requiredVipTier }
+    end
+
     local cash = document.economy.cash
     local alreadyInstalled = type(entry.data.neons) == 'table'
     local price = enabled and not alreadyInstalled and SKShopShared.NEON_PRICE or 0
@@ -261,6 +285,11 @@ lib.callback.register('streetkings:shop:purchaseMod', function(source, shopTypeK
     end
 
     local document, vehicleId, entry = getActiveVehicleEntry(source)
+    local requiredVipTier = SKShopShared.getRequiredVipTier(modType, modIndex) or SKShopShared.getRequiredVipTier(modType)
+    if requiredVipTier and not SKShopShared.hasVipAccess(getPlayerVipTier(source, document), requiredVipTier) then
+        return { ok = false, reason = 'vip_required', requiredVipTier = requiredVipTier }
+    end
+
     local cash = document.economy.cash
     if cash < price then
         return { ok = false, reason = 'insufficient_funds' }

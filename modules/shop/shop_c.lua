@@ -18,13 +18,14 @@ local CAM_ANGLE_V_DEFAULT = 12.0
 local CAMERA_ROTATE_SPEED = 2.5
 local CAMERA_ZOOM_SPEED   = 0.12
 local CAMERA_PRESETS = {
-    colors = { h = 150.0, v = 14.0, dist = 5.0 },
-    neons = { h = 140.0, v = -8.0, dist = 4.1 },
-    front = { h = 180.0, v = 7.0, dist = 3.55 },
-    rear = { h = 0.0, v = 8.0, dist = 3.65 },
-    side = { h = 88.0, v = 7.0, dist = 4.25 },
-    top = { h = 150.0, v = 26.0, dist = 4.65 },
-    interior = { h = 112.0, v = 13.0, dist = 3.25 },
+    colors = { h = 150.0, v = 14.0, dist = 5.8 },
+    neons = { h = 140.0, v = -6.0, dist = 5.2 },
+    front = { h = 180.0, v = 8.0, dist = 4.55 },
+    rear = { h = 0.0, v = 9.0, dist = 4.75 },
+    side = { h = 88.0, v = 8.0, dist = 5.35 },
+    top = { h = 150.0, v = 24.0, dist = 5.65 },
+    interior = { h = 112.0, v = 14.0, dist = 4.35 },
+    lights = { h = 180.0, v = 2.0, dist = 4.2 },
 }
 
 -- State ---------------------------------------------------------------------
@@ -132,6 +133,7 @@ local function buildModList(vehicle, shopTypeKey, progressionData)
                     local key = SKProgression.getModOptionKey(modType, i)
                     local unlockLevel = progressionData and progressionData.unlockLevels[key] or nil
                     local packName = nil
+                    local requiredVipTier = SKShopShared.getRequiredVipTier(modType, i)
                     if SKProgression.isWheelModType(modType) then
                         local packIndex = SKProgression.getWheelPackIndex(i + 1, count)
                         packName = SKProgression.getWheelPackName(packIndex)
@@ -144,6 +146,7 @@ local function buildModList(vehicle, shopTypeKey, progressionData)
                         locked = unlockLevel ~= nil and not (progressionData and progressionData.unlocks[key]),
                         unlockLevel = unlockLevel,
                         packName = packName,
+                        requiredVipTier = requiredVipTier,
                     }
                 end
                 mods[#mods + 1] = {
@@ -151,6 +154,7 @@ local function buildModList(vehicle, shopTypeKey, progressionData)
                     name    = SKProgression.MOD_TYPE_NAMES[modType] or ('Mod ' .. modType),
                     current = SKShopShared.getInstalledModIndex(vehicle, modType),
                     basePrice = basePrice,
+                    requiredVipTier = SKShopShared.getRequiredVipTier(modType),
                     options = options,
                 }
             end
@@ -204,7 +208,9 @@ local function focusShopCameraForCategory(modType, category)
             presetKey = 'neons'
         elseif modType == 0 or modType == 2 or modType == 4 or modType == 25 or modType == 26 then
             presetKey = 'rear'
-        elseif modType == 1 or modType == 6 or modType == 22 or modType == 39 or modType == 40 or modType == 41 then
+        elseif modType == 22 then
+            presetKey = 'lights'
+        elseif modType == 1 or modType == 6 or modType == 39 or modType == 40 or modType == 41 then
             presetKey = 'front'
         elseif modType == 3 or modType == 8 or modType == 9 or modType == 23 or modType == 24 or modType == 42 or modType == 47 then
             presetKey = 'side'
@@ -372,6 +378,7 @@ function SKShop.registerShopState(shopTypeKey)
                 RenderScriptCams(true, false, 0, true, true)
 
                 local balance     = lib.callback.await('streetkings:shop:getBalance', false)
+                local playerVipTier = lib.callback.await('streetkings:shop:getVipTier', false)
                 currentVehicleProgression = lib.callback.await(
                     'streetkings:progression:syncActiveVehicleMods',
                     false,
@@ -438,6 +445,7 @@ function SKShop.registerShopState(shopTypeKey)
                         current   = neons and 0 or -1,
                         isNeon    = true,
                         basePrice = SKShopShared.NEON_PRICE,
+                        requiredVipTier = SKShopShared.getRequiredVipTier('neons'),
                         neons     = neons,
                         options   = {
                             { index = -1, key = 'neons:none', name = 'No Neons', locked = false, price = 0 },
@@ -466,6 +474,7 @@ function SKShop.registerShopState(shopTypeKey)
                     label = config.label,
                     mods = mods,
                     balance = balance,
+                    playerVipTier = playerVipTier,
                     vehicleLevel = currentVehicleProgression and currentVehicleProgression.level or 1,
                     vehicleProgression = currentVehicleProgression,
                 }
