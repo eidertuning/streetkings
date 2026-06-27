@@ -17,10 +17,17 @@
   var elPhoneMissionName = document.getElementById('phoneMissionName');
   var elPhoneMissionForfeit = document.getElementById('phoneMissionForfeit');
   var elPhoneBalance = document.getElementById('phoneBalance');
+  var elExternalApps = document.getElementById('phoneExternalApps');
+  var elExternalTitle = document.getElementById('phoneExternalTitle');
+  var elExternalFrame = document.getElementById('phoneExternalFrame');
+  var elExternalShell = document.getElementById('phoneExternalShell');
 
   var appHandlers = {};
   var controllerAdapters = {};
   var pendingAppData = {};
+  var externalApps = {};
+  var externalCurrentAppId = null;
+  var externalLaunchData = null;
   var controllerEnabled = false;
   var HOME_GRID_COLUMNS = 4;
   var controllerGlyphs = SK.controllerGlyphs;
@@ -35,7 +42,8 @@
     refreshControllerFocus: function (options) { scheduleControllerRefresh(options); },
     focusControllerElement: function (el) { focusControllerElement(el); },
     isControllerMode: function () { return controllerEnabled; },
-    setCashBalance: function (amount) { updateCashBalance(amount); }
+    setCashBalance: function (amount) { updateCashBalance(amount); },
+    getExternalApp: function (appId) { return externalApps[appId] || null; }
   };
 
   function updateTime() {
@@ -61,6 +69,54 @@
     SK.nui.post('phone:stats:getData').done(function (data) {
       updateCashBalance(data && data.cash);
     });
+  }
+
+  function normalizeExternalIcon(icon) {
+    icon = String(icon || 'fa-star').trim();
+    if (!icon) return 'fa-solid fa-star';
+    if (icon.indexOf('fa-') === 0) return 'fa-solid ' + icon;
+    return icon;
+  }
+
+  function externalAppUrl(app) {
+    if (!app || !app.resource || !app.ui) return '';
+    var ui = String(app.ui).replace(/^\/+/, '');
+    return 'https://cfx-nui-' + app.resource + '/' + ui;
+  }
+
+  function renderExternalApps() {
+    if (!elExternalApps) return;
+    elExternalApps.innerHTML = '';
+
+    Object.keys(externalApps).sort(function (a, b) {
+      return String(externalApps[a].label || a).localeCompare(String(externalApps[b].label || b));
+    }).forEach(function (appId) {
+      var app = externalApps[appId];
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'phone-app';
+      btn.dataset.externalApp = appId;
+
+      var icon = document.createElement('div');
+      icon.className = 'phone-app-icon';
+      icon.style.setProperty('--app-color', app.color || '#ff006a');
+
+      var glyph = document.createElement('i');
+      glyph.className = normalizeExternalIcon(app.icon);
+      icon.appendChild(glyph);
+
+      var label = document.createElement('span');
+      label.className = 'phone-app-label';
+      label.textContent = app.label || appId;
+
+      btn.appendChild(icon);
+      btn.appendChild(label);
+      elExternalApps.appendChild(btn);
+    });
+
+    if (controllerEnabled && !currentApp) {
+      scheduleControllerRefresh({ retainCurrent: true });
+    }
   }
 
   function renderBackButtons() {
@@ -90,7 +146,7 @@
   function getHomeAppButtons() {
     var home = document.getElementById('phoneHome');
     if (!home) return [];
-    return Array.prototype.slice.call(home.querySelectorAll('.phone-app[data-app]'));
+    return Array.prototype.slice.call(home.querySelectorAll('.phone-app[data-app], .phone-app[data-external-app]'));
   }
 
   var homeControllerAdapter = {
@@ -294,9 +350,83 @@
     );
   }
 
+  function closeExternalApp() {
+    externalCurrentAppId = null;
+    externalLaunchData = null;
+    if (elExternalFrame) {
+      elExternalFrame.removeAttribute('src');
+    }
+    if (elExternalShell) {
+      elExternalShell.classList.remove('is-empty');
+    }
+  }
+
+  function postExternalInit() {
+    if (!externalCurrentAppId || !elExternalFrame || !elExternalFrame.contentWindow) return;
+    var app = externalApps[externalCurrentAppId];
+    if (!app) return;
+    elExternalFrame.contentWindow.postMessage({
+      type: 'sk-tablet:init',
+      appId: app.id,
+      appName: app.id,
+      resourceName: app.resource,
+      settings: {
+        locale: SK.i18n && SK.i18n.getLocale ? SK.i18n.getLocale() : document.documentElement.lang || 'en',
+      },
+    }, '*');
+    if (externalLaunchData) {
+      elExternalFrame.contentWindow.postMessage({
+        type: 'sk-tablet:event',
+        event: 'route',
+        data: externalLaunchData,
+      }, '*');
+    }
+  }
+
+  function showExternalApp(appId, launchData) {
+    var app = externalApps[appId];
+    var view = document.getElementById('phoneAppExternal');
+    if (!app || !view) return;
+
+    if (currentApp && currentApp !== 'External') {
+      var previous = document.getElementById('phoneApp' + currentApp);
+      if (previous) previous.classList.remove('is-active');
+    }
+
+    document.getElementById('phoneHome').classList.remove('is-active');
+    view.classList.add('is-active');
+    currentApp = 'External';
+    externalCurrentAppId = appId;
+    externalLaunchData = launchData || null;
+    if (elExternalTitle) elExternalTitle.textContent = app.label || appId;
+
+    var url = externalAppUrl(app);
+    if (!url) {
+      if (elExternalShell) elExternalShell.classList.add('is-empty');
+      return;
+    }
+
+    if (elExternalShell) elExternalShell.classList.remove('is-empty');
+    if (elExternalFrame) {
+      elExternalFrame.onload = postExternalInit;
+      elExternalFrame.src = url;
+    }
+    observeControllerRoot();
+    if (controllerEnabled) {
+      scheduleControllerRefresh({ retainCurrent: false });
+    }
+  }
+
   function showApp(appId) {
+    if (externalApps[appId]) {
+      showExternalApp(appId, pendingAppData[appId] || null);
+      pendingAppData[appId] = null;
+      return;
+    }
     if (currentApp && currentApp !== appId) {
-      document.getElementById('phoneApp' + currentApp).classList.remove('is-active');
+      var previous = document.getElementById('phoneApp' + currentApp);
+      if (previous) previous.classList.remove('is-active');
+      if (currentApp === 'External') closeExternalApp();
     }
     document.getElementById('phoneHome').classList.remove('is-active');
     document.getElementById('phoneApp' + appId).classList.add('is-active');
@@ -330,7 +460,9 @@
       appOpenTimer = null;
     }
     if (currentApp) {
-      document.getElementById('phoneApp' + currentApp).classList.remove('is-active');
+      var current = document.getElementById('phoneApp' + currentApp);
+      if (current) current.classList.remove('is-active');
+      if (currentApp === 'External') closeExternalApp();
       currentApp = null;
     }
     document.getElementById('phoneHome').classList.add('is-active');
@@ -346,7 +478,9 @@
       appOpenTimer = null;
     }
     if (currentApp) {
-      document.getElementById('phoneApp' + currentApp).classList.remove('is-active');
+      var current = document.getElementById('phoneApp' + currentApp);
+      if (current) current.classList.remove('is-active');
+      if (currentApp === 'External') closeExternalApp();
       currentApp = null;
     }
     document.getElementById('phoneHome').classList.add('is-active');
@@ -457,6 +591,7 @@
   }
 
   $(elPhone).on('click', '.phone-app[data-app]', function () { showApp($(this).data('app')); });
+  $(elPhone).on('click', '.phone-app[data-external-app]', function () { showExternalApp($(this).data('external-app')); });
   $(elPhone).on('click', '.phone-app-back', showHome);
   $(elPhone).on('click', '.phone-home-btn', function () {
     if (phoneMode === 'event' || phoneMode === 'mission') {
@@ -524,12 +659,81 @@
   });
 
   window.addEventListener('message', function (e) {
-    if (e.data.type === 'phone:open')  { openPhone(e.data); }
-    if (e.data.type === 'phone:focusApp') { focusApp(e.data); }
-    if (e.data.type === 'phone:close') { closePhone(); }
-    if (e.data.type === 'phone:controllerMode') { setControllerEnabled(!!e.data.enabled); }
-    if (e.data.type === 'phone:controllerInput') { handleControllerInput(e.data.action); }
-    if (e.data.type === 'phone:controllerAnalog') { handleControllerAnalog(e.data); }
+    var message = e.data || {};
+    if (!message.type) return;
+    if (message.type === 'sk-tablet:ready') {
+      postExternalInit();
+      return;
+    }
+    if (message.type === 'sk-tablet:close') {
+      showHome();
+      return;
+    }
+    if (message.type === 'sk-tablet:fetch') {
+      var request = message;
+      var app = externalCurrentAppId ? externalApps[externalCurrentAppId] : null;
+      if (!app || request.appId !== app.id || request.resourceName !== app.resource || !request.event) {
+        if (elExternalFrame && elExternalFrame.contentWindow) {
+          elExternalFrame.contentWindow.postMessage({
+            type: 'sk-tablet:fetchResult',
+            requestId: request.requestId,
+            ok: false,
+            error: 'invalid_app_request',
+          }, '*');
+        }
+        return;
+      }
+      SK.nui.postToResource(app.resource, request.event, request.data || {})
+        .done(function (result) {
+          if (!elExternalFrame || !elExternalFrame.contentWindow) return;
+          elExternalFrame.contentWindow.postMessage({
+            type: 'sk-tablet:fetchResult',
+            requestId: request.requestId,
+            ok: true,
+            data: result,
+          }, '*');
+        })
+        .fail(function () {
+          if (!elExternalFrame || !elExternalFrame.contentWindow) return;
+          elExternalFrame.contentWindow.postMessage({
+            type: 'sk-tablet:fetchResult',
+            requestId: request.requestId,
+            ok: false,
+            error: 'fetch_failed',
+          }, '*');
+        });
+      return;
+    }
+    if (message.type === 'phone:open')  { openPhone(message); }
+    if (message.type === 'phone:focusApp') { focusApp(message); }
+    if (message.type === 'phone:close') { closePhone(); }
+    if (message.type === 'phone:controllerMode') { setControllerEnabled(!!message.enabled); }
+    if (message.type === 'phone:controllerInput') { handleControllerInput(message.action); }
+    if (message.type === 'phone:controllerAnalog') { handleControllerAnalog(message); }
+    if (message.type === 'phone:externalApps:sync') {
+      externalApps = {};
+      var apps = Array.isArray(message.apps) ? message.apps : [];
+      for (var i = 0; i < apps.length; i++) {
+        if (apps[i] && apps[i].id) externalApps[apps[i].id] = apps[i];
+      }
+      renderExternalApps();
+    }
+    if (message.type === 'phone:externalApps:set' && message.app && message.app.id) {
+      externalApps[message.app.id] = message.app;
+      renderExternalApps();
+    }
+    if (message.type === 'phone:externalApps:remove' && message.appId) {
+      delete externalApps[message.appId];
+      if (externalCurrentAppId === message.appId) showHome();
+      renderExternalApps();
+    }
+    if (message.type === 'phone:externalApp:message' && message.appId && externalCurrentAppId === message.appId && elExternalFrame && elExternalFrame.contentWindow) {
+      elExternalFrame.contentWindow.postMessage({
+        type: 'sk-tablet:event',
+        event: message.event,
+        data: message.data || {},
+      }, '*');
+    }
   });
 
   controllerGlyphs.onChange(function () {

@@ -61,6 +61,17 @@
         dataType: 'json',
       });
     },
+
+    postToResource: function (resourceName, callbackName, payload) {
+      var body = payload === undefined ? '{}' : JSON.stringify(payload);
+      return $.ajax({
+        url: 'https://' + resourceName + '/' + callbackName,
+        method: 'POST',
+        data: body,
+        contentType: 'application/json; charset=UTF-8',
+        dataType: 'json',
+      });
+    },
   };
 
   function getNested(source, key) {

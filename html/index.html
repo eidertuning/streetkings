@@ -326,6 +326,7 @@
               </div>
               <span class="phone-app-label" data-i18n="phone.settings">Configuración</span>
             </button>
+            <div id="phoneExternalApps" class="phone-external-apps"></div>
           </div>
         </div>
 
@@ -372,7 +373,7 @@
             <div class="phone-messages-list" id="msgList"></div>
             <div class="phone-messages-pane">
               <div class="phone-msg-empty" id="msgEmpty">
-                <span>Seleccione una conversación</span>
+                <span data-i18n="messages.select_conversation">Selecciona una conversación</span>
               </div>
               <div class="phone-msg-thread" id="msgThread" style="display:none"></div>
             </div>
@@ -541,6 +542,16 @@
               <div class="phone-lb-list" id="lbList"></div>
               <div class="phone-lb-personal" id="lbPersonal" style="display:none"></div>
             </div>
+          </div>
+        </div>
+        <div class="phone-view" id="phoneAppExternal">
+          <div class="phone-app-header">
+            <button class="phone-app-back" data-i18n="common.back">← Atrás</button>
+            <span class="phone-app-title" id="phoneExternalTitle" data-i18n="phone.external_app">Aplicación</span>
+          </div>
+          <div class="phone-external-shell" id="phoneExternalShell">
+            <iframe id="phoneExternalFrame" class="phone-external-frame" title="StreetKings external tablet app"></iframe>
+            <div class="phone-external-empty" id="phoneExternalEmpty" data-i18n="phone.external_app_unavailable">Aplicación no disponible.</div>
           </div>
         </div>
       </div>
@@ -1218,7 +1229,7 @@
 
   <div id="msgNotif" class="sk-msg-notif">
     <div class="sk-msg-notif-header">
-      <span class="sk-msg-notif-label">New Message</span>
+      <span class="sk-msg-notif-label" data-i18n="messages.new_message">Nuevo mensaje</span>
       <span class="sk-msg-notif-hint">TAB to open</span>
     </div>
     <div class="sk-msg-notif-body">

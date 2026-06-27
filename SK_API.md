@@ -570,6 +570,69 @@ exports['streetkings']:SetGameState('my_addon_state')
 
 ---
 
+## Tablet External Apps
+
+Other resources can register apps that appear inside the StreetKings tablet home screen and open in an iframe.
+
+### RegisterTabletApp / registerApp
+
+Client or server:
+
+```lua
+local ok, reason = exports['streetkings']:RegisterTabletApp({
+    id = 'myapp',              -- required, [a-z0-9_], max 32 chars
+    label = 'My App',          -- required
+    icon = 'fa-star',          -- Font Awesome class
+    color = '#0a84ff',         -- CSS color or gradient
+    ui = 'web/index.html',     -- file in the registering resource
+    description = 'Optional app description.',
+    version = '1.0.0',
+    developer = 'My Resource',
+})
+```
+
+Use `UnregisterTabletApp(appId)` when your resource stops if you need manual cleanup. StreetKings also removes apps automatically on resource stop.
+
+### Open And Message Apps
+
+```lua
+-- client
+exports['streetkings']:OpenTabletApp('myapp', { tab = 'inbox' })
+exports['streetkings']:SendTabletAppMessage('myapp', 'refresh', { updated = true })
+
+-- server
+exports['streetkings']:OpenTabletApp(source, 'myapp', { tab = 'inbox' })
+exports['streetkings']:SendTabletAppMessage(source, 'myapp', 'refresh', { updated = true })
+```
+
+Only the resource that registered an app can send messages for it.
+
+### App UI SDK
+
+Include the SDK from your app HTML:
+
+```html
+<script src="https://cfx-nui-streetkings/html/js/tablet-sdk.js"></script>
+```
+
+Then use:
+
+```js
+const data = await fetchNui('getData', { page: 1 });
+
+onNuiEvent('refresh', (payload) => {
+  console.log('refresh', payload);
+});
+
+onNuiEvent('route', (route) => {
+  console.log('opened with route', route);
+});
+```
+
+`fetchNui(event, data)` routes to `RegisterNUICallback(event, ...)` in the resource that registered the app.
+
+---
+
 ## Events
 
 Key events that third-party resources can listen to.

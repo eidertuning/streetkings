@@ -104,20 +104,20 @@ end
 function SKEventsFreeroamMarkers.buildPromptAction(state, key, def)
     local action
     if def and def.type == EventType.RAMPAGE then
-        action = ('Press %s to Start Rampage'):format(key)
+        action = _L('ui.events.press_to_start_rampage', { key = key })
     elseif def and def.type == EventType.DELIVERY then
-        action = ('Press %s to Start'):format(key)
+        action = _L('ui.events.press_to_start', { key = key })
     else
-        action = ('Press %s to Race'):format(key)
+        action = _L('ui.events.press_to_race', { key = key })
     end
     if not state then
         return action
     end
     if state.rewardAvailable then
-        return action .. ' - Reward Ready'
+        return action .. ' - ' .. _L('ui.events.reward_ready')
     end
     if state.rewardClaimed then
-        return action .. ' - Reward Claimed'
+        return action .. ' - ' .. _L('ui.events.reward_claimed')
     end
     return action
 end

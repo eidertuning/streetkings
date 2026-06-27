@@ -308,6 +308,15 @@
   white-space: nowrap;
 }
 
+.phone-external-apps {
+  display: contents;
+}
+
+.phone-app-icon i {
+  font-size: clamp(1.5rem, 2.7vw, 2.05rem);
+  color: #fff;
+}
+
 /* App views */
 
 .phone-app-header {
@@ -378,6 +387,41 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.phone-external-shell {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.phone-external-frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: transparent;
+}
+
+.phone-external-empty {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.64);
+  font-family: var(--sk-font-body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.phone-external-shell.is-empty .phone-external-frame {
+  display: none;
+}
+
+.phone-external-shell.is-empty .phone-external-empty {
+  display: flex;
 }
 
 .phone-event {

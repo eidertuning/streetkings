@@ -41,7 +41,7 @@ SKMissions = {
                     autoStart = true,
                     unlockMessage = {
                         sender = 'Hector', avatar = 'hector',
-                        body = "Time to learn where things are. Head to the overlook - then I'll point you to a few spots you'll need.",
+                        body = _L('content.messages.chapter_intro_unlock'),
                     },
                     startBlip = {
                         sprite = 271, color = 5,
@@ -61,7 +61,7 @@ SKMissions = {
                     },
                     endMessage = {
                         sender = 'Hector', avatar = 'hector',
-                        body = "Good. Now you know the basics. Next time I call, it's for real.",
+                        body = _L('content.messages.chapter_intro_end'),
                     },
                     rewards = { cash = 1500, playerXp = 40 },
                     cooldown = minutes(3),
@@ -74,7 +74,7 @@ SKMissions = {
                     giver = { name = 'Hector', avatar = 'hector', color = 5 },
                     unlockMessage = {
                         sender = 'Hector', avatar = 'hector',
-                        body = "Okay. So it looks like you know how to drive. Let's see you handle real competition. Head up to the Car Meet and show the locals what you got.",
+                        body = _L('content.messages.local_legend_unlock'),
                     },
                     startBlip = {
                         sprite = 480, color = 5,

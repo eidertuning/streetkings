@@ -23,6 +23,10 @@
 
   var els = {};
 
+  function t(key, replacements) {
+    return SK.i18n ? SK.i18n.t(key, replacements) : key;
+  }
+
   function isWardrobe() {
     return state.ui && state.ui.mode === 'wardrobe';
   }
@@ -52,21 +56,21 @@
 
   function toastAvatarActionError(result, categoryLabel) {
     if (!result) {
-      toast('Could not apply ' + categoryLabel, 'error', 2800);
+      toast(t('avatar.apply_failed', { category: categoryLabel }), 'error', 2800);
       return;
     }
 
     if (result.error === 'insufficient_funds') {
-      toast('Insufficient GearCoins', 'error', 3000);
+      toast(t('avatar.insufficient_gearcoins'), 'error', 3000);
       return;
     }
 
     if (result.error === 'not_owned') {
-      toast('Variation not owned', 'error', 2800);
+      toast(t('avatar.variation_not_owned'), 'error', 2800);
       return;
     }
 
-    toast('Could not apply ' + categoryLabel, 'error', 2800);
+    toast(t('avatar.apply_failed', { category: categoryLabel }), 'error', 2800);
   }
 
   function formatLabel(key) {
@@ -121,9 +125,9 @@
 
   function setDefaultBrowseText() {
     if (isWardrobe()) {
-      setPreviewText('Wardrobe', 'Equip owned clothing', 'Browse your owned clothing and props to change your outfit.');
+      setPreviewText(t('avatar.wardrobe'), t('avatar.equip_owned_clothing'), t('avatar.wardrobe_copy'));
     } else {
-      setPreviewText('Wearables', 'Browse clothing and props', 'Open Clothing or Props on the right to browse owned and purchasable variations.');
+      setPreviewText(t('avatar.wearables'), t('avatar.browse_wearables'), t('avatar.browse_wearables_copy'));
     }
   }
 
@@ -210,7 +214,7 @@
     var prev = document.createElement('button');
     prev.type = 'button';
     prev.className = 'sk-avatar-mini-btn';
-    prev.textContent = 'Prev';
+    prev.textContent = t('avatar.prev');
     prev.disabled = !!config.disabled;
     prev.addEventListener('click', function () {
       if (config.onStep) {
@@ -223,7 +227,7 @@
     var next = document.createElement('button');
     next.type = 'button';
     next.className = 'sk-avatar-mini-btn';
-    next.textContent = 'Next';
+    next.textContent = t('avatar.next');
     next.disabled = !!config.disabled;
     next.addEventListener('click', function () {
       if (config.onStep) {
@@ -305,8 +309,8 @@
     els.gender.innerHTML = '';
 
     [
-      { key: 'male', label: 'Male' },
-      { key: 'female', label: 'Female' },
+      { key: 'male', label: t('avatar.male') },
+      { key: 'female', label: t('avatar.female') },
     ].forEach(function (gender) {
       var btn = document.createElement('button');
       btn.type = 'button';
@@ -327,8 +331,8 @@
     els.tabs.innerHTML = '';
 
     [
-      { key: 'face', label: 'Face' },
-      { key: 'features', label: 'Features' },
+      { key: 'face', label: t('avatar.face') },
+      { key: 'features', label: t('avatar.features') },
     ].forEach(function (tab) {
       var btn = document.createElement('button');
       btn.type = 'button';
@@ -348,13 +352,13 @@
     els.browseTabs.innerHTML = '';
 
     var tabs = [
-      { key: 'clothing', label: 'Clothing' },
-      { key: 'props', label: 'Props' },
+      { key: 'clothing', label: t('avatar.clothing') },
+      { key: 'props', label: t('avatar.props') },
     ];
 
     if (!isWardrobe()) {
       var cartCount = Object.keys(state.cart).length;
-      tabs.push({ key: 'cart', label: cartCount > 0 ? 'Cart (' + cartCount + ')' : 'Cart' });
+      tabs.push({ key: 'cart', label: cartCount > 0 ? t('avatar.cart_count', { count: cartCount }) : t('avatar.cart') });
     }
 
     tabs.forEach(function (tab) {
@@ -377,12 +381,12 @@
     var appearance = getAppearance();
     var root = els.controls;
     root.innerHTML = '';
-    setPanelText('Face', 'Shape, skin, and detail', 'Refine the overall look first, then move into individual face features or clothing.', true);
+    setPanelText(t('avatar.face'), t('avatar.panel_title'), t('avatar.panel_description'), true);
 
-    renderSectionTitle(root, 'Head Blend', 'Shape and skin values are free and shared across saves.');
+    renderSectionTitle(root, t('avatar.head_blend'), t('avatar.head_blend_copy'));
 
     renderStepper(root, {
-      label: 'Shape First',
+      label: t('avatar.shape_first'),
       value: appearance.headBlend.shapeFirst,
       step: 1,
       onChange: function (next) {
@@ -393,7 +397,7 @@
     });
 
     renderStepper(root, {
-      label: 'Shape Second',
+      label: t('avatar.shape_second'),
       value: appearance.headBlend.shapeSecond,
       step: 1,
       onChange: function (next) {
@@ -404,7 +408,7 @@
     });
 
     renderStepper(root, {
-      label: 'Skin First',
+      label: t('avatar.skin_first'),
       value: appearance.headBlend.skinFirst,
       step: 1,
       onChange: function (next) {
@@ -415,7 +419,7 @@
     });
 
     renderStepper(root, {
-      label: 'Skin Second',
+      label: t('avatar.skin_second'),
       value: appearance.headBlend.skinSecond,
       step: 1,
       onChange: function (next) {
@@ -425,22 +429,22 @@
       },
     });
 
-    renderSlider(root, 'Shape Mix', appearance.headBlend.shapeMix, function (next) {
+    renderSlider(root, t('avatar.shape_mix'), appearance.headBlend.shapeMix, function (next) {
       commitAppearance(function (draft) {
         draft.headBlend.shapeMix = clamp(Number(next.toFixed(1)), 0, 1);
       });
     }, { min: 0, max: 1, step: 0.1 });
 
-    renderSlider(root, 'Skin Mix', appearance.headBlend.skinMix, function (next) {
+    renderSlider(root, t('avatar.skin_mix'), appearance.headBlend.skinMix, function (next) {
       commitAppearance(function (draft) {
         draft.headBlend.skinMix = clamp(Number(next.toFixed(1)), 0, 1);
       });
     }, { min: 0, max: 1, step: 0.1 });
 
-    renderSectionTitle(root, 'Hair And Eyes', 'Hair and eye edits are free.');
+    renderSectionTitle(root, t('avatar.hair_and_eyes'), t('avatar.hair_and_eyes_copy'));
 
     renderStepper(root, {
-      label: 'Hair Style',
+      label: t('avatar.hair_style'),
       value: appearance.hair.style,
       step: 1,
       onChange: function (next) {
@@ -452,7 +456,7 @@
     });
 
     renderStepper(root, {
-      label: 'Hair Texture',
+      label: t('avatar.hair_texture'),
       value: appearance.hair.texture,
       step: 1,
       onChange: function (next) {
@@ -463,7 +467,7 @@
     });
 
     renderStepper(root, {
-      label: 'Hair Color',
+      label: t('avatar.hair_color'),
       value: appearance.hair.color,
       step: 1,
       onChange: function (next) {
@@ -474,7 +478,7 @@
     });
 
     renderStepper(root, {
-      label: 'Highlight',
+      label: t('avatar.highlight'),
       value: appearance.hair.highlight,
       step: 1,
       onChange: function (next) {
@@ -485,7 +489,7 @@
     });
 
     renderStepper(root, {
-      label: 'Eye Color',
+      label: t('avatar.eye_color'),
       value: appearance.eyeColor,
       step: 1,
       onChange: function (next) {
@@ -495,7 +499,7 @@
       },
     });
 
-    renderSectionTitle(root, 'Overlays', 'Makeup, facial hair, and skin details are also free.');
+    renderSectionTitle(root, t('avatar.overlays'), t('avatar.overlays_copy'));
 
     state.ui.headOverlays.forEach(function (overlayMeta) {
       renderStepper(root, {
@@ -521,9 +525,9 @@
     var appearance = getAppearance();
     var root = els.controls;
     root.innerHTML = '';
-    setPanelText('Features', 'Sculpt the face', 'Use the sliders to shape the nose, jaw, cheeks, chin, and other facial proportions.', true);
+    setPanelText(t('avatar.features'), t('avatar.sculpt_face'), t('avatar.sculpt_face_copy'), true);
 
-    renderSectionTitle(root, 'Face Features', 'Each slider is free and saved immediately when you release it.');
+    renderSectionTitle(root, t('avatar.face_features'), t('avatar.face_features_copy'));
 
     state.ui.faceFeatures.forEach(function (key) {
       renderSlider(root, formatLabel(key), appearance.faceFeatures[key], function (next) {
@@ -553,9 +557,9 @@
   }
 
   function specialNoDrawableLabel(category) {
-    if (category.key === 'shirts') return 'NO SHIRT';
-    if (category.key === 'tops') return 'NO JACKET';
-    return 'OFF';
+    if (category.key === 'shirts') return t('avatar.no_shirt');
+    if (category.key === 'tops') return t('avatar.no_jacket');
+    return t('avatar.off');
   }
 
   function drawableSequence(category) {
@@ -577,7 +581,7 @@
     if (hasSpecialNoDrawable(category) && drawable === 15) {
       return specialNoDrawableLabel(category);
     }
-    return drawable < 0 ? 'Off' : String(drawable);
+    return drawable < 0 ? t('avatar.off') : String(drawable);
   }
 
   function stepDrawableValue(category, current, delta) {
@@ -613,7 +617,7 @@
 
   function renderBrowseMessage() {
     els.controls.innerHTML = '';
-    els.controls.appendChild(createBrowserNote('Use the browser on the right to preview, equip, and buy variations in this category.'));
+    els.controls.appendChild(createBrowserNote(t('avatar.browser_note')));
   }
 
   function createBrowserNote(text) {
@@ -664,7 +668,7 @@
 
     var category = selectedCategory(kind, categories);
     if (!category) {
-      els.browser.textContent = 'No categories available.';
+      els.browser.textContent = t('avatar.no_categories');
       return;
     }
 
@@ -698,19 +702,19 @@
     meta.className = 'sk-avatar-browser-meta';
     if (isWardrobe()) {
       meta.textContent = selection.owned
-        ? 'Owned variation ready to equip.'
-        : 'Not owned. Visit a clothing store to purchase.';
+        ? t('avatar.owned_ready')
+        : t('avatar.not_owned_visit_store');
     } else {
       meta.textContent = selection.owned
-        ? 'Owned variation ready to equip.'
-        : 'Costs ' + fmtCurrency(selection.price) + ' GearCoins.';
+        ? t('avatar.owned_ready')
+        : t('avatar.costs_gearcoins', { amount: fmtCurrency(selection.price) });
     }
 
     card.appendChild(title);
     card.appendChild(meta);
 
     renderStepper(card, {
-      label: 'Drawable',
+      label: t('avatar.drawable'),
       value: selection.drawable,
       step: 1,
       editable: true,
@@ -734,10 +738,10 @@
     });
 
     renderStepper(card, {
-      label: 'Texture',
+      label: t('avatar.texture'),
       value: selection.texture,
       step: 1,
-      format: function (value) { return value < 0 ? 'Off' : String(value); },
+      format: function (value) { return value < 0 ? t('avatar.off') : String(value); },
       disabled: selection.drawable === -1,
       editable: true,
       editStep: 1,
@@ -766,14 +770,14 @@
     if (wardrobe && !selection.owned) {
       var notOwned = document.createElement('span');
       notOwned.className = 'sk-avatar-browser-locked';
-      notOwned.textContent = 'Not Owned';
+      notOwned.textContent = t('avatar.not_owned');
       actionRow.appendChild(notOwned);
     } else if (selection.owned || wardrobe) {
       // Equip owned directly
       var action = document.createElement('button');
       action.type = 'button';
       action.className = 'sk-avatar-action-btn';
-      action.textContent = 'Equip Owned';
+      action.textContent = t('avatar.equip_owned');
       action.addEventListener('click', function () {
         SK.nui.post('avatar:equipOwnedVariation', {
           categoryKey: category.key,
@@ -784,7 +788,7 @@
             toastAvatarActionError(result, category.label);
             return;
           }
-          toast('Equipped owned ' + category.label, 'success', 2200);
+          toast(t('avatar.equipped_owned', { category: category.label }), 'success', 2200);
           if (result && result.ok && state.browse[kind] && state.browse[kind][category.key]) {
             delete state.browse[kind][category.key];
           }
@@ -803,12 +807,12 @@
       if (inCart) {
         var inCartLabel = document.createElement('span');
         inCartLabel.className = 'sk-avatar-in-cart-label';
-        inCartLabel.textContent = '✓ In Cart';
+        inCartLabel.textContent = t('avatar.in_cart');
 
         var removeBtn = document.createElement('button');
         removeBtn.type = 'button';
         removeBtn.className = 'sk-avatar-action-btn sk-avatar-action-btn--remove';
-        removeBtn.textContent = 'Remove';
+        removeBtn.textContent = t('common.delete');
         removeBtn.addEventListener('click', function () {
           delete state.cart[category.key];
           SK.nui.post('avatar:resetCategoryPreview', { categoryKey: category.key });
@@ -821,7 +825,7 @@
         var addBtn = document.createElement('button');
         addBtn.type = 'button';
         addBtn.className = 'sk-avatar-action-btn sk-avatar-action-btn--add-cart';
-        addBtn.textContent = 'Add to Cart  –  ' + fmtCurrency(selection.price) + ' GC';
+        addBtn.textContent = t('avatar.add_to_cart', { amount: fmtCurrency(selection.price) });
         addBtn.addEventListener('click', function () {
           state.cart[category.key] = {
             drawable: selection.drawable,
@@ -841,13 +845,13 @@
     els.browser.appendChild(card);
 
     setPreviewText(
-      kind === 'clothing' ? 'Clothing' : 'Props',
+      kind === 'clothing' ? t('avatar.clothing') : t('avatar.props'),
       category.label,
       selection.owned
-        ? 'Preview owned variations and equip them instantly.'
+        ? t('avatar.preview_owned_copy')
         : isWardrobe()
-          ? 'Visit a clothing store to purchase this variation.'
-          : 'Browse the current category, preview a variation, then buy it once to keep it forever.'
+          ? t('avatar.not_owned_visit_store')
+          : t('avatar.preview_buy_copy')
     );
   }
 
@@ -856,12 +860,12 @@
 
     var cartKeys = Object.keys(state.cart);
 
-    setPreviewText('Cart', cartKeys.length + ' item' + (cartKeys.length !== 1 ? 's' : ''), 'Review your outfit and purchase everything at once.');
+    setPreviewText(t('avatar.cart'), t('avatar.item_count', { count: cartKeys.length }), t('avatar.cart_copy'));
 
     if (cartKeys.length === 0) {
       var empty = document.createElement('div');
       empty.className = 'sk-avatar-cart-empty';
-      empty.textContent = 'Your cart is empty. Browse Clothing or Props and add items to build an outfit.';
+      empty.textContent = t('avatar.cart_empty');
       els.browser.appendChild(empty);
       return;
     }
@@ -886,7 +890,7 @@
 
       var sub = document.createElement('span');
       sub.className = 'sk-avatar-cart-item-sub';
-      sub.textContent = 'Drawable ' + item.drawable + ' · Texture ' + item.texture;
+      sub.textContent = t('avatar.cart_item_meta', { drawable: item.drawable, texture: item.texture });
 
       info.appendChild(label);
       info.appendChild(sub);
@@ -898,8 +902,8 @@
       var removeBtn = document.createElement('button');
       removeBtn.type = 'button';
       removeBtn.className = 'sk-avatar-cart-remove-btn';
-      removeBtn.textContent = '×';
-      removeBtn.title = 'Remove ' + item.label;
+      removeBtn.textContent = 'x';
+      removeBtn.title = t('avatar.remove_item', { item: item.label });
       removeBtn.addEventListener('click', (function (capturedKey) {
         return function () {
           delete state.cart[capturedKey];
@@ -919,7 +923,7 @@
 
     var totalLabel = document.createElement('span');
     totalLabel.className = 'sk-avatar-cart-total-label';
-    totalLabel.textContent = 'Total';
+    totalLabel.textContent = t('avatar.total');
 
     var totalValue = document.createElement('span');
     totalValue.className = 'sk-avatar-cart-total-value';
@@ -931,12 +935,12 @@
     var buyBtn = document.createElement('button');
     buyBtn.type = 'button';
     buyBtn.className = 'sk-avatar-action-btn sk-avatar-cart-buy-btn';
-    buyBtn.textContent = 'Buy All  –  ' + fmtCurrency(total) + ' GC';
+    buyBtn.textContent = t('avatar.buy_all', { amount: fmtCurrency(total) });
 
     var canAfford = state.ui && state.ui.cosmeticCurrency >= total;
     if (!canAfford) {
       buyBtn.disabled = true;
-      buyBtn.title = 'Not enough GearCoins';
+      buyBtn.title = t('avatar.not_enough_gearcoins');
     }
 
     buyBtn.addEventListener('click', function () {
@@ -949,16 +953,16 @@
         };
       });
       buyBtn.disabled = true;
-      buyBtn.textContent = 'Purchasing…';
+      buyBtn.textContent = t('avatar.purchasing');
       SK.nui.post('avatar:purchaseCart', { items: items }).done(function (result) {
         if (!result || !result.ok) {
           toastAvatarActionError(result, 'outfit');
           buyBtn.disabled = false;
-          buyBtn.textContent = 'Buy All  –  ' + fmtCurrency(total) + ' GC';
+          buyBtn.textContent = t('avatar.buy_all', { amount: fmtCurrency(total) });
           return;
         }
         var count = result.purchasedCount || 0;
-        toast('Purchased ' + count + ' item' + (count !== 1 ? 's' : ''), 'success', 2800);
+        toast(t('avatar.purchased_items', { count: count }), 'success', 2800);
         state.cart = {};
         state.browse.clothing = {};
         state.browse.props = {};
@@ -980,7 +984,7 @@
 
     var body = document.createElement('p');
     body.className = 'sk-avatar-wardrobe-body';
-    body.textContent = 'Equip owned clothing and props. See something you don\u2019t own yet? Pick it up at a clothing store.';
+    body.textContent = t('avatar.wardrobe_panel_copy');
 
     wrap.appendChild(body);
     els.controls.appendChild(wrap);
@@ -1034,7 +1038,7 @@
     state.visible = true;
     state.ui = data.state;
     var wardrobe = isWardrobe();
-    els.title.textContent = wardrobe ? 'Wardrobe' : 'Customize Avatar';
+    els.title.textContent = wardrobe ? t('avatar.wardrobe') : t('avatar.title');
     els.root.classList.toggle('sk-avatar--wardrobe', wardrobe);
     els.root.style.display = '';
     render();
@@ -1113,11 +1117,11 @@
 
       var title = document.createElement('h3');
       title.className = 'sk-avatar-exit-modal-title';
-      title.textContent = 'Leave without buying?';
+      title.textContent = t('avatar.leave_without_buying');
 
       var body = document.createElement('p');
       body.className = 'sk-avatar-exit-modal-body';
-      body.textContent = 'You have ' + cartKeys.length + ' item' + (cartKeys.length !== 1 ? 's' : '') + ' in your cart. Abandon them or go to checkout first?';
+      body.textContent = t('avatar.leave_cart_body', { count: cartKeys.length });
 
       var actions = document.createElement('div');
       actions.className = 'sk-avatar-exit-modal-actions';
@@ -1125,7 +1129,7 @@
       var abandonBtn = document.createElement('button');
       abandonBtn.type = 'button';
       abandonBtn.className = 'sk-avatar-exit-modal-btn sk-avatar-exit-modal-btn--abandon';
-      abandonBtn.textContent = 'Leave Anyway';
+      abandonBtn.textContent = t('avatar.leave_anyway');
       abandonBtn.addEventListener('click', function () {
         modal.remove();
         SK.nui.post('avatar:exit', {});
@@ -1134,7 +1138,7 @@
       var checkoutBtn = document.createElement('button');
       checkoutBtn.type = 'button';
       checkoutBtn.className = 'sk-avatar-exit-modal-btn sk-avatar-exit-modal-btn--checkout';
-      checkoutBtn.textContent = 'Go to Cart';
+      checkoutBtn.textContent = t('avatar.go_to_cart');
       checkoutBtn.addEventListener('click', function () {
         modal.remove();
         state.activeRightTab = 'cart';
@@ -1145,7 +1149,7 @@
       var stayBtn = document.createElement('button');
       stayBtn.type = 'button';
       stayBtn.className = 'sk-avatar-exit-modal-btn sk-avatar-exit-modal-btn--stay';
-      stayBtn.textContent = 'Keep Browsing';
+      stayBtn.textContent = t('avatar.keep_browsing');
       stayBtn.addEventListener('click', function () {
         modal.remove();
       });
