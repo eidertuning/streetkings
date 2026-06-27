@@ -56,32 +56,51 @@
     return (VIP_RANKS[state.playerVipTier || 'none'] || 0) >= (VIP_RANKS[requiredTier] || 0);
   }
 
-  function vehicleImageSrc(vehicle) {
-    if (!vehicle || !vehicle.image) return '';
-    if (typeof vehicle.image === 'string') return vehicle.image;
-    return vehicle.image.src || vehicle.image.localSrc || vehicle.image.externalSrc || '';
+  function vehicleImageUrls(vehicle) {
+    if (!vehicle || !vehicle.image) return [];
+    if (typeof vehicle.image === 'string') return [vehicle.image];
+    var urls = [];
+    if (vehicle.image.src) urls.push(vehicle.image.src);
+    if (vehicle.image.externalSrc && urls.indexOf(vehicle.image.externalSrc) === -1) urls.push(vehicle.image.externalSrc);
+    if (Array.isArray(vehicle.image.fallbacks)) {
+      vehicle.image.fallbacks.forEach(function (url) {
+        if (typeof url === 'string' && url && urls.indexOf(url) === -1) urls.push(url);
+      });
+    }
+    if (vehicle.image.localSrc && urls.indexOf(vehicle.image.localSrc) === -1) urls.push(vehicle.image.localSrc);
+    return urls;
   }
 
   function createVehicleImage(vehicle, className) {
     var wrap = document.createElement('span');
     wrap.className = className;
-    var src = vehicleImageSrc(vehicle);
-    if (!src) {
+    var urls = vehicleImageUrls(vehicle);
+    if (!urls.length) {
       wrap.classList.add('is-empty');
       wrap.textContent = vehicle.model || 'SK';
       return wrap;
     }
     var img = document.createElement('img');
-    img.src = src;
     img.alt = vehicle.name || vehicle.model || 'Vehicle';
     img.loading = 'lazy';
     img.draggable = false;
+    var index = 0;
+    var tryNext = function () {
+      var src = urls[index];
+      index += 1;
+      if (!src) {
+        wrap.classList.add('is-empty');
+        wrap.textContent = vehicle.model || 'SK';
+        img.remove();
+        return;
+      }
+      img.src = src;
+    };
     img.addEventListener('error', function () {
-      wrap.classList.add('is-empty');
-      wrap.textContent = vehicle.model || 'SK';
-      img.remove();
+      tryNext();
     });
     wrap.appendChild(img);
+    tryNext();
     return wrap;
   }
 

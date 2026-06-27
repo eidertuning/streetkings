@@ -5,20 +5,22 @@
 ---@field image table|string|nil
 
 SKVehicleImageConfig = {
-    provider = 'local', -- local | jg
+    provider = 'jg', -- local | jg
     localBase = 'assets/vehicles/',
-    jgBase = '',
+    jgImageId = 'default',
     extension = 'webp',
 }
 
-function SKResolveVehicleImage(model, override)
+function SKResolveVehicleImage(model, override, jgEntry)
     local cfg = SKVehicleImageConfig or {}
     local provider = cfg.provider or 'local'
+    local localSrc = (cfg.localBase or 'assets/vehicles/') .. model .. '.' .. (cfg.extension or 'webp')
     local image = {
         provider = provider,
         src = '',
-        localSrc = (cfg.localBase or 'assets/vehicles/') .. model .. '.' .. (cfg.extension or 'webp'),
+        localSrc = localSrc,
         externalSrc = '',
+        fallbacks = {},
     }
 
     if type(override) == 'string' then
@@ -30,10 +32,17 @@ function SKResolveVehicleImage(model, override)
         image.localSrc = override.localSrc or override['local'] or image.localSrc
         image.externalSrc = override.externalSrc or override.jgSrc or override.jg or override.url or ''
         image.provider = override.provider or provider
+        image.fallbacks = type(override.fallbacks) == 'table' and override.fallbacks or image.fallbacks
+    end
+
+    if type(jgEntry) == 'table' then
+        image.externalSrc = type(jgEntry.image) == 'string' and jgEntry.image or image.externalSrc
+        image.fallbacks = type(jgEntry.fallbacks) == 'table' and jgEntry.fallbacks or image.fallbacks
     end
 
     if image.provider == 'jg' then
-        image.src = image.externalSrc ~= '' and image.externalSrc or ((cfg.jgBase or '') ~= '' and ((cfg.jgBase or '') .. model .. '.' .. (cfg.extension or 'webp')) or image.localSrc)
+        image.src = image.externalSrc
+        image.fallbacks[#image.fallbacks + 1] = image.localSrc
     else
         image.src = image.localSrc
     end

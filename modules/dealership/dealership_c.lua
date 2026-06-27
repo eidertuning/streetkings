@@ -193,6 +193,24 @@ local function getVehicleCustomizability(modelName, coords, heading)
     return stars
 end
 
+---@param models string[]
+---@return table
+local function getVehicleStudioImages(models)
+    local cfg = SKVehicleImageConfig or {}
+    if cfg.provider ~= 'jg' then return {} end
+    if GetResourceState('jg-vehiclestudio') ~= 'started' then return {} end
+
+    local ok, images = pcall(function()
+        return exports['jg-vehiclestudio']:getImages(models, cfg.jgImageId or 'default')
+    end)
+
+    if not ok or type(images) ~= 'table' then
+        return {}
+    end
+
+    return images
+end
+
 ---@param dealerType string
 ---@param displayCoords vector3
 ---@param displayHeading number
@@ -200,6 +218,11 @@ end
 local function getSortedVehicles(dealerType, displayCoords, displayHeading)
     local all = assert(SKGameVehicles[dealerType], ('streetkings: missing dealership vehicles for %s'):format(dealerType))
     local dealerConfig = assert(getDealerTypes()[dealerType], ('streetkings: missing dealership config for %s'):format(dealerType))
+    local models = {}
+    for _, v in ipairs(all) do
+        models[#models + 1] = v.model
+    end
+    local vehicleStudioImages = getVehicleStudioImages(models)
     local sorted = {}
     for _, cls in ipairs(getClassOrder()) do
         for _, v in ipairs(all) do
@@ -212,7 +235,7 @@ local function getSortedVehicles(dealerType, displayCoords, displayHeading)
                     brand = sharedVehicle.brand,
                     price = v.price,
                     class = v.class,
-                    image = SKResolveVehicleImage(v.model, v.image),
+                    image = SKResolveVehicleImage(v.model, v.image, vehicleStudioImages[v.model]),
                     requiredVipTier = v.vipTier or dealerConfig.vipTier,
                     customizability = getVehicleCustomizability(v.model, displayCoords, displayHeading),
                 }

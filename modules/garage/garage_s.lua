@@ -2,8 +2,9 @@ local TOW_TO_GARAGE_PRICE = 200
 local DEFAULT_GARAGE_TINT = 'gray'
 
 ---@param entry table
+---@param imageEntry table|nil
 ---@return table
-local function buildGarageVehicleDto(entry)
+local function buildGarageVehicleDto(entry, imageEntry)
     local vehicleData = SKProgression.ensureVehicleData(entry.data)
     local currentLevelXp = SKProgression.VEHICLE_LEVEL_THRESHOLDS[vehicleData.level] or 0
     local nextLevelXp = SKProgression.getXpForNextLevel(
@@ -16,7 +17,7 @@ local function buildGarageVehicleDto(entry)
         id = entry.id,
         modelName = entry.modelName,
         displayName = entry.displayName,
-        image = SKResolveVehicleImage(entry.modelName, entry.image),
+        image = SKResolveVehicleImage(entry.modelName, entry.image, imageEntry),
         sortIndex = entry.sortIndex,
         plate = entry.plate,
         data = vehicleData,
@@ -28,6 +29,33 @@ local function buildGarageVehicleDto(entry)
             maxLevel = SKProgression.VEHICLE_MAX_LEVEL,
         },
     }
+end
+
+---@param vehicles table<string, table>
+---@return table
+local function getVehicleStudioImages(vehicles)
+    local cfg = SKVehicleImageConfig or {}
+    if cfg.provider ~= 'jg' then return {} end
+    if GetResourceState('jg-vehiclestudio') ~= 'started' then return {} end
+
+    local models = {}
+    local seen = {}
+    for _, entry in pairs(vehicles) do
+        if type(entry.modelName) == 'string' and not seen[entry.modelName] then
+            seen[entry.modelName] = true
+            models[#models + 1] = entry.modelName
+        end
+    end
+
+    local ok, images = pcall(function()
+        return exports['jg-vehiclestudio']:getImages(models, cfg.jgImageId or 'default')
+    end)
+
+    if not ok or type(images) ~= 'table' then
+        return {}
+    end
+
+    return images
 end
 
 ---@param unlockSchedule table[]
@@ -268,8 +296,9 @@ lib.callback.register('streetkings:garage:getEnterData', function(source)
         SKProgression.PLAYER_MAX_LEVEL
     )
 
+    local vehicleImages = getVehicleStudioImages(document.garage.vehicles)
     for vehicleId, entry in pairs(document.garage.vehicles) do
-        vehicles[vehicleId] = buildGarageVehicleDto(entry)
+        vehicles[vehicleId] = buildGarageVehicleDto(entry, vehicleImages[entry.modelName])
     end
 
     return {

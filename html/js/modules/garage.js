@@ -64,32 +64,51 @@
     return Math.floor(n).toLocaleString('en-US');
   }
 
-  function vehicleImageSrc(entry) {
-    if (!entry || !entry.image) return '';
-    if (typeof entry.image === 'string') return entry.image;
-    return entry.image.src || entry.image.localSrc || entry.image.externalSrc || '';
+  function vehicleImageUrls(entry) {
+    if (!entry || !entry.image) return [];
+    if (typeof entry.image === 'string') return [entry.image];
+    var urls = [];
+    if (entry.image.src) urls.push(entry.image.src);
+    if (entry.image.externalSrc && urls.indexOf(entry.image.externalSrc) === -1) urls.push(entry.image.externalSrc);
+    if (Array.isArray(entry.image.fallbacks)) {
+      entry.image.fallbacks.forEach(function (url) {
+        if (typeof url === 'string' && url && urls.indexOf(url) === -1) urls.push(url);
+      });
+    }
+    if (entry.image.localSrc && urls.indexOf(entry.image.localSrc) === -1) urls.push(entry.image.localSrc);
+    return urls;
   }
 
   function createVehicleImage(entry) {
     var wrap = document.createElement('span');
     wrap.className = 'sk-garage-thumb-image';
-    var src = vehicleImageSrc(entry);
-    if (!src) {
+    var urls = vehicleImageUrls(entry);
+    if (!urls.length) {
       wrap.classList.add('is-empty');
       wrap.textContent = entry.modelName || 'SK';
       return wrap;
     }
     var img = document.createElement('img');
-    img.src = src;
     img.alt = entry.displayName || entry.modelName || 'Vehicle';
     img.loading = 'lazy';
     img.draggable = false;
+    var index = 0;
+    var tryNext = function () {
+      var src = urls[index];
+      index += 1;
+      if (!src) {
+        wrap.classList.add('is-empty');
+        wrap.textContent = entry.modelName || 'SK';
+        img.remove();
+        return;
+      }
+      img.src = src;
+    };
     img.addEventListener('error', function () {
-      wrap.classList.add('is-empty');
-      wrap.textContent = entry.modelName || 'SK';
-      img.remove();
+      tryNext();
     });
     wrap.appendChild(img);
+    tryNext();
     return wrap;
   }
 
