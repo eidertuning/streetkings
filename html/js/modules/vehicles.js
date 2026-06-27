@@ -51,6 +51,57 @@
     return null;
   }
 
+  function vehicleImageUrls(vehicle) {
+    if (!vehicle || !vehicle.image) return [];
+    if (typeof vehicle.image === 'string') return [vehicle.image];
+    var urls = [];
+    if (vehicle.image.src) urls.push(vehicle.image.src);
+    if (vehicle.image.externalSrc && urls.indexOf(vehicle.image.externalSrc) === -1) urls.push(vehicle.image.externalSrc);
+    if (Array.isArray(vehicle.image.fallbacks)) {
+      vehicle.image.fallbacks.forEach(function (url) {
+        if (typeof url === 'string' && url && urls.indexOf(url) === -1) urls.push(url);
+      });
+    }
+    if (vehicle.image.localSrc && urls.indexOf(vehicle.image.localSrc) === -1) urls.push(vehicle.image.localSrc);
+    return urls;
+  }
+
+  function vehicleImageMarkup(vehicle, className) {
+    var urls = vehicleImageUrls(vehicle);
+    if (!urls.length) {
+      return '<span class="' + className + ' is-empty">' + escapeHtml(vehicle.modelName || 'SK') + '</span>';
+    }
+    var fallbacks = encodeURIComponent(JSON.stringify(urls.slice(1)));
+    return '<span class="' + className + '" data-vehicle-image-candidates="' + fallbacks + '">'
+      + '<img src="' + escapeHtml(urls[0]) + '" alt="' + escapeHtml(vehicle.displayName || vehicle.modelName || 'Vehicle') + '" draggable="false" loading="lazy">'
+      + '</span>';
+  }
+
+  function bindVehicleImageFallbacks(root) {
+    if (!root) return;
+    var images = root.querySelectorAll('[data-vehicle-image-candidates] img');
+    for (var i = 0; i < images.length; i++) {
+      images[i].addEventListener('error', function () {
+        var wrap = this.parentNode;
+        var candidates = [];
+        try {
+          candidates = JSON.parse(decodeURIComponent(wrap.getAttribute('data-vehicle-image-candidates') || '%5B%5D'));
+        } catch (_) {
+          candidates = [];
+        }
+        var next = candidates.shift();
+        wrap.setAttribute('data-vehicle-image-candidates', encodeURIComponent(JSON.stringify(candidates)));
+        if (next) {
+          this.src = next;
+          return;
+        }
+        wrap.classList.add('is-empty');
+        wrap.textContent = this.alt || 'SK';
+        this.remove();
+      });
+    }
+  }
+
   function buildXpMeta(progression) {
     var levelStart = progression.currentLevelXp || 0;
     var nextLevelXp = progression.nextLevelXp;
@@ -165,6 +216,8 @@
       if (vehicle.id === state.activeVehicleId) classes += ' is-active';
 
       html += '<button type="button" class="' + classes + '" data-vehicle-id="' + escapeHtml(vehicle.id) + '">'
+        + vehicleImageMarkup(vehicle, 'phone-vehicles-list-image')
+        + '<div class="phone-vehicles-list-copy">'
         + '<div class="phone-vehicles-list-top">'
         + '<span class="phone-vehicles-list-name">' + escapeHtml(vehicle.displayName) + '</span>'
         + '<span class="phone-vehicles-list-level">' + t('vehicles.level_short', { level: (vehicle.progression && vehicle.progression.level) || 1 }) + '</span>'
@@ -173,10 +226,12 @@
         + '<span class="phone-vehicles-list-model">' + escapeHtml(vehicle.modelName) + '</span>'
         + (vehicle.id === state.activeVehicleId ? '<span class="phone-vehicles-list-badge">' + t('vehicles.active') + '</span>' : '')
         + '</div>'
+        + '</div>'
         + '</button>';
     }
 
     els.list.innerHTML = html;
+    bindVehicleImageFallbacks(els.list);
   }
 
   function renderPanel() {
@@ -194,6 +249,7 @@
 
     els.panel.innerHTML = ''
       + '<div class="phone-vehicles-hero">'
+      + vehicleImageMarkup(vehicle, 'phone-vehicles-hero-image')
       + '<div class="phone-vehicles-hero-copy">'
       + '<span class="phone-vehicles-eyebrow">' + escapeHtml(vehicle.modelName) + '</span>'
       + '<h2 class="phone-vehicles-name">' + escapeHtml(vehicle.displayName) + '</h2>'
@@ -283,6 +339,7 @@
       + '</div>'
       + '</div>'
       + '</div>';
+    bindVehicleImageFallbacks(els.panel);
   }
 
   function selectVehicle(vehicleId) {

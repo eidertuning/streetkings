@@ -351,15 +351,22 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.7rem;
+  min-width: 0;
 }
 
 .phone-msg-email-subject {
   min-width: 0;
+  flex: 1 1 auto;
   font-family: "Poppins", system-ui, sans-serif;
   font-size: clamp(0.78rem, 1.02vw, 0.95rem);
   font-weight: 800;
   line-height: 1.25;
   color: rgba(255, 255, 255, 0.94);
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .phone-msg-email-meta {
@@ -378,4 +385,10 @@
   font-size: clamp(0.68rem, 0.9vw, 0.8rem);
   line-height: 1.62;
   color: rgba(255, 255, 255, 0.82);
+  overflow-wrap: anywhere;
+}
+
+.phone-msg-email .phone-msg-time {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }

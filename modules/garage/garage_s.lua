@@ -249,9 +249,10 @@ end
 
 ---@param entry table
 ---@param activeVehicleId string
+---@param imageEntry table|nil
 ---@return table
-local function buildPhoneVehicleDto(entry, activeVehicleId)
-    local dto = buildGarageVehicleDto(entry)
+local function buildPhoneVehicleDto(entry, activeVehicleId, imageEntry)
+    local dto = buildGarageVehicleDto(entry, imageEntry)
     local unlockLevels = buildUnlockLevels(dto.data.unlockSchedule)
     local visualCategories, visualUnlockedCount, visualTotalCount = buildPartGroups(dto.data, unlockLevels, false)
     local performanceCategories, performanceUnlockedCount, performanceTotalCount = buildPartGroups(dto.data, unlockLevels, true)
@@ -260,6 +261,7 @@ local function buildPhoneVehicleDto(entry, activeVehicleId)
         id = dto.id,
         modelName = dto.modelName,
         displayName = dto.displayName,
+        image = dto.image,
         sortIndex = dto.sortIndex,
         isActive = dto.id == activeVehicleId,
         progression = dto.progression,
@@ -319,9 +321,10 @@ lib.callback.register('streetkings:garage:getPhoneOverview', function(source)
     local document = assert(SKSaves.getDocument(source), 'streetkings: missing active garage document')
     local vehicles = {}
     local activeVehicleId = document.garage.activeVehicleId
+    local vehicleImages = getVehicleStudioImages(document.garage.vehicles)
 
     for _, entry in pairs(document.garage.vehicles) do
-        vehicles[#vehicles + 1] = buildPhoneVehicleDto(entry, activeVehicleId)
+        vehicles[#vehicles + 1] = buildPhoneVehicleDto(entry, activeVehicleId, vehicleImages[entry.modelName])
     end
 
     table.sort(vehicles, function(a, b)

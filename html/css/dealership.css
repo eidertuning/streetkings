@@ -75,7 +75,7 @@
   right: clamp(1.5rem, 3vw, 3rem);
   top: 50%;
   transform: translateY(-50%);
-  width: clamp(200px, 17vw, 290px);
+  width: clamp(230px, 18vw, 320px);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -89,12 +89,29 @@
 }
 
 .sk-dealership-card {
-  background: rgba(8, 6, 12, 0.82);
-  border: 1px solid rgba(255, 209, 71, 0.18);
-  padding: 1.25rem 1.3rem;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(255, 209, 71, 0.08), transparent 42%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.018)),
+    rgba(7, 6, 10, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-left-color: rgba(255, 209, 71, 0.56);
+  padding: 1.2rem 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.34rem;
+  box-shadow: 0 1rem 2.8rem rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(7px);
+}
+
+.sk-dealership-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: linear-gradient(90deg, var(--sk-color-spray), rgba(158, 229, 255, 0.8), transparent);
+  opacity: 0.8;
 }
 
 .sk-dealership-car-brand {
@@ -112,6 +129,7 @@
   color: var(--sk-text-primary);
   margin: 0.1rem 0 0;
   line-height: 1.1;
+  overflow-wrap: anywhere;
 }
 
 .sk-dealership-class-badge {
@@ -182,7 +200,8 @@
 
 .sk-dealership-btn {
   width: 100%;
-  padding: 0.65rem 1rem;
+  min-height: 2.9rem;
+  padding: 0.72rem 1rem;
   font-family: var(--sk-font-ui);
   font-size: clamp(0.68rem, 0.8vw, 0.78rem);
   font-weight: 600;
@@ -191,6 +210,7 @@
   cursor: pointer;
   border: 1px solid transparent;
   transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+  overflow-wrap: anywhere;
 }
 
 .sk-dealership-btn:active:not(:disabled) {
@@ -246,8 +266,9 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 0 clamp(1.6rem, 3vw, 3.25rem) clamp(0.75rem, 1.65vh, 1.2rem);
-  background: linear-gradient(0deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 58%, transparent 100%);
+  padding: 0 clamp(1.6rem, 3vw, 3.25rem) clamp(0.85rem, 1.65vh, 1.25rem);
+  background:
+    linear-gradient(0deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.48) 56%, transparent 100%);
   pointer-events: none;
   display: flex;
   flex-direction: column;
@@ -261,14 +282,15 @@
 }
 
 .sk-dealership-class-tab {
-  padding: 0.3rem 0.9rem;
+  min-width: 3rem;
+  padding: 0.34rem 0.88rem;
   font-family: var(--sk-font-ui);
   font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   cursor: pointer;
-  background: rgba(255,255,255,0.06);
+  background: rgba(6, 5, 10, 0.72);
   border: 1px solid rgba(255,255,255,0.12);
   color: rgba(255,255,255,0.45);
   transition: background 0.15s, border-color 0.15s, color 0.15s;
@@ -294,7 +316,7 @@
 
 .sk-dealership-list-wrap {
   display: grid;
-  grid-template-columns: 2.4rem minmax(0, 1fr) 2.4rem;
+  grid-template-columns: 2.2rem minmax(0, 1fr) 2.2rem;
   align-items: stretch;
   gap: 0.45rem;
   pointer-events: none;
@@ -302,9 +324,9 @@
 
 .sk-dealership-list-arrow {
   min-width: 0;
-  width: 2.4rem;
-  border: 1px solid rgba(255, 209, 71, 0.28);
-  background: rgba(8, 6, 12, 0.72);
+  width: 2.2rem;
+  border: 1px solid rgba(255, 209, 71, 0.24);
+  background: rgba(6, 5, 10, 0.78);
   color: var(--sk-color-spray);
   font-family: var(--sk-font-ui);
   font-size: 1.8rem;
@@ -328,9 +350,9 @@
 
 .sk-dealership-list {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.58rem;
   overflow-x: auto;
-  padding: 0.3rem 0;
+  padding: 0.25rem 0 0.05rem;
   scrollbar-width: none;
   pointer-events: all;
   scroll-behavior: smooth;
@@ -346,15 +368,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.28rem;
-  padding: 0.42rem 0.55rem 0.48rem;
-  background: rgba(8, 6, 12, 0.64);
-  border: 1px solid rgba(255,255,255,0.1);
+  gap: 0.32rem;
+  padding: 0.48rem 0.55rem 0.55rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.052), rgba(255, 255, 255, 0.018)),
+    rgba(7, 6, 11, 0.72);
+  border: 1px solid rgba(255,255,255,0.11);
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, transform 0.12s;
-  min-width: clamp(132px, 10.8vw, 178px);
-  max-width: clamp(132px, 10.8vw, 178px);
+  min-width: clamp(140px, 10.8vw, 184px);
+  max-width: clamp(140px, 10.8vw, 184px);
   scroll-snap-align: start;
+  box-shadow: 0 0.8rem 1.8rem rgba(0, 0, 0, 0.24);
 }
 
 .sk-dealership-thumb:hover {
@@ -364,8 +389,13 @@
 }
 
 .sk-dealership-thumb.is-preview {
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.35);
+  background:
+    linear-gradient(180deg, rgba(255, 209, 71, 0.1), rgba(255, 255, 255, 0.035)),
+    rgba(8, 7, 12, 0.82);
+  border-color: rgba(255, 209, 71, 0.58);
+  box-shadow:
+    0 0 0 1px rgba(255, 209, 71, 0.16),
+    0 1rem 2rem rgba(0, 0, 0, 0.32);
 }
 
 .sk-dealership-thumb.is-owned {
@@ -380,15 +410,15 @@
 
 .sk-dealership-thumb-image {
   width: 100%;
-  aspect-ratio: 16 / 8.5;
+  aspect-ratio: 16 / 8.7;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   background:
-    radial-gradient(circle at 50% 30%, rgba(255,255,255,0.08), transparent 48%),
+    radial-gradient(circle at 50% 30%, rgba(255, 209, 71, 0.1), transparent 50%),
     rgba(255,255,255,0.045);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .sk-dealership-thumb-image img {
@@ -419,6 +449,7 @@
   text-overflow: ellipsis;
   max-width: 100%;
   text-align: center;
+  overflow-wrap: anywhere;
 }
 
 .sk-dealership-thumb-tag {
@@ -428,6 +459,11 @@
   letter-spacing: 0.12em;
   color: rgba(255,255,255,0.4);
   min-height: 0.7rem;
+  max-width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sk-dealership-thumb.is-owned .sk-dealership-thumb-tag {
