@@ -125,7 +125,7 @@
   function markerColor(typeLabel) {
     if (typeLabel === 'DELIVERY') return '#4ade80';
     if (typeLabel === 'CIRCUIT') return '#52a7ff';
-    return '#ffd147';
+    return '#ff006a';
   }
 
   function show(el) {

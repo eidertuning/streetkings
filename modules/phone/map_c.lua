@@ -76,7 +76,7 @@ local function getRouteColor(def)
     if def.scheme == CheckpointScheme.CIRCUIT then
         return '#52a7ff'
     end
-    return '#ffd147'
+    return '#ff006a'
 end
 
 ---@return table[]

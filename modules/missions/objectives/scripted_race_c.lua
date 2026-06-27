@@ -142,7 +142,7 @@ local function showCheckpoint(cpCoords, nextCoords, isLast)
     activeState.waypointId = SKWaypoint.Create({
         coords     = cpCoords,
         text       = isLast and 'FINISH' or 'CHECKPOINT',
-        color      = '#ffd147',
+        color      = '#ff006a',
         icon       = isLast and 'flag-checkered' or 'circle-dot',
         showDist   = true,
     })

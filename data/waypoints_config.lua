@@ -11,7 +11,7 @@ SKWaypointConfig.ReplaceMapWaypoint = true
 
 SKWaypointConfig.MapWaypoint = {
     text        = 'WAYPOINT',
-    color       = '#ffd147',
+    color       = '#ff0095',
     icon        = 'location-dot',
     size        = 1.0,
     maxRender   = 1000.0,
@@ -24,7 +24,7 @@ SKWaypointConfig.MapWaypoint = {
 
 SKWaypointConfig.Defaults = {
     text        = 'WAYPOINT',
-    color       = '#ffd147',
+    color       = '#ff0095',
     icon        = nil,
     imageUrl    = nil,
     size        = 1.0,

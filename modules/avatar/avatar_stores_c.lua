@@ -26,7 +26,7 @@ local function setupStorePoints(store)
     local wpId = SKWaypoint.Create({
         coords       = store.marker,
         text         = store.name,
-        color        = '#ff8c00',
+        color        = '#ff476f',
         icon         = 'shirt',
         showDist     = true,
         groundBeam   = true,

@@ -53,6 +53,6 @@ TutorialConfig = {
     },
     CHECKPOINT_RADIUS = 6.0,
 
-    HECTOR_INTRO    = "Nobody gets on my streets without proving they can drive. Burnouts, slides, handbrake turns - the whole playbook. You got sixty seconds. Impress me.",
-    HECTOR_PHONE    = "Your phone is your lifeline out here. Hit TAB to open it - messages, bank, map, all of it. That's how you stay ahead.",
+    HECTOR_INTRO    = "Nadie entra en mis calles sin demostrar que puede conducir. Quemadas, derrapes, giros con freno de mano - todo el repertorio. Tienes sesenta segundos. Impresióname.",
+    HECTOR_PHONE    = "Tu teléfono es tu salvavidas aquí afuera. Pulsa TAB para abrirlo - mensajes, banco, mapa, todo. Así es como te mantienes adelante.",
 }

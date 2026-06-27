@@ -42,22 +42,22 @@ SKAvatarData.Models = {
 }
 
 SKAvatarData.ClothingCategories = {
-    { key = 'mask', kind = 'component', slot = 1, label = 'Masks', price = 120 },
-    { key = 'torso', kind = 'component', slot = 3, label = 'Arms', price = 140 },
-    { key = 'shirts', kind = 'component', slot = 8, label = 'Shirts', price = 130 },
-    { key = 'tops', kind = 'component', slot = 11, label = 'Jackets', price = 160 },
-    { key = 'legs', kind = 'component', slot = 4, label = 'Pants', price = 140 },
-    { key = 'shoes', kind = 'component', slot = 6, label = 'Shoes', price = 130 },
-    { key = 'bags', kind = 'component', slot = 5, label = 'Bags', price = 120 },
-    { key = 'chains', kind = 'component', slot = 7, label = 'Chains', price = 110 },
-    { key = 'armor', kind = 'component', slot = 9, label = 'Armor', price = 150 },
-    { key = 'decals', kind = 'component', slot = 10, label = 'Decals', price = 110 },
+    { key = 'mask', kind = 'component', slot = 1, label = 'Máscaras', price = 120 },
+    { key = 'torso', kind = 'component', slot = 3, label = 'Brazos', price = 140 },
+    { key = 'shirts', kind = 'component', slot = 8, label = 'Camisas', price = 130 },
+    { key = 'tops', kind = 'component', slot = 11, label = 'Chaqueta', price = 160 },
+    { key = 'legs', kind = 'component', slot = 4, label = 'Pantalones', price = 140 },
+    { key = 'shoes', kind = 'component', slot = 6, label = 'Zapatos', price = 130 },
+    { key = 'bags', kind = 'component', slot = 5, label = 'Bolsos', price = 120 },
+    { key = 'chains', kind = 'component', slot = 7, label = 'Cadenas', price = 110 },
+    { key = 'armor', kind = 'component', slot = 9, label = 'Armadura', price = 150 },
+    { key = 'decals', kind = 'component', slot = 10, label = 'Calcomanías', price = 110 },
 
-    { key = 'hats', kind = 'prop', slot = 0, label = 'Hats', price = 110 },
-    { key = 'glasses', kind = 'prop', slot = 1, label = 'Glasses', price = 110 },
-    { key = 'ears', kind = 'prop', slot = 2, label = 'Ears', price = 90 },
-    { key = 'watches', kind = 'prop', slot = 6, label = 'Watches', price = 100 },
-    { key = 'bracelets', kind = 'prop', slot = 7, label = 'Bracelets', price = 90 },
+    { key = 'hats', kind = 'prop', slot = 0, label = 'Gorras', price = 110 },
+    { key = 'glasses', kind = 'prop', slot = 1, label = 'Gafas', price = 110 },
+    { key = 'ears', kind = 'prop', slot = 2, label = 'Orejas', price = 90 },
+    { key = 'watches', kind = 'prop', slot = 6, label = 'Relojes', price = 100 },
+    { key = 'bracelets', kind = 'prop', slot = 7, label = 'Pulseras', price = 90 },
 }
 
 SKAvatarData.ClothingCategoriesByKey = {}

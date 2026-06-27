@@ -631,3 +631,11 @@ RegisterNUICallback('garage:quitToMainMenu', function(_, cb)
         SKC.SetGameState(GameState.MAIN_MENU)
     end)
 end)
+-- ce_skadmin bridge: refresca visualmente el garaje cuando un admin cambia XP/datos del vehículo.
+RegisterNetEvent('streetkings:garage:adminRefresh', function(payload)
+    if type(payload) ~= 'table' then return end
+    if not SKC or not SKC.GetGameState or not GameState then return end
+    if SKC.GetGameState() ~= GameState.GARAGE then return end
+    payload.type = 'garage:adminRefresh'
+    SendNUIMessage(payload)
+end)

@@ -1,10 +1,10 @@
 SKDealershipConfig = {
     CLASS_ORDER = { 'C', 'B', 'A', 'S' },
     DEALER_TYPES = {
-        tuner     = { label = 'Tuner Cars' },
-        sportscar = { label = 'Sports Cars' },
-        muscle    = { label = 'Muscle Cars' },
-        offroad   = { label = 'Off-Road' },
+        tuner     = { label = 'Coches Tuners' },
+        sportscar = { label = 'Coches Deportivos' },
+        muscle    = { label = 'Coches Muscle' },
+        offroad   = { label = 'Todo Terreno' },
     },
     LOCATIONS = {
         {
@@ -14,7 +14,7 @@ SKDealershipConfig = {
             displayCoords  = vector3(-41.5912, -1099.4769, 26.1289),
             displayHeading = 0.0,
             exitHeading    = 160.0,
-            name           = 'Tuner Cars',
+            name           = 'Coches Tuners',
         },
         {
             id            = 'dealer_sportscar',
@@ -23,7 +23,7 @@ SKDealershipConfig = {
             displayCoords = vector3(-83.9077, -820.9846, 221.3004),
             displayHeading = 221.1024,
             exitHeading    = 221.1024,
-            name = 'Sports Cars',
+            name = 'Coches Deportivos',
         },
         {
             id            = 'dealer_muscle',
@@ -32,7 +32,7 @@ SKDealershipConfig = {
             displayCoords = vector3(978.4615, -3002.0703, -40.3099),
             displayHeading = 90.0,
             exitHeading    = 238.0,
-            name = 'Muscle Cars',
+            name = 'Coches Muscle',
         },
         {
             id             = 'dealer_offroad',
@@ -41,7 +41,7 @@ SKDealershipConfig = {
             displayCoords  = vector4(1223.7363, 2708.2549, 36.3004, 178.5827),
             displayHeading = 180.0,
             exitHeading    = 218.2677,
-            name = 'Off-Road',
+            name = 'Todo Terreno',
         }
     },
 }

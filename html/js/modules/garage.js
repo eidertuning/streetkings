@@ -479,6 +479,48 @@
     }
   }
 
+
+
+  function adminRefreshGarage(data) {
+    if (!isOpen()) return;
+
+    var oldPreview = state.previewId;
+    var oldActive = state.activeVehicleId;
+
+    if (data.vehicles)        state.vehicles = data.vehicles;
+    if (data.activeVehicleId) state.activeVehicleId = data.activeVehicleId;
+    if (data.garageTint)      state.garageTint = data.garageTint;
+
+    if (typeof data.playerLevel === 'number') state.playerLevel = data.playerLevel;
+    if (typeof data.playerXp === 'number') state.playerXp = data.playerXp;
+    if (typeof data.playerCurrentLevelXp === 'number') state.playerCurrentLevelXp = data.playerCurrentLevelXp;
+    state.playerNextLevelXp = data.playerNextLevelXp != null ? data.playerNextLevelXp : state.playerNextLevelXp;
+    if (typeof data.playerMaxLevel === 'number') state.playerMaxLevel = data.playerMaxLevel;
+    if (typeof data.balance === 'number') state.playerMoney = data.balance;
+
+    var activeChanged = state.activeVehicleId && state.activeVehicleId !== oldActive;
+    var nextPreview = activeChanged && state.vehicles[state.activeVehicleId] ? state.activeVehicleId : state.previewId;
+    if (!nextPreview || !state.vehicles[nextPreview]) {
+      nextPreview = state.activeVehicleId;
+    }
+    if (!nextPreview || !state.vehicles[nextPreview]) {
+      var keys = Object.keys(state.vehicles || {});
+      nextPreview = keys.length > 0 ? keys[0] : null;
+    }
+    if (!nextPreview) {
+      renderList();
+      return;
+    }
+
+    state.previewId = nextPreview;
+    renderList();
+    renderPanel(nextPreview);
+
+    if (nextPreview !== oldPreview) {
+      SK.nui.post('garage:previewVehicle', { vehicleId: nextPreview });
+    }
+  }
+
   function closeGarage() {
     els.root.style.display = 'none';
     els.list.innerHTML     = '';
@@ -579,6 +621,7 @@
     var data = e.data;
     if (data.type === 'garage:open')  openGarage(data);
     if (data.type === 'garage:close') closeGarage();
+    if (data.type === 'garage:adminRefresh') adminRefreshGarage(data);
     if (data.type === 'garage:controllerMode') { setControllerEnabled(!!data.enabled); }
     if (data.type === 'garage:controllerInput') { controllerNav.handleInput(data.action); }
     if (data.type === 'garage:controllerAnalog') {

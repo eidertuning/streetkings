@@ -91,6 +91,7 @@ client_scripts {
     'modules/admincommands/admincommands_c.lua',
     'modules/pausemenu/pausemenu_c.lua',
     'modules/hangoutzones/hangoutzones_c.lua',
+    'modules/adminbridge/garage_admin_refresh_c.lua',
 }
 
 server_scripts {

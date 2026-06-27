@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" class="sk-transparent">
+<html lang="es" class="sk-transparent">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Street Kings</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Inter:wght@400;500;600;700&family=Oswald:wght@400;600;700&family=Permanent+Marker&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Inter:wght@400;500;600;700&family=Oswald:wght=400;600;700&family=Permanent+Marker&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/streetkings.css" />
   <link rel="stylesheet" href="css/pausemenu.css" />
   <link rel="stylesheet" href="css/property-invite.css" />
@@ -21,19 +21,19 @@
             <h1 class="brand">Street<span>Kings</span></h1>
             <p id="mainMenuVersion" class="brand-version"></p>
             <ul class="menu">
-              <li><button type="button" id="btnContinue">Continue</button></li>
-              <li><button type="button" id="btnPlay">Play</button></li>
-              <li><button type="button" id="btnCustomizeAvatar">Customize Avatar</button></li>
-              <li><button type="button" id="btnCredits">Credits</button></li>
+              <li><button type="button" id="btnContinue">Continuar</button></li>
+              <li><button type="button" id="btnPlay">Jugar</button></li>
+              <li><button type="button" id="btnCustomizeAvatar">Personalizar Avatar</button></li>
+              <li><button type="button" id="btnCredits">Créditos</button></li>
             </ul>
           </div>
         </div>
         <div id="viewSaves" class="menu-view is-off-right">
           <div class="panel">
             <div class="saves-head">
-              <button type="button" class="btn-back" id="btnSaveBack">← Back</button>
-              <h2 class="saves-title">Choose a save</h2>
-              <p class="saves-sub">Pick a slot</p>
+              <button type="button" class="btn-back" id="btnSaveBack">← Atrás</button>
+              <h2 class="saves-title">Elija una partida</h2>
+              <p class="saves-sub">Seleccione una ranura</p>
             </div>
             <div class="save-cards" id="saveCards"></div>
           </div>
@@ -42,25 +42,25 @@
     </div>
     <div id="viewDeleteConfirm" class="name-input-overlay">
       <div class="panel name-input-panel">
-        <p class="saves-sub">Delete save</p>
-        <h2 class="saves-title">Are you sure?</h2>
-        <p class="save-delete-warning">This will permanently delete <strong id="deleteConfirmName"></strong>. This cannot be undone.</p>
+        <p class="saves-sub">Eliminar partida</p>
+        <h2 class="saves-title">¿Está seguro?</h2>
+        <p class="save-delete-warning">Esto eliminará permanentemente <strong id="deleteConfirmName"></strong>. Esto no se puede deshacer.</p>
         <div class="name-input-actions">
-          <button type="button" id="btnDeleteCancel" class="btn-back">← Cancel</button>
-          <button type="button" id="btnDeleteConfirm" class="btn-delete-confirm">Delete</button>
+          <button type="button" id="btnDeleteCancel" class="btn-back">← Cancelar</button>
+          <button type="button" id="btnDeleteConfirm" class="btn-delete-confirm">Eliminar</button>
         </div>
       </div>
     </div>
 
     <div id="viewNameInput" class="name-input-overlay">
       <div class="panel name-input-panel">
-        <p class="saves-sub">New save</p>
-        <h2 class="saves-title">Name your save</h2>
-        <input type="text" id="saveNameInput" class="save-name-field" maxlength="32" placeholder="Enter a name..." autocomplete="off" spellcheck="false" />
+        <p class="saves-sub">Nueva partida</p>
+        <h2 class="saves-title">Nombre su partida</h2>
+        <input type="text" id="saveNameInput" class="save-name-field" maxlength="32" placeholder="Ingrese un nombre..." autocomplete="off" spellcheck="false" />
         <p id="saveNameError" class="save-name-error"></p>
         <div class="name-input-actions">
-          <button type="button" id="btnNameCancel" class="btn-back">← Cancel</button>
-          <button type="button" id="btnNameConfirm" class="btn-name-confirm">Confirm</button>
+          <button type="button" id="btnNameCancel" class="btn-back">← Cancelar</button>
+          <button type="button" id="btnNameConfirm" class="btn-name-confirm">Confirmar</button>
         </div>
       </div>
     </div>
@@ -72,22 +72,22 @@
             <div id="creditsSpacerTop" class="credits-spacer" aria-hidden="true"></div>
             <div class="credits-logo" aria-hidden="true">Street<span>Kings</span></div>
             <div class="credits-section">
-              <h3 class="credits-section-title">A COLLABORATION BETWEEN</h3>
+              <h3 class="credits-section-title">UNA COLABORACIÓN ENTRE</h3>
               <p class="credits-line">919DESIGN</p>
               <p class="credits-line">Envi-Scripts</p>
             </div>
             <div class="credits-section">
-              <h3 class="credits-section-title">Core Team</h3>
+              <h3 class="credits-section-title">Equipo Principal</h3>
               <p class="credits-line">NineLives</p>
               <p class="credits-line">Envi-Scripts</p>
             </div>
             <div class="credits-section">
-              <h3 class="credits-section-title">Design</h3>
+              <h3 class="credits-section-title">Diseño</h3>
               <p class="credits-line">NineLives</p>
               <p class="credits-line">Envi-Scripts</p>
             </div>
             <div class="credits-section">
-              <h3 class="credits-section-title">Programming</h3>
+              <h3 class="credits-section-title">Programación</h3>
               <p class="credits-line">NineLives</p>
               <p class="credits-line">Envi-Scripts</p>
               <p class="credits-line">t.dot.</p>
@@ -102,7 +102,7 @@
               <p class="credits-line">NineLives</p>
             </div>
             <div class="credits-section">
-              <h3 class="credits-section-title">Testing</h3>
+              <h3 class="credits-section-title">Pruebas</h3>
               <p class="credits-line">0nlyjim</p>
               <p class="credits-line">cf3cruse</p>
               <p class="credits-line">davidtexture</p>
@@ -116,11 +116,11 @@
               <p class="credits-line">OGChroma</p>
             </div>
             <div class="credits-section">
-              <h3 class="credits-section-title">Special Thanks</h3>
+              <h3 class="credits-section-title">Agradecimientos Especiales</h3>
               <p class="credits-line">Rockstar Games & Cfx.re</p>
             </div>
             <div class="credits-section">
-              <h3 class="credits-section-title">Third-Party Tools</h3>
+              <h3 class="credits-section-title">Herramientas de Terceros</h3>
               <p class="credits-line">ox_lib</p>
               <p class="credits-line">oxmysql</p>
               <p class="credits-line">pma-voice</p>
@@ -136,15 +136,15 @@
     <div class="sk-avatar-shell">
       <div class="sk-avatar-topbar">
         <div class="sk-avatar-header">
-          <button type="button" id="avatarBack" class="btn-back">← Back</button>
-          <h2 class="sk-avatar-title">Customize Avatar</h2>
+          <button type="button" id="avatarBack" class="btn-back">← Atrás</button>
+          <h2 class="sk-avatar-title">Personalizar Avatar</h2>
         </div>
         <div class="sk-avatar-topbar-tools">
           <div class="sk-avatar-camera-wrap">
-            <span class="sk-avatar-camera-label">Camera Height</span>
+            <span class="sk-avatar-camera-label">Altura de Cámara</span>
             <input type="range" id="avatarCameraHeight" class="sk-avatar-camera-slider" min="0" max="1" step="0.01" value="0.5" />
           </div>
-          <button type="button" id="avatarSpotlight" class="sk-avatar-spotlight-btn">Spotlight</button>
+          <button type="button" id="avatarSpotlight" class="sk-avatar-spotlight-btn">Foco</button>
           <div class="sk-avatar-balance-wrap">
             <span class="sk-avatar-balance-label">GearCoins</span>
             <span class="sk-avatar-balance-value" id="avatarBalance">0</span>
@@ -156,17 +156,17 @@
           <div class="sk-avatar-gender-switch" id="avatarGenderSwitch"></div>
           <div class="sk-avatar-tabs" id="avatarTabs"></div>
           <div class="sk-avatar-panel-copy" id="avatarPanelCopy">
-            <p class="sk-avatar-preview-eyebrow" id="avatarPanelEyebrow">Face</p>
-            <h3 class="sk-avatar-preview-title" id="avatarPanelTitle">Shape, skin, and detail</h3>
-            <p class="sk-avatar-preview-copy" id="avatarPanelDescription">Refine the overall look first, then move into individual face features or clothing.</p>
+            <p class="sk-avatar-preview-eyebrow" id="avatarPanelEyebrow">Rostro</p>
+            <h3 class="sk-avatar-preview-title" id="avatarPanelTitle">Forma, piel y detalles</h3>
+            <p class="sk-avatar-preview-copy" id="avatarPanelDescription">Refine la apariencia general primero, luego pase a las características faciales individuales o la ropa.</p>
           </div>
           <div class="sk-avatar-controls" id="avatarControls"></div>
         </aside>
         <div class="sk-avatar-viewport" id="avatarViewport"></div>
         <aside class="sk-avatar-panel sk-avatar-panel--right">
-          <p class="sk-avatar-preview-eyebrow" id="avatarPreviewEyebrow">Face</p>
-          <h3 class="sk-avatar-preview-title" id="avatarPreviewTitle">Customize your look</h3>
-          <p class="sk-avatar-preview-copy" id="avatarPreviewCopy">Rotate the camera with drag and refine your character from every angle.</p>
+          <p class="sk-avatar-preview-eyebrow" id="avatarPreviewEyebrow">Rostro</p>
+          <h3 class="sk-avatar-preview-title" id="avatarPreviewTitle">Personaliza tu apariencia</h3>
+          <p class="sk-avatar-preview-copy" id="avatarPreviewCopy">Gire la cámara arrastrando y refine su personaje desde todos los ángulos.</p>
           <div class="sk-avatar-tabs sk-avatar-tabs--browser" id="avatarBrowseTabs"></div>
           <div class="sk-avatar-browser" id="avatarBrowser"></div>
         </aside>
@@ -179,8 +179,8 @@
 
     <div class="initiation-header">
       <p class="initiation-header-eyebrow">Street Kings</p>
-      <h1 class="initiation-header-title">Choose Your Starter Car</h1>
-      <p class="initiation-header-sub">Hover over a vehicle to inspect it &mdash; click to select</p>
+      <h1 class="initiation-header-title">Elije tu coche inicial</h1>
+      <p class="initiation-header-sub">Pase el cursor sobre un vehículo para inspeccionarlo y haga clic para seleccionarlo</p>
     </div>
 
     <div id="initiationVehicleInfo" class="initiation-info-panel">
@@ -191,19 +191,19 @@
       <div class="initiation-divider"></div>
       <div class="initiation-stats">
         <div class="initiation-stat-col">
-          <span class="initiation-stat-label">Top Speed</span>
+          <span class="initiation-stat-label">Velocidad Máxima</span>
           <span class="initiation-stat-bar-wrap"><span class="initiation-stat-bar" id="statTopSpeed"></span></span>
         </div>
         <div class="initiation-stat-col">
-          <span class="initiation-stat-label">Acceleration</span>
+          <span class="initiation-stat-label">Aceleración</span>
           <span class="initiation-stat-bar-wrap"><span class="initiation-stat-bar" id="statAccel"></span></span>
         </div>
         <div class="initiation-stat-col">
-          <span class="initiation-stat-label">Handling</span>
+          <span class="initiation-stat-label">Manejo</span>
           <span class="initiation-stat-bar-wrap"><span class="initiation-stat-bar" id="statHandling"></span></span>
         </div>
         <div class="initiation-stat-col">
-          <span class="initiation-stat-label">Braking</span>
+          <span class="initiation-stat-label">Frenado</span>
           <span class="initiation-stat-bar-wrap"><span class="initiation-stat-bar" id="statBraking"></span></span>
         </div>
       </div>
@@ -213,11 +213,11 @@
 
     <div id="initiationConfirmModal" class="initiation-confirm-modal">
       <div class="initiation-confirm-box">
-        <h3 class="initiation-confirm-title">Choose this vehicle?</h3>
-        <p class="initiation-confirm-body">This cannot be undone once a starter vehicle is chosen.</p>
+        <h3 class="initiation-confirm-title">¿Elegir este vehículo?</h3>
+        <p class="initiation-confirm-body">Esto no se puede deshacer una vez que se elija un vehículo inicial.</p>
         <div class="initiation-confirm-actions">
-          <button type="button" id="initiationConfirmNo" class="initiation-confirm-btn initiation-confirm-btn--secondary">Cancel</button>
-          <button type="button" id="initiationConfirmYes" class="initiation-confirm-btn">Yes, Choose</button>
+          <button type="button" id="initiationConfirmNo" class="initiation-confirm-btn initiation-confirm-btn--secondary">Cancelar</button>
+          <button type="button" id="initiationConfirmYes" class="initiation-confirm-btn">Sí, elegir</button>
         </div>
       </div>
     </div>
@@ -225,8 +225,8 @@
 
   <div id="viewYouDied" class="sk-you-died">
     <div class="you-died-content">
-      <h1 class="you-died-title">You Died</h1>
-      <p class="you-died-sub">$1000 Hospital Bill</p>
+      <h1 class="you-died-title">Has muerto</h1>
+      <p class="you-died-sub">$1000 Factura del Hospital</p>
     </div>
     <div class="you-died-footer">
       <span class="you-died-spinner"></span>
@@ -235,8 +235,8 @@
 
   <div id="viewToBeContinued" class="sk-tbc">
     <div class="tbc-content">
-      <h1 class="tbc-title">To Be Continued</h1>
-      <p class="tbc-sub">Chapter 2 - Coming Soon..</p>
+      <h1 class="tbc-title">Continuara</h1>
+      <p class="tbc-sub">Capitulo 2 - Proximamente</p>
     </div>
   </div>
 
@@ -244,8 +244,8 @@
     <div class="arrested-light arrested-light--blue"></div>
     <div class="arrested-light arrested-light--red"></div>
     <div class="arrested-content">
-      <h1 class="arrested-title">Arrested</h1>
-      <p class="arrested-sub">Fined $1000</p>
+      <h1 class="arrested-title">Detenido</h1>
+      <p class="arrested-sub">Multa de $1000</p>
     </div>
     <div class="arrested-footer">
       <span class="arrested-spinner"></span>
@@ -282,66 +282,66 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 <span class="phone-app-badge" id="msgBadge" style="display:none"></span>
               </div>
-              <span class="phone-app-label">Messages</span>
+              <span class="phone-app-label">Mensajes</span>
             </button>
             <button class="phone-app" data-app="Map">
               <div class="phone-app-icon" style="--app-color:#22c55e">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
               </div>
-              <span class="phone-app-label">Map</span>
+              <span class="phone-app-label">Mapa</span>
             </button>
             <button class="phone-app" data-app="Vehicles">
-              <div class="phone-app-icon" style="--app-color:#ffd147">
+              <div class="phone-app-icon" style="--app-color:#ff006a">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
               </div>
-              <span class="phone-app-label">Vehicles</span>
+              <span class="phone-app-label">Vehículos</span>
             </button>
             <button class="phone-app" data-app="Stats">
               <div class="phone-app-icon" style="--app-color:#f97316">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20V14"/><path d="M10 20V10"/><path d="M14 20V4"/><path d="M18 20V8"/></svg>
               </div>
-              <span class="phone-app-label">Stats</span>
+              <span class="phone-app-label">Estadísticas</span>
             </button>
             <button class="phone-app" data-app="RealEstate">
               <div class="phone-app-icon" style="--app-color:#ec4899">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
               </div>
-              <span class="phone-app-label">Properties</span>
+              <span class="phone-app-label">Propiedades</span>
             </button>
             <button class="phone-app" data-app="Towing">
               <div class="phone-app-icon" style="--app-color:#6366f1">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
               </div>
-              <span class="phone-app-label">Towing</span>
+              <span class="phone-app-label">Remolque</span>
             </button>
             <button class="phone-app" data-app="Leaderboards">
-              <div class="phone-app-icon" style="--app-color:#ffd147">
+              <div class="phone-app-icon" style="--app-color:#ff006a">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7 4 7 7 7 7"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5C17 4 17 7 17 7"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
               </div>
-              <span class="phone-app-label">Rankings</span>
+              <span class="phone-app-label">Clasificaciones</span>
             </button>
             <button class="phone-app" data-app="Settings">
               <div class="phone-app-icon" style="--app-color:#78716c">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
               </div>
-              <span class="phone-app-label">Settings</span>
+              <span class="phone-app-label">Configuración</span>
             </button>
           </div>
         </div>
 
         <div class="phone-view" id="phoneAppEvent">
           <div class="phone-app-header">
-            <span class="phone-app-title" id="phoneEventTitle">Event Menu</span>
+            <span class="phone-app-title" id="phoneEventTitle">Menú del Evento</span>
           </div>
           <div class="phone-event">
             <div class="phone-event-card">
-              <div class="phone-event-label">In Event</div>
-              <div class="phone-event-name" id="phoneEventName">Active Run</div>
-              <div class="phone-event-copy" id="phoneEventCopy">Choose an action to recover your run or leave the event.</div>
+              <div class="phone-event-label">En Evento</div>
+              <div class="phone-event-name" id="phoneEventName">Carrera Activa</div>
+              <div class="phone-event-copy" id="phoneEventCopy">Elija una acción para recuperar su carrera o abandonar el evento.</div>
             </div>
             <div class="phone-event-actions">
-              <button type="button" class="phone-event-action" id="phoneEventRecover">Recover to Last Checkpoint</button>
-              <button type="button" class="phone-event-action phone-event-action--danger" id="phoneEventForfeit">Forfeit Event</button>
+              <button type="button" class="phone-event-action" id="phoneEventRecover">Recuperar en Último Punto de Control</button>
+              <button type="button" class="phone-event-action phone-event-action--danger" id="phoneEventForfeit">Abandonar Evento</button>
             </div>
             <div class="phone-event-note" id="phoneEventNote"></div>
           </div>
@@ -349,30 +349,30 @@
 
         <div class="phone-view" id="phoneAppMission">
           <div class="phone-app-header">
-            <span class="phone-app-title">Mission</span>
+            <span class="phone-app-title">Misión</span>
           </div>
           <div class="phone-event">
             <div class="phone-event-card">
-              <div class="phone-event-label">Active Mission</div>
-              <div class="phone-event-name" id="phoneMissionName">Current Mission</div>
-              <div class="phone-event-copy">Leave the current mission and return to free roam. Your mission progress will be reset.</div>
+              <div class="phone-event-label">Misión Activa</div>
+              <div class="phone-event-name" id="phoneMissionName">Misión Actual</div>
+              <div class="phone-event-copy">Abandone la misión actual y regrese al modo libre. El progreso de su misión se reiniciará.</div>
             </div>
             <div class="phone-event-actions">
-              <button type="button" class="phone-event-action phone-event-action--danger" id="phoneMissionForfeit">Leave Mission</button>
+              <button type="button" class="phone-event-action phone-event-action--danger" id="phoneMissionForfeit">Abandonar Misión</button>
             </div>
           </div>
         </div>
 
         <div class="phone-view" id="phoneAppMessages">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Back</button>
-            <span class="phone-app-title">Messages</span>
+            <button class="phone-app-back">← Atrás</button>
+            <span class="phone-app-title">Mensajes</span>
           </div>
           <div class="phone-messages">
             <div class="phone-messages-list" id="msgList"></div>
             <div class="phone-messages-pane">
               <div class="phone-msg-empty" id="msgEmpty">
-                <span>Select a conversation</span>
+                <span>Seleccione una conversación</span>
               </div>
               <div class="phone-msg-thread" id="msgThread" style="display:none"></div>
             </div>
@@ -380,32 +380,32 @@
         </div>
         <div class="phone-view" id="phoneAppMap">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Back</button>
-            <span class="phone-app-title">Map</span>
+            <button class="phone-app-back">← Atrás</button>
+            <span class="phone-app-title">Mapa</span>
           </div>
           <div class="phone-map">
-            <aside class="phone-map-sidebar" id="phoneMapSidebar" aria-label="Events list">
-              <div class="phone-map-sidebar-label">Events</div>
+            <aside class="phone-map-sidebar" id="phoneMapSidebar" aria-label="Lista de eventos">
+              <div class="phone-map-sidebar-label">Eventos</div>
               <div class="phone-map-sidebar-list" id="phoneMapEventList" role="list"></div>
             </aside>
             <div class="phone-map-stage">
               <div class="phone-map-toolbar" id="phoneMapStyleTabs">
                 <div class="phone-map-style-group">
-                  <button type="button" class="phone-map-style is-active" data-style="satellite">Satellite</button>
-                  <button type="button" class="phone-map-style" data-style="regular">Road</button>
+                  <button type="button" class="phone-map-style is-active" data-style="satellite">Satélite</button>
+                  <button type="button" class="phone-map-style" data-style="regular">Carretera</button>
                   <button type="button" class="phone-map-style" data-style="atlas">Atlas</button>
                 </div>
                 <div class="phone-map-control-group">
                   <button type="button" class="phone-map-control" id="phoneMapZoomOut" aria-label="Zoom out">-</button>
-                  <button type="button" class="phone-map-control" id="phoneMapResetView">Reset</button>
+                  <button type="button" class="phone-map-control" id="phoneMapResetView">Restablecer</button>
                   <button type="button" class="phone-map-control" id="phoneMapZoomIn" aria-label="Zoom in">+</button>
                 </div>
               </div>
               <div class="phone-map-canvas-wrap" id="phoneMapViewport">
-                <div class="phone-map-loading" id="phoneMapLoading">Loading map...</div>
-                <div class="phone-map-empty" id="phoneMapEmpty" style="display:none">No events available.</div>
+                <div class="phone-map-loading" id="phoneMapLoading">Cargando mapa...</div>
+                <div class="phone-map-empty" id="phoneMapEmpty" style="display:none">No hay eventos disponibles.</div>
                 <div class="phone-map-canvas" id="phoneMapCanvas" style="display:none">
-                  <img id="phoneMapImage" class="phone-map-image-source" src="assets/satellite_map.webp" alt="StreetKings map source" draggable="false" />
+                  <img id="phoneMapImage" class="phone-map-image-source" src="assets/satellite_map.webp" alt="Fuente del mapa de StreetKings" draggable="false" />
                   <div class="phone-map-tiles" id="phoneMapTiles"></div>
                 </div>
                 <div class="phone-map-overlay" id="phoneMapOverlay" style="display:none">
@@ -418,8 +418,8 @@
               </div>
             </div>
             <div class="phone-map-panel">
-              <div class="phone-map-panel-label">Route Preview</div>
-              <div class="phone-map-panel-empty" id="phoneMapPanelEmpty">Select an event start to preview its route.</div>
+              <div class="phone-map-panel-label">Vista Previa de la Ruta</div>
+              <div class="phone-map-panel-empty" id="phoneMapPanelEmpty">Seleccione un inicio de evento para ver su ruta.</div>
               <div class="phone-map-card" id="phoneMapCard" style="display:none">
                 <div class="phone-map-card-title" id="phoneMapTitle"></div>
                 <div class="phone-map-card-meta">
@@ -428,20 +428,20 @@
                 </div>
                 <div class="phone-map-card-stats">
                   <div class="phone-map-card-stat">
-                    <span class="phone-map-card-stat-label">Start</span>
+                    <span class="phone-map-card-stat-label">Inicio</span>
                     <span class="phone-map-card-stat-value" id="phoneMapStart"></span>
                   </div>
                   <div class="phone-map-card-stat">
-                    <span class="phone-map-card-stat-label">Checkpoints</span>
+                    <span class="phone-map-card-stat-label">Puntos de Control</span>
                     <span class="phone-map-card-stat-value" id="phoneMapStops"></span>
                   </div>
                   <div class="phone-map-card-stat">
-                    <span class="phone-map-card-stat-label">Goal</span>
+                    <span class="phone-map-card-stat-label">Meta</span>
                     <span class="phone-map-card-stat-value" id="phoneMapGoal"></span>
                   </div>
                 </div>
-                <button type="button" class="phone-map-teleport phone-map-teleport--secondary" id="phoneMapMarkOnMap" style="display:none">Mark On Map</button>
-                <button type="button" class="phone-map-teleport" id="phoneMapTeleportStart" style="display:none">Teleport to start</button>
+                <button type="button" class="phone-map-teleport phone-map-teleport--secondary" id="phoneMapMarkOnMap" style="display:none">Marcar en el Mapa</button>
+                <button type="button" class="phone-map-teleport" id="phoneMapTeleportStart" style="display:none">Teletransportar al inicio</button>
                 <div class="phone-map-card-desc" id="phoneMapDesc"></div>
               </div>
             </div>
@@ -449,72 +449,72 @@
         </div>
         <div class="phone-view" id="phoneAppVehicles">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Back</button>
-            <span class="phone-app-title">Vehicles</span>
+            <button class="phone-app-back">← Atrás</button>
+            <span class="phone-app-title">Vehículos</span>
           </div>
           <div class="phone-vehicles">
             <div class="phone-vehicles-list" id="vehiclesList">
-              <div class="phone-vehicles-empty">Loading...</div>
+              <div class="phone-vehicles-empty">Cargando...</div>
             </div>
             <div class="phone-vehicles-panel" id="vehiclesPanel">
-              <div class="phone-vehicles-empty">Select a vehicle</div>
+              <div class="phone-vehicles-empty">Seleccione un vehículo</div>
             </div>
           </div>
         </div>
         <div class="phone-view" id="phoneAppStats">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Back</button>
-            <span class="phone-app-title">Stats</span>
+            <button class="phone-app-back">← Atrás</button>
+            <span class="phone-app-title">Estadísticas</span>
           </div>
           <div id="phoneAppStatsContent" class="phone-stats-content"></div>
         </div>
         <div class="phone-view" id="phoneAppRealEstate">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Back</button>
-            <span class="phone-app-title">Real Estate</span>
+            <button class="phone-app-back">← Atrás</button>
+            <span class="phone-app-title">Bienes Raíces</span>
           </div>
           <div class="phone-realestate">
             <div class="phone-realestate-sidebar">
-              <div class="phone-realestate-sidebar-label">Listings</div>
-              <div class="phone-realestate-sidebar-balance">Cash <span id="realEstateCash">$0</span></div>
+              <div class="phone-realestate-sidebar-label">Listados</div>
+              <div class="phone-realestate-sidebar-balance">Efectivo <span id="realEstateCash">$0</span></div>
               <div class="phone-realestate-list" id="realEstateList">
-                <div class="phone-realestate-empty">Loading properties...</div>
+                <div class="phone-realestate-empty">Cargando propiedades...</div>
               </div>
             </div>
             <div class="phone-realestate-panel" id="realEstatePanel">
-              <div class="phone-realestate-empty">Select a property</div>
+              <div class="phone-realestate-empty">Seleccione una propiedad</div>
             </div>
           </div>
         </div>
         <div class="phone-view" id="phoneAppStore">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Back</button>
-            <span class="phone-app-title">Store</span>
+            <button class="phone-app-back">← Atrás</button>
+            <span class="phone-app-title">Tienda</span>
           </div>
           <div class="phone-app-body"></div>
         </div>
         <div class="phone-view" id="phoneAppTowing">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Back</button>
-            <span class="phone-app-title">Towing</span>
+            <button class="phone-app-back">← Atrás</button>
+            <span class="phone-app-title">Remolque</span>
           </div>
           <div class="phone-event">
             <div class="phone-event-card">
-              <div class="phone-event-label">Roadside Assistance</div>
-              <div class="phone-event-name">Need a reset?</div>
-              <div class="phone-event-copy">Jump to your last used garage for $200 or recover to the nearest road for free.</div>
+              <div class="phone-event-label">Asistencia en Carretera</div>
+              <div class="phone-event-name">¿Necesita un reinicio?</div>
+              <div class="phone-event-copy">Vaya al último garaje usado por $200 o recupérese en la carretera más cercana gratis.</div>
             </div>
             <div class="phone-event-actions">
-              <button type="button" class="phone-event-action" id="phoneTowingGarage">Tow To Last Garage ($200)</button>
-              <button type="button" class="phone-event-action" id="phoneTowingRecover">Recover To Nearest Road (Free)</button>
+              <button type="button" class="phone-event-action" id="phoneTowingGarage">Remolcar al Último Garaje ($200)</button>
+              <button type="button" class="phone-event-action" id="phoneTowingRecover">Recuperar en Carretera Más Cercana (Gratis)</button>
             </div>
-            <div class="phone-event-note">GET ON YOUR WAY WITH OUR TOWING SERVICE.</div>
+            <div class="phone-event-note">CONTINÚE SU CAMINO CON NUESTRO SERVICIO DE REMOLQUE.</div>
           </div>
         </div>
         <div class="phone-view" id="phoneAppSettings">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Back</button>
-            <span class="phone-app-title">Settings</span>
+            <button class="phone-app-back">← Atrás</button>
+            <span class="phone-app-title">Configuración</span>
           </div>
           <div class="phone-settings">
             <div class="phone-settings-cats" id="settingsCats"></div>
@@ -523,8 +523,8 @@
         </div>
         <div class="phone-view" id="phoneAppLeaderboards">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Back</button>
-            <span class="phone-app-title">Rankings</span>
+            <button class="phone-app-back">← Atrás</button>
+            <span class="phone-app-title">Clasificaciones</span>
           </div>
           <div class="phone-lb">
             <div class="phone-lb-cats" id="lbCats"></div>
@@ -532,10 +532,10 @@
               <div class="phone-lb-header">
                 <span class="phone-lb-title" id="lbTitle"></span>
                 <div class="phone-lb-tabs" id="lbTabs">
-                  <button type="button" class="phone-lb-tab is-active" data-period="all">All Time</button>
-                  <button type="button" class="phone-lb-tab" data-period="month">Month</button>
-                  <button type="button" class="phone-lb-tab" data-period="week">Week</button>
-                  <button type="button" class="phone-lb-tab" data-period="day">Today</button>
+                  <button type="button" class="phone-lb-tab is-active" data-period="all">Todo el Tiempo</button>
+                  <button type="button" class="phone-lb-tab" data-period="month">Mes</button>
+                  <button type="button" class="phone-lb-tab" data-period="week">Semana</button>
+                  <button type="button" class="phone-lb-tab" data-period="day">Hoy</button>
                 </div>
               </div>
               <div class="phone-lb-list" id="lbList"></div>
@@ -556,26 +556,26 @@
 
     <div class="sk-modshop-top">
       <div class="sk-modshop-title-block">
-        <span class="sk-modshop-kicker">Custom Shop</span>
-        <h1 class="sk-modshop-heading" id="modshopTitle">Visual Mods</h1>
-        <p class="sk-modshop-subtitle">Vehicle XP unlocks more parts. Locked parts show the required level before you can install them.</p>
+        <span class="sk-modshop-kicker">Taller de Personalización</span>
+        <h1 class="sk-modshop-heading" id="modshopTitle">Modificaciones Visuales</h1>
+        <p class="sk-modshop-subtitle">La XP del vehículo desbloquea más piezas. Las piezas bloqueadas muestran el nivel requerido antes de poder instalarlas.</p>
       </div>
       <div class="sk-modshop-status">
         <div class="sk-modshop-wallet">
-          <span class="sk-modshop-wallet-label">Cash</span>
+          <span class="sk-modshop-wallet-label">Efectivo</span>
           <span class="sk-modshop-wallet-amount" id="modshopBalance"></span>
         </div>
         <div class="sk-modshop-progress-card">
           <div class="sk-modshop-progress-head">
-            <span class="sk-modshop-progress-label">Vehicle Level</span>
-            <span class="sk-modshop-progress-level" id="modshopVehicleLevel">Lv. 1</span>
+            <span class="sk-modshop-progress-label">Nivel del Vehículo</span>
+            <span class="sk-modshop-progress-level" id="modshopVehicleLevel">Nivel 1</span>
           </div>
           <div class="sk-modshop-progress-track">
             <div class="sk-modshop-progress-fill" id="modshopXpFill"></div>
           </div>
           <div class="sk-modshop-progress-meta">
             <span id="modshopXpText">0 / 0 XP</span>
-            <span id="modshopUnlockSummary">0 / 0 unlocked</span>
+            <span id="modshopUnlockSummary">0 / 0 desbloqueados</span>
           </div>
         </div>
       </div>
@@ -583,17 +583,17 @@
 
     <div class="sk-modshop-side" id="modshopSide">
       <div class="sk-modshop-selection-card">
-        <span class="sk-modshop-selection-label">Selected</span>
-        <div class="sk-modshop-selection-title" id="modshopSelectedTitle">Choose a category</div>
-        <div class="sk-modshop-selection-subtitle" id="modshopSelectedSubtitle">Select a part to preview its unlock state and install cost.</div>
+        <span class="sk-modshop-selection-label">Seleccionado</span>
+        <div class="sk-modshop-selection-title" id="modshopSelectedTitle">Elija una categoría</div>
+        <div class="sk-modshop-selection-subtitle" id="modshopSelectedSubtitle">Seleccione una pieza para ver su estado de desbloqueo y costo de instalación.</div>
       </div>
       <div class="sk-modshop-options" id="modshopOptions"></div>
       <div class="sk-modshop-install" id="modshopInstall">
         <div class="sk-modshop-install-copy">
           <span class="sk-modshop-price" id="modshopPrice"></span>
-          <span class="sk-modshop-install-note" id="modshopInstallNote">Select a part to preview it.</span>
+          <span class="sk-modshop-install-note" id="modshopInstallNote">Seleccione una pieza para verla.</span>
         </div>
-        <button class="sk-modshop-buy" id="modshopBuy">Install</button>
+        <button class="sk-modshop-buy" id="modshopBuy">Instalar</button>
       </div>
     </div>
 
@@ -601,7 +601,7 @@
       <div class="sk-modshop-controller-hint" aria-hidden="true">
         <img class="sk-modshop-controller-hint-icon" data-sk-glyph-key="LB" src="assets/XboxSeriesX_LB.png" alt="" />
         <img class="sk-modshop-controller-hint-icon" data-sk-glyph-key="RB" src="assets/XboxSeriesX_RB.png" alt="" />
-        <span class="sk-modshop-controller-hint-text">TO NAVIGATE</span>
+        <span class="sk-modshop-controller-hint-text">PARA NAVEGAR</span>
       </div>
       <div class="sk-modshop-strip-inner" id="modshopCategories"></div>
     </div>
@@ -613,26 +613,26 @@
     <div class="sk-perfshop-viewport"></div>
     <div class="sk-perfshop-top">
       <div class="sk-perfshop-title-block">
-        <span class="sk-perfshop-kicker">Tuning Bay</span>
-        <h1 class="sk-perfshop-heading" id="perfshopTitle">Performance Shop</h1>
-        <p class="sk-perfshop-subtitle">Vehicle XP unlocks new upgrade stages. Drag to pan around your ride while you preview and install tuning parts.</p>
+        <span class="sk-perfshop-kicker">Taller de Rendimiento</span>
+        <h1 class="sk-perfshop-heading" id="perfshopTitle">Taller de Rendimiento</h1>
+        <p class="sk-perfshop-subtitle">La XP del vehículo desbloquea nuevas etapas de mejora. Arrastre para mover la cámara alrededor de su vehículo mientras ve e instala las piezas de rendimiento.</p>
       </div>
       <div class="sk-perfshop-status">
         <div class="sk-perfshop-wallet">
-          <span class="sk-perfshop-wallet-label">Cash</span>
+          <span class="sk-perfshop-wallet-label">Efectivo</span>
           <span class="sk-perfshop-wallet-amount" id="perfshopBalance"></span>
         </div>
         <div class="sk-perfshop-progress-card">
           <div class="sk-perfshop-progress-head">
-            <span class="sk-perfshop-progress-label">Vehicle Level</span>
-            <span class="sk-perfshop-progress-level" id="perfshopVehicleLevel">Lv. 1</span>
+            <span class="sk-perfshop-progress-label">Nivel del Vehículo</span>
+            <span class="sk-perfshop-progress-level" id="perfshopVehicleLevel">Nivel 1</span>
           </div>
           <div class="sk-perfshop-progress-track">
             <div class="sk-perfshop-progress-fill" id="perfshopXpFill"></div>
           </div>
           <div class="sk-perfshop-progress-meta">
             <span id="perfshopXpText">0 / 0 XP</span>
-            <span id="perfshopUnlockSummary">0 / 0 unlocked</span>
+            <span id="perfshopUnlockSummary">0 / 0 desbloqueados</span>
           </div>
         </div>
       </div>
@@ -640,17 +640,17 @@
 
     <div class="sk-perfshop-side" id="perfshopSide">
       <div class="sk-perfshop-selection-card">
-        <span class="sk-perfshop-selection-label">Selected</span>
-        <div class="sk-perfshop-selection-title" id="perfshopSelectedTitle">Choose a category</div>
-        <div class="sk-perfshop-selection-subtitle" id="perfshopSelectedSubtitle">Select a tuning stage to preview install cost and unlock state.</div>
+        <span class="sk-perfshop-selection-label">Seleccionado</span>
+        <div class="sk-perfshop-selection-title" id="perfshopSelectedTitle">Elija una categoría</div>
+        <div class="sk-perfshop-selection-subtitle" id="perfshopSelectedSubtitle">Seleccione una etapa de rendimiento para ver su costo y estado de desbloqueo.</div>
       </div>
       <div class="sk-perfshop-options" id="perfshopOptions"></div>
       <div class="sk-perfshop-install" id="perfshopInstall">
         <div class="sk-perfshop-install-copy">
           <span class="sk-perfshop-price" id="perfshopPrice"></span>
-          <span class="sk-perfshop-install-note" id="perfshopInstallNote">Select a stage to preview it.</span>
+          <span class="sk-perfshop-install-note" id="perfshopInstallNote">Seleccione una etapa para verla.</span>
         </div>
-        <button class="sk-perfshop-buy" id="perfshopBuy">Install</button>
+        <button class="sk-perfshop-buy" id="perfshopBuy">Instalar</button>
       </div>
     </div>
 
@@ -658,7 +658,7 @@
       <div class="sk-perfshop-controller-hint" aria-hidden="true">
         <img class="sk-perfshop-controller-hint-icon" data-sk-glyph-key="LB" src="assets/XboxSeriesX_LB.png" alt="" />
         <img class="sk-perfshop-controller-hint-icon" data-sk-glyph-key="RB" src="assets/XboxSeriesX_RB.png" alt="" />
-        <span class="sk-perfshop-controller-hint-text">TO NAVIGATE</span>
+        <span class="sk-perfshop-controller-hint-text">PARA NAVEGAR</span>
       </div>
       <div class="sk-perfshop-strip-inner" id="perfshopCategories"></div>
     </div>
@@ -671,18 +671,18 @@
 
     <div class="sk-garage-top">
       <div class="sk-garage-top-copy">
-        <h1 class="sk-garage-heading" id="garageTitle">Garage</h1>
-        <p class="sk-garage-hint">Drag to rotate &middot; Scroll to zoom &middot; ESC to leave</p>
+        <h1 class="sk-garage-heading" id="garageTitle">Garaje</h1>
+        <p class="sk-garage-hint">Arrastre para rotar &middot; Desplácese para hacer zoom &middot; ESC para salir</p>
       </div>
       <div class="sk-garage-top-status">
         <div class="sk-garage-wallet">
-          <span class="sk-garage-wallet-label">Cash</span>
+          <span class="sk-garage-wallet-label">Efectivo</span>
           <span class="sk-garage-wallet-amount" id="garagePlayerMoney"></span>
         </div>
         <div class="sk-garage-player-card">
           <div class="sk-garage-player-head">
-            <span class="sk-garage-player-label">Player Level</span>
-            <span class="sk-garage-player-level" id="garagePlayerLevel">Lv. 1</span>
+            <span class="sk-garage-player-label">Nivel del Jugador</span>
+            <span class="sk-garage-player-level" id="garagePlayerLevel">Nivel 1</span>
           </div>
           <div class="sk-garage-player-track">
             <div class="sk-garage-player-fill" id="garagePlayerXpFill"></div>
@@ -697,13 +697,13 @@
 
     <div class="sk-garage-side" id="garageSide">
       <div class="sk-garage-card">
-        <span class="sk-garage-card-label">Selected</span>
+        <span class="sk-garage-card-label">Seleccionado</span>
         <h2 class="sk-garage-car-display-name" id="garageCarName"></h2>
-        <span class="sk-garage-active-badge" id="garageActiveBadge">Active Ride</span>
+        <span class="sk-garage-active-badge" id="garageActiveBadge">Vehículo Activo</span>
         <div class="sk-garage-level-card">
           <div class="sk-garage-level-head">
-            <span class="sk-garage-level-label">Vehicle Level</span>
-            <span class="sk-garage-level-value" id="garageVehicleLevel">Lv. 1</span>
+            <span class="sk-garage-level-label">Nivel del Vehículo</span>
+            <span class="sk-garage-level-value" id="garageVehicleLevel">Nivel 1</span>
           </div>
           <div class="sk-garage-level-track">
             <div class="sk-garage-level-fill" id="garageVehicleXpFill"></div>
@@ -728,7 +728,7 @@
     <div class="sk-dealership-top">
       <h1 class="sk-dealership-heading" id="dealershipTitle"></h1>
       <div class="sk-dealership-wallet">
-        <span class="sk-dealership-wallet-label">Cash</span>
+        <span class="sk-dealership-wallet-label">Efectivo</span>
         <span class="sk-dealership-wallet-amount" id="dealershipBalance"></span>
       </div>
     </div>
@@ -739,7 +739,7 @@
         <h2 class="sk-dealership-car-name" id="dealershipCarName"></h2>
         <span class="sk-dealership-class-badge" id="dealershipClassBadge"></span>
         <div class="sk-dealership-customizability">
-          <span class="sk-dealership-customizability-label">Customizability</span>
+          <span class="sk-dealership-customizability-label">Personalización</span>
           <div class="sk-dealership-customizability-stars" id="dealershipCustomizability"></div>
         </div>
       </div>

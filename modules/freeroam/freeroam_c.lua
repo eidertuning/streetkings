@@ -490,6 +490,66 @@ SKC.RegisterGameState(GameState.FREEROAM, {
     tickWait = 0,
 })
 
+
+-- ce_skadmin bridge: recibe un netId nuevo desde el servidor y lo adopta como
+-- vehículo activo local de freeroam. Esto mantiene speedo/cámara/gearbox/nitro vivos.
+RegisterNetEvent('streetkings:admin:activeVehicleRespawned', function(netId)
+    netId = tonumber(netId)
+    if not netId then return end
+
+    CreateThread(function()
+        local veh = awaitVehicleByNetId(netId, 8000)
+        if not veh or veh == 0 or not DoesEntityExist(veh) then return end
+
+        requestVehicleControl(veh)
+        activeVehicle = veh
+
+        local ped = PlayerPedId()
+        SetVehicleModKit(activeVehicle, 0)
+
+        local okMods, savedMods = pcall(function()
+            return lib.callback.await('streetkings:shop:getVehicleMods', false)
+        end)
+        if okMods and type(savedMods) == 'table' and SKShopShared then
+            for modType, modIndex in pairs(savedMods) do
+                local numericModType = tonumber(modType)
+                if numericModType and not SKShopShared.isExcludedModType(numericModType) then
+                    SKShopShared.applyVehicleMod(activeVehicle, numericModType, modIndex)
+                end
+            end
+        end
+
+        local okColors, savedColors = pcall(function()
+            return lib.callback.await('streetkings:shop:getVehicleColors', false)
+        end)
+        if okColors and type(savedColors) == 'table' and SKShop then
+            if savedColors.primary then SKShop.applyVehicleColor(activeVehicle, 'primary', savedColors.primary) end
+            if savedColors.secondary then SKShop.applyVehicleColor(activeVehicle, 'secondary', savedColors.secondary) end
+        end
+
+        local okNeons, savedNeons = pcall(function()
+            return lib.callback.await('streetkings:shop:getActiveVehicleNeons', false)
+        end)
+        if okNeons and savedNeons and SKShop and SKShop.applyVehicleNeons then
+            SKShop.applyVehicleNeons(activeVehicle, savedNeons)
+        end
+
+        if SKProgression and SKProgression.collectVehicleAvailability then
+            pcall(function()
+                lib.callback.await('streetkings:progression:syncActiveVehicleMods', false, SKProgression.collectVehicleAvailability(activeVehicle))
+            end)
+        end
+
+        SetVehicleDirtLevel(activeVehicle, 0.0)
+        TaskWarpPedIntoVehicle(ped, activeVehicle, -1)
+        if SKSpeedo then SKSpeedo.setEnabled(true) end
+        if SKCamera then SKCamera.delayEnable(activeVehicle, 200) end
+        TriggerEvent('streetkings:gearbox:forceRestartAfterTransition', activeVehicle)
+        TriggerEvent('streetkings:nitrous:freeroamEnter')
+        TriggerEvent('streetkings:garage:freeroamEnter')
+    end)
+end)
+
 exports('GetPlayerVehicle', SKFreeroam.getActiveVehicle)
 exports('IsInFreeroam', function() return SKC.GetGameState() == GameState.FREEROAM end)
 exports('IsPlayerWasted', function() return playerDead end)
