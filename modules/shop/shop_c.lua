@@ -17,6 +17,15 @@ local CAM_ANGLE_H_DEFAULT = 160.0
 local CAM_ANGLE_V_DEFAULT = 12.0
 local CAMERA_ROTATE_SPEED = 2.5
 local CAMERA_ZOOM_SPEED   = 0.12
+local CAMERA_PRESETS = {
+    colors = { h = 150.0, v = 14.0, dist = 5.0 },
+    neons = { h = 140.0, v = -8.0, dist = 4.1 },
+    front = { h = 180.0, v = 7.0, dist = 3.55 },
+    rear = { h = 0.0, v = 8.0, dist = 3.65 },
+    side = { h = 88.0, v = 7.0, dist = 4.25 },
+    top = { h = 150.0, v = 26.0, dist = 4.65 },
+    interior = { h = 112.0, v = 13.0, dist = 3.25 },
+}
 
 -- State ---------------------------------------------------------------------
 
@@ -175,13 +184,42 @@ end
 local function updateShopCamera()
     if not shopCam or not shopVehicle or not DoesEntityExist(shopVehicle) then return end
     local pos  = GetEntityCoords(shopVehicle)
-    local radH = math.rad(camAngleH)
+    local heading = GetEntityHeading(shopVehicle)
+    local radH = math.rad((heading + camAngleH) % 360)
     local radV = math.rad(camAngleV)
     local cx   = pos.x + camDist * math.cos(radV) * math.sin(radH)
     local cy   = pos.y - camDist * math.cos(radV) * math.cos(radH)
     local cz   = pos.z + 1.2 + camDist * math.sin(radV)
     SetCamCoord(shopCam, cx, cy, cz)
     PointCamAtCoord(shopCam, pos.x, pos.y, pos.z + 0.8)
+end
+
+---@param modType integer|string|nil
+---@param category string|nil
+local function focusShopCameraForCategory(modType, category)
+    local presetKey = category
+
+    if presetKey == nil then
+        if modType == 'neons' then
+            presetKey = 'neons'
+        elseif modType == 0 or modType == 2 or modType == 4 or modType == 25 or modType == 26 then
+            presetKey = 'rear'
+        elseif modType == 1 or modType == 6 or modType == 22 or modType == 39 or modType == 40 or modType == 41 then
+            presetKey = 'front'
+        elseif modType == 3 or modType == 8 or modType == 9 or modType == 23 or modType == 24 or modType == 42 or modType == 47 then
+            presetKey = 'side'
+        elseif modType == 7 or modType == 10 or modType == 45 or modType == 46 or modType == 48 then
+            presetKey = 'top'
+        elseif modType == 27 or modType == 28 or modType == 29 or modType == 30 or modType == 31 or modType == 32 or modType == 33 or modType == 34 or modType == 35 or modType == 36 or modType == 37 or modType == 44 then
+            presetKey = 'interior'
+        end
+    end
+
+    local preset = CAMERA_PRESETS[presetKey or 'colors'] or CAMERA_PRESETS.colors
+    camAngleH = preset.h
+    camAngleV = preset.v
+    camDist = preset.dist
+    updateShopCamera()
 end
 
 ---@param controllerState SKControllerFriendlyPollResult
@@ -683,6 +721,20 @@ local function registerShopCallbacks(namespace)
         local delta = type(data.delta) == 'number' and data.delta or 0
         camDist = math.max(CAM_DIST_MIN, math.min(CAM_DIST_MAX, camDist + delta))
         cb({})
+    end)
+
+    RegisterNUICallback(namespace .. ':focusCategory', function(data, cb)
+        local modType = data and data.modType
+        local category = data and data.category
+        if type(modType) ~= 'number' and type(modType) ~= 'string' then
+            modType = nil
+        end
+        if type(category) ~= 'string' then
+            category = nil
+        end
+
+        focusShopCameraForCategory(modType, category)
+        cb({ ok = true })
     end)
 
     RegisterNUICallback(namespace .. ':previewMod', function(data, cb)

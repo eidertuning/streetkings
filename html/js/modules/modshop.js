@@ -23,6 +23,54 @@
     { key: 'left', label: 'Left' },
     { key: 'right', label: 'Right' },
   ];
+  var CATEGORY_ICONS = {
+    colors: 'CL',
+    neons: 'NE',
+    gearbox: 'GB',
+    nitrous: 'NX',
+    0: 'SP',
+    1: 'FB',
+    2: 'RB',
+    3: 'SS',
+    4: 'EX',
+    5: 'FR',
+    6: 'GR',
+    7: 'HD',
+    8: 'LF',
+    9: 'RF',
+    10: 'RO',
+    11: 'EN',
+    12: 'BR',
+    13: 'TR',
+    15: 'SU',
+    18: 'TB',
+    22: 'XL',
+    23: 'WH',
+    24: 'RW',
+    25: 'PL',
+    26: 'VP',
+    27: 'TD',
+    28: 'OR',
+    29: 'DB',
+    30: 'DL',
+    31: 'DS',
+    32: 'ST',
+    33: 'SW',
+    34: 'SL',
+    35: 'PQ',
+    36: 'IC',
+    37: 'BS',
+    39: 'EB',
+    40: 'AF',
+    41: 'SB',
+    42: 'AC',
+    43: 'AR',
+    44: 'TM',
+    45: 'TK',
+    46: 'WN',
+    47: 'MR',
+    48: 'LV',
+  };
 
   var state = {
     shopType:    null,
@@ -71,6 +119,72 @@
       r: clampColorChannel(color && typeof color.r === 'number' ? color.r : 255),
       g: clampColorChannel(color && typeof color.g === 'number' ? color.g : 255),
       b: clampColorChannel(color && typeof color.b === 'number' ? color.b : 255),
+    };
+  }
+
+  function rgbToHex(color) {
+    function channel(value) {
+      return clampColorChannel(value).toString(16).padStart(2, '0');
+    }
+    return '#' + channel(color.r) + channel(color.g) + channel(color.b);
+  }
+
+  function hexToRgb(value) {
+    var match = String(value || '').trim().match(/^#?([0-9a-f]{6})$/i);
+    if (!match) return null;
+    var hex = match[1];
+    return {
+      r: parseInt(hex.slice(0, 2), 16),
+      g: parseInt(hex.slice(2, 4), 16),
+      b: parseInt(hex.slice(4, 6), 16),
+    };
+  }
+
+  function rgbToHsv(color) {
+    var r = clampColorChannel(color.r) / 255;
+    var g = clampColorChannel(color.g) / 255;
+    var b = clampColorChannel(color.b) / 255;
+    var max = Math.max(r, g, b);
+    var min = Math.min(r, g, b);
+    var delta = max - min;
+    var h = 0;
+
+    if (delta !== 0) {
+      if (max === r) h = 60 * (((g - b) / delta) % 6);
+      else if (max === g) h = 60 * (((b - r) / delta) + 2);
+      else h = 60 * (((r - g) / delta) + 4);
+    }
+    if (h < 0) h += 360;
+
+    return {
+      h: h,
+      s: max === 0 ? 0 : delta / max,
+      v: max,
+    };
+  }
+
+  function hsvToRgb(hsv) {
+    var h = ((hsv.h % 360) + 360) % 360;
+    var s = Math.max(0, Math.min(1, hsv.s));
+    var v = Math.max(0, Math.min(1, hsv.v));
+    var c = v * s;
+    var x = c * (1 - Math.abs((h / 60) % 2 - 1));
+    var m = v - c;
+    var r = 0;
+    var g = 0;
+    var b = 0;
+
+    if (h < 60) { r = c; g = x; }
+    else if (h < 120) { r = x; g = c; }
+    else if (h < 180) { g = c; b = x; }
+    else if (h < 240) { g = x; b = c; }
+    else if (h < 300) { r = x; b = c; }
+    else { r = c; b = x; }
+
+    return {
+      r: clampColorChannel((r + m) * 255),
+      g: clampColorChannel((g + m) * 255),
+      b: clampColorChannel((b + m) * 255),
     };
   }
 
@@ -137,65 +251,106 @@
 
   function createColorEditor(initialColor, onChange) {
     var color = normalizeColor(initialColor);
+    var hsv = rgbToHsv(color);
     var root = document.createElement('div');
     root.className = 'sk-modshop-color-editor';
 
     var swatch = document.createElement('div');
     swatch.className = 'sk-modshop-color-swatch';
 
-    var channels = document.createElement('div');
-    channels.className = 'sk-modshop-color-channels';
+    var picker = document.createElement('div');
+    picker.className = 'sk-modshop-color-picker';
+
+    var sv = document.createElement('div');
+    sv.className = 'sk-modshop-color-sv';
+
+    var svMarker = document.createElement('span');
+    svMarker.className = 'sk-modshop-color-sv-marker';
+
+    var hue = document.createElement('div');
+    hue.className = 'sk-modshop-color-hue';
+
+    var hueMarker = document.createElement('span');
+    hueMarker.className = 'sk-modshop-color-hue-marker';
+
+    var hex = document.createElement('input');
+    hex.type = 'text';
+    hex.className = 'sk-modshop-color-hex';
+    hex.maxLength = 7;
+    hex.spellcheck = false;
+    hex.setAttribute('aria-label', 'Hex color');
 
     function applySwatch() {
       swatch.style.background = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
+      hex.value = rgbToHex(color);
+      sv.style.setProperty('--sk-picker-hue', 'hsl(' + hsv.h + ', 100%, 50%)');
+      svMarker.style.left = (hsv.s * 100) + '%';
+      svMarker.style.top = ((1 - hsv.v) * 100) + '%';
+      hueMarker.style.left = ((hsv.h / 360) * 100) + '%';
     }
 
     function emitChange() {
+      color = hsvToRgb(hsv);
       applySwatch();
       if (onChange) {
         onChange({ r: color.r, g: color.g, b: color.b });
       }
     }
 
-    [
-      { key: 'r', label: 'Red' },
-      { key: 'g', label: 'Green' },
-      { key: 'b', label: 'Blue' },
-    ].forEach(function (channel) {
-      var row = document.createElement('label');
-      row.className = 'sk-modshop-color-channel';
+    function handlePointer(surface, handler, event) {
+      function move(e) {
+        var rect = surface.getBoundingClientRect();
+        var x = Math.max(0, Math.min(1, (e.clientX - rect.left) / Math.max(1, rect.width)));
+        var y = Math.max(0, Math.min(1, (e.clientY - rect.top) / Math.max(1, rect.height)));
+        handler(x, y);
+      }
 
-      var label = document.createElement('span');
-      label.className = 'sk-modshop-color-channel-label';
-      label.textContent = channel.label;
+      surface.setPointerCapture(event.pointerId);
+      move(event);
+      surface.addEventListener('pointermove', move);
+      surface.addEventListener('pointerup', function up() {
+        surface.removeEventListener('pointermove', move);
+        surface.removeEventListener('pointerup', up);
+      }, { once: true });
+    }
 
-      var input = document.createElement('input');
-      input.type = 'range';
-      input.className = 'sk-modshop-color-range sk-modshop-color-range--' + channel.key;
-      input.min = '0';
-      input.max = '255';
-      input.step = '5';
-      input.value = String(color[channel.key]);
-
-      var value = document.createElement('span');
-      value.className = 'sk-modshop-color-channel-value';
-      value.textContent = String(color[channel.key]);
-
-      input.addEventListener('input', function () {
-        color[channel.key] = clampColorChannel(parseInt(input.value, 10));
-        value.textContent = String(color[channel.key]);
+    sv.addEventListener('pointerdown', function (event) {
+      handlePointer(sv, function (x, y) {
+        hsv.s = x;
+        hsv.v = 1 - y;
         emitChange();
-      });
+      }, event);
+    });
 
-      row.appendChild(label);
-      row.appendChild(input);
-      row.appendChild(value);
-      channels.appendChild(row);
+    hue.addEventListener('pointerdown', function (event) {
+      handlePointer(hue, function (x) {
+        hsv.h = x * 360;
+        emitChange();
+      }, event);
+    });
+
+    hex.addEventListener('change', function () {
+      var next = hexToRgb(hex.value);
+      if (!next) {
+        applySwatch();
+        return;
+      }
+      color = next;
+      hsv = rgbToHsv(color);
+      applySwatch();
+      if (onChange) {
+        onChange({ r: color.r, g: color.g, b: color.b });
+      }
     });
 
     applySwatch();
+    sv.appendChild(svMarker);
+    hue.appendChild(hueMarker);
+    picker.appendChild(sv);
+    picker.appendChild(hue);
+    picker.appendChild(hex);
     root.appendChild(swatch);
-    root.appendChild(channels);
+    root.appendChild(picker);
 
     return {
       el: root,
@@ -203,6 +358,30 @@
         return { r: color.r, g: color.g, b: color.b };
       },
     };
+  }
+
+  function focusCameraForCategory(payload) {
+    SK.nui.post('modshop:focusCategory', payload || {});
+  }
+
+  function setCategoryButtonContent(button, icon, label) {
+    button.innerHTML = '';
+    var iconEl = document.createElement('span');
+    iconEl.className = 'sk-modshop-cat-icon';
+    iconEl.textContent = icon || 'SK';
+
+    var textEl = document.createElement('span');
+    textEl.className = 'sk-modshop-cat-text';
+    textEl.textContent = label;
+
+    button.appendChild(iconEl);
+    button.appendChild(textEl);
+  }
+
+  function iconForCategory(mod) {
+    if (!mod) return CATEGORY_ICONS.colors;
+    if (CATEGORY_ICONS[mod.modType] != null) return CATEGORY_ICONS[mod.modType];
+    return 'M' + String(mod.modType).slice(0, 1).toUpperCase();
   }
 
   function cloneNeons(neons) {
@@ -248,7 +427,7 @@
 
   function collectFocusables() {
     var query = '#modshopOptions .sk-modshop-option, ' +
-      '#modshopOptions .sk-modshop-color-range, ' +
+      '#modshopOptions .sk-modshop-color-hex, ' +
       '#modshopOptions .sk-modshop-paint-type, ' +
       '#modshopOptions .sk-modshop-color-buy, ' +
       '#modshopOptions .sk-modshop-neon-side, ' +
@@ -436,6 +615,7 @@
   }
 
   function selectColors() {
+    focusCameraForCategory({ category: 'colors' });
     SK.nui.post('modshop:previewCategory', {});
     previewNeons(state.neons);
     var cats = els.categories.querySelectorAll('.sk-modshop-cat');
@@ -677,6 +857,7 @@
   }
 
   function selectCategory(mod, focusIndex) {
+    focusCameraForCategory({ modType: mod.modType });
     if (!mod.isNeon) {
       previewNeons(state.neons);
       SK.nui.post('modshop:previewCategory', { modType: mod.modType });
@@ -731,7 +912,7 @@
       var colorBtn = document.createElement('button');
       colorBtn.className        = 'sk-modshop-cat';
       colorBtn.dataset.colorCat = 'true';
-      colorBtn.textContent      = 'Colors';
+      setCategoryButtonContent(colorBtn, CATEGORY_ICONS.colors, 'Colors');
       colorBtn.addEventListener('click', selectColors);
       els.categories.appendChild(colorBtn);
     }
@@ -740,7 +921,7 @@
       var btn = document.createElement('button');
       btn.className       = 'sk-modshop-cat';
       btn.dataset.modType = mod.modType;
-      btn.textContent     = mod.name;
+      setCategoryButtonContent(btn, iconForCategory(mod), mod.name);
       btn.addEventListener('click', function () { selectCategory(mod); });
       els.categories.appendChild(btn);
     });

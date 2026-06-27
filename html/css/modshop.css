@@ -479,9 +479,16 @@
 
 .sk-modshop-cat {
   flex: 0 0 auto;
-  padding: 0.55rem 1rem;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.08);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: clamp(7.4rem, 8.7vw, 10.4rem);
+  max-width: clamp(7.4rem, 8.7vw, 10.4rem);
+  padding: 0.42rem 0.62rem;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025)),
+    rgba(6, 5, 10, 0.58);
+  border: 1px solid rgba(255,255,255,0.1);
   color: rgba(255,255,255,0.5);
   font-family: var(--sk-font-ui);
   font-size: clamp(0.62rem, 0.72vw, 0.72rem);
@@ -490,8 +497,32 @@
   text-transform: uppercase;
   cursor: pointer;
   white-space: nowrap;
-  text-align: center;
+  text-align: left;
   transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.12s;
+}
+
+.sk-modshop-cat-icon {
+  flex: 0 0 auto;
+  width: 1.75rem;
+  height: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(158, 229, 255, 0.16);
+  background:
+    radial-gradient(circle at 50% 25%, rgba(158, 229, 255, 0.18), transparent 62%),
+    rgba(0, 0, 0, 0.2);
+  color: rgba(158, 229, 255, 0.82);
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.sk-modshop-cat-text {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sk-modshop-cat:hover {
@@ -504,6 +535,12 @@
 .sk-modshop-cat.is-active {
   border-color: var(--sk-color-spray);
   background: rgba(255, 209, 71, 0.12);
+  color: var(--sk-color-spray);
+}
+
+.sk-modshop-cat.is-active .sk-modshop-cat-icon {
+  border-color: rgba(255, 209, 71, 0.56);
+  background: rgba(255, 209, 71, 0.16);
   color: var(--sk-color-spray);
 }
 
@@ -575,18 +612,92 @@
 
 .sk-modshop-color-editor {
   display: grid;
-  grid-template-columns: 3.2rem minmax(0, 1fr);
-  gap: 0.65rem;
-  align-items: stretch;
+  grid-template-columns: 4.2rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
   min-width: 0;
 }
 
 .sk-modshop-color-swatch {
-  min-height: 5.4rem;
-  border: 1px solid rgba(255,255,255,0.14);
+  min-height: clamp(5.7rem, 7.4vw, 7.2rem);
+  border: 1px solid rgba(158, 229, 255, 0.32);
   box-shadow:
     inset 0 0 0 2px rgba(0,0,0,0.45),
     0 0 18px rgba(255,255,255,0.06);
+}
+
+.sk-modshop-color-picker {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.sk-modshop-color-sv {
+  position: relative;
+  height: clamp(5.7rem, 7.4vw, 7.2rem);
+  overflow: hidden;
+  cursor: crosshair;
+  touch-action: none;
+  background:
+    linear-gradient(180deg, transparent, #000),
+    linear-gradient(90deg, #fff, transparent),
+    var(--sk-picker-hue, #ff0000);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.sk-modshop-color-sv-marker {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+  transform: translate(-50%, -50%);
+  border: 2px solid #fff;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.78),
+    0 0.25rem 0.8rem rgba(0,0,0,0.45);
+  pointer-events: none;
+}
+
+.sk-modshop-color-hue {
+  position: relative;
+  height: 0.85rem;
+  cursor: ew-resize;
+  touch-action: none;
+  overflow: hidden;
+  background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+}
+
+.sk-modshop-color-hue-marker {
+  position: absolute;
+  top: 50%;
+  width: 1rem;
+  height: 1rem;
+  transform: translate(-50%, -50%);
+  border: 2px solid #fff;
+  background: rgba(0,0,0,0.26);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.7);
+  pointer-events: none;
+}
+
+.sk-modshop-color-hex {
+  width: 100%;
+  min-width: 0;
+  height: 2rem;
+  padding: 0.25rem 0.55rem;
+  background: rgba(0,0,0,0.28);
+  border: 1px solid rgba(255,255,255,0.11);
+  color: rgba(255,255,255,0.88);
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.68rem, 0.82vw, 0.78rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sk-modshop-color-hex:focus {
+  outline: none;
+  border-color: rgba(158, 229, 255, 0.58);
+  box-shadow: 0 0 0 2px rgba(158, 229, 255, 0.14);
 }
 
 .sk-modshop-color-channels {
@@ -759,7 +870,7 @@
 
 .sk-modshop.is-controller-nav .sk-modshop-cat.is-controller-focused,
 .sk-modshop.is-controller-nav .sk-modshop-option.is-controller-focused,
-.sk-modshop.is-controller-nav .sk-modshop-color-range.is-controller-focused,
+.sk-modshop.is-controller-nav .sk-modshop-color-hex.is-controller-focused,
 .sk-modshop.is-controller-nav .sk-modshop-paint-type.is-controller-focused,
 .sk-modshop.is-controller-nav .sk-modshop-color-buy.is-controller-focused,
 .sk-modshop.is-controller-nav .sk-modshop-neon-side.is-controller-focused,
