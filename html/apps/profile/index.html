@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StreetKings Perfil</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="profile-app">
+    <section class="profile-hero">
+      <div class="profile-avatar"><span>SK</span></div>
+      <div class="profile-title-block">
+        <p class="profile-kicker">StreetKings SDK</p>
+        <h1 id="profileName">Perfil del piloto</h1>
+        <p id="profileStatus">Cargando datos del save activo...</p>
+      </div>
+    </section>
+
+    <section class="profile-grid" aria-label="Datos del perfil">
+      <article class="profile-stat">
+        <span>Nivel</span>
+        <strong id="profileLevel">--</strong>
+      </article>
+      <article class="profile-stat">
+        <span>XP</span>
+        <strong id="profileXp">--</strong>
+      </article>
+      <article class="profile-stat">
+        <span>Efectivo</span>
+        <strong id="profileCash">--</strong>
+      </article>
+    </section>
+
+    <section class="profile-form">
+      <label for="aliasInput">Alias visible en tablas</label>
+      <div class="profile-input-row">
+        <input id="aliasInput" maxlength="32" autocomplete="off" placeholder="Tu alias">
+        <button id="saveBtn" type="button">Guardar</button>
+      </div>
+      <p id="profileMessage" class="profile-message">Esta app se carga como iframe externo y habla con Lua usando fetchNui.</p>
+    </section>
+
+    <section class="profile-actions">
+      <button id="pingBtn" type="button"><span class="profile-action-glyph">OK</span><span>Probar callback</span></button>
+      <button id="closeBtn" type="button"><span class="profile-action-glyph">X</span><span>Cerrar</span></button>
+    </section>
+  </main>
+
+  <script src="../../js/tablet-sdk.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -54,6 +54,7 @@ local function normalizeApp(def, owner)
         id = id,
         label = label,
         icon = tostring(def.icon or 'fa-star'):sub(1, 64),
+        glyph = tostring(def.glyph or ''):sub(1, 4),
         color = tostring(def.color or '#ff006a'):sub(1, 96),
         category = tostring(def.category or 'default'):sub(1, 24),
         ui = ui,

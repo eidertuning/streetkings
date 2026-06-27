@@ -6,6 +6,12 @@
   overflow: hidden;
 }
 
+.sk-avatar,
+.sk-avatar * {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
 .sk-avatar-shell {
   display: flex;
   flex-direction: column;
@@ -52,6 +58,10 @@
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: var(--sk-text-muted);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sk-avatar-title,
@@ -69,11 +79,15 @@
   color: var(--sk-color-spray);
   text-shadow: 0 2px 16px rgba(255, 209, 71, 0.35);
   line-height: 0.95;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .sk-avatar-preview-title {
   font-size: clamp(1.15rem, 1.8vw, 1.55rem);
   line-height: 1.05;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .sk-avatar-balance-wrap {
@@ -111,6 +125,9 @@
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sk-avatar-spotlight-btn:hover {
@@ -129,6 +146,7 @@
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--sk-text-muted);
+  overflow-wrap: anywhere;
 }
 
 .sk-avatar-camera-slider {
@@ -142,12 +160,17 @@
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--sk-text-muted);
+  overflow-wrap: anywhere;
 }
 
 .sk-avatar-balance-value {
   font-family: var(--sk-font-display);
   font-size: 1.9rem;
   color: var(--sk-color-spray);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sk-avatar-layout {
@@ -253,6 +276,8 @@
   font-size: 0.88rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sk-avatar-gender-btn,
@@ -342,6 +367,7 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.4);
+  overflow-wrap: anywhere;
 }
 
 .sk-avatar-section-sub,
@@ -352,6 +378,7 @@
   font-size: 0.9rem;
   line-height: 1.55;
   color: var(--sk-text-soft);
+  overflow-wrap: anywhere;
 }
 
 .sk-avatar-stepper,
@@ -385,6 +412,10 @@
 .sk-avatar-slider-value {
   font-weight: 700;
   color: var(--sk-text-primary);
+  max-width: 7rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sk-avatar-stepper-value-wrap {
@@ -450,6 +481,9 @@
   font-size: 0.78rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sk-avatar-mini-btn:disabled {
@@ -472,6 +506,7 @@
   font-size: clamp(1rem, 1.5vw, 1.35rem);
   font-family: var(--sk-font-display);
   color: var(--sk-color-chalk);
+  overflow-wrap: anywhere;
 }
 
 .sk-avatar-browser-actions {
@@ -489,6 +524,7 @@
   background: rgba(255, 209, 71, 0.12);
   border-color: rgba(255, 209, 71, 0.18);
   color: var(--sk-color-spray);
+  overflow-wrap: anywhere;
 }
 
 .sk-avatar-preview-copy {

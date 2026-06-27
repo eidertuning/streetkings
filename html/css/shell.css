@@ -15,6 +15,28 @@ html.sk-transparent body {
   font-family: var(--sk-font-body), system-ui, sans-serif;
 }
 
+.sk-root,
+.sk-root * {
+  box-sizing: border-box;
+}
+
+.sk-root button,
+.sk-root input,
+.sk-root select,
+.sk-root textarea {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.sk-root p,
+.sk-root h1,
+.sk-root h2,
+.sk-root h3,
+.sk-root label,
+.sk-root button {
+  overflow-wrap: anywhere;
+}
+
 /* -------------------------------------------------------------------------- */
 /* App host + invisible 16:9 letterbox (transparent mattes; clicks pass         */
 /* through outside the safe frame in CEF).                                    */

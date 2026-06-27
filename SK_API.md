@@ -583,6 +583,7 @@ local ok, reason = exports['streetkings']:RegisterTabletApp({
     id = 'myapp',              -- required, [a-z0-9_], max 32 chars
     label = 'My App',          -- required
     icon = 'fa-star',          -- Font Awesome class
+    glyph = 'M',               -- optional short fallback shown if no icon font is loaded
     color = '#0a84ff',         -- CSS color or gradient
     ui = 'web/index.html',     -- file in the registering resource
     description = 'Optional app description.',
@@ -630,6 +631,23 @@ onNuiEvent('route', (route) => {
 ```
 
 `fetchNui(event, data)` routes to `RegisterNUICallback(event, ...)` in the resource that registered the app.
+
+### Built-In Test App And Template
+
+StreetKings includes a small `Perfil` app registered through the same external app API. It is useful for testing because it:
+
+- appears on the tablet home screen like any third-party app
+- loads `html/apps/profile/index.html` inside the iframe host
+- calls `fetchNui('skProfileGet')`, `fetchNui('skProfileSave')`, and `fetchNui('skProfilePing')`
+- reads and writes the active save alias through Lua callbacks
+
+A copy-ready external resource template is available at:
+
+```text
+examples/tablet_external_app_template
+```
+
+Copy that folder into a separate resource, rename the app id in `client.lua`, then start it after `streetkings`.
 
 ---
 

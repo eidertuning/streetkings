@@ -1,0 +1,237 @@
+:root {
+  color-scheme: dark;
+  --spray: #ff006a;
+  --gold: #ffd147;
+  --cyan: #9ee5ff;
+  --ink: rgba(5, 5, 8, 0.88);
+  --line: rgba(255, 255, 255, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: transparent;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+button,
+input {
+  font: inherit;
+  max-width: 100%;
+}
+
+.profile-app {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: clamp(0.65rem, 1.6vw, 1rem);
+  padding: clamp(0.9rem, 2.1vw, 1.45rem);
+  overflow: auto;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(20, 184, 166, 0.22), transparent 24%),
+    radial-gradient(circle at 88% 8%, rgba(255, 0, 106, 0.2), transparent 26%),
+    linear-gradient(135deg, rgba(7, 8, 13, 0.95), rgba(18, 12, 22, 0.96));
+}
+
+.profile-hero {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  align-items: center;
+}
+
+.profile-avatar {
+  width: clamp(3.6rem, 7vw, 5.4rem);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(20, 184, 166, 0.5);
+  background: rgba(20, 184, 166, 0.12);
+  color: var(--cyan);
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  box-shadow: 0 0 28px rgba(20, 184, 166, 0.18);
+}
+
+.profile-avatar span {
+  display: block;
+  max-width: 80%;
+  overflow: hidden;
+  color: #fff;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-kicker {
+  margin: 0 0 0.25rem;
+  color: var(--gold);
+  font-size: clamp(0.65rem, 1.1vw, 0.78rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+h1 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.45rem, 4vw, 3rem);
+  line-height: 1.04;
+  overflow-wrap: anywhere;
+}
+
+.profile-title-block p:last-child,
+.profile-message,
+.profile-form label,
+.profile-stat span {
+  overflow-wrap: anywhere;
+}
+
+.profile-title-block p:last-child {
+  margin: 0.35rem 0 0;
+  max-width: 62ch;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: clamp(0.8rem, 1.35vw, 0.95rem);
+  line-height: 1.45;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.profile-stat,
+.profile-form {
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.profile-stat {
+  padding: clamp(0.65rem, 1.4vw, 0.95rem);
+}
+
+.profile-stat span,
+.profile-form label {
+  display: block;
+  color: rgba(255, 255, 255, 0.54);
+  font-size: clamp(0.62rem, 1vw, 0.76rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.profile-stat strong {
+  display: block;
+  margin-top: 0.32rem;
+  color: #fff;
+  font-size: clamp(1.05rem, 2.4vw, 1.7rem);
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-form {
+  padding: clamp(0.75rem, 1.7vw, 1.1rem);
+  align-self: start;
+}
+
+.profile-input-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.6rem;
+  margin-top: 0.55rem;
+}
+
+input {
+  min-height: 2.55rem;
+  padding: 0 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+  outline: none;
+}
+
+input:focus {
+  border-color: rgba(20, 184, 166, 0.78);
+}
+
+button {
+  min-height: 2.55rem;
+  border: 1px solid rgba(255, 0, 106, 0.45);
+  background: rgba(255, 0, 106, 0.14);
+  color: #fff;
+  cursor: pointer;
+  padding: 0 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+button:hover {
+  background: rgba(255, 0, 106, 0.22);
+}
+
+.profile-message {
+  min-height: 1.3rem;
+  margin: 0.7rem 0 0;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: clamp(0.72rem, 1.15vw, 0.86rem);
+  line-height: 1.45;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.profile-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 15rem;
+}
+
+.profile-actions span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-action-glyph {
+  flex: 0 0 auto;
+  max-width: 2rem;
+  font-weight: 800;
+}
+
+@media (max-width: 720px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-input-row,
+  .profile-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-actions {
+    justify-content: stretch;
+  }
+
+  .profile-actions button {
+    flex: 1;
+  }
+}

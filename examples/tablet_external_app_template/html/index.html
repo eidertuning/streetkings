@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StreetKings Tablet Template</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="template-app">
+    <header>
+      <p>StreetKings SDK</p>
+      <h1>Template externo</h1>
+      <span id="meta">Esperando inicialización...</span>
+    </header>
+
+    <section class="panel">
+      <label for="echoInput">Texto de prueba</label>
+      <div class="row">
+        <input id="echoInput" maxlength="80" value="Hola desde una app externa">
+        <button id="echoBtn" type="button">Enviar</button>
+      </div>
+      <pre id="resultBox">Sin respuesta todavía.</pre>
+    </section>
+
+    <footer>
+      <button id="closeBtn" type="button">Cerrar app</button>
+    </footer>
+  </main>
+
+  <script src="https://cfx-nui-streetkings/html/js/tablet-sdk.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

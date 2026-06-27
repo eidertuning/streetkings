@@ -103,6 +103,7 @@
 
       var glyph = document.createElement('i');
       glyph.className = normalizeExternalIcon(app.icon);
+      glyph.dataset.glyph = String(app.glyph || app.label || appId).charAt(0).toUpperCase();
       icon.appendChild(glyph);
 
       var label = document.createElement('span');
