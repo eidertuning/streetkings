@@ -208,20 +208,20 @@ lib.addCommand('setvip', {
     if tier == 'vip++' then tier = 'vipplusplus' end
     if not VIP_TIERS[tier] then
         if source > 0 then
-            TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = 'VIP tier invalido. Usa none, vip, vipplus o vipplusplus.' })
+            TriggerClientEvent('streetkings:notify', source, { type = 'error', title = 'Sistema', body = 'VIP tier invalido. Usa none, vip, vipplus o vipplusplus.' })
         end
         return
     end
     if not SKSaves.hasActiveSave(args.id) then
         if source > 0 then
-            TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = 'El jugador no tiene save activo.' })
+            TriggerClientEvent('streetkings:notify', source, { type = 'error', title = 'Sistema', body = 'El jugador no tiene save activo.' })
         end
         return
     end
 
     SKSaves.write(args.id, 'profile.vipTier', tier == 'none' and '' or tier)
     if source > 0 then
-        TriggerClientEvent('ox_lib:notify', source, { type = 'success', description = ('VIP actualizado a %s.'):format(tier) })
+        TriggerClientEvent('streetkings:notify', source, { type = 'success', title = 'Sistema', body = ('VIP actualizado a %s.'):format(tier) })
     end
-    TriggerClientEvent('ox_lib:notify', args.id, { type = 'success', description = ('Tu VIP ahora es %s.'):format(tier) })
+    TriggerClientEvent('streetkings:notify', args.id, { type = 'success', title = 'Sistema', body = ('Tu VIP ahora es %s.'):format(tier) })
 end)

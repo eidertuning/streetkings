@@ -8,11 +8,12 @@
   };
 
   function resolveAvatarSrc(avatar, sender) {
-    var key = avatar || sender.toLowerCase();
+    var key = avatar || String(sender || '').toLowerCase();
     return AVATAR_PATHS[key] || ('img/avatars/' + key + '.jpg');
   }
 
   var allMessages    = [];
+  var systemMessages = [];
   var activeSender   = null;
 
   var elList   = document.getElementById('msgList');
@@ -23,6 +24,7 @@
   var elNotif        = document.getElementById('msgNotif');
   var elNotifImg     = document.getElementById('msgNotifImg');
   var elNotifInitial = document.getElementById('msgNotifInitial');
+  var elNotifLabel   = elNotif.querySelector('.sk-msg-notif-label');
   var elNotifSender  = document.getElementById('msgNotifSender');
   var elNotifPreview = document.getElementById('msgNotifPreview');
   var elNotifHint    = elNotif.querySelector('.sk-msg-notif-hint');
@@ -36,6 +38,30 @@
   window.SKMessages = { pendingSender: null };
 
   var notifTimer = null;
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function plainText(value) {
+    return String(value || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function messageSubject(msg) {
+    if (msg.subject) return msg.subject;
+    var body = plainText(msg.body);
+    if (!body) return t('messages.new_message');
+    return body.length > 42 ? body.substring(0, 42) + '...' : body;
+  }
+
+  function mergeMessages(messages) {
+    return (messages || []).concat(systemMessages);
+  }
 
   function renderNotifHint() {
     if (!elNotifHint) {
@@ -61,6 +87,9 @@
     if (notifTimer) { clearTimeout(notifTimer); }
     window.SKMessages.pendingSender = msg.sender;
 
+    if (elNotifLabel) {
+      elNotifLabel.textContent = msg.system ? 'Sistema' : t('messages.new_message');
+    }
     elNotifImg.style.display = '';
     elNotifImg.src = resolveAvatarSrc(msg.avatar, msg.sender);
     elNotifInitial.textContent = (msg.sender || '?').charAt(0).toUpperCase();
@@ -78,6 +107,29 @@
     if (notifTimer) { clearTimeout(notifTimer); notifTimer = null; }
     window.SKMessages.pendingSender = null;
     elNotif.classList.remove('is-active');
+  }
+
+  function showSystemNotification(payload) {
+    payload = payload || {};
+    var title = payload.title || 'Sistema';
+    var body = payload.body || payload.description || payload.title || '';
+    var msg = {
+      id: 'system_' + Date.now() + '_' + Math.floor(Math.random() * 10000),
+      sender: 'Sistema',
+      avatar: 'system',
+      subject: title,
+      body: body,
+      timestamp: Math.floor(Date.now() / 1000),
+      read: false,
+      system: true,
+    };
+    systemMessages.push(msg);
+    allMessages.push(msg);
+    showNotif(msg);
+    updateBadge();
+    if (elList && elList.children.length) {
+      renderList(groupBySender(allMessages));
+    }
   }
 
   // -- Helpers ----------------------------------------------------------------
@@ -238,6 +290,124 @@
     bubbles.scrollTop = bubbles.scrollHeight;
   }
 
+  function renderList(convos) {
+    elList.innerHTML = '';
+    convos.forEach(function (convo) {
+      var last = convo.messages[convo.messages.length - 1];
+      var subject = messageSubject(last);
+      var previewText = plainText(last.body);
+      var preview = previewText.substring(0, 74) + (previewText.length > 74 ? '...' : '');
+      var row = document.createElement('button');
+      row.className = 'phone-msg-row' + (convo.unread > 0 ? ' is-unread' : '') +
+                      (convo.sender === activeSender ? ' is-active' : '');
+      row.dataset.sender = convo.sender;
+      row.innerHTML =
+        avatarEl(convo.sender, convo.avatar) +
+        '<div class="phone-msg-row-body">' +
+          '<div class="phone-msg-row-top">' +
+            '<span class="phone-msg-sender">' + escapeHtml(convo.sender) + '</span>' +
+            '<span class="phone-msg-time">' + fmtDate(last.timestamp) + '</span>' +
+          '</div>' +
+          '<span class="phone-msg-subject">' + escapeHtml(subject) + '</span>' +
+          '<div class="phone-msg-row-bottom">' +
+            '<span class="phone-msg-preview">' + escapeHtml(preview) + '</span>' +
+            (convo.unread > 0 ? '<span class="phone-msg-unread-dot"></span>' : '') +
+          '</div>' +
+        '</div>';
+      row.addEventListener('click', function () { openConvo(convo); });
+      elList.appendChild(row);
+    });
+  }
+
+  function renderThread(convo) {
+    elEmpty.style.display  = 'none';
+    elThread.style.display = 'flex';
+    elThread.innerHTML =
+      '<div class="phone-msg-thread-header">' +
+        avatarEl(convo.sender, convo.avatar) +
+        '<div class="phone-msg-thread-head-copy">' +
+          '<span class="phone-msg-thread-label">Inbox</span>' +
+          '<span class="phone-msg-thread-name">' + escapeHtml(convo.sender) + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="phone-msg-bubbles" id="msgBubbles"></div>';
+
+    var bubbles = document.getElementById('msgBubbles');
+    convo.messages.forEach(function (msg) {
+      var bubble = document.createElement('div');
+      bubble.className = 'phone-msg-bubble phone-msg-email';
+      var inner =
+        '<div class="phone-msg-email-head">' +
+          '<span class="phone-msg-email-subject">' + escapeHtml(messageSubject(msg)) + '</span>' +
+          '<span class="phone-msg-bubble-time">' + fmtTime(msg.timestamp) + '</span>' +
+        '</div>' +
+        '<div class="phone-msg-email-meta">' +
+          '<span>De: ' + escapeHtml(msg.sender || convo.sender) + '</span>' +
+          '<span>Para: StreetKings</span>' +
+        '</div>' +
+        '<p class="phone-msg-bubble-body">' + escapeHtml(msg.body).replace(/\n/g, '<br>') + '</p>';
+      if (msg.action && typeof msg.action === 'object') {
+        if (msg.action.kind === 'propertyInvite') {
+          var nowSec = Math.floor(Date.now() / 1000);
+          var expired = msg.action.expiresAt && nowSec >= msg.action.expiresAt;
+          if (expired) {
+            inner += '<div class="phone-msg-bubble-action">'
+              + '<span class="phone-msg-action-expired">' + t('messages.invite_expired') + '</span>'
+              + '</div>';
+          } else {
+            inner += '<div class="phone-msg-bubble-action phone-msg-bubble-action--invite">'
+              + '<button type="button" class="phone-msg-action-btn phone-msg-action-btn--accept" data-invite-response="accept">' + t('messages.accept') + '</button>'
+              + '<button type="button" class="phone-msg-action-btn phone-msg-action-btn--decline" data-invite-response="decline">' + t('messages.decline') + '</button>'
+              + '</div>';
+          }
+        } else {
+          inner += '<div class="phone-msg-bubble-action">'
+            + '<button type="button" class="phone-msg-action-btn">'
+            + escapeHtml(msg.action.label || t('messages.open'))
+            + '</button>'
+            + '</div>';
+        }
+      }
+      bubble.innerHTML = inner;
+      if (msg.action && typeof msg.action === 'object') {
+        if (msg.action.kind === 'propertyInvite') {
+          var inviteBtns = bubble.querySelectorAll('[data-invite-response]');
+          inviteBtns.forEach(function (ib) {
+            ib.addEventListener('click', function () {
+              inviteBtns.forEach(function (b) { b.disabled = true; });
+              var actionPayload = {};
+              for (var k in msg.action) { actionPayload[k] = msg.action[k]; }
+              actionPayload.response = ib.dataset.inviteResponse;
+              SK.nui.post('phone:messages:action', actionPayload);
+            });
+          });
+          if (msg.action.expiresAt) {
+            var remainMs = (msg.action.expiresAt * 1000) - Date.now();
+            if (remainMs > 0) {
+              setTimeout(function () {
+                var container = bubble.querySelector('.phone-msg-bubble-action--invite');
+                if (container) {
+                  container.className = 'phone-msg-bubble-action';
+                  container.innerHTML = '<span class="phone-msg-action-expired">' + t('messages.invite_expired') + '</span>';
+                }
+              }, remainMs);
+            }
+          }
+        } else {
+          var btn = bubble.querySelector('.phone-msg-action-btn');
+          if (btn) {
+            btn.addEventListener('click', function () {
+              btn.disabled = true;
+              SK.nui.post('phone:messages:action', msg.action);
+            });
+          }
+        }
+      }
+      bubbles.appendChild(bubble);
+    });
+    bubbles.scrollTop = bubbles.scrollHeight;
+  }
+
   function openConvo(convo) {
     activeSender = convo.sender;
 
@@ -299,7 +469,7 @@
     hideNotif();
 
     SK.nui.post('phone:messages:getData').done(function (data) {
-      allMessages = data.messages || [];
+      allMessages = mergeMessages(data.messages || []);
       var convos  = groupBySender(allMessages);
       renderList(convos);
       updateBadge();
@@ -327,6 +497,7 @@
       renderNotifHint();
     }
     if (e.data.type === 'messages:newMessage') { showNotif(e.data.msg); }
+    if (e.data.type === 'phone:systemNotification') { showSystemNotification(e.data); }
   });
 
   controllerGlyphs.onChange(renderNotifHint);
