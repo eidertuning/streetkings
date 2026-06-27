@@ -22,16 +22,20 @@
   var els = {};
   var controllerEnabled = false;
   var GARAGE_TINT_OPTIONS = [
-    { key: 'gray', label: 'Gray' },
-    { key: 'red', label: 'Red' },
-    { key: 'blue', label: 'Blue' },
-    { key: 'orange', label: 'Orange' },
-    { key: 'yellow', label: 'Yellow' },
-    { key: 'green', label: 'Green' },
-    { key: 'pink', label: 'Pink' },
-    { key: 'teal', label: 'Teal' },
-    { key: 'darkGray', label: 'Dark Gray' }
+    { key: 'gray', labelKey: 'garage.tint_gray' },
+    { key: 'red', labelKey: 'garage.tint_red' },
+    { key: 'blue', labelKey: 'garage.tint_blue' },
+    { key: 'orange', labelKey: 'garage.tint_orange' },
+    { key: 'yellow', labelKey: 'garage.tint_yellow' },
+    { key: 'green', labelKey: 'garage.tint_green' },
+    { key: 'pink', labelKey: 'garage.tint_pink' },
+    { key: 'teal', labelKey: 'garage.tint_teal' },
+    { key: 'darkGray', labelKey: 'garage.tint_dark_gray' }
   ];
+
+  function t(key, replacements) {
+    return SK.i18n ? SK.i18n.t(key, replacements) : key;
+  }
 
   function resolveEls() {
     els.root        = document.getElementById('viewGarage');
@@ -179,11 +183,11 @@
 
     var title = document.createElement('h3');
     title.className = 'sk-garage-confirm-title';
-    title.textContent = 'Quit to main menu?';
+    title.textContent = t('garage.quit_title');
 
     var body = document.createElement('p');
     body.className = 'sk-garage-confirm-body';
-    body.textContent = 'Are you sure you want to leave the garage and go back to the main menu?';
+    body.textContent = t('garage.quit_body');
 
     var actions = document.createElement('div');
     actions.className = 'sk-garage-confirm-actions';
@@ -192,14 +196,14 @@
     cancelBtn.type = 'button';
     cancelBtn.className = 'sk-garage-confirm-btn sk-garage-confirm-btn--secondary';
     cancelBtn.dataset.action = 'cancel-quit';
-    cancelBtn.textContent = 'Cancel';
+    cancelBtn.textContent = t('common.cancel');
     cancelBtn.addEventListener('click', hideQuitConfirm);
 
     var confirmBtn = document.createElement('button');
     confirmBtn.type = 'button';
     confirmBtn.className = 'sk-garage-confirm-btn';
     confirmBtn.dataset.action = 'confirm-quit';
-    confirmBtn.textContent = 'Yes, Quit';
+    confirmBtn.textContent = t('garage.yes_quit');
     confirmBtn.addEventListener('click', confirmQuitToMainMenu);
 
     actions.appendChild(cancelBtn);
@@ -229,11 +233,11 @@
 
     var title = document.createElement('h3');
     title.className = 'sk-garage-settings-title';
-    title.textContent = 'Garage Settings';
+    title.textContent = t('garage.garage_settings');
 
     var body = document.createElement('p');
     body.className = 'sk-garage-settings-body';
-    body.textContent = 'Choose the color scheme for this garage.';
+    body.textContent = t('garage.settings_body');
 
     var tintGrid = document.createElement('div');
     tintGrid.className = 'sk-garage-settings-grid';
@@ -242,7 +246,7 @@
       var tintBtn = document.createElement('button');
       tintBtn.type = 'button';
       tintBtn.className = 'sk-garage-settings-btn' + (state.garageTint === option.key ? ' is-active' : '');
-      tintBtn.textContent = option.label;
+      tintBtn.textContent = t(option.labelKey);
       tintBtn.dataset.tintKey = option.key;
       tintBtn.addEventListener('click', function () {
         var buttons = modal.querySelectorAll('.sk-garage-settings-btn');
@@ -268,7 +272,7 @@
     closeBtn.type = 'button';
     closeBtn.className = 'sk-garage-settings-btn sk-garage-settings-btn--close';
     closeBtn.dataset.action = 'close-garage-settings';
-    closeBtn.textContent = 'Close';
+    closeBtn.textContent = t('garage.close');
     closeBtn.addEventListener('click', hideGarageSettings);
 
     actions.appendChild(closeBtn);
@@ -326,7 +330,7 @@
     var nextLevelXp = prog.nextLevelXp;
     var currentXp = prog.xp || 0;
     var fill = 100;
-    var xpText = 'MAX LEVEL';
+    var xpText = t('garage.max_level');
 
     if (nextLevelXp != null) {
       var span = Math.max(1, nextLevelXp - levelStart);
@@ -334,7 +338,7 @@
       xpText = fmtCount(currentXp - levelStart) + ' / ' + fmtCount(span) + ' XP';
     }
 
-    els.vehicleLevel.textContent = 'Lv. ' + (prog.level || 1);
+    els.vehicleLevel.textContent = t('garage.level_short', { level: prog.level || 1 });
     els.vehicleXpFill.style.width = fill + '%';
     els.vehicleXpText.textContent = xpText;
     els.vehicleLevelCap.textContent = 'Max ' + (prog.maxLevel || 1);
@@ -342,7 +346,7 @@
 
   function renderPlayerProgression() {
     var fill = 100;
-    var xpText = 'MAX LEVEL';
+    var xpText = t('garage.max_level');
 
     if (state.playerNextLevelXp != null) {
       var span = Math.max(1, state.playerNextLevelXp - state.playerCurrentLevelXp);
@@ -351,7 +355,7 @@
     }
 
     els.playerMoney.textContent = fmtMoney(state.playerMoney);
-    els.playerLevel.textContent = 'Lv. ' + state.playerLevel;
+    els.playerLevel.textContent = t('garage.level_short', { level: state.playerLevel });
     els.playerXpFill.style.width = fill + '%';
     els.playerXpText.textContent = xpText;
     els.playerLevelCap.textContent = 'Max ' + state.playerMaxLevel;
@@ -377,11 +381,11 @@
 
       var tag = document.createElement('span');
       tag.className   = 'sk-garage-thumb-tag';
-      tag.textContent = entry.id === state.activeVehicleId ? 'ACTIVE' : '';
+      tag.textContent = entry.id === state.activeVehicleId ? t('garage.active') : '';
 
       var level = document.createElement('span');
       level.className = 'sk-garage-thumb-level';
-      level.textContent = 'LV ' + ((entry.progression && entry.progression.level) || 1);
+      level.textContent = t('garage.thumb_level', { level: (entry.progression && entry.progression.level) || 1 });
 
       btn.appendChild(name);
       btn.appendChild(level);
@@ -408,14 +412,14 @@
 
     var settingsBtn = document.createElement('button');
     settingsBtn.className = 'sk-garage-btn sk-garage-btn--primary';
-    settingsBtn.textContent = 'Garage Settings';
+    settingsBtn.textContent = t('garage.garage_settings');
     settingsBtn.addEventListener('click', showGarageSettings);
     els.actions.appendChild(settingsBtn);
 
     if (!isActive) {
       var makeActiveBtn = document.createElement('button');
       makeActiveBtn.className   = 'sk-garage-btn sk-garage-btn--primary';
-      makeActiveBtn.textContent = 'Set as Active';
+      makeActiveBtn.textContent = t('garage.set_active');
       makeActiveBtn.addEventListener('click', function () {
         makeActiveBtn.disabled = true;
         SK.nui.post('garage:setActiveVehicle', { vehicleId: vehicleId }).done(function (result) {
@@ -430,13 +434,13 @@
 
     var exitBtn = document.createElement('button');
     exitBtn.className   = 'sk-garage-btn sk-garage-btn--exit';
-    exitBtn.textContent = 'Leave Garage';
+    exitBtn.textContent = t('garage.leave');
     exitBtn.addEventListener('click', exitGarage);
     els.actions.appendChild(exitBtn);
 
     var quitBtn = document.createElement('button');
     quitBtn.className   = 'sk-garage-btn sk-garage-btn--exit';
-    quitBtn.textContent = 'Quit to Main Menu';
+    quitBtn.textContent = t('garage.quit_main_menu');
     quitBtn.addEventListener('click', showQuitConfirm);
     els.actions.appendChild(quitBtn);
 

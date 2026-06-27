@@ -34,7 +34,7 @@ function handler.start(ctx)
     local function showPrompt(text)
         if promptShown or triggered then return end
         promptShown = true
-        SendNUIMessage({ type = 'prompt:show', key = SKInput.getInteractLabel(), text = text or obj.label or 'Pick up the package' })
+        SendNUIMessage({ type = 'prompt:show', key = SKInput.getInteractLabel(), text = text or obj.label or _L('lua.prompts.pick_up_package') })
     end
 
     local function hidePrompt()

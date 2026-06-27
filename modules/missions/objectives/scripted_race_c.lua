@@ -17,7 +17,7 @@ local function runCountdown(playerVeh, npcVeh)
     SetVehicleHandbrake(playerVeh, true)
     SetVehicleHandbrake(npcVeh, true)
 
-    SKNotify({ title = 'Race Starting!', type = 'info', duration = 2000 })
+    SKNotify({ title = _L('lua.notify.race_starting'), type = 'info', duration = 2000 })
     Wait(1500)
 
     for _, count in ipairs(COUNTDOWN_COUNTS) do
@@ -158,7 +158,7 @@ local function runRace(ctx, start, checkpoints)
 
     local playerVeh = GetVehiclePedIsIn(PlayerPedId(), false)
     if playerVeh == 0 then
-        SKNotify({ title = 'Get in a vehicle first!', type = 'warning' })
+        SKNotify({ title = _L('lua.notify.get_in_vehicle'), type = 'warning' })
         return false
     end
 
@@ -175,7 +175,7 @@ local function runRace(ctx, start, checkpoints)
     end
 
     if npcVeh == 0 then
-        SKNotify({ title = 'Failed to spawn opponent', type = 'error' })
+        SKNotify({ title = _L('lua.notify.spawn_opponent_failed'), type = 'error' })
         raceActive = false
         return false
     end
@@ -227,7 +227,7 @@ local function runRace(ctx, start, checkpoints)
         end
 
         if not IsPedInAnyVehicle(ped, false) or IsEntityDead(ped) then
-            SKNotify({ title = 'Race Forfeited! Mission restarting...', type = 'error', duration = 4000 })
+            SKNotify({ title = _L('lua.notify.race_forfeited'), type = 'error', duration = 4000 })
             Wait(2000)
             cleanupRace()
             lib.callback.await('streetkings:missions:resetMission', false)
@@ -302,9 +302,9 @@ local function runRace(ctx, start, checkpoints)
     Wait(250)
 
     if won then
-        SKNotify({ title = 'You Win!', type = 'success', duration = 4000 })
+        SKNotify({ title = _L('lua.notify.you_win'), type = 'success', duration = 4000 })
     else
-        SKNotify({ title = 'You Lost! Mission restarting...', type = 'error', duration = 4000 })
+        SKNotify({ title = _L('lua.notify.you_lost'), type = 'error', duration = 4000 })
     end
 
     Wait(1500)
@@ -321,7 +321,7 @@ function handler.start(ctx)
     local obj = ctx.objective
     local start, checkpoints = getTrackData(obj)
     if not start or not checkpoints then
-        SKNotify({ title = 'Track data missing!', type = 'error' })
+        SKNotify({ title = _L('lua.notify.track_missing'), type = 'error' })
         return nil
     end
 
@@ -364,7 +364,7 @@ function handler.start(ctx)
             if won then
                 local result = lib.callback.await('streetkings:missions:advanceObjective', false, { source = 'scripted_race' })
                 if not result or not result.ok then
-                    SKNotify({ title = 'Failed to advance mission', type = 'error' })
+                    SKNotify({ title = _L('lua.notify.advance_failed'), type = 'error' })
                 end
             end
         end)
@@ -409,7 +409,7 @@ function handler.start(ctx)
             distance = 5.0,
             onEnter = function()
                 promptShown = true
-                SendNUIMessage({ type = 'prompt:show', key = SKInput.getInteractLabel(), text = 'Start Race' })
+                SendNUIMessage({ type = 'prompt:show', key = SKInput.getInteractLabel(), text = _L('lua.prompts.start_race') })
             end,
             onExit = function()
                 promptShown = false
@@ -418,7 +418,7 @@ function handler.start(ctx)
             nearby = function()
                 if raceActive then return end
                 local key = SKInput.getInteractLabel()
-                SendNUIMessage({ type = 'prompt:show', key = key, text = raceWon and 'Race Complete' or 'Start Race' })
+                SendNUIMessage({ type = 'prompt:show', key = key, text = raceWon and _L('lua.prompts.race_complete') or _L('lua.prompts.start_race') })
                 promptShown = true
 
                 if not raceWon and SKInput.isInteractJustReleased() then
@@ -437,7 +437,7 @@ function handler.start(ctx)
 
                         local result = lib.callback.await('streetkings:missions:advanceObjective', false, { source = 'scripted_race' })
                         if not result or not result.ok then
-                            SKNotify({ title = 'Failed to advance mission', type = 'error' })
+                            SKNotify({ title = _L('lua.notify.advance_failed'), type = 'error' })
                         end
                     end
                 end

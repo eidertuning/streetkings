@@ -12,6 +12,7 @@ dependencies {
 }
 
 client_scripts {
+    'modules/core/locales_c.lua',
     'modules/environment/environment_c.lua',
     'modules/notify/notify_c.lua',
     'modules/soundtrack/soundtrack_c.lua',
@@ -142,6 +143,9 @@ server_scripts {
 shared_scripts {
     '@ox_lib/init.lua',
     'data/sk_config.lua',
+    'locales/en.lua',
+    'locales/es.lua',
+    'modules/core/locales_sh.lua',
     'data/repair_stations.lua',
     'data/waypoints_config.lua',
     'shared/vehicles.lua',

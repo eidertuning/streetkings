@@ -14,6 +14,10 @@
   var CREDITS_SCROLL_SPEED = 0.5;
   var controllerEnabled = false;
 
+  function t(key, replacements) {
+    return SK.i18n ? SK.i18n.t(key, replacements) : key;
+  }
+
   function buildEmptySlots(slotCount) {
     var slots = [];
     for (var slotIndex = 1; slotIndex <= slotCount; slotIndex++) {
@@ -217,7 +221,7 @@
     $('#btnContinue')
       .prop('disabled', !hasSave)
       .toggleClass('is-disabled', !hasSave)
-      .attr('title', hasSave ? ('Continue ' + save.name) : 'No recent save');
+      .attr('title', hasSave ? t('main_menu.continue_title', { name: save.name }) : t('main_menu.no_recent_save'));
   }
 
   function refreshContinueState() {
@@ -308,7 +312,7 @@
 
   function showNameDialog(slotIndex) {
     if (controllerEnabled && SK.controllerKeyboard) {
-      SK.controllerKeyboard.open({ title: 'Name your save', maxLength: 32, minLength: 3 })
+      SK.controllerKeyboard.open({ title: t('main_menu.controller_name_save'), maxLength: 32, minLength: 3 })
         .then(function (name) {
           postSavePick({ slotIndex: slotIndex, isNew: true, saveName: name });
         })
@@ -371,13 +375,13 @@
 
     if (name.length < 3) {
       $input.addClass('is-invalid');
-      $error.text('Name must be at least 3 characters');
+      $error.text(t('main_menu.name_min'));
       return;
     }
 
     if (name.length > 32) {
       $input.addClass('is-invalid');
-      $error.text('Name must be 32 characters or fewer');
+      $error.text(t('main_menu.name_max'));
       return;
     }
 
@@ -400,12 +404,12 @@
         });
 
         $card.append(
-          $('<span/>', { class: 'save-slot', text: 'Slot ' + slotIndex })
+          $('<span/>', { class: 'save-slot', text: t('main_menu.slot', { index: slotIndex }) })
         );
         $card.append(
           $('<p/>', {
             class: 'save-name' + (hasSave ? '' : ' is-new'),
-            text: hasSave ? slot.name : 'Create new save',
+            text: hasSave ? slot.name : t('main_menu.create_new_save'),
           })
         );
 
@@ -419,7 +423,7 @@
           var $del = $('<button/>', {
             type: 'button',
             class: 'save-card-delete',
-            title: 'Delete save',
+            title: t('main_menu.delete_save_title'),
             text: '✕',
           });
           $del.on('click', function (e) {

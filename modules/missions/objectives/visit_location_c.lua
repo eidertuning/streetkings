@@ -33,7 +33,7 @@ function handler.start(ctx)
         end)
     end
 
-    local label = obj.label or 'Drive to the marker'
+    local label = obj.label or _L('lua.prompts.drive_to_marker')
     local promptShown = false
 
     local outer = lib.points.new({
@@ -55,7 +55,7 @@ function handler.start(ctx)
             if triggered then return end
             if obj.requiresVehicle then
                 if not IsPedInAnyVehicle(PlayerPedId(), false) then
-                    SendNUIMessage({ type = 'prompt:show', key = '!', text = 'Stay in your car' })
+                    SendNUIMessage({ type = 'prompt:show', key = '!', text = _L('lua.prompts.stay_in_car') })
                     return
                 end
             end
@@ -74,7 +74,7 @@ function handler.start(ctx)
             if triggered then return end
             if obj.requiresVehicle and not IsPedInAnyVehicle(PlayerPedId(), false) then
                 promptShown = true
-                SendNUIMessage({ type = 'prompt:show', key = '!', text = 'Return to your car' })
+                SendNUIMessage({ type = 'prompt:show', key = '!', text = _L('lua.prompts.return_to_car') })
             elseif promptShown then
                 promptShown = false
                 SendNUIMessage({ type = 'prompt:hide' })

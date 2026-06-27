@@ -4,6 +4,9 @@
   var SK = (window.StreetKings = window.StreetKings || {});
   var controllerGlyphStyle = 'xbox';
   var controllerGlyphListeners = [];
+  var currentLocale = 'en';
+  var translations = {};
+  var fallbackTranslations = {};
   var GLYPH_PATHS = {
     xbox: {
       A: 'assets/XboxSeriesX_A.png',
@@ -58,6 +61,79 @@
         dataType: 'json',
       });
     },
+  };
+
+  function getNested(source, key) {
+    if (!source || !key) return undefined;
+    var parts = String(key).split('.');
+    var current = source;
+    for (var i = 0; i < parts.length; i++) {
+      if (!current || typeof current !== 'object') return undefined;
+      current = current[parts[i]];
+      if (current === undefined || current === null) return current;
+    }
+    return current;
+  }
+
+  function formatTranslation(value, replacements) {
+    if (typeof value !== 'string' || !replacements) return value;
+    return value.replace(/\{([a-zA-Z0-9_]+)\}/g, function (match, name) {
+      return replacements[name] === undefined || replacements[name] === null ? match : String(replacements[name]);
+    });
+  }
+
+  function translate(key, replacements) {
+    var value = getNested(translations, key);
+    if (value === undefined || value === null) {
+      value = getNested(fallbackTranslations, key);
+    }
+    if (value === undefined || value === null) return key;
+    return formatTranslation(value, replacements);
+  }
+
+  function applyTranslations(root) {
+    root = root || document;
+
+    var textNodes = root.querySelectorAll('[data-i18n]');
+    for (var i = 0; i < textNodes.length; i++) {
+      textNodes[i].textContent = translate(textNodes[i].getAttribute('data-i18n'));
+    }
+
+    var htmlNodes = root.querySelectorAll('[data-i18n-html]');
+    for (var h = 0; h < htmlNodes.length; h++) {
+      htmlNodes[h].innerHTML = translate(htmlNodes[h].getAttribute('data-i18n-html'));
+    }
+
+    var attrNodes = root.querySelectorAll('[data-i18n-placeholder], [data-i18n-title], [data-i18n-aria-label]');
+    for (var a = 0; a < attrNodes.length; a++) {
+      var el = attrNodes[a];
+      if (el.hasAttribute('data-i18n-placeholder')) {
+        el.setAttribute('placeholder', translate(el.getAttribute('data-i18n-placeholder')));
+      }
+      if (el.hasAttribute('data-i18n-title')) {
+        el.setAttribute('title', translate(el.getAttribute('data-i18n-title')));
+      }
+      if (el.hasAttribute('data-i18n-aria-label')) {
+        el.setAttribute('aria-label', translate(el.getAttribute('data-i18n-aria-label')));
+      }
+    }
+
+    document.documentElement.lang = currentLocale;
+  }
+
+  function setTranslations(payload) {
+    payload = payload || {};
+    currentLocale = payload.locale || currentLocale;
+    translations = payload.translations || {};
+    fallbackTranslations = payload.fallbackTranslations || {};
+    applyTranslations(document);
+  }
+
+  SK.i18n = {
+    getLocale: function () { return currentLocale; },
+    set: setTranslations,
+    t: translate,
+    apply: applyTranslations
   };
 
   function normalizeStyle(style) {
@@ -156,6 +232,10 @@
   };
 
   window.addEventListener('message', function (e) {
+    if (e.data.type === 'locales:set') {
+      setTranslations(e.data);
+    }
+
     if (e.data.type === 'settings:generalConfig' && e.data.config) {
       setControllerGlyphStyle(e.data.config.controllerGlyphStyle);
     }
@@ -164,6 +244,7 @@
   setControllerGlyphStyle(controllerGlyphStyle);
 
   if (SK.nui.resource) {
+    SK.nui.post('locales:get').done(setTranslations);
     SK.nui.post('phone:settings:getGeneralConfig').done(function (config) {
       setControllerGlyphStyle(config.controllerGlyphStyle);
     });

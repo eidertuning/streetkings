@@ -21,19 +21,19 @@
             <h1 class="brand">Street<span>Kings</span></h1>
             <p id="mainMenuVersion" class="brand-version"></p>
             <ul class="menu">
-              <li><button type="button" id="btnContinue">Continuar</button></li>
-              <li><button type="button" id="btnPlay">Jugar</button></li>
-              <li><button type="button" id="btnCustomizeAvatar">Personalizar Avatar</button></li>
-              <li><button type="button" id="btnCredits">Créditos</button></li>
+              <li><button type="button" id="btnContinue" data-i18n="main_menu.continue">Continuar</button></li>
+              <li><button type="button" id="btnPlay" data-i18n="main_menu.play">Jugar</button></li>
+              <li><button type="button" id="btnCustomizeAvatar" data-i18n="main_menu.customize_avatar">Personalizar Avatar</button></li>
+              <li><button type="button" id="btnCredits" data-i18n="main_menu.credits">Créditos</button></li>
             </ul>
           </div>
         </div>
         <div id="viewSaves" class="menu-view is-off-right">
           <div class="panel">
             <div class="saves-head">
-              <button type="button" class="btn-back" id="btnSaveBack">← Atrás</button>
-              <h2 class="saves-title">Elija una partida</h2>
-              <p class="saves-sub">Seleccione una ranura</p>
+              <button type="button" class="btn-back" id="btnSaveBack" data-i18n="common.back">← Atrás</button>
+              <h2 class="saves-title" data-i18n="main_menu.choose_save">Elija una partida</h2>
+              <p class="saves-sub" data-i18n="main_menu.select_slot">Seleccione una ranura</p>
             </div>
             <div class="save-cards" id="saveCards"></div>
           </div>
@@ -42,25 +42,25 @@
     </div>
     <div id="viewDeleteConfirm" class="name-input-overlay">
       <div class="panel name-input-panel">
-        <p class="saves-sub">Eliminar partida</p>
-        <h2 class="saves-title">¿Está seguro?</h2>
+        <p class="saves-sub" data-i18n="main_menu.delete_save">Eliminar partida</p>
+        <h2 class="saves-title" data-i18n="main_menu.delete_confirm_title">¿Está seguro?</h2>
         <p class="save-delete-warning">Esto eliminará permanentemente <strong id="deleteConfirmName"></strong>. Esto no se puede deshacer.</p>
         <div class="name-input-actions">
-          <button type="button" id="btnDeleteCancel" class="btn-back">← Cancelar</button>
-          <button type="button" id="btnDeleteConfirm" class="btn-delete-confirm">Eliminar</button>
+          <button type="button" id="btnDeleteCancel" class="btn-back" data-i18n="common.cancel">← Cancelar</button>
+          <button type="button" id="btnDeleteConfirm" class="btn-delete-confirm" data-i18n="common.delete">Eliminar</button>
         </div>
       </div>
     </div>
 
     <div id="viewNameInput" class="name-input-overlay">
       <div class="panel name-input-panel">
-        <p class="saves-sub">Nueva partida</p>
-        <h2 class="saves-title">Nombre su partida</h2>
-        <input type="text" id="saveNameInput" class="save-name-field" maxlength="32" placeholder="Ingrese un nombre..." autocomplete="off" spellcheck="false" />
+        <p class="saves-sub" data-i18n="main_menu.new_save">Nueva partida</p>
+        <h2 class="saves-title" data-i18n="main_menu.name_save">Nombre su partida</h2>
+        <input type="text" id="saveNameInput" class="save-name-field" maxlength="32" placeholder="Ingrese un nombre..." data-i18n-placeholder="main_menu.name_placeholder" autocomplete="off" spellcheck="false" />
         <p id="saveNameError" class="save-name-error"></p>
         <div class="name-input-actions">
-          <button type="button" id="btnNameCancel" class="btn-back">← Cancelar</button>
-          <button type="button" id="btnNameConfirm" class="btn-name-confirm">Confirmar</button>
+          <button type="button" id="btnNameCancel" class="btn-back" data-i18n="common.cancel">← Cancelar</button>
+          <button type="button" id="btnNameConfirm" class="btn-name-confirm" data-i18n="common.confirm">Confirmar</button>
         </div>
       </div>
     </div>
@@ -72,22 +72,22 @@
             <div id="creditsSpacerTop" class="credits-spacer" aria-hidden="true"></div>
             <div class="credits-logo" aria-hidden="true">Street<span>Kings</span></div>
             <div class="credits-section">
-              <h3 class="credits-section-title">UNA COLABORACIÓN ENTRE</h3>
+              <h3 class="credits-section-title" data-i18n="main_menu.collaboration">UNA COLABORACIÓN ENTRE</h3>
               <p class="credits-line">919DESIGN</p>
               <p class="credits-line">Envi-Scripts</p>
             </div>
             <div class="credits-section">
-              <h3 class="credits-section-title">Equipo Principal</h3>
+              <h3 class="credits-section-title" data-i18n="main_menu.core_team">Equipo Principal</h3>
               <p class="credits-line">NineLives</p>
               <p class="credits-line">Envi-Scripts</p>
             </div>
             <div class="credits-section">
-              <h3 class="credits-section-title">Diseño</h3>
+              <h3 class="credits-section-title" data-i18n="main_menu.design">Diseño</h3>
               <p class="credits-line">NineLives</p>
               <p class="credits-line">Envi-Scripts</p>
             </div>
             <div class="credits-section">
-              <h3 class="credits-section-title">Programación</h3>
+              <h3 class="credits-section-title" data-i18n="main_menu.programming">Programación</h3>
               <p class="credits-line">NineLives</p>
               <p class="credits-line">Envi-Scripts</p>
               <p class="credits-line">t.dot.</p>
@@ -98,11 +98,11 @@
               <p class="credits-line">Envi-Scripts</p>
             </div>
             <div class="credits-section">
-              <h3 class="credits-section-title">Audio</h3>
+              <h3 class="credits-section-title" data-i18n="main_menu.audio">Audio</h3>
               <p class="credits-line">NineLives</p>
             </div>
             <div class="credits-section">
-              <h3 class="credits-section-title">Pruebas</h3>
+              <h3 class="credits-section-title" data-i18n="main_menu.testing">Pruebas</h3>
               <p class="credits-line">0nlyjim</p>
               <p class="credits-line">cf3cruse</p>
               <p class="credits-line">davidtexture</p>
@@ -116,11 +116,11 @@
               <p class="credits-line">OGChroma</p>
             </div>
             <div class="credits-section">
-              <h3 class="credits-section-title">Agradecimientos Especiales</h3>
+              <h3 class="credits-section-title" data-i18n="main_menu.special_thanks">Agradecimientos Especiales</h3>
               <p class="credits-line">Rockstar Games & Cfx.re</p>
             </div>
             <div class="credits-section">
-              <h3 class="credits-section-title">Herramientas de Terceros</h3>
+              <h3 class="credits-section-title" data-i18n="main_menu.third_party_tools">Herramientas de Terceros</h3>
               <p class="credits-line">ox_lib</p>
               <p class="credits-line">oxmysql</p>
               <p class="credits-line">pma-voice</p>
@@ -136,15 +136,15 @@
     <div class="sk-avatar-shell">
       <div class="sk-avatar-topbar">
         <div class="sk-avatar-header">
-          <button type="button" id="avatarBack" class="btn-back">← Atrás</button>
-          <h2 class="sk-avatar-title">Personalizar Avatar</h2>
+          <button type="button" id="avatarBack" class="btn-back" data-i18n="avatar.back">← Atrás</button>
+          <h2 class="sk-avatar-title" data-i18n="avatar.title">Personalizar Avatar</h2>
         </div>
         <div class="sk-avatar-topbar-tools">
           <div class="sk-avatar-camera-wrap">
-            <span class="sk-avatar-camera-label">Altura de Cámara</span>
+            <span class="sk-avatar-camera-label" data-i18n="avatar.camera_height">Altura de Cámara</span>
             <input type="range" id="avatarCameraHeight" class="sk-avatar-camera-slider" min="0" max="1" step="0.01" value="0.5" />
           </div>
-          <button type="button" id="avatarSpotlight" class="sk-avatar-spotlight-btn">Foco</button>
+          <button type="button" id="avatarSpotlight" class="sk-avatar-spotlight-btn" data-i18n="avatar.spotlight">Foco</button>
           <div class="sk-avatar-balance-wrap">
             <span class="sk-avatar-balance-label">GearCoins</span>
             <span class="sk-avatar-balance-value" id="avatarBalance">0</span>
@@ -156,17 +156,17 @@
           <div class="sk-avatar-gender-switch" id="avatarGenderSwitch"></div>
           <div class="sk-avatar-tabs" id="avatarTabs"></div>
           <div class="sk-avatar-panel-copy" id="avatarPanelCopy">
-            <p class="sk-avatar-preview-eyebrow" id="avatarPanelEyebrow">Rostro</p>
-            <h3 class="sk-avatar-preview-title" id="avatarPanelTitle">Forma, piel y detalles</h3>
-            <p class="sk-avatar-preview-copy" id="avatarPanelDescription">Refine la apariencia general primero, luego pase a las características faciales individuales o la ropa.</p>
+            <p class="sk-avatar-preview-eyebrow" id="avatarPanelEyebrow" data-i18n="avatar.face">Rostro</p>
+            <h3 class="sk-avatar-preview-title" id="avatarPanelTitle" data-i18n="avatar.panel_title">Forma, piel y detalles</h3>
+            <p class="sk-avatar-preview-copy" id="avatarPanelDescription" data-i18n="avatar.panel_description">Refine la apariencia general primero, luego pase a las características faciales individuales o la ropa.</p>
           </div>
           <div class="sk-avatar-controls" id="avatarControls"></div>
         </aside>
         <div class="sk-avatar-viewport" id="avatarViewport"></div>
         <aside class="sk-avatar-panel sk-avatar-panel--right">
-          <p class="sk-avatar-preview-eyebrow" id="avatarPreviewEyebrow">Rostro</p>
-          <h3 class="sk-avatar-preview-title" id="avatarPreviewTitle">Personaliza tu apariencia</h3>
-          <p class="sk-avatar-preview-copy" id="avatarPreviewCopy">Gire la cámara arrastrando y refine su personaje desde todos los ángulos.</p>
+          <p class="sk-avatar-preview-eyebrow" id="avatarPreviewEyebrow" data-i18n="avatar.face">Rostro</p>
+          <h3 class="sk-avatar-preview-title" id="avatarPreviewTitle" data-i18n="avatar.preview_title">Personaliza tu apariencia</h3>
+          <p class="sk-avatar-preview-copy" id="avatarPreviewCopy" data-i18n="avatar.preview_copy">Gire la cámara arrastrando y refine su personaje desde todos los ángulos.</p>
           <div class="sk-avatar-tabs sk-avatar-tabs--browser" id="avatarBrowseTabs"></div>
           <div class="sk-avatar-browser" id="avatarBrowser"></div>
         </aside>
@@ -179,8 +179,8 @@
 
     <div class="initiation-header">
       <p class="initiation-header-eyebrow">Street Kings</p>
-      <h1 class="initiation-header-title">Elije tu coche inicial</h1>
-      <p class="initiation-header-sub">Pase el cursor sobre un vehículo para inspeccionarlo y haga clic para seleccionarlo</p>
+      <h1 class="initiation-header-title" data-i18n="initiation.title">Elije tu coche inicial</h1>
+      <p class="initiation-header-sub" data-i18n="initiation.subtitle">Pase el cursor sobre un vehículo para inspeccionarlo y haga clic para seleccionarlo</p>
     </div>
 
     <div id="initiationVehicleInfo" class="initiation-info-panel">
@@ -191,19 +191,19 @@
       <div class="initiation-divider"></div>
       <div class="initiation-stats">
         <div class="initiation-stat-col">
-          <span class="initiation-stat-label">Velocidad Máxima</span>
+          <span class="initiation-stat-label" data-i18n="initiation.top_speed">Velocidad Máxima</span>
           <span class="initiation-stat-bar-wrap"><span class="initiation-stat-bar" id="statTopSpeed"></span></span>
         </div>
         <div class="initiation-stat-col">
-          <span class="initiation-stat-label">Aceleración</span>
+          <span class="initiation-stat-label" data-i18n="initiation.acceleration">Aceleración</span>
           <span class="initiation-stat-bar-wrap"><span class="initiation-stat-bar" id="statAccel"></span></span>
         </div>
         <div class="initiation-stat-col">
-          <span class="initiation-stat-label">Manejo</span>
+          <span class="initiation-stat-label" data-i18n="initiation.handling">Manejo</span>
           <span class="initiation-stat-bar-wrap"><span class="initiation-stat-bar" id="statHandling"></span></span>
         </div>
         <div class="initiation-stat-col">
-          <span class="initiation-stat-label">Frenado</span>
+          <span class="initiation-stat-label" data-i18n="initiation.braking">Frenado</span>
           <span class="initiation-stat-bar-wrap"><span class="initiation-stat-bar" id="statBraking"></span></span>
         </div>
       </div>
@@ -213,11 +213,11 @@
 
     <div id="initiationConfirmModal" class="initiation-confirm-modal">
       <div class="initiation-confirm-box">
-        <h3 class="initiation-confirm-title">¿Elegir este vehículo?</h3>
-        <p class="initiation-confirm-body">Esto no se puede deshacer una vez que se elija un vehículo inicial.</p>
+        <h3 class="initiation-confirm-title" data-i18n="initiation.confirm_title">¿Elegir este vehículo?</h3>
+        <p class="initiation-confirm-body" data-i18n="initiation.confirm_body">Esto no se puede deshacer una vez que se elija un vehículo inicial.</p>
         <div class="initiation-confirm-actions">
-          <button type="button" id="initiationConfirmNo" class="initiation-confirm-btn initiation-confirm-btn--secondary">Cancelar</button>
-          <button type="button" id="initiationConfirmYes" class="initiation-confirm-btn">Sí, elegir</button>
+          <button type="button" id="initiationConfirmNo" class="initiation-confirm-btn initiation-confirm-btn--secondary" data-i18n="common.cancel">Cancelar</button>
+          <button type="button" id="initiationConfirmYes" class="initiation-confirm-btn" data-i18n="initiation.choose">Sí, elegir</button>
         </div>
       </div>
     </div>
@@ -282,66 +282,66 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 <span class="phone-app-badge" id="msgBadge" style="display:none"></span>
               </div>
-              <span class="phone-app-label">Mensajes</span>
+              <span class="phone-app-label" data-i18n="phone.messages">Mensajes</span>
             </button>
             <button class="phone-app" data-app="Map">
               <div class="phone-app-icon" style="--app-color:#22c55e">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
               </div>
-              <span class="phone-app-label">Mapa</span>
+              <span class="phone-app-label" data-i18n="phone.map">Mapa</span>
             </button>
             <button class="phone-app" data-app="Vehicles">
               <div class="phone-app-icon" style="--app-color:#ff006a">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
               </div>
-              <span class="phone-app-label">Vehículos</span>
+              <span class="phone-app-label" data-i18n="phone.vehicles">Vehículos</span>
             </button>
             <button class="phone-app" data-app="Stats">
               <div class="phone-app-icon" style="--app-color:#f97316">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 20V14"/><path d="M10 20V10"/><path d="M14 20V4"/><path d="M18 20V8"/></svg>
               </div>
-              <span class="phone-app-label">Estadísticas</span>
+              <span class="phone-app-label" data-i18n="phone.stats">Estadísticas</span>
             </button>
             <button class="phone-app" data-app="RealEstate">
               <div class="phone-app-icon" style="--app-color:#ec4899">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
               </div>
-              <span class="phone-app-label">Propiedades</span>
+              <span class="phone-app-label" data-i18n="phone.real_estate">Propiedades</span>
             </button>
             <button class="phone-app" data-app="Towing">
               <div class="phone-app-icon" style="--app-color:#6366f1">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
               </div>
-              <span class="phone-app-label">Remolque</span>
+              <span class="phone-app-label" data-i18n="phone.towing">Remolque</span>
             </button>
             <button class="phone-app" data-app="Leaderboards">
               <div class="phone-app-icon" style="--app-color:#ff006a">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7 4 7 7 7 7"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5C17 4 17 7 17 7"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
               </div>
-              <span class="phone-app-label">Clasificaciones</span>
+              <span class="phone-app-label" data-i18n="phone.leaderboards">Clasificaciones</span>
             </button>
             <button class="phone-app" data-app="Settings">
               <div class="phone-app-icon" style="--app-color:#78716c">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
               </div>
-              <span class="phone-app-label">Configuración</span>
+              <span class="phone-app-label" data-i18n="phone.settings">Configuración</span>
             </button>
           </div>
         </div>
 
         <div class="phone-view" id="phoneAppEvent">
           <div class="phone-app-header">
-            <span class="phone-app-title" id="phoneEventTitle">Menú del Evento</span>
+            <span class="phone-app-title" id="phoneEventTitle" data-i18n="phone.event_menu">Menú del Evento</span>
           </div>
           <div class="phone-event">
             <div class="phone-event-card">
-              <div class="phone-event-label">En Evento</div>
-              <div class="phone-event-name" id="phoneEventName">Carrera Activa</div>
-              <div class="phone-event-copy" id="phoneEventCopy">Elija una acción para recuperar su carrera o abandonar el evento.</div>
+              <div class="phone-event-label" data-i18n="phone.in_event">En Evento</div>
+              <div class="phone-event-name" id="phoneEventName" data-i18n="phone.active_race">Carrera Activa</div>
+              <div class="phone-event-copy" id="phoneEventCopy" data-i18n="phone.event_copy">Elija una acción para recuperar su carrera o abandonar el evento.</div>
             </div>
             <div class="phone-event-actions">
-              <button type="button" class="phone-event-action" id="phoneEventRecover">Recuperar en Último Punto de Control</button>
-              <button type="button" class="phone-event-action phone-event-action--danger" id="phoneEventForfeit">Abandonar Evento</button>
+              <button type="button" class="phone-event-action" id="phoneEventRecover" data-i18n="phone.recover_checkpoint">Recuperar en Último Punto de Control</button>
+              <button type="button" class="phone-event-action phone-event-action--danger" id="phoneEventForfeit" data-i18n="phone.forfeit_event">Abandonar Evento</button>
             </div>
             <div class="phone-event-note" id="phoneEventNote"></div>
           </div>
@@ -349,24 +349,24 @@
 
         <div class="phone-view" id="phoneAppMission">
           <div class="phone-app-header">
-            <span class="phone-app-title">Misión</span>
+            <span class="phone-app-title" data-i18n="phone.mission">Misión</span>
           </div>
           <div class="phone-event">
             <div class="phone-event-card">
-              <div class="phone-event-label">Misión Activa</div>
-              <div class="phone-event-name" id="phoneMissionName">Misión Actual</div>
-              <div class="phone-event-copy">Abandone la misión actual y regrese al modo libre. El progreso de su misión se reiniciará.</div>
+              <div class="phone-event-label" data-i18n="phone.active_mission">Misión Activa</div>
+              <div class="phone-event-name" id="phoneMissionName" data-i18n="phone.current_mission">Misión Actual</div>
+              <div class="phone-event-copy" data-i18n="phone.mission_copy">Abandone la misión actual y regrese al modo libre. El progreso de su misión se reiniciará.</div>
             </div>
             <div class="phone-event-actions">
-              <button type="button" class="phone-event-action phone-event-action--danger" id="phoneMissionForfeit">Abandonar Misión</button>
+              <button type="button" class="phone-event-action phone-event-action--danger" id="phoneMissionForfeit" data-i18n="phone.forfeit_mission">Abandonar Misión</button>
             </div>
           </div>
         </div>
 
         <div class="phone-view" id="phoneAppMessages">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Atrás</button>
-            <span class="phone-app-title">Mensajes</span>
+            <button class="phone-app-back" data-i18n="common.back">← Atrás</button>
+            <span class="phone-app-title" data-i18n="phone.messages">Mensajes</span>
           </div>
           <div class="phone-messages">
             <div class="phone-messages-list" id="msgList"></div>
@@ -380,30 +380,30 @@
         </div>
         <div class="phone-view" id="phoneAppMap">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Atrás</button>
-            <span class="phone-app-title">Mapa</span>
+            <button class="phone-app-back" data-i18n="common.back">← Atrás</button>
+            <span class="phone-app-title" data-i18n="phone.map">Mapa</span>
           </div>
           <div class="phone-map">
             <aside class="phone-map-sidebar" id="phoneMapSidebar" aria-label="Lista de eventos">
-              <div class="phone-map-sidebar-label">Eventos</div>
+              <div class="phone-map-sidebar-label" data-i18n="phone.events">Eventos</div>
               <div class="phone-map-sidebar-list" id="phoneMapEventList" role="list"></div>
             </aside>
             <div class="phone-map-stage">
               <div class="phone-map-toolbar" id="phoneMapStyleTabs">
                 <div class="phone-map-style-group">
-                  <button type="button" class="phone-map-style is-active" data-style="satellite">Satélite</button>
-                  <button type="button" class="phone-map-style" data-style="regular">Carretera</button>
-                  <button type="button" class="phone-map-style" data-style="atlas">Atlas</button>
+                  <button type="button" class="phone-map-style is-active" data-style="satellite" data-i18n="phone.satellite">Satélite</button>
+                  <button type="button" class="phone-map-style" data-style="regular" data-i18n="phone.road">Carretera</button>
+                  <button type="button" class="phone-map-style" data-style="atlas" data-i18n="phone.atlas">Atlas</button>
                 </div>
                 <div class="phone-map-control-group">
                   <button type="button" class="phone-map-control" id="phoneMapZoomOut" aria-label="Zoom out">-</button>
-                  <button type="button" class="phone-map-control" id="phoneMapResetView">Restablecer</button>
+                  <button type="button" class="phone-map-control" id="phoneMapResetView" data-i18n="phone.reset">Restablecer</button>
                   <button type="button" class="phone-map-control" id="phoneMapZoomIn" aria-label="Zoom in">+</button>
                 </div>
               </div>
               <div class="phone-map-canvas-wrap" id="phoneMapViewport">
-                <div class="phone-map-loading" id="phoneMapLoading">Cargando mapa...</div>
-                <div class="phone-map-empty" id="phoneMapEmpty" style="display:none">No hay eventos disponibles.</div>
+                <div class="phone-map-loading" id="phoneMapLoading" data-i18n="phone.loading_map">Cargando mapa...</div>
+                <div class="phone-map-empty" id="phoneMapEmpty" style="display:none" data-i18n="phone.no_events">No hay eventos disponibles.</div>
                 <div class="phone-map-canvas" id="phoneMapCanvas" style="display:none">
                   <img id="phoneMapImage" class="phone-map-image-source" src="assets/satellite_map.webp" alt="Fuente del mapa de StreetKings" draggable="false" />
                   <div class="phone-map-tiles" id="phoneMapTiles"></div>
@@ -418,8 +418,8 @@
               </div>
             </div>
             <div class="phone-map-panel">
-              <div class="phone-map-panel-label">Vista Previa de la Ruta</div>
-              <div class="phone-map-panel-empty" id="phoneMapPanelEmpty">Seleccione un inicio de evento para ver su ruta.</div>
+              <div class="phone-map-panel-label" data-i18n="phone.route_preview">Vista Previa de la Ruta</div>
+              <div class="phone-map-panel-empty" id="phoneMapPanelEmpty" data-i18n="phone.route_empty">Seleccione un inicio de evento para ver su ruta.</div>
               <div class="phone-map-card" id="phoneMapCard" style="display:none">
                 <div class="phone-map-card-title" id="phoneMapTitle"></div>
                 <div class="phone-map-card-meta">
@@ -428,20 +428,20 @@
                 </div>
                 <div class="phone-map-card-stats">
                   <div class="phone-map-card-stat">
-                    <span class="phone-map-card-stat-label">Inicio</span>
+                    <span class="phone-map-card-stat-label" data-i18n="phone.start">Inicio</span>
                     <span class="phone-map-card-stat-value" id="phoneMapStart"></span>
                   </div>
                   <div class="phone-map-card-stat">
-                    <span class="phone-map-card-stat-label">Puntos de Control</span>
+                    <span class="phone-map-card-stat-label" data-i18n="phone.checkpoints">Puntos de Control</span>
                     <span class="phone-map-card-stat-value" id="phoneMapStops"></span>
                   </div>
                   <div class="phone-map-card-stat">
-                    <span class="phone-map-card-stat-label">Meta</span>
+                    <span class="phone-map-card-stat-label" data-i18n="phone.finish">Meta</span>
                     <span class="phone-map-card-stat-value" id="phoneMapGoal"></span>
                   </div>
                 </div>
-                <button type="button" class="phone-map-teleport phone-map-teleport--secondary" id="phoneMapMarkOnMap" style="display:none">Marcar en el Mapa</button>
-                <button type="button" class="phone-map-teleport" id="phoneMapTeleportStart" style="display:none">Teletransportar al inicio</button>
+                <button type="button" class="phone-map-teleport phone-map-teleport--secondary" id="phoneMapMarkOnMap" style="display:none" data-i18n="phone.mark_map">Marcar en el Mapa</button>
+                <button type="button" class="phone-map-teleport" id="phoneMapTeleportStart" style="display:none" data-i18n="phone.teleport_start">Teletransportar al inicio</button>
                 <div class="phone-map-card-desc" id="phoneMapDesc"></div>
               </div>
             </div>
@@ -449,72 +449,72 @@
         </div>
         <div class="phone-view" id="phoneAppVehicles">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Atrás</button>
-            <span class="phone-app-title">Vehículos</span>
+            <button class="phone-app-back" data-i18n="common.back">← Atrás</button>
+            <span class="phone-app-title" data-i18n="phone.vehicles">Vehículos</span>
           </div>
           <div class="phone-vehicles">
             <div class="phone-vehicles-list" id="vehiclesList">
-              <div class="phone-vehicles-empty">Cargando...</div>
+              <div class="phone-vehicles-empty" data-i18n="common.loading">Cargando...</div>
             </div>
             <div class="phone-vehicles-panel" id="vehiclesPanel">
-              <div class="phone-vehicles-empty">Seleccione un vehículo</div>
+              <div class="phone-vehicles-empty" data-i18n="phone.select_vehicle">Seleccione un vehículo</div>
             </div>
           </div>
         </div>
         <div class="phone-view" id="phoneAppStats">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Atrás</button>
-            <span class="phone-app-title">Estadísticas</span>
+            <button class="phone-app-back" data-i18n="common.back">← Atrás</button>
+            <span class="phone-app-title" data-i18n="phone.stats">Estadísticas</span>
           </div>
           <div id="phoneAppStatsContent" class="phone-stats-content"></div>
         </div>
         <div class="phone-view" id="phoneAppRealEstate">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Atrás</button>
-            <span class="phone-app-title">Bienes Raíces</span>
+            <button class="phone-app-back" data-i18n="common.back">← Atrás</button>
+            <span class="phone-app-title" data-i18n="phone.real_estate">Bienes Raíces</span>
           </div>
           <div class="phone-realestate">
             <div class="phone-realestate-sidebar">
-              <div class="phone-realestate-sidebar-label">Listados</div>
-              <div class="phone-realestate-sidebar-balance">Efectivo <span id="realEstateCash">$0</span></div>
+              <div class="phone-realestate-sidebar-label" data-i18n="phone.listings">Listados</div>
+              <div class="phone-realestate-sidebar-balance"><span data-i18n="phone.cash">Efectivo</span> <span id="realEstateCash">$0</span></div>
               <div class="phone-realestate-list" id="realEstateList">
-                <div class="phone-realestate-empty">Cargando propiedades...</div>
+                <div class="phone-realestate-empty" data-i18n="phone.loading_properties">Cargando propiedades...</div>
               </div>
             </div>
             <div class="phone-realestate-panel" id="realEstatePanel">
-              <div class="phone-realestate-empty">Seleccione una propiedad</div>
+              <div class="phone-realestate-empty" data-i18n="phone.select_property">Seleccione una propiedad</div>
             </div>
           </div>
         </div>
         <div class="phone-view" id="phoneAppStore">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Atrás</button>
-            <span class="phone-app-title">Tienda</span>
+            <button class="phone-app-back" data-i18n="common.back">← Atrás</button>
+            <span class="phone-app-title" data-i18n="phone.store">Tienda</span>
           </div>
           <div class="phone-app-body"></div>
         </div>
         <div class="phone-view" id="phoneAppTowing">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Atrás</button>
-            <span class="phone-app-title">Remolque</span>
+            <button class="phone-app-back" data-i18n="common.back">← Atrás</button>
+            <span class="phone-app-title" data-i18n="phone.towing">Remolque</span>
           </div>
           <div class="phone-event">
             <div class="phone-event-card">
-              <div class="phone-event-label">Asistencia en Carretera</div>
-              <div class="phone-event-name">¿Necesita un reinicio?</div>
-              <div class="phone-event-copy">Vaya al último garaje usado por $200 o recupérese en la carretera más cercana gratis.</div>
+              <div class="phone-event-label" data-i18n="phone.roadside_assistance">Asistencia en Carretera</div>
+              <div class="phone-event-name" data-i18n="phone.need_restart">¿Necesita un reinicio?</div>
+              <div class="phone-event-copy" data-i18n="phone.towing_copy">Vaya al último garaje usado por $200 o recupérese en la carretera más cercana gratis.</div>
             </div>
             <div class="phone-event-actions">
-              <button type="button" class="phone-event-action" id="phoneTowingGarage">Remolcar al Último Garaje ($200)</button>
-              <button type="button" class="phone-event-action" id="phoneTowingRecover">Recuperar en Carretera Más Cercana (Gratis)</button>
+              <button type="button" class="phone-event-action" id="phoneTowingGarage" data-i18n="phone.tow_garage">Remolcar al Último Garaje ($200)</button>
+              <button type="button" class="phone-event-action" id="phoneTowingRecover" data-i18n="phone.recover_road">Recuperar en Carretera Más Cercana (Gratis)</button>
             </div>
-            <div class="phone-event-note">CONTINÚE SU CAMINO CON NUESTRO SERVICIO DE REMOLQUE.</div>
+            <div class="phone-event-note" data-i18n="phone.towing_note">CONTINÚE SU CAMINO CON NUESTRO SERVICIO DE REMOLQUE.</div>
           </div>
         </div>
         <div class="phone-view" id="phoneAppSettings">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Atrás</button>
-            <span class="phone-app-title">Configuración</span>
+            <button class="phone-app-back" data-i18n="common.back">← Atrás</button>
+            <span class="phone-app-title" data-i18n="phone.settings">Configuración</span>
           </div>
           <div class="phone-settings">
             <div class="phone-settings-cats" id="settingsCats"></div>
@@ -523,8 +523,8 @@
         </div>
         <div class="phone-view" id="phoneAppLeaderboards">
           <div class="phone-app-header">
-            <button class="phone-app-back">← Atrás</button>
-            <span class="phone-app-title">Clasificaciones</span>
+            <button class="phone-app-back" data-i18n="common.back">← Atrás</button>
+            <span class="phone-app-title" data-i18n="phone.leaderboards">Clasificaciones</span>
           </div>
           <div class="phone-lb">
             <div class="phone-lb-cats" id="lbCats"></div>
@@ -532,10 +532,10 @@
               <div class="phone-lb-header">
                 <span class="phone-lb-title" id="lbTitle"></span>
                 <div class="phone-lb-tabs" id="lbTabs">
-                  <button type="button" class="phone-lb-tab is-active" data-period="all">Todo el Tiempo</button>
-                  <button type="button" class="phone-lb-tab" data-period="month">Mes</button>
-                  <button type="button" class="phone-lb-tab" data-period="week">Semana</button>
-                  <button type="button" class="phone-lb-tab" data-period="day">Hoy</button>
+                  <button type="button" class="phone-lb-tab is-active" data-period="all" data-i18n="phone.all_time">Todo el Tiempo</button>
+                  <button type="button" class="phone-lb-tab" data-period="month" data-i18n="phone.month">Mes</button>
+                  <button type="button" class="phone-lb-tab" data-period="week" data-i18n="phone.week">Semana</button>
+                  <button type="button" class="phone-lb-tab" data-period="day" data-i18n="phone.today">Hoy</button>
                 </div>
               </div>
               <div class="phone-lb-list" id="lbList"></div>
@@ -671,17 +671,17 @@
 
     <div class="sk-garage-top">
       <div class="sk-garage-top-copy">
-        <h1 class="sk-garage-heading" id="garageTitle">Garaje</h1>
-        <p class="sk-garage-hint">Arrastre para rotar &middot; Desplácese para hacer zoom &middot; ESC para salir</p>
+        <h1 class="sk-garage-heading" id="garageTitle" data-i18n="garage.title">Garaje</h1>
+        <p class="sk-garage-hint" data-i18n="garage.hint">Arrastre para rotar &middot; Desplácese para hacer zoom &middot; ESC para salir</p>
       </div>
       <div class="sk-garage-top-status">
         <div class="sk-garage-wallet">
-          <span class="sk-garage-wallet-label">Efectivo</span>
+          <span class="sk-garage-wallet-label" data-i18n="common.cash">Efectivo</span>
           <span class="sk-garage-wallet-amount" id="garagePlayerMoney"></span>
         </div>
         <div class="sk-garage-player-card">
           <div class="sk-garage-player-head">
-            <span class="sk-garage-player-label">Nivel del Jugador</span>
+            <span class="sk-garage-player-label" data-i18n="garage.player_level">Nivel del Jugador</span>
             <span class="sk-garage-player-level" id="garagePlayerLevel">Nivel 1</span>
           </div>
           <div class="sk-garage-player-track">
@@ -697,12 +697,12 @@
 
     <div class="sk-garage-side" id="garageSide">
       <div class="sk-garage-card">
-        <span class="sk-garage-card-label">Seleccionado</span>
+        <span class="sk-garage-card-label" data-i18n="garage.selected">Seleccionado</span>
         <h2 class="sk-garage-car-display-name" id="garageCarName"></h2>
-        <span class="sk-garage-active-badge" id="garageActiveBadge">Vehículo Activo</span>
+        <span class="sk-garage-active-badge" id="garageActiveBadge" data-i18n="garage.active_vehicle">Vehículo Activo</span>
         <div class="sk-garage-level-card">
           <div class="sk-garage-level-head">
-            <span class="sk-garage-level-label">Nivel del Vehículo</span>
+            <span class="sk-garage-level-label" data-i18n="garage.vehicle_level">Nivel del Vehículo</span>
             <span class="sk-garage-level-value" id="garageVehicleLevel">Nivel 1</span>
           </div>
           <div class="sk-garage-level-track">
@@ -1258,7 +1258,7 @@
       <span class="sk-missions-subtitle-body" id="skMissionsSubtitleBody"></span>
     </div>
     <div class="sk-missions-tail" id="skMissionsTail" style="display:none">
-      <div class="sk-missions-tail-label" id="skMissionsTailLabel">Following Target</div>
+      <div class="sk-missions-tail-label" id="skMissionsTailLabel" data-i18n="missions.following_target">Following Target</div>
       <div class="sk-missions-tail-bar">
         <div class="sk-missions-tail-zone sk-missions-tail-zone--danger-close"></div>
         <div class="sk-missions-tail-zone sk-missions-tail-zone--warn-close"></div>
@@ -1269,23 +1269,23 @@
       </div>
       <div class="sk-missions-tail-meta">
         <span class="sk-missions-tail-dist" id="skMissionsTailDist"></span>
-        <span class="sk-missions-tail-status" id="skMissionsTailStatus">Tailing</span>
+        <span class="sk-missions-tail-status" id="skMissionsTailStatus" data-i18n="missions.tailing">Tailing</span>
       </div>
       <div class="sk-missions-tail-alert" id="skMissionsTailAlert"></div>
     </div>
     <div class="sk-missions-complete" id="skMissionsComplete" style="display:none">
       <div class="sk-missions-complete-inner">
-        <span class="sk-missions-complete-kicker" id="skMissionsCompleteKicker">Mission Complete</span>
+        <span class="sk-missions-complete-kicker" id="skMissionsCompleteKicker" data-i18n="missions.complete">Mission Complete</span>
         <span class="sk-missions-complete-title" id="skMissionsCompleteTitle"></span>
         <div class="sk-missions-complete-rewards" id="skMissionsCompleteRewards"></div>
-        <span class="sk-missions-complete-hint" id="skMissionsCompleteHint">You'll hear from them soon.</span>
+        <span class="sk-missions-complete-hint" id="skMissionsCompleteHint" data-i18n="missions.complete_hint">You'll hear from them soon.</span>
       </div>
     </div>
   </div>
 
   <div id="skControllerKeyboard" class="sk-ck" style="display:none">
     <div class="sk-ck-panel">
-      <p class="sk-ck-title" id="skCkTitle">Enter Text</p>
+      <p class="sk-ck-title" id="skCkTitle" data-i18n="controller_keyboard.enter_text">Enter Text</p>
       <div class="sk-ck-input-row">
         <span class="sk-ck-input" id="skCkInput"></span>
         <span class="sk-ck-cursor">|</span>
@@ -1310,40 +1310,40 @@
         <span class="pm-beta-badge">BETA</span>
       </div>
       <nav id="sk-pausemenu-nav">
-        <button class="pm-menu-item" id="pm-btn-continue">CONTINUE</button>
-        <button class="pm-menu-item" id="pm-btn-map">MAP</button>
-        <button class="pm-menu-item" id="pm-btn-settings">SETTINGS</button>
-        <button class="pm-menu-item" id="pm-btn-exit">EXIT GAME</button>
+        <button class="pm-menu-item" id="pm-btn-continue" data-i18n="pause_menu.continue">CONTINUE</button>
+        <button class="pm-menu-item" id="pm-btn-map" data-i18n="pause_menu.map">MAP</button>
+        <button class="pm-menu-item" id="pm-btn-settings" data-i18n="pause_menu.settings">SETTINGS</button>
+        <button class="pm-menu-item" id="pm-btn-exit" data-i18n="pause_menu.exit_game">EXIT GAME</button>
       </nav>
       <div id="sk-pausemenu-mid">
         <div id="pm-stats-grid">
           <div class="pm-stat-card">
-            <span class="pm-stat-label">LEVEL</span>
+            <span class="pm-stat-label" data-i18n="pause_menu.level">LEVEL</span>
             <span class="pm-stat-value pm-accent" id="pm-stat-level">—</span>
           </div>
           <div class="pm-stat-card">
-            <span class="pm-stat-label">CASH</span>
+            <span class="pm-stat-label" data-i18n="pause_menu.cash">CASH</span>
             <span class="pm-stat-value" id="pm-stat-cash">—</span>
           </div>
           <div class="pm-stat-card">
-            <span class="pm-stat-label">MILES DRIVEN</span>
+            <span class="pm-stat-label" data-i18n="pause_menu.miles_driven">MILES DRIVEN</span>
             <span class="pm-stat-value" id="pm-stat-miles">—</span>
           </div>
           <div class="pm-stat-card">
-            <span class="pm-stat-label">RACES WON</span>
+            <span class="pm-stat-label" data-i18n="pause_menu.races_won">RACES WON</span>
             <span class="pm-stat-value pm-accent" id="pm-stat-races">—</span>
           </div>
         </div>
-        <button id="pm-btn-store"><span>VISIT STORE</span><span id="pm-store-arrow">→</span></button>
+        <button id="pm-btn-store"><span data-i18n="pause_menu.visit_store">VISIT STORE</span><span id="pm-store-arrow">→</span></button>
         <div id="pm-patchnotes">
           <div id="pm-patchnotes-header">
-            <span id="pm-patchnotes-title">PATCH NOTES</span>
-            <span id="pm-patchnotes-version">LATEST</span>
+            <span id="pm-patchnotes-title" data-i18n="pause_menu.patch_notes">PATCH NOTES</span>
+            <span id="pm-patchnotes-version" data-i18n="pause_menu.latest">LATEST</span>
           </div>
           <ul id="pm-patchnotes-list">
-            <li>New waypoint system with distance tracking</li>
-            <li>Cinematic pause menu added</li>
-            <li>Performance improvements across all modules</li>
+            <li data-i18n="pause_menu.patch_1">New waypoint system with distance tracking</li>
+            <li data-i18n="pause_menu.patch_2">Cinematic pause menu added</li>
+            <li data-i18n="pause_menu.patch_3">Performance improvements across all modules</li>
           </ul>
         </div>
       </div>
@@ -1354,7 +1354,7 @@
           <span id="pm-zone-name">—</span>
         </div>
         <div id="pm-player-name-row">
-          <span class="pm-info-label">PLAYER</span>
+          <span class="pm-info-label" data-i18n="pause_menu.player">PLAYER</span>
           <span class="pm-info-value" id="pm-info-name">—</span>
         </div>
       </div>

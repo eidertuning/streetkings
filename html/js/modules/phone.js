@@ -25,6 +25,10 @@
   var HOME_GRID_COLUMNS = 4;
   var controllerGlyphs = SK.controllerGlyphs;
 
+  function t(key, replacements) {
+    return SK.i18n ? SK.i18n.t(key, replacements) : key;
+  }
+
   window.SKPhone = {
     registerApp: function (appId, handler) { appHandlers[appId] = handler; },
     registerControllerAdapter: function (appId, adapter) { controllerAdapters[appId] = adapter || {}; },
@@ -63,9 +67,9 @@
     var buttons = elPhone.querySelectorAll('.phone-app-back');
     for (var i = 0; i < buttons.length; i++) {
       if (controllerEnabled) {
-        buttons[i].innerHTML = controllerGlyphs.getHtml('B', 'phone-app-back-icon') + '<span>Back</span>';
+        buttons[i].innerHTML = controllerGlyphs.getHtml('B', 'phone-app-back-icon') + '<span>' + t('phone.back') + '</span>';
       } else {
-        buttons[i].textContent = '← Back';
+        buttons[i].textContent = '← ' + t('phone.back');
       }
     }
   }
@@ -353,49 +357,49 @@
     if (!eventPhoneState) return;
     if (elPhoneEventTitle) {
       elPhoneEventTitle.textContent = (eventPhoneState.actionMode === 'lobbyHostClose' || eventPhoneState.actionMode === 'lobbyHostStart')
-        ? 'Multiplayer Lobby'
-        : (eventPhoneState.isMultiplayer ? 'Multiplayer Event' : 'Event Menu');
+        ? t('phone.multiplayer_lobby')
+        : (eventPhoneState.isMultiplayer ? t('phone.multiplayer_event') : t('phone.event_menu'));
     }
     if (elPhoneEventName) {
       elPhoneEventName.textContent = eventPhoneState.eventName;
     }
     if (elPhoneEventCopy) {
       elPhoneEventCopy.textContent = eventPhoneState.actionMode === 'lobbyHostClose'
-        ? 'Close your empty lobby and return to free roam.'
+        ? t('phone.close_lobby_copy')
         : (eventPhoneState.actionMode === 'lobbyHostStart'
-        ? 'Your lobby has racers ready. Start the race immediately.'
+        ? t('phone.start_lobby_copy')
         : (eventPhoneState.isMultiplayer
-        ? 'Recover to the last checkpoint, or close the phone to keep racing.'
-        : 'Recover to the last checkpoint or forfeit the run.'));
+        ? t('phone.recover_multiplayer_copy')
+        : t('phone.recover_forfeit_copy')));
     }
     if (elPhoneEventRecover) {
       elPhoneEventRecover.textContent = eventPhoneState.actionMode === 'lobbyHostClose'
-        ? 'Close Lobby'
+        ? t('phone.close_lobby')
         : (eventPhoneState.actionMode === 'lobbyHostStart'
-        ? 'Start Race Now'
-        : 'Recover to Last Checkpoint');
+        ? t('phone.start_race_now')
+        : t('phone.recover_last_checkpoint'));
       elPhoneEventRecover.disabled = eventPhoneState.canRecover !== true;
     }
     if (elPhoneEventForfeit) {
-      elPhoneEventForfeit.textContent = 'Forfeit Event';
+      elPhoneEventForfeit.textContent = t('phone.forfeit_event');
       elPhoneEventForfeit.disabled = eventPhoneState.canForfeit !== true;
       elPhoneEventForfeit.style.display = (eventPhoneState.actionMode === 'lobbyHostClose' || eventPhoneState.actionMode === 'lobbyHostStart') ? 'none' : '';
     }
     if (elPhoneEventNote) {
       elPhoneEventNote.textContent = eventPhoneState.actionMode === 'lobbyHostClose'
-        ? 'Closing the phone keeps the lobby open. Use Close Lobby to leave it.'
+        ? t('phone.close_lobby_note')
         : (eventPhoneState.actionMode === 'lobbyHostStart'
-        ? 'Closing the phone keeps the lobby open. Use Start Race Now to launch immediately.'
+        ? t('phone.start_lobby_note')
         : (eventPhoneState.canForfeit === true
-        ? 'Closing the phone resumes the event immediately.'
-        : 'Forfeit is disabled while you are in a multiplayer event.'));
+        ? t('phone.resume_event_note')
+        : t('phone.forfeit_disabled_note')));
     }
   }
 
   function renderMissionPhone() {
     if (!missionPhoneState) return;
     if (elPhoneMissionName) {
-      elPhoneMissionName.textContent = missionPhoneState.missionName || 'Active Mission';
+      elPhoneMissionName.textContent = missionPhoneState.missionName || t('phone.active_mission');
     }
   }
 

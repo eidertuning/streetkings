@@ -42,7 +42,7 @@ local function setupStorePoints(store)
 
         onEnter = function()
             promptKey = SKInput.getInteractLabel()
-            SendNUIMessage({ type = 'prompt:show', key = promptKey, text = 'Enter ' .. store.name })
+            SendNUIMessage({ type = 'prompt:show', key = promptKey, text = _L('lua.prompts.enter', { name = store.name }) })
         end,
 
         onExit = function()
@@ -54,7 +54,7 @@ local function setupStorePoints(store)
             local nextPromptKey = SKInput.getInteractLabel()
             if nextPromptKey ~= promptKey then
                 promptKey = nextPromptKey
-                SendNUIMessage({ type = 'prompt:show', key = promptKey, text = 'Enter ' .. store.name })
+                SendNUIMessage({ type = 'prompt:show', key = promptKey, text = _L('lua.prompts.enter', { name = store.name }) })
             end
             if SKInput.isInteractJustReleased() then
                 SendNUIMessage({ type = 'prompt:hide' })
