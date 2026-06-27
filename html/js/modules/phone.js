@@ -154,6 +154,21 @@
     return index === -1 ? 9999 : index;
   }
 
+  function getDefaultHomeSlot(index, total) {
+    var bottomRows = Math.max(1, Math.floor(HOME_GRID_MIN_SLOTS / HOME_GRID_COLUMNS));
+    var row = bottomRows - 2;
+    if (total > HOME_GRID_COLUMNS) {
+      row = Math.max(0, bottomRows - Math.ceil(total / HOME_GRID_COLUMNS) - 1);
+    }
+    var itemsInRow = total > HOME_GRID_COLUMNS ? HOME_GRID_COLUMNS : total;
+    var startCol = Math.max(0, Math.floor((HOME_GRID_COLUMNS - itemsInRow) / 2));
+    var rowOffset = Math.floor(index / HOME_GRID_COLUMNS);
+    var col = total > HOME_GRID_COLUMNS
+      ? index % HOME_GRID_COLUMNS
+      : startCol + index;
+    return ((row + rowOffset) * HOME_GRID_COLUMNS) + col;
+  }
+
   function applyWallpaper() {
     var cfg = tabletConfig || defaultTabletConfig();
     elPhone.dataset.wallpaper = cfg.wallpaper || 'streetkings';
@@ -163,6 +178,7 @@
     if (!elAppsGrid) return;
     var buttons = Array.prototype.slice.call(elAppsGrid.querySelectorAll('.phone-app[data-app], .phone-app[data-external-app]'));
     var oldSlots = tabletConfig && tabletConfig.appSlots ? tabletConfig.appSlots : {};
+    var hasSavedSlots = Object.keys(oldSlots).length > 0;
     buttons.sort(function (a, b) {
       var aId = getAppIdFromButton(a);
       var bId = getAppIdFromButton(b);
@@ -187,7 +203,7 @@
     var occupied = {};
     buttons.forEach(function (btn, index) {
       var appId = getAppIdFromButton(btn);
-      var slot = oldSlots[appId] != null ? parseInt(oldSlots[appId], 10) : index;
+      var slot = oldSlots[appId] != null ? parseInt(oldSlots[appId], 10) : getDefaultHomeSlot(index, buttons.length);
       while (occupied[slot]) slot += 1;
       occupied[slot] = true;
       btn.dataset.appId = getAppIdFromButton(btn);
@@ -200,6 +216,10 @@
       }
       slotEl.appendChild(btn);
     });
+
+    if (!hasSavedSlots && tabletConfig) {
+      tabletConfig.appSlots = getHomeAppSlots();
+    }
   }
 
   function applyTabletConfig(config, options) {

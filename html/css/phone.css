@@ -277,7 +277,7 @@
 /* Home screen */
 
 .phone-home {
-  padding: 0.55rem 1rem 0.45rem;
+  padding: 0.55rem 1rem 1.05rem;
   justify-content: flex-start;
 }
 
@@ -386,7 +386,7 @@
 .phone-apps-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  grid-auto-rows: clamp(70px, 5.9vw, 86px);
+  grid-auto-rows: clamp(66px, 5.45vw, 78px);
   gap: 0.26rem 0.3rem;
   width: 100%;
   height: 100%;
