@@ -27,7 +27,7 @@ function SKResolveVehicleImage(model, override)
     end
 
     if type(override) == 'table' then
-        image.localSrc = override.localSrc or override.local or image.localSrc
+        image.localSrc = override.localSrc or override['local'] or image.localSrc
         image.externalSrc = override.externalSrc or override.jgSrc or override.jg or override.url or ''
         image.provider = override.provider or provider
     end

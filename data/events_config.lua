@@ -87,11 +87,11 @@ SKEventsConfig.MODEL_CLASS_LOOKUP = {}
 
 -- This can be ignored
 CreateThread(function()
-    for _, vehicle in ipairs(SKStarterVehicles) do
+    for _, vehicle in ipairs(SKStarterVehicles or {}) do
         SKEventsConfig.MODEL_CLASS_LOOKUP[vehicle.model] = vehicle.class
     end
 
-    for _, vehicles in pairs(SKGameVehicles) do
+    for _, vehicles in pairs(SKGameVehicles or {}) do
         for _, vehicle in ipairs(vehicles) do
             SKEventsConfig.MODEL_CLASS_LOOKUP[vehicle.model] = vehicle.class
         end
