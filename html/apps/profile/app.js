@@ -8,7 +8,6 @@
   var elCash = document.getElementById('profileCash');
   var elAlias = document.getElementById('aliasInput');
   var elMessage = document.getElementById('profileMessage');
-  var wallpaperSelect = document.getElementById('wallpaperSelect');
   var notifEnabled = document.getElementById('notifEnabled');
   var notifPreview = document.getElementById('notifPreview');
   var saveBtn = document.getElementById('saveBtn');
@@ -49,7 +48,6 @@
     tabletConfig = Object.assign(defaultTabletConfig(), config || {});
     tabletConfig.notifications = Object.assign({ enabled: true, messagePreviews: true }, tabletConfig.notifications || {});
 
-    wallpaperSelect.value = tabletConfig.wallpaper || 'streetkings';
     notifEnabled.checked = tabletConfig.notifications.enabled !== false;
     notifPreview.checked = tabletConfig.notifications.messagePreviews !== false;
   }
@@ -74,7 +72,6 @@
       enabled: notifEnabled.checked,
       messagePreviews: notifPreview.checked,
     });
-    next.wallpaper = wallpaperSelect.value || 'streetkings';
     return next;
   }
 

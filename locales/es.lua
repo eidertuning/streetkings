@@ -401,9 +401,11 @@ Elige un coche que de verdad te guste. Aprende cómo se mueve. Conduce limpio. U
             reset_defaults = "Restablecer valores",
             categories = {
                 general = "GENERAL",
+                tablet = "Tablet",
                 camera = "Cámara",
                 debug = "Depuración",
             },
+            tablet_wallpaper = "Fondo de pantalla",
             groups = {
                 general = "General",
                 hud = "HUD",

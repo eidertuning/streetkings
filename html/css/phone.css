@@ -385,13 +385,29 @@
 
 .phone-apps-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.75rem 0.5rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: clamp(78px, 7.3vw, 100px);
+  gap: 0.45rem 0.5rem;
   width: 100%;
   max-width: 725px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
+  align-content: center;
+}
+
+.phone-app-slot {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.55rem;
+}
+
+.sk-phone.is-customizing-home .phone-app-slot {
+  background: rgba(255, 255, 255, 0.025);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
 }
 
 .phone-app {
@@ -410,6 +426,9 @@
   border-radius: 0.5rem;
   touch-action: none;
   user-select: none;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
 }
 
 .phone-app:hover  { transform: scale(1.08); }

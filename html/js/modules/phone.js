@@ -39,6 +39,7 @@
   var externalLaunchData = null;
   var controllerEnabled = false;
   var HOME_GRID_COLUMNS = 4;
+  var HOME_GRID_MIN_SLOTS = 24;
   var controllerGlyphs = SK.controllerGlyphs;
   var WALLPAPERS = ['streetkings', 'midnight', 'neon', 'garage'];
 
@@ -88,7 +89,8 @@
     return {
       wallpaper: 'streetkings',
       notifications: { enabled: true, messagePreviews: true },
-      appOrder: ['Messages', 'Map', 'Vehicles', 'Stats', 'profile', 'RealEstate', 'Towing', 'Leaderboards', 'Settings']
+      appOrder: ['Messages', 'Map', 'Vehicles', 'Stats', 'profile', 'RealEstate', 'Towing', 'Leaderboards', 'Settings'],
+      appSlots: {}
     };
   }
 
@@ -107,6 +109,15 @@
         return typeof appId === 'string' && appId && list.indexOf(appId) === index;
       });
     }
+    if (config.appSlots && typeof config.appSlots === 'object') {
+      base.appSlots = {};
+      Object.keys(config.appSlots).forEach(function (appId) {
+        var slot = parseInt(config.appSlots[appId], 10);
+        if (appId && slot >= 0 && slot < 96) {
+          base.appSlots[appId] = slot;
+        }
+      });
+    }
     return base;
   }
 
@@ -122,7 +133,22 @@
       .filter(Boolean);
   }
 
+  function getHomeAppSlots() {
+    var slots = {};
+    getHomeAppButtons().forEach(function (btn) {
+      var appId = getAppIdFromButton(btn);
+      var slot = btn.closest('.phone-app-slot');
+      if (appId && slot) {
+        slots[appId] = parseInt(slot.dataset.slot, 10);
+      }
+    });
+    return slots;
+  }
+
   function appSortWeight(appId) {
+    if (tabletConfig && tabletConfig.appSlots && tabletConfig.appSlots[appId] != null) {
+      return parseInt(tabletConfig.appSlots[appId], 10);
+    }
     var order = tabletConfig && Array.isArray(tabletConfig.appOrder) ? tabletConfig.appOrder : [];
     var index = order.indexOf(appId);
     return index === -1 ? 9999 : index;
@@ -136,6 +162,7 @@
   function applyHomeLayout() {
     if (!elAppsGrid) return;
     var buttons = Array.prototype.slice.call(elAppsGrid.querySelectorAll('.phone-app[data-app], .phone-app[data-external-app]'));
+    var oldSlots = tabletConfig && tabletConfig.appSlots ? tabletConfig.appSlots : {};
     buttons.sort(function (a, b) {
       var aId = getAppIdFromButton(a);
       var bId = getAppIdFromButton(b);
@@ -143,9 +170,35 @@
       if (diff !== 0) return diff;
       return String(aId).localeCompare(String(bId));
     });
-    buttons.forEach(function (btn) {
+    var neededSlots = Math.max(HOME_GRID_MIN_SLOTS, buttons.length + 8);
+    Object.keys(oldSlots).forEach(function (appId) {
+      var slot = parseInt(oldSlots[appId], 10);
+      if (slot >= neededSlots) neededSlots = slot + 1;
+    });
+
+    elAppsGrid.innerHTML = '';
+    for (var slotIndex = 0; slotIndex < neededSlots; slotIndex++) {
+      var slotEl = document.createElement('div');
+      slotEl.className = 'phone-app-slot';
+      slotEl.dataset.slot = slotIndex;
+      elAppsGrid.appendChild(slotEl);
+    }
+
+    var occupied = {};
+    buttons.forEach(function (btn, index) {
+      var appId = getAppIdFromButton(btn);
+      var slot = oldSlots[appId] != null ? parseInt(oldSlots[appId], 10) : index;
+      while (occupied[slot]) slot += 1;
+      occupied[slot] = true;
       btn.dataset.appId = getAppIdFromButton(btn);
-      elAppsGrid.appendChild(btn);
+      var slotEl = elAppsGrid.querySelector('.phone-app-slot[data-slot="' + slot + '"]');
+      if (!slotEl) {
+        slotEl = document.createElement('div');
+        slotEl.className = 'phone-app-slot';
+        slotEl.dataset.slot = slot;
+        elAppsGrid.appendChild(slotEl);
+      }
+      slotEl.appendChild(btn);
     });
   }
 
@@ -172,6 +225,7 @@
   function saveTabletConfig() {
     if (!tabletConfig) return;
     tabletConfig.appOrder = getHomeAppOrder();
+    tabletConfig.appSlots = getHomeAppSlots();
     SK.nui.post('phone:tablet:setConfig', { config: tabletConfig });
   }
 
@@ -730,19 +784,21 @@
     setCustomizeMode(true);
     suppressNextClick = true;
     var rect = btn.getBoundingClientRect();
+    var slot = btn.closest('.phone-app-slot');
     dragState = {
       btn: btn,
+      slot: slot,
       pointerId: event.pointerId,
-      offsetX: event.clientX - rect.left,
-      offsetY: event.clientY - rect.top,
+      offsetX: rect.width / 2,
+      offsetY: rect.height / 2,
       width: rect.width,
       height: rect.height,
     };
     btn.classList.add('is-dragging');
     btn.style.width = rect.width + 'px';
     btn.style.height = rect.height + 'px';
-    btn.style.left = rect.left + 'px';
-    btn.style.top = rect.top + 'px';
+    btn.style.left = (event.clientX - dragState.offsetX) + 'px';
+    btn.style.top = (event.clientY - dragState.offsetY) + 'px';
     btn.setPointerCapture(event.pointerId);
     event.preventDefault();
   }
@@ -776,11 +832,15 @@
     btn.style.left = (event.clientX - dragState.offsetX) + 'px';
     btn.style.top = (event.clientY - dragState.offsetY) + 'px';
     var target = document.elementFromPoint(event.clientX, event.clientY);
-    target = target && target.closest ? target.closest('.phone-app[data-app-id]') : null;
-    if (target && target !== btn && elAppsGrid.contains(target)) {
-      var targetRect = target.getBoundingClientRect();
-      var insertAfter = event.clientY > targetRect.top + targetRect.height / 2;
-      elAppsGrid.insertBefore(btn, insertAfter ? target.nextSibling : target);
+    var targetSlot = target && target.closest ? target.closest('.phone-app-slot') : null;
+    if (targetSlot && targetSlot !== dragState.slot && elAppsGrid.contains(targetSlot)) {
+      var previousSlot = dragState.slot;
+      var occupant = targetSlot.querySelector('.phone-app[data-app-id]');
+      if (occupant && occupant !== btn && previousSlot) {
+        previousSlot.appendChild(occupant);
+      }
+      targetSlot.appendChild(btn);
+      dragState.slot = targetSlot;
     }
     event.preventDefault();
   }

@@ -401,9 +401,11 @@ Pick a car you actually like. Learn how it moves. Drive it clean. A flashy run d
             reset_defaults = "Reset to Defaults",
             categories = {
                 general = "GENERAL",
+                tablet = "Tablet",
                 camera = "Camera",
                 debug = "Debug",
             },
+            tablet_wallpaper = "Wallpaper",
             groups = {
                 general = "General",
                 hud = "HUD",

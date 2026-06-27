@@ -15,6 +15,7 @@ local DEFAULT_TABLET = {
         'Leaderboards',
         'Settings',
     },
+    appSlots = {},
 }
 
 local WALLPAPERS = {
@@ -69,6 +70,17 @@ local function normalizeConfig(input)
         end
     end
 
+    if type(input.appSlots) == 'table' then
+        cfg.appSlots = {}
+        for rawId, rawSlot in pairs(input.appSlots) do
+            local appId = normalizeAppId(rawId)
+            local slot = tonumber(rawSlot)
+            if appId and slot and slot >= 0 and slot < 96 then
+                cfg.appSlots[appId] = math.floor(slot)
+            end
+        end
+    end
+
     return cfg
 end
 
@@ -109,7 +121,12 @@ lib.callback.register('streetkings:tablet:setLayout', function(source, data)
     end
 
     local config = readTabletConfig(source)
-    config.appOrder = normalizeConfig({ appOrder = data and data.appOrder or {} }).appOrder
+    local normalized = normalizeConfig({
+        appOrder = data and data.appOrder or {},
+        appSlots = data and data.appSlots or {},
+    })
+    config.appOrder = normalized.appOrder
+    config.appSlots = normalized.appSlots
     local ok = writeTabletConfig(source, config)
     return { ok = ok, error = ok and nil or 'write_failed', config = config }
 end)

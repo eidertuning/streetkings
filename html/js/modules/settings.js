@@ -203,8 +203,16 @@
     { key: 'deleteSave',      label: 'Delete Current Save',           type: 'button', nuiAction: 'phone:settings:deleteSave',   danger: true, group: 'Data'   },
   ];
 
+  var TABLET_WALLPAPERS = [
+    { id: 'streetkings', label: 'StreetKings' },
+    { id: 'midnight', label: 'Midnight' },
+    { id: 'neon', label: 'Neon' },
+    { id: 'garage', label: 'Garage' }
+  ];
+
   var ALL_CATEGORIES = [
     { id: 'general', label: 'GENERAL', defs: GENERAL_DEFS, nuiGet: 'phone:settings:getGeneralConfig', nuiSet: 'phone:settings:setGeneralValue' },
+    { id: 'tablet', label: 'Tablet', defs: [] },
     { id: 'camera', label: 'Camera', defs: CAMERA_DEFS, nuiGet: 'phone:settings:getConfig', nuiSet: 'phone:settings:setCameraValue', nuiReset: 'phone:settings:resetCameraDefaults' },
     { id: 'debug',  label: 'Debug',  defs: DEBUG_DEFS,  adminOnly: true, nuiSet: 'phone:settings:setDebugToggle' },
   ];
@@ -566,8 +574,66 @@
     return el;
   }
 
+  function buildTabletPanel() {
+    var panel = document.getElementById('settingsPanel');
+    panel.innerHTML = '';
+    panel.appendChild(buildGroupLabel('Wallpaper'));
+
+    var item = document.createElement('div');
+    item.className = 'phone-settings-item phone-settings-item--wallpapers';
+
+    var label = document.createElement('span');
+    label.className = 'phone-settings-label';
+    label.textContent = t('settings.tablet_wallpaper');
+
+    var row = document.createElement('div');
+    row.className = 'phone-settings-wallpaper-row';
+
+    function setActive(wallpaper) {
+      row.querySelectorAll('[data-wallpaper]').forEach(function (btn) {
+        btn.classList.toggle('is-active', btn.dataset.wallpaper === wallpaper);
+      });
+    }
+
+    TABLET_WALLPAPERS.forEach(function (wallpaper) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'phone-settings-wallpaper-btn';
+      btn.dataset.wallpaper = wallpaper.id;
+      btn.innerHTML = '<span class="phone-settings-wallpaper-swatch phone-settings-wallpaper-swatch--' + wallpaper.id + '"></span><span>' + wallpaper.label + '</span>';
+      btn.addEventListener('click', function () {
+        var cfg = window.SKPhone && window.SKPhone.getTabletConfig ? window.SKPhone.getTabletConfig() : null;
+        cfg = Object.assign({ notifications: { enabled: true, messagePreviews: true }, appOrder: [], appSlots: {} }, cfg || {});
+        cfg.wallpaper = wallpaper.id;
+        SK.nui.post('phone:tablet:setConfig', { config: cfg }).done(function (result) {
+          if (result && result.config && window.SKPhone && window.SKPhone.applyTabletConfig) {
+            window.SKPhone.applyTabletConfig(result.config);
+            setActive(result.config.wallpaper);
+          }
+        });
+      });
+      row.appendChild(btn);
+    });
+
+    item.appendChild(label);
+    item.appendChild(row);
+    panel.appendChild(item);
+
+    SK.nui.post('phone:tablet:getConfig').done(function (result) {
+      var cfg = result && result.config ? result.config : {};
+      setActive(cfg.wallpaper || 'streetkings');
+      if (window.SKPhone && window.SKPhone.applyTabletConfig) {
+        window.SKPhone.applyTabletConfig(cfg);
+      }
+    });
+  }
+
   // Build the panel structure immediately — no server data needed yet.
   function buildPanel(cat) {
+    if (cat.id === 'tablet') {
+      buildTabletPanel();
+      return;
+    }
     var panel = document.getElementById('settingsPanel');
     var defs = cat.id === 'camera'
       ? cat.defs.filter(function (def) { return !def.preset || def.preset === currentCameraPresetKey; })
