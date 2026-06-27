@@ -34,6 +34,7 @@ lib.callback.register('streetkings:profileApp:getProfile', function(source)
             level = SKSaves.read(source, 'progression.level') or 1,
             playerXp = SKSaves.read(source, 'progression.playerXp') or 0,
         },
+        tablet = exports[GetCurrentResourceName()]:GetTabletConfig(source).config,
     }
 end)
 
@@ -57,6 +58,7 @@ lib.callback.register('streetkings:profileApp:saveProfile', function(source, dat
             level = SKSaves.read(source, 'progression.level') or 1,
             playerXp = SKSaves.read(source, 'progression.playerXp') or 0,
         },
+        tablet = exports[GetCurrentResourceName()]:GetTabletConfig(source).config,
     }
 end)
 

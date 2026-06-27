@@ -53,6 +53,11 @@
   }
 
   function showNotif(msg) {
+    var config = window.SKPhone && window.SKPhone.getTabletConfig ? window.SKPhone.getTabletConfig() : null;
+    var notificationSettings = config && config.notifications ? config.notifications : {};
+    if (notificationSettings.enabled === false) {
+      return;
+    }
     if (notifTimer) { clearTimeout(notifTimer); }
     window.SKMessages.pendingSender = msg.sender;
 
@@ -60,7 +65,9 @@
     elNotifImg.src = resolveAvatarSrc(msg.avatar, msg.sender);
     elNotifInitial.textContent = (msg.sender || '?').charAt(0).toUpperCase();
     elNotifSender.textContent  = msg.sender;
-    elNotifPreview.textContent = msg.body.replace(/\n/g, ' ');
+    elNotifPreview.textContent = notificationSettings.messagePreviews === false
+      ? t('messages.new_message')
+      : msg.body.replace(/\n/g, ' ');
 
     elNotif.style.setProperty('--notif-duration', '10s');
     elNotif.classList.add('is-active');

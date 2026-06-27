@@ -184,6 +184,26 @@
     linear-gradient(135deg, rgba(10, 8, 14, 0.98) 0%, rgba(21, 16, 27, 0.96) 52%, rgba(8, 6, 12, 0.98) 100%);
 }
 
+.sk-phone[data-wallpaper="midnight"] .phone-screen {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(158, 229, 255, 0.14), transparent 24%),
+    linear-gradient(135deg, rgba(3, 8, 16, 0.98), rgba(12, 18, 28, 0.97));
+}
+
+.sk-phone[data-wallpaper="neon"] .phone-screen {
+  background:
+    radial-gradient(circle at 16% 16%, rgba(255, 0, 106, 0.25), transparent 22%),
+    radial-gradient(circle at 84% 24%, rgba(20, 184, 166, 0.22), transparent 28%),
+    linear-gradient(135deg, rgba(15, 5, 17, 0.98), rgba(7, 10, 18, 0.97));
+}
+
+.sk-phone[data-wallpaper="garage"] .phone-screen {
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 42px),
+    radial-gradient(circle at 50% 0%, rgba(255, 209, 71, 0.2), transparent 30%),
+    linear-gradient(135deg, rgba(16, 13, 10, 0.98), rgba(8, 8, 10, 0.97));
+}
+
 .phone-screen::before,
 .phone-screen::after {
   content: '';
@@ -261,6 +281,59 @@
   justify-content: center;
 }
 
+.phone-home-tools {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  z-index: 3;
+  display: flex;
+  gap: 0.45rem;
+}
+
+.phone-home-tool {
+  min-height: 2rem;
+  max-width: 9rem;
+  padding: 0 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.28);
+  color: rgba(255, 255, 255, 0.82);
+  font-family: "Poppins", system-ui, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.phone-home-tool--primary {
+  border-color: rgba(255, 209, 71, 0.45);
+  background: rgba(255, 209, 71, 0.14);
+  color: var(--sk-color-spray);
+}
+
+.phone-customize-hint {
+  position: absolute;
+  left: 50%;
+  top: 0.8rem;
+  z-index: 3;
+  max-width: min(50%, 36rem);
+  transform: translateX(-50%);
+  display: none;
+  color: rgba(255, 255, 255, 0.68);
+  font-family: "Poppins", system-ui, sans-serif;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.phone-customize-hint.is-active {
+  display: block;
+}
+
 .phone-wallpaper-wordmark {
   position: absolute;
   left: 50%;
@@ -290,6 +363,7 @@
 }
 
 .phone-app {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -301,10 +375,32 @@
   transition: transform 0.15s ease, opacity 0.15s ease;
   min-width: 0;
   overflow: hidden;
+  border-radius: 0.5rem;
 }
 
 .phone-app:hover  { transform: scale(1.08); }
 .phone-app:active { transform: scale(0.94); opacity: 0.75; }
+
+.sk-phone.is-customizing-home .phone-app {
+  cursor: grab;
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.sk-phone.is-customizing-home .phone-app::after {
+  content: "⋮⋮";
+  position: absolute;
+  right: 0.3rem;
+  top: 0.25rem;
+  color: rgba(255, 255, 255, 0.35);
+  font-family: "Poppins", system-ui, sans-serif;
+  font-size: 0.72rem;
+}
+
+.phone-app.is-dragging {
+  opacity: 0.45;
+  transform: scale(0.96);
+}
 
 .phone-app-icon {
   width: clamp(48px, 5.625vw, 68px);
@@ -325,7 +421,8 @@
 }
 
 .phone-app-label {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: "Poppins", system-ui, -apple-system, sans-serif;
+  font-weight: 600;
   font-size: clamp(0.625rem, 1vw, 0.84rem);
   color: rgba(255, 255, 255, 0.82);
   letter-spacing: 0.02em;
@@ -338,7 +435,7 @@
 }
 
 .phone-external-apps {
-  display: contents;
+  display: none;
 }
 
 .phone-app-icon i {
@@ -384,7 +481,8 @@
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: "Poppins", system-ui, -apple-system, sans-serif;
+  font-weight: 600;
   font-size: clamp(0.75rem, 1.125vw, 0.94rem);
   line-height: 1;
   color: var(--sk-color-spray);
@@ -419,7 +517,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   pointer-events: none;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: "Poppins", system-ui, -apple-system, sans-serif;
   font-size: clamp(0.81rem, 1.25vw, 1.03rem);
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);

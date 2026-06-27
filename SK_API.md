@@ -649,6 +649,39 @@ examples/tablet_external_app_template
 
 Copy that folder into a separate resource, rename the app id in `client.lua`, then start it after `streetkings`.
 
+### Tablet Profile Config
+
+Tablet personalization is stored per active save in `meta.data.tablet`. Server exports:
+
+```lua
+local result = exports['streetkings']:GetTabletConfig(source)
+-- result = { ok = true, config = { wallpaper, notifications, appOrder, appOverrides } }
+
+local ok, reason = exports['streetkings']:SetTabletConfig(source, {
+    wallpaper = 'neon', -- streetkings | midnight | neon | garage
+    notifications = {
+        enabled = true,
+        messagePreviews = true,
+    },
+    appOrder = { 'Messages', 'profile', 'Map', 'Stats' },
+    appOverrides = {
+        profile = {
+            label = 'Mi Perfil',
+            glyph = 'P',
+            color = '#14b8a6',
+        },
+    },
+})
+```
+
+From a tablet iframe app, use the SDK callback bridge:
+
+```js
+const result = await fetchNui('phone:tablet:setConfig', { config });
+```
+
+The host tablet applies returned config immediately, so apps can update wallpaper, notifications and icon metadata without reopening the tablet.
+
 ---
 
 ## Events

@@ -6,7 +6,7 @@
   <title>Street Kings</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Inter:wght@400;500;600;700&family=Oswald:wght=400;600;700&family=Permanent+Marker&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&family=Inter:wght@400;500;600;700&family=Oswald:wght@400;600;700&family=Permanent+Marker&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/streetkings.css" />
   <link rel="stylesheet" href="css/pausemenu.css" />
   <link rel="stylesheet" href="css/property-invite.css" />
@@ -276,7 +276,12 @@
         <div class="phone-wallpaper-wordmark">STREETKINGS</div>
         <div class="phone-screen-frost"></div>
         <div class="phone-view phone-home is-active" id="phoneHome">
-          <div class="phone-apps-grid">
+          <div class="phone-home-tools">
+            <button type="button" id="phoneCustomizeToggle" class="phone-home-tool" data-i18n="phone.customize_home">Editar</button>
+            <button type="button" id="phoneCustomizeSave" class="phone-home-tool phone-home-tool--primary" data-i18n="common.save" style="display:none">Guardar</button>
+          </div>
+          <div class="phone-customize-hint" id="phoneCustomizeHint" data-i18n="phone.customize_hint">Arrastra los iconos para moverlos. Doble click para editar un icono.</div>
+          <div class="phone-apps-grid" id="phoneAppsGrid">
             <button class="phone-app" data-app="Messages">
               <div class="phone-app-icon" style="--app-color:#3b82f6">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
