@@ -655,7 +655,7 @@ Tablet personalization is stored per active save in `meta.data.tablet`. Server e
 
 ```lua
 local result = exports['streetkings']:GetTabletConfig(source)
--- result = { ok = true, config = { wallpaper, notifications, appOrder, appOverrides } }
+-- result = { ok = true, config = { wallpaper, notifications, appOrder } }
 
 local ok, reason = exports['streetkings']:SetTabletConfig(source, {
     wallpaper = 'neon', -- streetkings | midnight | neon | garage
@@ -664,13 +664,6 @@ local ok, reason = exports['streetkings']:SetTabletConfig(source, {
         messagePreviews = true,
     },
     appOrder = { 'Messages', 'profile', 'Map', 'Stats' },
-    appOverrides = {
-        profile = {
-            label = 'Mi Perfil',
-            glyph = 'P',
-            color = '#14b8a6',
-        },
-    },
 })
 ```
 
@@ -680,7 +673,7 @@ From a tablet iframe app, use the SDK callback bridge:
 const result = await fetchNui('phone:tablet:setConfig', { config });
 ```
 
-The host tablet applies returned config immediately, so apps can update wallpaper, notifications and icon metadata without reopening the tablet.
+The host tablet applies returned config immediately, so apps can update wallpaper, notifications and icon order without reopening the tablet.
 
 ---
 

@@ -241,12 +241,6 @@ button:hover {
   flex: 0 0 auto;
 }
 
-.profile-icon-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(4.5rem, 0.45fr) minmax(5.5rem, 0.55fr);
-  gap: 0.5rem;
-}
-
 .profile-actions {
   display: flex;
   justify-content: flex-end;
@@ -279,8 +273,7 @@ button:hover {
   .profile-input-row,
   .profile-hero,
   .profile-form-grid,
-  .profile-toggle-row,
-  .profile-icon-grid {
+  .profile-toggle-row {
     grid-template-columns: 1fr;
   }
 

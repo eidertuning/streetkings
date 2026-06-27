@@ -277,10 +277,11 @@
         <div class="phone-screen-frost"></div>
         <div class="phone-view phone-home is-active" id="phoneHome">
           <div class="phone-home-tools">
-            <button type="button" id="phoneCustomizeToggle" class="phone-home-tool" data-i18n="phone.customize_home">Editar</button>
-            <button type="button" id="phoneCustomizeSave" class="phone-home-tool phone-home-tool--primary" data-i18n="common.save" style="display:none">Guardar</button>
+            <button type="button" id="phoneCustomizeSave" class="phone-home-tool phone-home-tool--primary" aria-label="Guardar" style="display:none">
+              <span class="phone-save-icon" aria-hidden="true"></span>
+            </button>
           </div>
-          <div class="phone-customize-hint" id="phoneCustomizeHint" data-i18n="phone.customize_hint">Arrastra los iconos para moverlos. Doble click para editar un icono.</div>
+          <div class="phone-customize-hint" id="phoneCustomizeHint" data-i18n="phone.customize_hint">Mantén pulsado un icono para ordenar la pantalla.</div>
           <div class="phone-apps-grid" id="phoneAppsGrid">
             <button class="phone-app" data-app="Messages">
               <div class="phone-app-icon" style="--app-color:#3b82f6">

@@ -288,12 +288,14 @@
   z-index: 3;
   display: flex;
   gap: 0.45rem;
+  pointer-events: none;
 }
 
 .phone-home-tool {
-  min-height: 2rem;
-  max-width: 9rem;
-  padding: 0 0.75rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(0, 0, 0, 0.28);
   color: rgba(255, 255, 255, 0.82);
@@ -303,15 +305,45 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   cursor: pointer;
+  display: grid;
+  place-items: center;
+  pointer-events: auto;
 }
 
 .phone-home-tool--primary {
   border-color: rgba(255, 209, 71, 0.45);
   background: rgba(255, 209, 71, 0.14);
   color: var(--sk-color-spray);
+}
+
+.phone-save-icon {
+  position: relative;
+  width: 1rem;
+  height: 1rem;
+  display: block;
+  border: 2px solid currentColor;
+}
+
+.phone-save-icon::before,
+.phone-save-icon::after {
+  content: "";
+  position: absolute;
+  left: 0.18rem;
+  right: 0.18rem;
+}
+
+.phone-save-icon::before {
+  top: 0.12rem;
+  height: 0.25rem;
+  background: currentColor;
+}
+
+.phone-save-icon::after {
+  bottom: 0.12rem;
+  height: 0.32rem;
+  border: 1px solid currentColor;
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .phone-customize-hint {
@@ -376,6 +408,8 @@
   min-width: 0;
   overflow: hidden;
   border-radius: 0.5rem;
+  touch-action: none;
+  user-select: none;
 }
 
 .phone-app:hover  { transform: scale(1.08); }
@@ -383,23 +417,21 @@
 
 .sk-phone.is-customizing-home .phone-app {
   cursor: grab;
-  background: rgba(255, 255, 255, 0.035);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-}
-
-.sk-phone.is-customizing-home .phone-app::after {
-  content: "⋮⋮";
-  position: absolute;
-  right: 0.3rem;
-  top: 0.25rem;
-  color: rgba(255, 255, 255, 0.35);
-  font-family: "Poppins", system-ui, sans-serif;
-  font-size: 0.72rem;
+  animation: phone-icon-wiggle 0.18s ease-in-out infinite alternate;
 }
 
 .phone-app.is-dragging {
-  opacity: 0.45;
-  transform: scale(0.96);
+  position: fixed;
+  z-index: 50;
+  opacity: 0.94;
+  transform: scale(1.08);
+  pointer-events: none;
+  animation: none;
+}
+
+@keyframes phone-icon-wiggle {
+  from { transform: rotate(-0.7deg); }
+  to { transform: rotate(0.7deg); }
 }
 
 .phone-app-icon {

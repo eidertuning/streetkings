@@ -139,6 +139,14 @@ RegisterNUICallback('phone:close', function(_, cb)
     cb({})
 end)
 
+AddEventHandler('onClientResourceStop', function(resourceName)
+    if resourceName ~= GetCurrentResourceName() then return end
+    isOpen = false
+    controllerModeEnabled = false
+    SendNUIMessage({ type = 'phone:close' })
+    SetNuiFocus(false, false)
+end)
+
 AddEventHandler('streetkings:phone:toggle', function()
     togglePhoneForCurrentState(false)
 end)

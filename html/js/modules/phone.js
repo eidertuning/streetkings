@@ -22,7 +22,6 @@
   var elExternalFrame = document.getElementById('phoneExternalFrame');
   var elExternalShell = document.getElementById('phoneExternalShell');
   var elAppsGrid = document.getElementById('phoneAppsGrid');
-  var elCustomizeToggle = document.getElementById('phoneCustomizeToggle');
   var elCustomizeSave = document.getElementById('phoneCustomizeSave');
   var elCustomizeHint = document.getElementById('phoneCustomizeHint');
 
@@ -32,7 +31,10 @@
   var externalApps = {};
   var tabletConfig = null;
   var customizeMode = false;
-  var draggedAppId = null;
+  var dragState = null;
+  var longPressTimer = null;
+  var longPressPoint = null;
+  var suppressNextClick = false;
   var externalCurrentAppId = null;
   var externalLaunchData = null;
   var controllerEnabled = false;
@@ -86,8 +88,7 @@
     return {
       wallpaper: 'streetkings',
       notifications: { enabled: true, messagePreviews: true },
-      appOrder: ['Messages', 'Map', 'Vehicles', 'Stats', 'profile', 'RealEstate', 'Towing', 'Leaderboards', 'Settings'],
-      appOverrides: {}
+      appOrder: ['Messages', 'Map', 'Vehicles', 'Stats', 'profile', 'RealEstate', 'Towing', 'Leaderboards', 'Settings']
     };
   }
 
@@ -105,9 +106,6 @@
       base.appOrder = config.appOrder.filter(function (appId, index, list) {
         return typeof appId === 'string' && appId && list.indexOf(appId) === index;
       });
-    }
-    if (config.appOverrides && typeof config.appOverrides === 'object') {
-      base.appOverrides = config.appOverrides;
     }
     return base;
   }
@@ -130,31 +128,6 @@
     return index === -1 ? 9999 : index;
   }
 
-  function getOverride(appId) {
-    return tabletConfig && tabletConfig.appOverrides ? tabletConfig.appOverrides[appId] : null;
-  }
-
-  function applyAppOverride(btn) {
-    var appId = getAppIdFromButton(btn);
-    var override = getOverride(appId) || {};
-    var icon = btn.querySelector('.phone-app-icon');
-    var label = btn.querySelector('.phone-app-label');
-    if (override.color && icon) {
-      icon.style.setProperty('--app-color', override.color);
-    }
-    if (override.label && label) {
-      label.textContent = override.label;
-    }
-    if (override.glyph && icon) {
-      var badge = appId === 'Messages' ? icon.querySelector('#msgBadge') : null;
-      icon.innerHTML = '';
-      var glyph = document.createElement('i');
-      glyph.dataset.glyph = override.glyph;
-      icon.appendChild(glyph);
-      if (badge) icon.appendChild(badge);
-    }
-  }
-
   function applyWallpaper() {
     var cfg = tabletConfig || defaultTabletConfig();
     elPhone.dataset.wallpaper = cfg.wallpaper || 'streetkings';
@@ -172,8 +145,6 @@
     });
     buttons.forEach(function (btn) {
       btn.dataset.appId = getAppIdFromButton(btn);
-      btn.draggable = customizeMode;
-      applyAppOverride(btn);
       elAppsGrid.appendChild(btn);
     });
   }
@@ -232,7 +203,6 @@
       btn.className = 'phone-app';
       btn.dataset.externalApp = appId;
       btn.dataset.appId = appId;
-      btn.draggable = customizeMode;
 
       var icon = document.createElement('div');
       icon.className = 'phone-app-icon';
@@ -250,7 +220,6 @@
       btn.appendChild(icon);
       btn.appendChild(label);
       elAppsGrid.appendChild(btn);
-      applyAppOverride(btn);
     });
 
     applyHomeLayout();
@@ -739,53 +708,124 @@
     elPhone.classList.toggle('is-customizing-home', customizeMode);
     if (elCustomizeSave) elCustomizeSave.style.display = customizeMode ? '' : 'none';
     if (elCustomizeHint) elCustomizeHint.classList.toggle('is-active', customizeMode);
-    if (elCustomizeToggle) elCustomizeToggle.textContent = customizeMode ? t('common.cancel') : t('phone.customize_home');
+    if (!customizeMode) cancelHomePointer();
     applyHomeLayout();
   }
 
-  function editAppIcon(btn) {
-    if (!btn) return;
-    var appId = getAppIdFromButton(btn);
-    if (!appId) return;
-    var labelEl = btn.querySelector('.phone-app-label');
-    var iconEl = btn.querySelector('.phone-app-icon');
-    var current = getOverride(appId) || {};
-    var label = window.prompt(t('phone.customize_label_prompt'), current.label || (labelEl ? labelEl.textContent : appId));
-    if (label === null) return;
-    var glyph = window.prompt(t('phone.customize_glyph_prompt'), current.glyph || (label || appId).charAt(0).toUpperCase());
-    if (glyph === null) return;
-    var color = window.prompt(t('phone.customize_color_prompt'), current.color || (iconEl ? iconEl.style.getPropertyValue('--app-color') : '#ff006a'));
-    if (color === null) return;
+  function clearLongPressTimer() {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+    }
+    longPressPoint = null;
+  }
 
-    tabletConfig = normalizeTabletConfig(tabletConfig);
-    tabletConfig.appOverrides[appId] = {
-      label: String(label || '').slice(0, 32),
-      glyph: String(glyph || '').slice(0, 4),
-      color: String(color || '').slice(0, 32)
+  function buttonFromPointerEvent(event) {
+    return event.target && event.target.closest ? event.target.closest('.phone-app[data-app-id]') : null;
+  }
+
+  function startIconDrag(btn, event) {
+    if (!btn || dragState) return;
+    clearLongPressTimer();
+    setCustomizeMode(true);
+    suppressNextClick = true;
+    var rect = btn.getBoundingClientRect();
+    dragState = {
+      btn: btn,
+      pointerId: event.pointerId,
+      offsetX: event.clientX - rect.left,
+      offsetY: event.clientY - rect.top,
+      width: rect.width,
+      height: rect.height,
     };
-    applyHomeLayout();
-    saveTabletConfig();
+    btn.classList.add('is-dragging');
+    btn.style.width = rect.width + 'px';
+    btn.style.height = rect.height + 'px';
+    btn.style.left = rect.left + 'px';
+    btn.style.top = rect.top + 'px';
+    btn.setPointerCapture(event.pointerId);
+    event.preventDefault();
   }
 
-  function moveDraggedApp(target, event) {
-    if (!customizeMode || !draggedAppId || !target) return;
-    var dragged = elAppsGrid.querySelector('.phone-app[data-app-id="' + draggedAppId + '"]');
-    if (!dragged || dragged === target) return;
-    var targetRect = target.getBoundingClientRect();
-    var insertAfter = event && event.clientY > targetRect.top + targetRect.height / 2;
-    elAppsGrid.insertBefore(dragged, insertAfter ? target.nextSibling : target);
+  function beginHomePointer(event) {
+    var btn = buttonFromPointerEvent(event);
+    if (!btn || event.button > 0) return;
+    clearLongPressTimer();
+    if (customizeMode) {
+      startIconDrag(btn, event);
+      return;
+    }
+    longPressTimer = setTimeout(function () {
+      startIconDrag(btn, event);
+    }, 520);
+    longPressPoint = { x: event.clientX, y: event.clientY };
+  }
+
+  function moveHomePointer(event) {
+    if (!dragState && longPressPoint) {
+      var dx = event.clientX - longPressPoint.x;
+      var dy = event.clientY - longPressPoint.y;
+      if ((dx * dx + dy * dy) > 64) {
+        clearLongPressTimer();
+      }
+    }
+    if (!dragState || dragState.pointerId !== event.pointerId) {
+      return;
+    }
+    var btn = dragState.btn;
+    btn.style.left = (event.clientX - dragState.offsetX) + 'px';
+    btn.style.top = (event.clientY - dragState.offsetY) + 'px';
+    var target = document.elementFromPoint(event.clientX, event.clientY);
+    target = target && target.closest ? target.closest('.phone-app[data-app-id]') : null;
+    if (target && target !== btn && elAppsGrid.contains(target)) {
+      var targetRect = target.getBoundingClientRect();
+      var insertAfter = event.clientY > targetRect.top + targetRect.height / 2;
+      elAppsGrid.insertBefore(btn, insertAfter ? target.nextSibling : target);
+    }
+    event.preventDefault();
+  }
+
+  function endHomePointer(event) {
+    clearLongPressTimer();
+    if (!dragState || dragState.pointerId !== event.pointerId) {
+      return;
+    }
+    var btn = dragState.btn;
+    btn.classList.remove('is-dragging');
+    btn.style.width = '';
+    btn.style.height = '';
+    btn.style.left = '';
+    btn.style.top = '';
+    try { btn.releasePointerCapture(event.pointerId); } catch (_) {}
+    dragState = null;
+    saveTabletConfig();
+    event.preventDefault();
+  }
+
+  function cancelHomePointer() {
+    clearLongPressTimer();
+    if (!dragState) return;
+    var btn = dragState.btn;
+    btn.classList.remove('is-dragging');
+    btn.style.width = '';
+    btn.style.height = '';
+    btn.style.left = '';
+    btn.style.top = '';
+    dragState = null;
   }
 
   $(elPhone).on('click', '.phone-app[data-app]', function (event) {
-    if (customizeMode) {
+    if (customizeMode || suppressNextClick) {
       event.preventDefault();
+      suppressNextClick = false;
       return;
     }
     showApp($(this).data('app'));
   });
   $(elPhone).on('click', '.phone-app[data-external-app]', function (event) {
-    if (customizeMode) {
+    if (customizeMode || suppressNextClick) {
       event.preventDefault();
+      suppressNextClick = false;
       return;
     }
     showExternalApp($(this).data('external-app'));
@@ -799,12 +839,6 @@
     if (currentApp) { showHome(); } else { requestClose(); }
   });
 
-  if (elCustomizeToggle) {
-    elCustomizeToggle.addEventListener('click', function () {
-      setCustomizeMode(!customizeMode);
-    });
-  }
-
   if (elCustomizeSave) {
     elCustomizeSave.addEventListener('click', function () {
       saveTabletConfig();
@@ -813,40 +847,10 @@
   }
 
   if (elAppsGrid) {
-    elAppsGrid.addEventListener('dragstart', function (event) {
-      var btn = event.target.closest('.phone-app[data-app-id]');
-      if (!customizeMode || !btn) {
-        event.preventDefault();
-        return;
-      }
-      draggedAppId = getAppIdFromButton(btn);
-      btn.classList.add('is-dragging');
-      event.dataTransfer.effectAllowed = 'move';
-      event.dataTransfer.setData('text/plain', draggedAppId);
-    });
-
-    elAppsGrid.addEventListener('dragover', function (event) {
-      if (!customizeMode || !draggedAppId) return;
-      var target = event.target.closest('.phone-app[data-app-id]');
-      if (!target) return;
-      event.preventDefault();
-      moveDraggedApp(target, event);
-    });
-
-    elAppsGrid.addEventListener('dragend', function () {
-      var dragged = elAppsGrid.querySelector('.phone-app.is-dragging');
-      if (dragged) dragged.classList.remove('is-dragging');
-      draggedAppId = null;
-      if (customizeMode) saveTabletConfig();
-    });
-
-    elAppsGrid.addEventListener('dblclick', function (event) {
-      if (!customizeMode) return;
-      var btn = event.target.closest('.phone-app[data-app-id]');
-      if (!btn) return;
-      event.preventDefault();
-      editAppIcon(btn);
-    });
+    elAppsGrid.addEventListener('pointerdown', beginHomePointer);
+    elAppsGrid.addEventListener('pointermove', moveHomePointer);
+    elAppsGrid.addEventListener('pointerup', endHomePointer);
+    elAppsGrid.addEventListener('pointercancel', cancelHomePointer);
   }
 
   function clearControllerModeFromNonPadInput() {

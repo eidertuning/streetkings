@@ -11,9 +11,6 @@
   var wallpaperSelect = document.getElementById('wallpaperSelect');
   var notifEnabled = document.getElementById('notifEnabled');
   var notifPreview = document.getElementById('notifPreview');
-  var profileIconLabel = document.getElementById('profileIconLabel');
-  var profileIconGlyph = document.getElementById('profileIconGlyph');
-  var profileIconColor = document.getElementById('profileIconColor');
   var saveBtn = document.getElementById('saveBtn');
   var saveTabletBtn = document.getElementById('saveTabletBtn');
   var pingBtn = document.getElementById('pingBtn');
@@ -25,7 +22,6 @@
       wallpaper: 'streetkings',
       notifications: { enabled: true, messagePreviews: true },
       appOrder: [],
-      appOverrides: {},
     };
   }
 
@@ -52,15 +48,10 @@
   function renderTablet(config) {
     tabletConfig = Object.assign(defaultTabletConfig(), config || {});
     tabletConfig.notifications = Object.assign({ enabled: true, messagePreviews: true }, tabletConfig.notifications || {});
-    tabletConfig.appOverrides = tabletConfig.appOverrides || {};
-    var profileOverride = tabletConfig.appOverrides.profile || {};
 
     wallpaperSelect.value = tabletConfig.wallpaper || 'streetkings';
     notifEnabled.checked = tabletConfig.notifications.enabled !== false;
     notifPreview.checked = tabletConfig.notifications.messagePreviews !== false;
-    profileIconLabel.value = profileOverride.label || 'Perfil';
-    profileIconGlyph.value = profileOverride.glyph || 'P';
-    profileIconColor.value = profileOverride.color || '#14b8a6';
   }
 
   function loadProfile() {
@@ -84,12 +75,6 @@
       messagePreviews: notifPreview.checked,
     });
     next.wallpaper = wallpaperSelect.value || 'streetkings';
-    next.appOverrides = Object.assign({}, next.appOverrides || {});
-    next.appOverrides.profile = {
-      label: (profileIconLabel.value || 'Perfil').slice(0, 32),
-      glyph: (profileIconGlyph.value || 'P').slice(0, 4),
-      color: (profileIconColor.value || '#14b8a6').slice(0, 7),
-    };
     return next;
   }
 

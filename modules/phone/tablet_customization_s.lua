@@ -15,7 +15,6 @@ local DEFAULT_TABLET = {
         'Leaderboards',
         'Settings',
     },
-    appOverrides = {},
 }
 
 local WALLPAPERS = {
@@ -34,25 +33,11 @@ local function copy(value)
     return result
 end
 
-local function cleanText(value, maxLen)
-    value = tostring(value or ''):gsub('[\r\n\t]', ' ')
-    value = value:gsub('%s+', ' '):gsub('^%s+', ''):gsub('%s+$', '')
-    return value:sub(1, maxLen or 64)
-end
-
 local function normalizeAppId(value)
     value = tostring(value or '')
     if value == '' or #value > 32 then return nil end
     if not value:match('^[%w_]+$') then return nil end
     return value
-end
-
-local function normalizeColor(value)
-    value = cleanText(value, 32)
-    if value:match('^#%x%x%x$') or value:match('^#%x%x%x%x%x%x$') then
-        return value
-    end
-    return nil
 end
 
 local function defaultTablet()
@@ -80,23 +65,6 @@ local function normalizeConfig(input)
             if appId and not seen[appId] then
                 seen[appId] = true
                 cfg.appOrder[#cfg.appOrder + 1] = appId
-            end
-        end
-    end
-
-    if type(input.appOverrides) == 'table' then
-        cfg.appOverrides = {}
-        for rawId, rawOverride in pairs(input.appOverrides) do
-            local appId = normalizeAppId(rawId)
-            if appId and type(rawOverride) == 'table' then
-                local override = {}
-                local label = cleanText(rawOverride.label, 32)
-                local glyph = cleanText(rawOverride.glyph, 4)
-                local color = normalizeColor(rawOverride.color)
-                if label ~= '' then override.label = label end
-                if glyph ~= '' then override.glyph = glyph end
-                if color then override.color = color end
-                if next(override) then cfg.appOverrides[appId] = override end
             end
         end
     end
@@ -142,27 +110,6 @@ lib.callback.register('streetkings:tablet:setLayout', function(source, data)
 
     local config = readTabletConfig(source)
     config.appOrder = normalizeConfig({ appOrder = data and data.appOrder or {} }).appOrder
-    local ok = writeTabletConfig(source, config)
-    return { ok = ok, error = ok and nil or 'write_failed', config = config }
-end)
-
-lib.callback.register('streetkings:tablet:setAppOverride', function(source, data)
-    if not SKSaves.hasActiveSave(source) then
-        return { ok = false, error = 'no_active_save', config = defaultTablet() }
-    end
-
-    local appId = normalizeAppId(data and data.appId)
-    if not appId then
-        return { ok = false, error = 'invalid_app_id', config = readTabletConfig(source) }
-    end
-
-    local config = readTabletConfig(source)
-    local overrides = normalizeConfig({
-        appOverrides = {
-            [appId] = data and data.override or {},
-        },
-    }).appOverrides
-    config.appOverrides[appId] = overrides[appId]
     local ok = writeTabletConfig(source, config)
     return { ok = ok, error = ok and nil or 'write_failed', config = config }
 end)
