@@ -38,8 +38,8 @@
   var externalCurrentAppId = null;
   var externalLaunchData = null;
   var controllerEnabled = false;
-  var HOME_GRID_COLUMNS = 4;
-  var HOME_GRID_MIN_SLOTS = 24;
+  var HOME_GRID_COLUMNS = 12;
+  var HOME_GRID_MIN_SLOTS = 96;
   var controllerGlyphs = SK.controllerGlyphs;
   var WALLPAPERS = ['streetkings', 'midnight', 'neon', 'garage'];
 
@@ -785,24 +785,26 @@
     suppressNextClick = true;
     var rect = btn.getBoundingClientRect();
     var slot = btn.closest('.phone-app-slot');
-    var ghost = btn.cloneNode(true);
-    ghost.classList.add('phone-app-drag-ghost');
-    ghost.classList.remove('is-dragging');
-    document.body.appendChild(ghost);
-    var ghostRect = ghost.getBoundingClientRect();
+    if (!slot) return;
+    var placeholder = document.createElement('div');
+    placeholder.className = 'phone-app-placeholder';
+    slot.insertBefore(placeholder, btn);
+    document.body.appendChild(btn);
     dragState = {
       btn: btn,
-      ghost: ghost,
+      placeholder: placeholder,
       slot: slot,
       pointerId: event.pointerId,
-      offsetX: ghostRect.width / 2,
-      offsetY: ghostRect.height / 2,
-      width: ghostRect.width,
-      height: ghostRect.height,
+      offsetX: event.clientX - rect.left,
+      offsetY: event.clientY - rect.top,
+      width: rect.width,
+      height: rect.height,
     };
     btn.classList.add('is-dragging');
-    ghost.style.left = (event.clientX - dragState.offsetX) + 'px';
-    ghost.style.top = (event.clientY - dragState.offsetY) + 'px';
+    btn.style.width = rect.width + 'px';
+    btn.style.height = rect.height + 'px';
+    btn.style.left = (event.clientX - dragState.offsetX) + 'px';
+    btn.style.top = (event.clientY - dragState.offsetY) + 'px';
     btn.setPointerCapture(event.pointerId);
     event.preventDefault();
   }
@@ -833,10 +835,8 @@
       return;
     }
     var btn = dragState.btn;
-    if (dragState.ghost) {
-      dragState.ghost.style.left = (event.clientX - dragState.offsetX) + 'px';
-      dragState.ghost.style.top = (event.clientY - dragState.offsetY) + 'px';
-    }
+    btn.style.left = (event.clientX - dragState.offsetX) + 'px';
+    btn.style.top = (event.clientY - dragState.offsetY) + 'px';
     var target = document.elementFromPoint(event.clientX, event.clientY);
     var targetSlot = target && target.closest ? target.closest('.phone-app-slot') : null;
     if (targetSlot && targetSlot !== dragState.slot && elAppsGrid.contains(targetSlot)) {
@@ -845,7 +845,7 @@
       if (occupant && occupant !== btn && previousSlot) {
         previousSlot.appendChild(occupant);
       }
-      targetSlot.appendChild(btn);
+      targetSlot.appendChild(dragState.placeholder);
       dragState.slot = targetSlot;
     }
     event.preventDefault();
@@ -857,8 +857,14 @@
       return;
     }
     var btn = dragState.btn;
+    if (dragState.placeholder && dragState.placeholder.parentNode) {
+      dragState.placeholder.parentNode.replaceChild(btn, dragState.placeholder);
+    }
     btn.classList.remove('is-dragging');
-    if (dragState.ghost) dragState.ghost.remove();
+    btn.style.left = '';
+    btn.style.top = '';
+    btn.style.width = '';
+    btn.style.height = '';
     try { btn.releasePointerCapture(event.pointerId); } catch (_) {}
     dragState = null;
     saveTabletConfig();
@@ -869,8 +875,14 @@
     clearLongPressTimer();
     if (!dragState) return;
     var btn = dragState.btn;
+    if (dragState.placeholder && dragState.placeholder.parentNode) {
+      dragState.placeholder.parentNode.replaceChild(btn, dragState.placeholder);
+    }
     btn.classList.remove('is-dragging');
-    if (dragState.ghost) dragState.ghost.remove();
+    btn.style.left = '';
+    btn.style.top = '';
+    btn.style.width = '';
+    btn.style.height = '';
     dragState = null;
   }
 

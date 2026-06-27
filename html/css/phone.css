@@ -277,8 +277,8 @@
 /* Home screen */
 
 .phone-home {
-  padding: 0.6rem 1.4rem 0.5rem;
-  justify-content: center;
+  padding: 0.55rem 1rem 0.45rem;
+  justify-content: flex-start;
 }
 
 .phone-home-tools {
@@ -385,15 +385,16 @@
 
 .phone-apps-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-auto-rows: clamp(78px, 7.3vw, 100px);
-  gap: 0.45rem 0.5rem;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: clamp(70px, 5.9vw, 86px);
+  gap: 0.26rem 0.3rem;
   width: 100%;
-  max-width: 725px;
-  margin: 0 auto;
+  height: 100%;
+  max-width: none;
+  margin: 0;
   position: relative;
   z-index: 1;
-  align-content: center;
+  align-content: start;
 }
 
 .phone-app-slot {
@@ -423,7 +424,7 @@
   user-select: none;
   width: min(100%, 6.3rem);
   height: auto;
-  min-height: 5.65rem;
+  min-height: 4.9rem;
   justify-content: center;
 }
 
@@ -436,17 +437,18 @@
 }
 
 .phone-app.is-dragging {
-  opacity: 0;
-}
-
-.phone-app-drag-ghost {
   position: fixed;
-  z-index: 50;
-  opacity: 0.94;
-  transform: scale(1.08);
+  z-index: 10020;
+  opacity: 0.96;
+  transform: scale(1.05);
   pointer-events: none;
   animation: none;
-  width: min(6.3rem, 24vw);
+  will-change: left, top;
+}
+
+.phone-app-placeholder {
+  width: min(100%, 5.4rem);
+  min-height: 4.9rem;
 }
 
 @keyframes phone-icon-wiggle {
@@ -455,9 +457,9 @@
 }
 
 .phone-app-icon {
-  width: clamp(48px, 5.625vw, 68px);
-  height: clamp(48px, 5.625vw, 68px);
-  border-radius: 16px;
+  width: clamp(42px, 4.6vw, 62px);
+  height: clamp(42px, 4.6vw, 62px);
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
