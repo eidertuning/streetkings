@@ -27,6 +27,12 @@
   var lastPromptKey = '';
   var lastPromptUsesDefaultActionText = false;
 
+  function t(key, params) {
+    var SK = window.StreetKings || {};
+    if (SK.i18n && SK.i18n.t) return SK.i18n.t(key, params);
+    return key;
+  }
+
   function padZero(n) { return n < 10 ? '0' + n : '' + n; }
 
   function buildTimestamp() {
@@ -58,7 +64,7 @@
       return text;
     }
 
-    return 'Press ' + controllerGlyphs.getLabel(key) + ' to Start';
+    return t('events.press_to_start', { key: controllerGlyphs.getLabel(key) });
   }
 
   controllerGlyphs.onChange(function () {
@@ -98,16 +104,16 @@
         elPromptTxt.style.display = 'none';
         elPromptRich.style.display = 'flex';
         elPromptTitle.textContent = e.data.title || '';
-        elPromptType.textContent = e.data.eventType || 'Race';
+        elPromptType.textContent = e.data.eventType || t('events.race');
         if (e.data.vehicleClass) {
-          elPromptClass.textContent = e.data.vehicleClass + ' Class';
+          elPromptClass.textContent = t('events.class_label', { class: e.data.vehicleClass });
           elPromptClass.style.display = '';
         } else {
           elPromptClass.style.display = 'none';
         }
         elPromptPb.textContent = e.data.personalBest != null
-          ? 'PB ' + formatPromptTime(e.data.personalBest)
-          : 'No Personal Best';
+          ? t('events.pb_short', { value: formatPromptTime(e.data.personalBest) })
+          : t('events.no_personal_best');
         lastPromptUsesDefaultActionText = !e.data.text;
         elPromptAction.textContent = formatPromptActionText(e.data.key, e.data.text);
       } else {

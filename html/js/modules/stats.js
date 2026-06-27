@@ -3,6 +3,10 @@
 
   var SK = window.StreetKings;
 
+  function t(key, replacements) {
+    return SK.i18n ? SK.i18n.t(key, replacements) : key;
+  }
+
   function fmtCash(n) {
     return '$' + Math.floor(n).toLocaleString('en-US');
   }
@@ -25,43 +29,43 @@
 
   var STAT_CATEGORIES = [
     {
-      name: 'Driving',
+      nameKey: 'stats.driving',
       icon: 'fa-road',
       stats: [
-        { key: 'totalMilesDriven',   label: 'Miles Driven',        fmt: fmtMiles, icon: 'fa-gauge-high' },
-        { key: 'topSpeedMph',        label: 'Top Speed',            fmt: fmtSpeed, icon: 'fa-bolt' },
-        { key: 'totalRepairs',       label: 'Repairs',              fmt: fmtInt,   icon: 'fa-wrench' },
-        { key: 'speedCameraFlashes', label: 'Speed Cam Flashes',    fmt: fmtInt,   icon: 'fa-camera' },
+        { key: 'totalMilesDriven',   labelKey: 'stats.miles_driven',        fmt: fmtMiles, icon: 'fa-gauge-high' },
+        { key: 'topSpeedMph',        labelKey: 'stats.top_speed',           fmt: fmtSpeed, icon: 'fa-bolt' },
+        { key: 'totalRepairs',       labelKey: 'stats.repairs',             fmt: fmtInt,   icon: 'fa-wrench' },
+        { key: 'speedCameraFlashes', labelKey: 'stats.speed_cam_flashes',   fmt: fmtInt,   icon: 'fa-camera' },
       ],
     },
     {
-      name: 'Economy',
+      nameKey: 'stats.economy',
       icon: 'fa-coins',
       stats: [
-        { key: 'totalCashEarned',    label: 'Cash Earned',         fmt: fmtCash, icon: 'fa-arrow-trend-up' },
-        { key: 'totalCashSpent',     label: 'Cash Spent',          fmt: fmtCash, icon: 'fa-arrow-trend-down' },
-        { key: 'clothingPurchased',  label: 'Clothing Purchased',  fmt: fmtInt,  icon: 'fa-shirt' },
-        { key: 'vehiclesOwned',      label: 'Vehicles Owned',      fmt: fmtInt,  icon: 'fa-car' },
-        { key: 'propertiesOwned',    label: 'Properties Owned',    fmt: fmtInt,  icon: 'fa-house' },
+        { key: 'totalCashEarned',    labelKey: 'stats.cash_earned',         fmt: fmtCash, icon: 'fa-arrow-trend-up' },
+        { key: 'totalCashSpent',     labelKey: 'stats.cash_spent',          fmt: fmtCash, icon: 'fa-arrow-trend-down' },
+        { key: 'clothingPurchased',  labelKey: 'stats.clothing_purchased',  fmt: fmtInt,  icon: 'fa-shirt' },
+        { key: 'vehiclesOwned',      labelKey: 'stats.vehicles_owned',      fmt: fmtInt,  icon: 'fa-car' },
+        { key: 'propertiesOwned',    labelKey: 'stats.properties_owned',    fmt: fmtInt,  icon: 'fa-house' },
       ],
     },
     {
-      name: 'Activities',
+      nameKey: 'stats.activities',
       icon: 'fa-trophy',
       stats: [
-        { key: 'racesCompleted',      label: 'Races Completed',     fmt: fmtInt, icon: 'fa-flag-checkered' },
-        { key: 'racesWon',            label: 'Races Won',           fmt: fmtInt, icon: 'fa-medal' },
-        { key: 'npcChallengesWon',    label: 'NPC Challenges Won',  fmt: fmtInt, icon: 'fa-users' },
-        { key: 'rampagesCompleted',   label: 'Rampages',            fmt: fmtInt, icon: 'fa-explosion' },
-        { key: 'stuntJumpsCompleted', label: 'Stunt Jumps',         fmt: fmtInt, icon: 'fa-jet-fighter-up' },
+        { key: 'racesCompleted',      labelKey: 'stats.races_completed',     fmt: fmtInt, icon: 'fa-flag-checkered' },
+        { key: 'racesWon',            labelKey: 'stats.races_won',           fmt: fmtInt, icon: 'fa-medal' },
+        { key: 'npcChallengesWon',    labelKey: 'stats.npc_challenges_won',  fmt: fmtInt, icon: 'fa-users' },
+        { key: 'rampagesCompleted',   labelKey: 'stats.rampages',            fmt: fmtInt, icon: 'fa-explosion' },
+        { key: 'stuntJumpsCompleted', labelKey: 'stats.stunt_jumps',         fmt: fmtInt, icon: 'fa-jet-fighter-up' },
       ],
     },
     {
-      name: 'Police',
+      nameKey: 'stats.police',
       icon: 'fa-shield-halved',
       stats: [
-        { key: 'policeBusts',   label: 'Times Busted',  fmt: fmtInt, icon: 'fa-handcuffs' },
-        { key: 'policeEscapes', label: 'Escapes',        fmt: fmtInt, icon: 'fa-person-running' },
+        { key: 'policeBusts',   labelKey: 'stats.times_busted',  fmt: fmtInt, icon: 'fa-handcuffs' },
+        { key: 'policeEscapes', labelKey: 'stats.escapes',       fmt: fmtInt, icon: 'fa-person-running' },
       ],
     },
   ];
@@ -76,20 +80,20 @@
     html += '<div class="phone-stats-hero">';
     html +=   '<div class="phone-stats-cash">' + fmtCash(data.cash) + '</div>';
     html +=   '<div class="phone-stats-level-row">';
-    html +=     '<span class="phone-stats-level-badge">LVL ' + data.level + '</span>';
+    html +=     '<span class="phone-stats-level-badge">' + t('vehicles.level_short', { level: data.level }) + '</span>';
     html +=     '<div class="phone-stats-xp-bar">';
     html +=       '<div class="phone-stats-xp-fill" style="width:' + pct + '%"></div>';
     html +=     '</div>';
-    html +=     '<span class="phone-stats-xp-label">' + (isMax ? 'MAX' : pct + '%') + '</span>';
+    html +=     '<span class="phone-stats-xp-label">' + (isMax ? t('common.max') : pct + '%') + '</span>';
     html +=   '</div>';
     if (isMax) {
-      html += '<div class="phone-stats-xp-meta">Maximum level</div>';
+      html += '<div class="phone-stats-xp-meta">' + t('stats.maximum_level') + '</div>';
     } else {
       var remain = data.xpRemainingToNext != null ? data.xpRemainingToNext : 0;
       var nextLv = data.nextLevel != null ? data.nextLevel : data.level + 1;
       html += '<div class="phone-stats-xp-meta">';
       html +=   '<span class="phone-stats-xp-meta-this">' + fmtXp(data.xpInLevel) + ' / ' + fmtXp(data.xpNeeded) + '</span>';
-      html +=   '<span class="phone-stats-xp-meta-next">' + fmtXp(remain) + ' required for Level ' + nextLv + '</span>';
+      html +=   '<span class="phone-stats-xp-meta-next">' + t('stats.required_for_level', { xp: fmtXp(remain), level: nextLv }) + '</span>';
       html += '</div>';
     }
     html += '</div>';
@@ -103,7 +107,7 @@
       html += '<div class="phone-stats-category">';
       html +=   '<div class="phone-stats-cat-header">';
       html +=     '<i class="fa-solid ' + cat.icon + '"></i>';
-      html +=     '<span>' + cat.name + '</span>';
+      html +=     '<span>' + t(cat.nameKey) + '</span>';
       html +=   '</div>';
       for (var s = 0; s < cat.stats.length; s++) {
         var def = cat.stats[s];
@@ -111,7 +115,7 @@
         html += '<div class="phone-stats-row">';
         html +=   '<div class="phone-stats-row-left">';
         html +=     '<i class="fa-solid ' + def.icon + '"></i>';
-        html +=     '<span>' + def.label + '</span>';
+        html +=     '<span>' + t(def.labelKey) + '</span>';
         html +=   '</div>';
         html +=   '<span class="phone-stats-row-value">' + def.fmt(val) + '</span>';
         html += '</div>';
@@ -125,7 +129,7 @@
 
   window.SKPhone.registerApp('Stats', function () {
     var container = document.getElementById('phoneAppStatsContent');
-    if (container) container.innerHTML = '<div class="phone-stats-loading">Loading...</div>';
+    if (container) container.innerHTML = '<div class="phone-stats-loading">' + t('common.loading') + '</div>';
 
     SK.nui.post('phone:stats:getData').done(function (data) {
       window.SKPhone.setCashBalance(data.cash);

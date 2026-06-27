@@ -50,6 +50,11 @@
 
   // -- Helpers -----------------------------------------------------------------
 
+  function t(key, params) {
+    if (SK.i18n && SK.i18n.t) return SK.i18n.t(key, params);
+    return key;
+  }
+
   function formatTime(seconds) {
     var m  = Math.floor(seconds / 60);
     var s  = Math.floor(seconds % 60);
@@ -110,7 +115,7 @@
   }
 
   function formatLevelRange(oldLevel, newLevel) {
-    return 'Lv. ' + oldLevel + ' -> Lv. ' + newLevel;
+    return t('events.level_range', { old: oldLevel, next: newLevel });
   }
 
   // -- Countdown ----------------------------------------------------------------
@@ -118,7 +123,7 @@
   function showCountdown(count) {
     // Re-trigger the CSS pop animation by removing and re-adding the class
     // via a fresh clone, then updating the module-level reference.
-    var label = count === 0 ? 'GO!' : String(count);
+    var label = count === 0 ? t('events.go') : String(count);
     var clone = elCountdownNum.cloneNode(false);
     clone.textContent = label;
     elCountdownNum.parentNode.replaceChild(clone, elCountdownNum);
@@ -140,7 +145,7 @@
     elTimerGoal.className    = 'ev-timer-goal';
     elTimerGoal.style.display = goalSeconds ? '' : 'none';
     if (goalSeconds) {
-      elTimerGoal.textContent = 'Goal  ' + formatTime(goalSeconds);
+      elTimerGoal.textContent = t('events.goal_time', { time: formatTime(goalSeconds) });
     }
 
     updateTimerProgress(progress || {});
@@ -186,8 +191,8 @@
         + '</div>';
     }
     html += '<div class="sk-stunt-total">'
-      + '<span>TOTAL</span>'
-      + '<span>' + (score.total || 0).toLocaleString() + ' PTS</span>'
+      + '<span>' + t('events.total') + '</span>'
+      + '<span>' + t('events.points_value', { value: (score.total || 0).toLocaleString() }) + '</span>'
       + '</div>';
     return html;
   }
@@ -196,16 +201,16 @@
     if (elLeaderboard) hide(elLeaderboard);
     syncResultsLayout();
 
-    var resultKicker = 'Event Complete';
+    var resultKicker = t('events.event_complete');
     if (data.claimAwarded) {
-      resultKicker = 'Daily Reward Claimed';
+      resultKicker = t('events.daily_reward_claimed');
     } else if (data.reward && data.reward.daily) {
-      resultKicker = 'Daily Event Complete';
+      resultKicker = t('events.daily_event_complete');
     }
     elResultsKicker.textContent = resultKicker;
     elResultsName.textContent = data.name || '';
     if (data.vehicleClass) {
-      elResultsClass.textContent = data.vehicleClass + ' Class';
+      elResultsClass.textContent = t('events.class_label', { class: data.vehicleClass });
       show(elResultsClass);
     } else {
       hide(elResultsClass);
@@ -214,7 +219,7 @@
     renderContinueKey(data.continueKey || 'E');
 
     if (elResultsTimeLabel) {
-      elResultsTimeLabel.textContent = data.rampage ? 'Final Score' : 'Final Time';
+      elResultsTimeLabel.textContent = data.rampage ? t('events.final_score') : t('events.final_time');
     }
 
     var timeCard = elResultsTime ? elResultsTime.parentElement : null;
@@ -227,48 +232,48 @@
     }
 
     if (data.rampage) {
-      var rampageVerdict = data.wasted ? 'WASTED!' : "TIME'S UP!";
+      var rampageVerdict = data.wasted ? t('events.wasted') : t('events.times_up');
       elResultsVerdict.textContent = rampageVerdict;
       elResultsVerdict.className = 'ev-results-verdict ' + (data.wasted ? 'is-fail' : 'is-pass');
       show(elResultsVerdict);
-      elResultsTime.textContent = (data.score && data.score.total || 0).toLocaleString() + ' PTS';
+      elResultsTime.textContent = t('events.points_value', { value: (data.score && data.score.total || 0).toLocaleString() });
       if (elStuntBreakdown) hide(elStuntBreakdown);
       hide(elResultsGoal);
     } else if (data.stunt) {
-      elResultsVerdict.textContent = data.landed ? 'LANDED!' : 'MISSED!';
+      elResultsVerdict.textContent = data.landed ? t('events.landed') : t('events.missed');
       elResultsVerdict.className = 'ev-results-verdict ' + (data.landed ? 'is-pass' : 'is-fail');
       show(elResultsVerdict);
 
       if (data.landed && data.score) {
-        elResultsTime.textContent = data.score.total.toLocaleString() + ' PTS';
+        elResultsTime.textContent = t('events.points_value', { value: data.score.total.toLocaleString() });
         if (elStuntBreakdown) {
           elStuntBreakdown.innerHTML = buildStuntBreakdown(data.score);
           show(elStuntBreakdown);
         }
       } else {
-        elResultsTime.textContent = '0 PTS';
+        elResultsTime.textContent = t('events.points_value', { value: '0' });
         if (elStuntBreakdown) hide(elStuntBreakdown);
       }
       hide(elResultsGoal);
     } else {
       hide(elStuntBreakdown);
       if (data.dnf) {
-        elResultsTime.textContent = 'DNF';
+        elResultsTime.textContent = t('events.dnf');
       } else if (data.forfeited) {
-        elResultsTime.textContent = 'FORFEITED';
+        elResultsTime.textContent = t('events.forfeited');
       } else {
         elResultsTime.textContent = formatTime(data.elapsed);
       }
 
       if (data.goalTime) {
-        elResultsGoal.textContent = 'Goal  ' + formatTime(data.goalTime);
+        elResultsGoal.textContent = t('events.goal_time', { time: formatTime(data.goalTime) });
         show(elResultsGoal);
       } else {
         hide(elResultsGoal);
       }
 
       if (data.passed !== null && data.passed !== undefined) {
-        elResultsVerdict.textContent = data.verdict || (data.passed ? 'GOAL MET' : 'GOAL MISSED');
+        elResultsVerdict.textContent = data.verdict || (data.passed ? t('events.goal_met') : t('events.goal_missed'));
         elResultsVerdict.className   = 'ev-results-verdict ' + (data.passed ? 'is-pass' : 'is-fail');
         show(elResultsVerdict);
       } else {
@@ -355,9 +360,9 @@
   }
 
   function formatScore(value, scoreType) {
-    if (scoreType === 'speed') return value + ' MPH';
-    if (scoreType === 'points') return value.toLocaleString() + ' PTS';
-    if (value == null) return 'DNF';
+    if (scoreType === 'speed') return t('events.speed_value', { value: value });
+    if (scoreType === 'points') return t('events.points_value', { value: value.toLocaleString() });
+    if (value == null) return t('events.dnf');
     return formatTime(value / 1000);
   }
 
@@ -367,14 +372,14 @@
       return;
     }
     if (elLeaderboardTitle) {
-      elLeaderboardTitle.textContent = data.vehicleClass ? (data.vehicleClass + ' Class Board') : 'All-Time Board';
+      elLeaderboardTitle.textContent = data.vehicleClass ? t('events.class_board', { class: data.vehicleClass }) : t('events.all_time_board');
     }
 
     var html = '';
     for (var i = 0; i < data.entries.length; i++) {
       var entry = data.entries[i];
       var isSelf = entry.isSelf === true || (data.personalBest != null && entry.score === data.personalBest);
-      var scoreText = entry.dnf ? 'DNF' : (entry.forfeited ? 'FORFEITED' : formatScore(entry.score, data.scoreType || 'time'));
+      var scoreText = entry.dnf ? t('events.dnf') : (entry.forfeited ? t('events.forfeited') : formatScore(entry.score, data.scoreType || 'time'));
       var aliasText = escapeHtml(entry.alias || '');
       if (entry.vehicleModel) aliasText += ' - ' + escapeHtml(entry.vehicleModel);
       html += '<div class="ev-leaderboard-row' + (isSelf ? ' is-self' : '') + '">'
@@ -386,7 +391,7 @@
     elLbList.innerHTML = html;
 
     if (data.personalBest != null) {
-      elLbPb.textContent = 'Personal Best: ' + formatScore(data.personalBest, data.scoreType || 'time');
+      elLbPb.textContent = t('events.personal_best', { value: formatScore(data.personalBest, data.scoreType || 'time') });
       show(elLbPb);
     } else {
       hide(elLbPb);

@@ -16,6 +16,10 @@
     insidePropertyId: null
   };
 
+  function t(key, replacements) {
+    return SK.i18n ? SK.i18n.t(key, replacements) : key;
+  }
+
   function escapeHtml(str) {
     var el = document.createElement('span');
     el.appendChild(document.createTextNode(str == null ? '' : String(str)));
@@ -57,7 +61,7 @@
   function renderList() {
     if (!elList) return;
     if (!state.properties.length) {
-      elList.innerHTML = '<div class="phone-realestate-empty">No properties available.</div>';
+      elList.innerHTML = '<div class="phone-realestate-empty">' + t('realestate.no_properties') + '</div>';
       return;
     }
 
@@ -68,13 +72,13 @@
         + '<button type="button" class="phone-realestate-card' + (property.id === state.selectedId ? ' is-active' : '') + '" data-property-id="' + property.id + '">'
         +   '<div class="phone-realestate-card-head">'
         +     '<span class="phone-realestate-card-title">' + escapeHtml(property.name) + '</span>'
-        +     '<span class="phone-realestate-pill ' + (property.owned ? 'is-owned' : 'is-available') + '">' + (property.owned ? 'Owned' : 'For Sale') + '</span>'
+        +     '<span class="phone-realestate-pill ' + (property.owned ? 'is-owned' : 'is-available') + '">' + (property.owned ? t('realestate.owned') : t('realestate.for_sale')) + '</span>'
         +   '</div>'
         +   '<div class="phone-realestate-card-building">' + escapeHtml(property.building) + '</div>'
         +   '<div class="phone-realestate-card-meta">'
         +     '<span class="phone-realestate-card-category">' + escapeHtml(property.category) + '</span>'
         +   '</div>'
-        +   '<div class="phone-realestate-card-price">' + (property.owned ? 'Warp: ' + formatMoney(property.warpPrice) : formatMoney(property.purchasePrice)) + '</div>'
+        +   '<div class="phone-realestate-card-price">' + (property.owned ? t('realestate.warp', { price: formatMoney(property.warpPrice) }) : formatMoney(property.purchasePrice)) + '</div>'
         + '</button>';
     }
 
@@ -85,22 +89,22 @@
     if (!elPanel) return;
     var property = getSelectedProperty();
     if (!property) {
-      elPanel.innerHTML = '<div class="phone-realestate-empty">Select a property</div>';
+      elPanel.innerHTML = '<div class="phone-realestate-empty">' + t('realestate.select_property') + '</div>';
       return;
     }
 
     var actions = '';
     if (property.owned) {
-      actions += '<button type="button" class="phone-realestate-action" data-action="warp"' + (state.busy ? ' disabled' : '') + '>Warp Here (' + formatMoney(property.warpPrice) + ')</button>';
+      actions += '<button type="button" class="phone-realestate-action" data-action="warp"' + (state.busy ? ' disabled' : '') + '>' + t('realestate.warp_here', { price: formatMoney(property.warpPrice) }) + '</button>';
       if (state.insidePropertyId === property.id) {
-        actions += '<button type="button" class="phone-realestate-action" data-action="invite"' + (state.busy ? ' disabled' : '') + '>Invite Player</button>';
+        actions += '<button type="button" class="phone-realestate-action" data-action="invite"' + (state.busy ? ' disabled' : '') + '>' + t('realestate.invite_player') + '</button>';
       }
     } else {
-      actions += '<button type="button" class="phone-realestate-action" data-action="purchase"' + (state.busy ? ' disabled' : '') + '>' + (property.canAfford ? 'Purchase' : 'Need More Cash') + '</button>';
+      actions += '<button type="button" class="phone-realestate-action" data-action="purchase"' + (state.busy ? ' disabled' : '') + '>' + (property.canAfford ? t('realestate.purchase') : t('realestate.need_more_cash')) + '</button>';
     }
-    actions += '<button type="button" class="phone-realestate-action phone-realestate-action--secondary" data-action="mark"' + (state.busy ? ' disabled' : '') + '>Mark On Map</button>';
+    actions += '<button type="button" class="phone-realestate-action phone-realestate-action--secondary" data-action="mark"' + (state.busy ? ' disabled' : '') + '>' + t('realestate.mark_on_map') + '</button>';
     if (state.isAdmin) {
-      actions += '<button type="button" class="phone-realestate-action phone-realestate-action--secondary" data-action="force-enter"' + (state.busy ? ' disabled' : '') + '>Force Entry</button>';
+      actions += '<button type="button" class="phone-realestate-action phone-realestate-action--secondary" data-action="force-enter"' + (state.busy ? ' disabled' : '') + '>' + t('realestate.force_entry') + '</button>';
     }
 
     var confirmModal = '';
@@ -108,11 +112,11 @@
       confirmModal = ''
         + '<div class="phone-realestate-confirm-modal">'
         +   '<div class="phone-realestate-confirm-box">'
-        +     '<h3 class="phone-realestate-confirm-title">Are you sure?</h3>'
-        +     '<p class="phone-realestate-confirm-body">Purchase ' + escapeHtml(property.name) + ' for ' + formatMoney(property.purchasePrice) + '?</p>'
+        +     '<h3 class="phone-realestate-confirm-title">' + t('realestate.are_you_sure') + '</h3>'
+        +     '<p class="phone-realestate-confirm-body">' + t('realestate.purchase_confirm', { name: escapeHtml(property.name), price: formatMoney(property.purchasePrice) }) + '</p>'
         +     '<div class="phone-realestate-confirm-actions">'
-        +       '<button type="button" class="phone-realestate-confirm-btn phone-realestate-confirm-btn--secondary" data-action="cancel-purchase"' + (state.busy ? ' disabled' : '') + '>Cancel</button>'
-        +       '<button type="button" class="phone-realestate-confirm-btn" data-action="confirm-purchase"' + (state.busy ? ' disabled' : '') + '>Yes, Purchase</button>'
+        +       '<button type="button" class="phone-realestate-confirm-btn phone-realestate-confirm-btn--secondary" data-action="cancel-purchase"' + (state.busy ? ' disabled' : '') + '>' + t('common.cancel') + '</button>'
+        +       '<button type="button" class="phone-realestate-confirm-btn" data-action="confirm-purchase"' + (state.busy ? ' disabled' : '') + '>' + t('realestate.yes_purchase') + '</button>'
         +     '</div>'
         +   '</div>'
         + '</div>';
@@ -127,49 +131,49 @@
       +       '<h2 class="phone-realestate-detail-title">' + escapeHtml(property.name) + '</h2>'
       +       '<div class="phone-realestate-detail-meta">'
       +         '<span class="phone-realestate-pill">' + escapeHtml(property.category) + '</span>'
-      +         '<span class="phone-realestate-pill ' + (property.owned ? 'is-owned' : 'is-available') + '">' + (property.owned ? 'Owned' : 'Available') + '</span>'
+      +         '<span class="phone-realestate-pill ' + (property.owned ? 'is-owned' : 'is-available') + '">' + (property.owned ? t('realestate.owned') : t('realestate.available')) + '</span>'
       +       '</div>'
       +     '</div>'
       +     '<div class="phone-realestate-hero-price">'
-      +       '<span class="phone-realestate-detail-price-label">Price</span>'
+      +       '<span class="phone-realestate-detail-price-label">' + t('realestate.price') + '</span>'
       +       '<span class="phone-realestate-detail-price">' + formatMoney(property.purchasePrice) + '</span>'
       +     '</div>'
       +   '</div>'
       +   '<div class="phone-realestate-section">'
       +     '<div class="phone-realestate-section-head">'
-      +       '<span class="phone-realestate-section-title">Overview</span>'
-      +       '<span class="phone-realestate-section-stat">' + (property.owned ? 'Owned' : 'Available') + '</span>'
+      +       '<span class="phone-realestate-section-title">' + t('realestate.overview') + '</span>'
+      +       '<span class="phone-realestate-section-stat">' + (property.owned ? t('realestate.owned') : t('realestate.available')) + '</span>'
       +     '</div>'
-      +     '<div class="phone-realestate-detail-copy">' + escapeHtml(property.description || (property.owned ? 'Owned properties can be warped to for a flat fee or marked on your map for manual travel.' : 'Buy this property with cash, then use it as a personal hang out spot with interior access.')) + '</div>'
+      +     '<div class="phone-realestate-detail-copy">' + escapeHtml(property.description || (property.owned ? t('realestate.owned_description') : t('realestate.buy_description'))) + '</div>'
       +   '</div>'
       +   '<div class="phone-realestate-section">'
       +     '<div class="phone-realestate-section-head">'
-      +       '<span class="phone-realestate-section-title">Details</span>'
+      +       '<span class="phone-realestate-section-title">' + t('realestate.details') + '</span>'
       +       '<span class="phone-realestate-section-stat">' + escapeHtml(property.category) + '</span>'
       +     '</div>'
       +     '<div class="phone-realestate-detail-stat-grid">'
       +       '<div class="phone-realestate-detail-stat">'
-      +         '<span class="phone-realestate-detail-stat-label">Status</span>'
-      +         '<span class="phone-realestate-detail-stat-value">' + (property.owned ? 'Owned' : 'For Sale') + '</span>'
+      +         '<span class="phone-realestate-detail-stat-label">' + t('realestate.status') + '</span>'
+      +         '<span class="phone-realestate-detail-stat-value">' + (property.owned ? t('realestate.owned') : t('realestate.for_sale')) + '</span>'
       +       '</div>'
       +       '<div class="phone-realestate-detail-stat">'
-      +         '<span class="phone-realestate-detail-stat-label">Warp Cost</span>'
+      +         '<span class="phone-realestate-detail-stat-label">' + t('realestate.warp_cost') + '</span>'
       +         '<span class="phone-realestate-detail-stat-value">' + formatMoney(property.warpPrice) + '</span>'
       +       '</div>'
       +       '<div class="phone-realestate-detail-stat">'
-      +         '<span class="phone-realestate-detail-stat-label">Building</span>'
+      +         '<span class="phone-realestate-detail-stat-label">' + t('realestate.building') + '</span>'
       +         '<span class="phone-realestate-detail-stat-value">' + escapeHtml(property.building) + '</span>'
       +       '</div>'
       +       '<div class="phone-realestate-detail-stat">'
-      +         '<span class="phone-realestate-detail-stat-label">Category</span>'
+      +         '<span class="phone-realestate-detail-stat-label">' + t('realestate.category') + '</span>'
       +         '<span class="phone-realestate-detail-stat-value">' + escapeHtml(property.category) + '</span>'
       +       '</div>'
       +     '</div>'
       +   '</div>'
       +   '<div class="phone-realestate-section">'
       +     '<div class="phone-realestate-section-head">'
-      +       '<span class="phone-realestate-section-title">Actions</span>'
-      +       '<span class="phone-realestate-section-stat">' + (actions.match(/data-action/g) || []).length + ' available</span>'
+      +       '<span class="phone-realestate-section-title">' + t('realestate.actions') + '</span>'
+      +       '<span class="phone-realestate-section-stat">' + t('realestate.available_actions', { count: (actions.match(/data-action/g) || []).length }) + '</span>'
       +   '</div>'
       +   '<div class="phone-realestate-detail-actions">' + actions + '</div>'
       +   '</div>'
@@ -183,7 +187,7 @@
     if (state.invitingPlayers && property.owned) {
       var playerListHtml = '';
       if (state.onlinePlayers.length === 0) {
-        playerListHtml = '<div class="phone-realestate-invite-empty">No other players online</div>';
+        playerListHtml = '<div class="phone-realestate-invite-empty">' + t('realestate.no_other_players') + '</div>';
       } else {
         for (var p = 0; p < state.onlinePlayers.length; p++) {
           playerListHtml += '<button type="button" class="phone-realestate-invite-player" data-invite-target="' + state.onlinePlayers[p].id + '">' + escapeHtml(state.onlinePlayers[p].name) + '</button>';
@@ -192,11 +196,11 @@
       elPanel.innerHTML += ''
         + '<div class="phone-realestate-confirm-modal">'
         +   '<div class="phone-realestate-confirm-box">'
-        +     '<h3 class="phone-realestate-confirm-title">Invite Player</h3>'
-        +     '<p class="phone-realestate-confirm-body">Select a player to invite to ' + escapeHtml(property.name) + '</p>'
+        +     '<h3 class="phone-realestate-confirm-title">' + t('realestate.invite_player') + '</h3>'
+        +     '<p class="phone-realestate-confirm-body">' + t('realestate.invite_body', { name: escapeHtml(property.name) }) + '</p>'
         +     '<div class="phone-realestate-invite-list">' + playerListHtml + '</div>'
         +     '<div class="phone-realestate-confirm-actions">'
-        +       '<button type="button" class="phone-realestate-confirm-btn phone-realestate-confirm-btn--secondary" data-action="cancel-invite">Cancel</button>'
+        +       '<button type="button" class="phone-realestate-confirm-btn phone-realestate-confirm-btn--secondary" data-action="cancel-invite">' + t('common.cancel') + '</button>'
         +     '</div>'
         +   '</div>'
         + '</div>';

@@ -17,6 +17,10 @@
   var itemEls = {};
   var resultVisible = false;
 
+  function t(key, replacements) {
+    return SK.i18n ? SK.i18n.t(key, replacements) : key;
+  }
+
   var resultNav = SK.controllerFriendly.createNavigator({
     isActive: function () { return resultVisible; },
     getFocusables: function () {
@@ -90,19 +94,19 @@
     var html = '<div class="sk-tutorial-reward-grid">';
     if (reward.cash && reward.cash.amount > 0) {
       html += '<div class="sk-tutorial-reward-cell">' +
-        '<span class="sk-tutorial-reward-label">CASH</span>' +
+        '<span class="sk-tutorial-reward-label">' + t('tutorial.cash') + '</span>' +
         '<span class="sk-tutorial-reward-value is-cash">$' + reward.cash.amount.toLocaleString() + '</span>' +
         '</div>';
     }
     if (reward.player && reward.player.xpGained > 0) {
       html += '<div class="sk-tutorial-reward-cell">' +
-        '<span class="sk-tutorial-reward-label">PLAYER XP</span>' +
+        '<span class="sk-tutorial-reward-label">' + t('tutorial.player_xp') + '</span>' +
         '<span class="sk-tutorial-reward-value">+' + reward.player.xpGained + '</span>' +
         '</div>';
     }
     if (reward.vehicle && reward.vehicle.xpGained > 0) {
       html += '<div class="sk-tutorial-reward-cell">' +
-        '<span class="sk-tutorial-reward-label">VEHICLE XP</span>' +
+        '<span class="sk-tutorial-reward-label">' + t('tutorial.vehicle_xp') + '</span>' +
         '<span class="sk-tutorial-reward-value">+' + reward.vehicle.xpGained + '</span>' +
         '</div>';
     }
@@ -171,13 +175,13 @@
         if (data.success) {
           if (elHud) elHud.classList.add('is-result-active');
           if (elResultTitle) {
-            elResultTitle.textContent = 'PROVE YOURSELF';
+            elResultTitle.textContent = t('tutorial.success_title');
             elResultTitle.className = 'sk-tutorial-result-title is-success';
           }
-          if (elResultSub) elResultSub.textContent = 'You passed the test.';
+          if (elResultSub) elResultSub.textContent = t('tutorial.success_subtitle');
           if (elResultActions) {
             var rewardHtml = buildRewardHtml(data.reward);
-            rewardHtml += '<button class="sk-tutorial-btn-primary" id="tutorialBtnContinue">Continue</button>';
+            rewardHtml += '<button class="sk-tutorial-btn-primary" id="tutorialBtnContinue">' + t('tutorial.continue') + '</button>';
             elResultActions.innerHTML = rewardHtml;
             document.getElementById('tutorialBtnContinue').addEventListener('click', function () {
               sendChoice('continue');
@@ -191,15 +195,15 @@
       case 'tutorial:fail':
         if (elHud) elHud.classList.add('is-result-active');
         if (elResultTitle) {
-          elResultTitle.textContent = "TIME'S UP";
+          elResultTitle.textContent = t('tutorial.fail_title');
           elResultTitle.className = 'sk-tutorial-result-title is-fail';
         }
-        if (elResultSub) elResultSub.textContent = "You'll need to be quicker than that...";
+        if (elResultSub) elResultSub.textContent = t('tutorial.fail_subtitle');
         if (elResultActions) {
-          var html = '<div class="sk-tutorial-result-warning">Skipping forfeits your $2,500 starting bonus</div>';
+          var html = '<div class="sk-tutorial-result-warning">' + t('tutorial.skip_warning') + '</div>';
           html += '<div class="sk-tutorial-fail-actions">';
-          html += '<button class="sk-tutorial-btn-primary" id="tutorialBtnRetry">Retry</button>';
-          html += '<button class="sk-tutorial-btn-ghost" id="tutorialBtnSkip">Begin Story</button>';
+          html += '<button class="sk-tutorial-btn-primary" id="tutorialBtnRetry">' + t('tutorial.retry') + '</button>';
+          html += '<button class="sk-tutorial-btn-ghost" id="tutorialBtnSkip">' + t('tutorial.begin_story') + '</button>';
           html += '</div>';
           elResultActions.innerHTML = html;
           document.getElementById('tutorialBtnRetry').addEventListener('click', function () {

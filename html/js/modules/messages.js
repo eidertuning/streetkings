@@ -29,6 +29,10 @@
   var controllerGlyphs = SK.controllerGlyphs;
   var controllerEnabled = !!(window.SKPhone && window.SKPhone.isControllerMode && window.SKPhone.isControllerMode());
 
+  function t(key, replacements) {
+    return SK.i18n ? SK.i18n.t(key, replacements) : key;
+  }
+
   window.SKMessages = { pendingSender: null };
 
   var notifTimer = null;
@@ -41,11 +45,11 @@
     if (controllerEnabled) {
       elNotifHint.innerHTML = '<span class="sk-msg-notif-hint-glyph">'
         + controllerGlyphs.getHtml('DPAD_UP', 'sk-msg-notif-hint-icon')
-        + '</span> <span>TO OPEN</span>';
+        + '</span> <span>' + t('messages.to_open') + '</span>';
       return;
     }
 
-    elNotifHint.textContent = 'TAB TO OPEN';
+    elNotifHint.textContent = t('messages.tab_to_open');
   }
 
   function showNotif(msg) {
@@ -171,18 +175,18 @@
           var expired = msg.action.expiresAt && nowSec >= msg.action.expiresAt;
           if (expired) {
             inner += '<div class="phone-msg-bubble-action">'
-              + '<span class="phone-msg-action-expired">Invite Expired</span>'
+              + '<span class="phone-msg-action-expired">' + t('messages.invite_expired') + '</span>'
               + '</div>';
           } else {
             inner += '<div class="phone-msg-bubble-action phone-msg-bubble-action--invite">'
-              + '<button type="button" class="phone-msg-action-btn phone-msg-action-btn--accept" data-invite-response="accept">Accept</button>'
-              + '<button type="button" class="phone-msg-action-btn phone-msg-action-btn--decline" data-invite-response="decline">Decline</button>'
+              + '<button type="button" class="phone-msg-action-btn phone-msg-action-btn--accept" data-invite-response="accept">' + t('messages.accept') + '</button>'
+              + '<button type="button" class="phone-msg-action-btn phone-msg-action-btn--decline" data-invite-response="decline">' + t('messages.decline') + '</button>'
               + '</div>';
           }
         } else {
           inner += '<div class="phone-msg-bubble-action">'
             + '<button type="button" class="phone-msg-action-btn">'
-            + (msg.action.label || 'Open')
+            + (msg.action.label || t('messages.open'))
             + '</button>'
             + '</div>';
         }
@@ -200,7 +204,6 @@
               SK.nui.post('phone:messages:action', actionPayload);
             });
           });
-          // Set a timer to replace buttons with "Invite Expired" when time runs out
           if (msg.action.expiresAt) {
             var remainMs = (msg.action.expiresAt * 1000) - Date.now();
             if (remainMs > 0) {
@@ -208,7 +211,7 @@
                 var container = bubble.querySelector('.phone-msg-bubble-action--invite');
                 if (container) {
                   container.className = 'phone-msg-bubble-action';
-                  container.innerHTML = '<span class="phone-msg-action-expired">Invite Expired</span>';
+                  container.innerHTML = '<span class="phone-msg-action-expired">' + t('messages.invite_expired') + '</span>';
                 }
               }, remainMs);
             }

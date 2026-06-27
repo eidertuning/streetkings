@@ -12,7 +12,7 @@
   ];
 
   var ACTION_KEYS = { BKSP: true, DONE: true, SPACE: true };
-  var ACTION_LABELS = { BKSP: 'BKSP', SPACE: 'SPACE', DONE: 'DONE' };
+  var ACTION_LABELS = { BKSP: 'controller_keyboard.backspace', SPACE: 'controller_keyboard.space', DONE: 'controller_keyboard.done' };
 
   var root      = document.getElementById('skControllerKeyboard');
   var titleEl   = document.getElementById('skCkTitle');
@@ -31,6 +31,10 @@
   var keyEls    = [];
   var pending   = null;
   var opts      = {};
+
+  function t(key, replacements) {
+    return SK.i18n ? SK.i18n.t(key, replacements) : key;
+  }
 
   function buildKeys() {
     keysEl.innerHTML = '';
@@ -52,7 +56,7 @@
 
         btn.className = cls;
         btn.setAttribute('data-key', key);
-        btn.textContent = ACTION_LABELS[key] || key;
+        btn.textContent = ACTION_LABELS[key] ? t(ACTION_LABELS[key]) : key;
         rowDiv.appendChild(btn);
         rowArr.push(btn);
       }
@@ -78,6 +82,16 @@
     }
     if (shiftInd) {
       shiftInd.classList.toggle('is-active', shifted);
+    }
+  }
+
+  function updateActionLabels() {
+    for (var r = 0; r < ROWS.length; r++) {
+      for (var c = 0; c < ROWS[r].length; c++) {
+        var raw = ROWS[r][c];
+        if (!ACTION_KEYS[raw]) continue;
+        keyEls[r][c].textContent = t(ACTION_LABELS[raw]);
+      }
     }
   }
 
@@ -184,10 +198,10 @@
 
   function renderHints() {
     var g = SK.controllerGlyphs;
-    hintConfirm.innerHTML = g.getHtml('A', 'sk-ck-hint-glyph') + ' Type';
-    hintBack.innerHTML    = g.getHtml('B', 'sk-ck-hint-glyph') + ' Cancel';
-    hintDelete.innerHTML  = g.getHtml('X', 'sk-ck-hint-glyph') + ' Delete';
-    hintShift.innerHTML   = g.getHtml('LB', 'sk-ck-hint-glyph') + ' Shift';
+    hintConfirm.innerHTML = g.getHtml('A', 'sk-ck-hint-glyph') + ' ' + t('controller_keyboard.type');
+    hintBack.innerHTML    = g.getHtml('B', 'sk-ck-hint-glyph') + ' ' + t('controller_keyboard.cancel');
+    hintDelete.innerHTML  = g.getHtml('X', 'sk-ck-hint-glyph') + ' ' + t('controller_keyboard.delete');
+    hintShift.innerHTML   = g.getHtml('LB', 'sk-ck-hint-glyph') + ' ' + t('controller_keyboard.shift');
   }
 
   function handleAction(action) {
@@ -211,9 +225,10 @@
       opts = options || {};
       typed = '';
       shifted = false;
-      titleEl.textContent = opts.title || 'Enter Text';
+      titleEl.textContent = opts.title || t('controller_keyboard.enter_text');
       updateDisplay();
       updateKeyLabels();
+      updateActionLabels();
       setFocus(1, 0);
       renderHints();
       show();

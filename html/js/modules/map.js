@@ -64,6 +64,10 @@
   };
   var DRAG_START_THRESHOLD = 8;
 
+  function t(key, replacements) {
+    return SK.i18n ? SK.i18n.t(key, replacements) : key;
+  }
+
   function escapeHtml(str) {
     var el = document.createElement('span');
     el.appendChild(document.createTextNode(str));
@@ -75,7 +79,7 @@
   }
 
   function formatTime(seconds) {
-    if (seconds == null) return 'None';
+    if (seconds == null) return t('vehicles.none_yet');
     var m = Math.floor(seconds / 60);
     var s = Math.floor(seconds % 60);
     var cs = Math.floor((seconds % 1) * 100);
@@ -399,8 +403,8 @@
       return sectionHtml;
     }
 
-    html += buildEventRows(dailyEvents, 'Active Daily Events');
-    html += buildEventRows(otherEvents, 'All Events');
+    html += buildEventRows(dailyEvents, t('phone.active_daily_events'));
+    html += buildEventRows(otherEvents, t('phone.all_events'));
 
     elEventList.innerHTML = html;
   }
@@ -562,7 +566,7 @@
       hide(elOverlay);
       hide(elLoading);
       show(elEmpty);
-      if (elEmpty) elEmpty.textContent = 'Failed to load map data.';
+      if (elEmpty) elEmpty.textContent = t('phone.failed_map_data');
     });
   }
 

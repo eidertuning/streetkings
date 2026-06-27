@@ -14,6 +14,10 @@
   var activeCatId  = null;
   var activePeriod = 'all';
 
+  function t(key, replacements) {
+    return SK.i18n ? SK.i18n.t(key, replacements) : key;
+  }
+
   function escapeHtml(str) {
     var el = document.createElement('span');
     el.appendChild(document.createTextNode(str));
@@ -47,13 +51,13 @@
       if (typeof pb === 'object' && pb.wins != null) {
         var total = pb.wins + pb.losses;
         var pct = total > 0 ? Math.round((pb.wins / total) * 100) : 0;
-        return 'Your record: ' + pb.wins + 'W / ' + pb.losses + 'L (' + pct + '%)';
+        return t('leaderboards.your_record', { wins: pb.wins, losses: pb.losses, pct: pct });
       }
       return '';
     }
-    if (scoreType === 'speed') return 'Personal best: ' + pb + ' MPH';
-    if (scoreType === 'points') return 'Personal best: ' + pb.toLocaleString() + ' PTS';
-    return 'Personal best: ' + formatTime(pb);
+    if (scoreType === 'speed') return t('leaderboards.personal_best', { value: pb + ' MPH' });
+    if (scoreType === 'points') return t('leaderboards.personal_best', { value: pb.toLocaleString() + ' PTS' });
+    return t('leaderboards.personal_best', { value: formatTime(pb) });
   }
 
   function buildSidebar(cats) {
@@ -103,7 +107,7 @@
     var scoreType = data.scoreType || 'time';
 
     if (entries.length === 0) {
-      elList.innerHTML = '<div class="phone-lb-empty">No records yet</div>';
+      elList.innerHTML = '<div class="phone-lb-empty">' + t('leaderboards.no_records') + '</div>';
     } else {
       var html = '';
       for (var i = 0; i < entries.length; i++) {
@@ -144,13 +148,13 @@
     updateActiveCat(catId);
     updateActivePeriod(activePeriod);
 
-    if (elList) elList.innerHTML = '<div class="phone-lb-empty">Loading...</div>';
+    if (elList) elList.innerHTML = '<div class="phone-lb-empty">' + t('leaderboards.loading') + '</div>';
     if (elPersonal) elPersonal.style.display = 'none';
 
     SK.nui.post('leaderboard:getData', { categoryId: catId, period: activePeriod }).done(function (data) {
       if (activeCatId !== catId) return;
       if (elTitle && cat) {
-        elTitle.textContent = data && data.vehicleClass ? (cat.label + ' - ' + data.vehicleClass + ' Class') : cat.label;
+        elTitle.textContent = data && data.vehicleClass ? t('leaderboards.class_title', { label: cat.label, class: data.vehicleClass }) : cat.label;
       }
       renderRows(data);
     });
@@ -179,7 +183,7 @@
   window.SKPhone.registerApp('Leaderboards', function () {
     activeCatId = null;
     activePeriod = 'all';
-    if (elList) elList.innerHTML = '<div class="phone-lb-empty">Loading...</div>';
+    if (elList) elList.innerHTML = '<div class="phone-lb-empty">' + t('leaderboards.loading') + '</div>';
     if (elPersonal) elPersonal.style.display = 'none';
     if (elCats) elCats.innerHTML = '';
 
@@ -189,7 +193,7 @@
       if (categories.length > 0) {
         loadCategory(categories[0].id, 'all');
       } else {
-        if (elList) elList.innerHTML = '<div class="phone-lb-empty">No events available</div>';
+        if (elList) elList.innerHTML = '<div class="phone-lb-empty">' + t('leaderboards.no_events') + '</div>';
       }
     });
   });

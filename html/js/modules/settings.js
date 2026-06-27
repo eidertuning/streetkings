@@ -3,6 +3,31 @@
 
   var SK = window.StreetKings;
 
+  function t(key, replacements) {
+    return SK.i18n ? SK.i18n.t(key, replacements) : key;
+  }
+
+  function tf(key, fallback) {
+    var value = t(key);
+    return value === key ? fallback : value;
+  }
+
+  function normalizeKey(value) {
+    return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+  }
+
+  function defLabel(def) {
+    return tf('settings.labels.' + def.key, def.label);
+  }
+
+  function optionLabel(option) {
+    return tf('settings.options.' + (option.key || option.value), option.label);
+  }
+
+  function groupLabel(group) {
+    return tf('settings.groups.' + normalizeKey(group), group);
+  }
+
   // -- Category definitions ----------------------------------------------------
 
   var GENERAL_DEFS = [
@@ -250,7 +275,7 @@
 
     var label = document.createElement('span');
     label.className = 'phone-settings-label';
-    label.textContent = def.label;
+    label.textContent = defLabel(def);
 
     var valEl = document.createElement('span');
     valEl.className = 'phone-settings-value';
@@ -294,7 +319,7 @@
 
     var label = document.createElement('span');
     label.className = 'phone-settings-label';
-    label.textContent = def.label;
+    label.textContent = defLabel(def);
 
     var toggleWrap = document.createElement('label');
     toggleWrap.className = 'phone-settings-toggle';
@@ -325,7 +350,7 @@
   function buildButtonItem(def) {
     var btn = document.createElement('button');
     btn.className = 'phone-settings-action-btn' + (def.danger ? ' phone-settings-action-btn--danger' : '');
-    btn.textContent = def.label;
+    btn.textContent = defLabel(def);
     btn.addEventListener('click', function () {
       btn.disabled = true;
       SK.nui.post(def.nuiAction).always(function () {
@@ -342,7 +367,7 @@
 
     var label = document.createElement('span');
     label.className = 'phone-settings-label';
-    label.textContent = def.label;
+    label.textContent = defLabel(def);
 
     var row = document.createElement('div');
     row.className = 'phone-settings-preset-row';
@@ -350,7 +375,7 @@
     CAMERA_PRESET_OPTIONS.forEach(function (option) {
       var btn = document.createElement('button');
       btn.className = 'phone-settings-preset-btn' + (option.key === currentCameraPresetKey ? ' is-active' : '');
-      btn.textContent = option.label;
+      btn.textContent = optionLabel(option);
       btn.dataset.presetKey = option.key;
       btn.addEventListener('click', function () {
         rememberControllerFocus(def.key, option.key);
@@ -381,7 +406,7 @@
 
     var label = document.createElement('span');
     label.className = 'phone-settings-label';
-    label.textContent = def.label;
+    label.textContent = defLabel(def);
 
     var row = document.createElement('div');
     row.className = 'phone-settings-preset-row';
@@ -389,7 +414,7 @@
     def.options.forEach(function (option) {
       var btn = document.createElement('button');
       btn.className = 'phone-settings-preset-btn' + (option.value === def.def ? ' is-active' : '');
-      btn.textContent = option.label;
+      btn.textContent = optionLabel(option);
       btn.dataset.choiceValue = option.value;
       btn.addEventListener('click', function () {
         rememberControllerFocus(def.key, option.value);
@@ -415,7 +440,7 @@
     if (!options.length) {
       var emptyOption = document.createElement('option');
       emptyOption.value = '';
-      emptyOption.textContent = 'No Events Available';
+      emptyOption.textContent = t('settings.no_events');
       select.appendChild(emptyOption);
       select.disabled = true;
       return;
@@ -440,7 +465,7 @@
 
     var label = document.createElement('span');
     label.className = 'phone-settings-label';
-    label.textContent = def.label;
+    label.textContent = defLabel(def);
 
     top.appendChild(label);
 
@@ -453,12 +478,12 @@
 
     var loadingOption = document.createElement('option');
     loadingOption.value = '';
-    loadingOption.textContent = 'Loading Events...';
+    loadingOption.textContent = t('settings.loading_events');
     select.appendChild(loadingOption);
 
     var btn = document.createElement('button');
     btn.className = 'phone-settings-event-btn';
-    btn.textContent = 'Teleport';
+    btn.textContent = t('settings.teleport');
     btn.disabled = true;
     btn.addEventListener('click', function () {
       btn.disabled = true;
@@ -491,7 +516,7 @@
 
     var label = document.createElement('span');
     label.className = 'phone-settings-label';
-    label.textContent = def.label;
+    label.textContent = defLabel(def);
     top.appendChild(label);
 
     var row = document.createElement('div');
@@ -508,7 +533,7 @@
 
     var btn = document.createElement('button');
     btn.className = 'phone-settings-event-btn';
-    btn.textContent = 'Set';
+    btn.textContent = t('settings.set');
     btn.disabled = true;
 
     btn.addEventListener('click', function () {
@@ -537,7 +562,7 @@
   function buildGroupLabel(text) {
     var el = document.createElement('div');
     el.className = 'phone-settings-group-label';
-    el.textContent = text;
+    el.textContent = groupLabel(text);
     return el;
   }
 
@@ -570,7 +595,7 @@
     if (cat.nuiReset) {
       var resetBtn = document.createElement('button');
       resetBtn.className = 'phone-settings-reset';
-      resetBtn.textContent = 'Reset to Defaults';
+      resetBtn.textContent = t('settings.reset_defaults');
       resetBtn.addEventListener('click', function () {
         SK.nui.post(cat.nuiReset).done(function (cfg) {
           applyValues(cat, cfg);
@@ -648,7 +673,7 @@
     visibleCategories.forEach(function (cat) {
       var btn = document.createElement('button');
       btn.className = 'phone-settings-cat' + (cat.id === activeCat.id ? ' is-active' : '');
-      btn.textContent = cat.label;
+      btn.textContent = tf('settings.categories.' + cat.id, cat.label);
       btn.addEventListener('click', function () {
         document.querySelectorAll('.phone-settings-cat').forEach(function (b) {
           b.classList.remove('is-active');
