@@ -13,6 +13,7 @@
     previewModel:  null,
     balance:       0,
     playerLevel:   1,
+    playerVipTier: 'none',
     ownedModels:   {},
     drag:          { active: false, lastX: 0, lastY: 0 },
   };
@@ -45,6 +46,43 @@
 
   function isClassLocked(cls) {
     return state.playerLevel < CLASS_UNLOCK_LEVELS[cls];
+  }
+
+  var VIP_RANKS = { none: 0, vip: 1, vipplus: 2, vipplusplus: 3 };
+  var VIP_LABELS = { vip: 'VIP', vipplus: 'VIP+', vipplusplus: 'VIP++' };
+
+  function hasVipAccess(requiredTier) {
+    if (!requiredTier) return true;
+    return (VIP_RANKS[state.playerVipTier || 'none'] || 0) >= (VIP_RANKS[requiredTier] || 0);
+  }
+
+  function vehicleImageSrc(vehicle) {
+    if (!vehicle || !vehicle.image) return '';
+    if (typeof vehicle.image === 'string') return vehicle.image;
+    return vehicle.image.src || vehicle.image.localSrc || vehicle.image.externalSrc || '';
+  }
+
+  function createVehicleImage(vehicle, className) {
+    var wrap = document.createElement('span');
+    wrap.className = className;
+    var src = vehicleImageSrc(vehicle);
+    if (!src) {
+      wrap.classList.add('is-empty');
+      wrap.textContent = vehicle.model || 'SK';
+      return wrap;
+    }
+    var img = document.createElement('img');
+    img.src = src;
+    img.alt = vehicle.name || vehicle.model || 'Vehicle';
+    img.loading = 'lazy';
+    img.draggable = false;
+    img.addEventListener('error', function () {
+      wrap.classList.add('is-empty');
+      wrap.textContent = vehicle.model || 'SK';
+      img.remove();
+    });
+    wrap.appendChild(img);
+    return wrap;
   }
 
   function getPreferredFocusable(list) {
@@ -108,6 +146,55 @@
     els.customizability = document.getElementById('dealershipCustomizability');
     els.actions     = document.getElementById('dealershipActions');
     els.viewport    = els.root.querySelector('.sk-dealership-viewport');
+    if (els.list && !els.list.parentNode.classList.contains('sk-dealership-list-wrap')) {
+      var wrap = document.createElement('div');
+      wrap.className = 'sk-dealership-list-wrap';
+      var prev = document.createElement('button');
+      var next = document.createElement('button');
+      prev.type = 'button';
+      next.type = 'button';
+      prev.className = 'sk-dealership-list-arrow sk-dealership-list-arrow--prev';
+      next.className = 'sk-dealership-list-arrow sk-dealership-list-arrow--next';
+      prev.textContent = '\u2039';
+      next.textContent = '\u203a';
+      prev.setAttribute('aria-label', 'Anterior');
+      next.setAttribute('aria-label', 'Siguiente');
+      els.list.parentNode.insertBefore(wrap, els.list);
+      wrap.appendChild(prev);
+      wrap.appendChild(els.list);
+      wrap.appendChild(next);
+      els.listPrev = prev;
+      els.listNext = next;
+      prev.addEventListener('click', function () { scrollListByPage(-1); });
+      next.addEventListener('click', function () { scrollListByPage(1); });
+      els.list.addEventListener('scroll', syncListArrows);
+      els.list.addEventListener('wheel', onListWheel, { passive: false });
+    } else if (els.list) {
+      els.listPrev = els.list.parentNode.querySelector('.sk-dealership-list-arrow--prev');
+      els.listNext = els.list.parentNode.querySelector('.sk-dealership-list-arrow--next');
+    }
+  }
+
+  function scrollListByPage(direction) {
+    if (!els.list) return;
+    els.list.scrollBy({ left: direction * Math.max(240, els.list.clientWidth * 0.72), behavior: 'smooth' });
+  }
+
+  function syncListArrows() {
+    if (!els.list || !els.listPrev || !els.listNext) return;
+    var max = Math.max(0, els.list.scrollWidth - els.list.clientWidth - 2);
+    els.listPrev.disabled = els.list.scrollLeft <= 2;
+    els.listNext.disabled = els.list.scrollLeft >= max;
+    els.listPrev.classList.toggle('is-hidden', max <= 2);
+    els.listNext.classList.toggle('is-hidden', max <= 2);
+  }
+
+  function onListWheel(event) {
+    if (!els.list) return;
+    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    els.list.scrollLeft += event.deltaY;
+    event.preventDefault();
+    syncListArrows();
   }
 
   function renderCustomizability(stars) {
@@ -164,6 +251,9 @@
       btn.dataset.model    = v.model;
       if (v.model === state.previewModel) btn.classList.add('is-preview');
       if (state.ownedModels[v.model])     btn.classList.add('is-owned');
+      if (v.requiredVipTier && !hasVipAccess(v.requiredVipTier)) btn.classList.add('is-vip-locked');
+
+      btn.appendChild(createVehicleImage(v, 'sk-dealership-thumb-image'));
 
       var name = document.createElement('span');
       name.className   = 'sk-dealership-thumb-name';
@@ -171,13 +261,17 @@
 
       var tag = document.createElement('span');
       tag.className   = 'sk-dealership-thumb-tag';
-      tag.textContent = state.ownedModels[v.model] ? 'OWNED' : fmt(v.price);
+      tag.textContent = state.ownedModels[v.model]
+        ? 'OWNED'
+        : (v.requiredVipTier && !hasVipAccess(v.requiredVipTier) ? (VIP_LABELS[v.requiredVipTier] || v.requiredVipTier) + ' REQUERIDO' : fmt(v.price));
 
       btn.appendChild(name);
       btn.appendChild(tag);
       btn.addEventListener('click', function () { selectVehicle(v); });
       els.list.appendChild(btn);
     });
+
+    window.requestAnimationFrame(syncListArrows);
 
     if (controllerEnabled) {
       scheduleControllerRefresh({ retainCurrent: false });
@@ -205,12 +299,18 @@
     var owned = !!state.ownedModels[v.model];
     var requiredLevel = CLASS_UNLOCK_LEVELS[v.class];
     var isLocked = state.playerLevel < requiredLevel;
+    var vipLocked = v.requiredVipTier && !hasVipAccess(v.requiredVipTier);
 
     if (isLocked) {
       var lockedTag = document.createElement('span');
       lockedTag.className = 'sk-dealership-owned-tag';
       lockedTag.textContent = 'Unlocks at Lv. ' + requiredLevel;
       els.actions.appendChild(lockedTag);
+    } else if (vipLocked) {
+      var vipTag = document.createElement('span');
+      vipTag.className = 'sk-dealership-owned-tag sk-dealership-owned-tag--vip';
+      vipTag.textContent = (VIP_LABELS[v.requiredVipTier] || v.requiredVipTier) + ' requerido para comprar';
+      els.actions.appendChild(vipTag);
     } else if (!owned) {
       var buyBtn = document.createElement('button');
       buyBtn.className   = 'sk-dealership-btn sk-dealership-btn--buy';
@@ -253,6 +353,7 @@
     state.vehicles     = data.vehicles;
     state.balance      = data.balance;
     state.playerLevel  = data.playerLevel;
+    state.playerVipTier = data.playerVipTier || 'none';
     state.ownedModels  = data.ownedModels;
     state.classFilter  = CLASS_ORDER.find(function (cls) {
       return data.vehicles.some(function (v) { return v.class === cls; });
@@ -282,6 +383,7 @@
     els.actions.innerHTML   = '';
     state.vehicles          = [];
     state.playerLevel       = 1;
+    state.playerVipTier     = 'none';
     state.previewModel      = null;
     state.ownedModels       = {};
     state.drag.active       = false;

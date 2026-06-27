@@ -5,6 +5,9 @@ SKDealershipConfig = {
         sportscar = { label = 'Coches Deportivos' },
         muscle    = { label = 'Coches Muscle' },
         offroad   = { label = 'Todo Terreno' },
+        vip       = { label = 'VIP Imports', vipTier = 'vip' },
+        vipplus   = { label = 'VIP+ Exotics', vipTier = 'vipplus' },
+        vipplusplus = { label = 'VIP++ Legends', vipTier = 'vipplusplus' },
     },
     LOCATIONS = {
         {
@@ -42,6 +45,33 @@ SKDealershipConfig = {
             displayHeading = 180.0,
             exitHeading    = 218.2677,
             name = 'Todo Terreno',
+        },
+        {
+            id             = 'dealer_vip',
+            dealerType     = 'vip',
+            coords         = vector3(-1254.6891, -354.1743, 36.9075),
+            displayCoords  = vector3(-41.5912, -1099.4769, 26.1289),
+            displayHeading = 0.0,
+            exitHeading    = 205.0,
+            name           = 'VIP Imports',
+        },
+        {
+            id             = 'dealer_vipplus',
+            dealerType     = 'vipplus',
+            coords         = vector3(-806.8021, -222.8774, 37.2254),
+            displayCoords  = vector3(-83.9077, -820.9846, 221.3004),
+            displayHeading = 221.1024,
+            exitHeading    = 221.1024,
+            name           = 'VIP+ Exotics',
+        },
+        {
+            id             = 'dealer_vipplusplus',
+            dealerType     = 'vipplusplus',
+            coords         = vector3(-71.5529, 63.7657, 71.9035),
+            displayCoords  = vector3(978.4615, -3002.0703, -40.3099),
+            displayHeading = 90.0,
+            exitHeading    = 160.0,
+            name           = 'VIP++ Legends',
         }
     },
 }

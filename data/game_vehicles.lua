@@ -2,6 +2,44 @@
 ---@field model string
 ---@field price integer
 ---@field class string 'C'|'B'|'A'|'S'
+---@field image table|string|nil
+
+SKVehicleImageConfig = {
+    provider = 'local', -- local | jg
+    localBase = 'assets/vehicles/',
+    jgBase = '',
+    extension = 'webp',
+}
+
+function SKResolveVehicleImage(model, override)
+    local cfg = SKVehicleImageConfig or {}
+    local provider = cfg.provider or 'local'
+    local image = {
+        provider = provider,
+        src = '',
+        localSrc = (cfg.localBase or 'assets/vehicles/') .. model .. '.' .. (cfg.extension or 'webp'),
+        externalSrc = '',
+    }
+
+    if type(override) == 'string' then
+        image.src = override
+        return image
+    end
+
+    if type(override) == 'table' then
+        image.localSrc = override.localSrc or override.local or image.localSrc
+        image.externalSrc = override.externalSrc or override.jgSrc or override.jg or override.url or ''
+        image.provider = override.provider or provider
+    end
+
+    if image.provider == 'jg' then
+        image.src = image.externalSrc ~= '' and image.externalSrc or ((cfg.jgBase or '') ~= '' and ((cfg.jgBase or '') .. model .. '.' .. (cfg.extension or 'webp')) or image.localSrc)
+    else
+        image.src = image.localSrc
+    end
+
+    return image
+end
 
 ---@class StarterGameVehicleStats
 ---@field topSpeed integer
@@ -145,5 +183,32 @@ SKGameVehicles = {
         { model = 'jubilee',    price = 59500, class = 'S' }, -- Enus Jubilee
         { model = 'everon3',   price = 66000, class = 'S' }, -- Karin Everon RS
         { model = 'toros',     price = 82500, class = 'S' }, -- Pegassi Toros
+    },
+
+    vip = {
+        { model = 't20',      price = 125000, class = 'S' }, -- Progen T20
+        { model = 'zentorno', price = 132000, class = 'S' }, -- Pegassi Zentorno
+        { model = 'osiris',   price = 138000, class = 'S' }, -- Pegassi Osiris
+        { model = 'xa21',     price = 145000, class = 'S' }, -- Ocelot XA-21
+        { model = 'fmj',      price = 152000, class = 'S' }, -- Vapid FMJ
+        { model = 'reaper',   price = 160000, class = 'S' }, -- Pegassi Reaper
+    },
+
+    vipplus = {
+        { model = 'autarch',  price = 185000, class = 'S' }, -- Overflod Autarch
+        { model = 'vagner',   price = 195000, class = 'S' }, -- Dewbauchee Vagner
+        { model = 'visione',  price = 205000, class = 'S' }, -- Grotti Visione
+        { model = 'tyrus',    price = 215000, class = 'S' }, -- Progen Tyrus
+        { model = 'italigtb', price = 225000, class = 'S' }, -- Progen Itali GTB
+        { model = 'nero',     price = 235000, class = 'S' }, -- Truffade Nero
+    },
+
+    vipplusplus = {
+        { model = 'emerus',   price = 275000, class = 'S' }, -- Progen Emerus
+        { model = 'krieger',  price = 295000, class = 'S' }, -- Benefactor Krieger
+        { model = 'thrax',    price = 315000, class = 'S' }, -- Truffade Thrax
+        { model = 'ignus',    price = 335000, class = 'S' }, -- Pegassi Ignus
+        { model = 'tezeract', price = 350000, class = 'S' }, -- Pegassi Tezeract
+        { model = 'virtue',   price = 365000, class = 'S' }, -- Ocelot Virtue
     },
 }

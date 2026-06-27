@@ -16,6 +16,7 @@ local function buildGarageVehicleDto(entry)
         id = entry.id,
         modelName = entry.modelName,
         displayName = entry.displayName,
+        image = SKResolveVehicleImage(entry.modelName, entry.image),
         sortIndex = entry.sortIndex,
         plate = entry.plate,
         data = vehicleData,

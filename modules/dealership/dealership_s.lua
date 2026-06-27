@@ -5,6 +5,19 @@ local CLASS_UNLOCK_LEVELS = {
     S = 30,
 }
 
+local VIP_TIERS = {
+    none = 0,
+    vip = 1,
+    vipplus = 2,
+    vipplusplus = 3,
+}
+
+local VIP_TIER_LABELS = {
+    vip = 'VIP',
+    vipplus = 'VIP+',
+    vipplusplus = 'VIP++',
+}
+
 local RANDOM_COLORS = {
     { r = 220, g = 30,  b = 30  },  -- red
     { r = 220, g = 100, b = 20  },  -- orange
@@ -31,6 +44,37 @@ local function getClassUnlockLevel(class)
     return assert(CLASS_UNLOCK_LEVELS[class], ('streetkings: missing dealership class unlock level for %s'):format(class))
 end
 
+---@param tier string|nil
+---@return integer
+local function getVipRank(tier)
+    return VIP_TIERS[tier or 'none'] or 0
+end
+
+---@param source integer
+---@param document table|nil
+---@return string
+local function getPlayerVipTier(source, document)
+    local savedTier = document and document.profile and document.profile.vipTier
+    local bestTier = type(savedTier) == 'string' and savedTier or 'none'
+
+    if IsPlayerAceAllowed(source, 'streetkings.vipplusplus') then
+        bestTier = 'vipplusplus'
+    elseif IsPlayerAceAllowed(source, 'streetkings.vipplus') and getVipRank(bestTier) < getVipRank('vipplus') then
+        bestTier = 'vipplus'
+    elseif IsPlayerAceAllowed(source, 'streetkings.vip') and getVipRank(bestTier) < getVipRank('vip') then
+        bestTier = 'vip'
+    end
+
+    return bestTier
+end
+
+---@param playerTier string|nil
+---@param requiredTier string|nil
+---@return boolean
+local function hasVipAccess(playerTier, requiredTier)
+    return getVipRank(playerTier) >= getVipRank(requiredTier)
+end
+
 ---@param vehicles table<string, table>
 ---@return table<string, boolean>
 local function buildOwnedModels(vehicles)
@@ -43,9 +87,11 @@ end
 
 lib.callback.register('streetkings:dealership:getState', function(source)
     local document = SKSaves.getDocument(source)
+    local vipTier = getPlayerVipTier(source, document)
     return {
         balance = document.economy.cash,
         playerLevel = document.progression.level,
+        vipTier = vipTier,
         ownedModels = buildOwnedModels(document.garage.vehicles),
     }
 end)
@@ -69,10 +115,13 @@ end)
 
 lib.callback.register('streetkings:dealership:purchase', function(source, model, _, price)
     local serverVehicle = nil
-    for _, vehicles in pairs(SKGameVehicles) do
+    local serverDealerType = nil
+    local requiredVipTier = nil
+    for dealerType, vehicles in pairs(SKGameVehicles) do
         for _, v in ipairs(vehicles) do
             if v.model == model then
                 serverVehicle = v
+                serverDealerType = dealerType
                 break
             end
         end
@@ -83,14 +132,22 @@ lib.callback.register('streetkings:dealership:purchase', function(source, model,
         return { ok = false, reason = 'invalid_vehicle' }
     end
 
+    local dealerConfig = serverDealerType and SKDealershipConfig.DEALER_TYPES[serverDealerType] or nil
+    requiredVipTier = serverVehicle.vipTier or (dealerConfig and dealerConfig.vipTier) or nil
+
     local sharedVehicle = assert(SKVehicles[model], ('streetkings: missing shared vehicle metadata for %s'):format(model))
 
     local document = SKSaves.getDocument(source)
     local cash     = document.economy.cash
     local playerLevel = document.progression.level
+    local playerVipTier = getPlayerVipTier(source, document)
 
     if playerLevel < getClassUnlockLevel(serverVehicle.class) then
         return { ok = false, reason = 'class_locked', requiredLevel = getClassUnlockLevel(serverVehicle.class) }
+    end
+
+    if requiredVipTier and not hasVipAccess(playerVipTier, requiredVipTier) then
+        return { ok = false, reason = 'vip_locked', requiredVipTier = requiredVipTier, requiredVipLabel = VIP_TIER_LABELS[requiredVipTier] or requiredVipTier }
     end
 
     if cash < price then
@@ -136,4 +193,35 @@ lib.callback.register('streetkings:dealership:purchase', function(source, model,
     })
 
     return { ok = true, balance = document.economy.cash, vehicleId = vehicleId }
+end)
+
+lib.addCommand('setvip', {
+    help = 'Set a player VIP tier for VIP dealerships',
+    params = {
+        { name = 'id', help = 'Player server ID', type = 'playerId' },
+        { name = 'tier', help = 'none, vip, vipplus, vipplusplus', type = 'string' },
+    },
+    restricted = 'group.admin',
+}, function(source, args)
+    local tier = string.lower(args.tier or 'none')
+    if tier == 'vip+' then tier = 'vipplus' end
+    if tier == 'vip++' then tier = 'vipplusplus' end
+    if not VIP_TIERS[tier] then
+        if source > 0 then
+            TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = 'VIP tier invalido. Usa none, vip, vipplus o vipplusplus.' })
+        end
+        return
+    end
+    if not SKSaves.hasActiveSave(args.id) then
+        if source > 0 then
+            TriggerClientEvent('ox_lib:notify', source, { type = 'error', description = 'El jugador no tiene save activo.' })
+        end
+        return
+    end
+
+    SKSaves.write(args.id, 'profile.vipTier', tier == 'none' and '' or tier)
+    if source > 0 then
+        TriggerClientEvent('ox_lib:notify', source, { type = 'success', description = ('VIP actualizado a %s.'):format(tier) })
+    end
+    TriggerClientEvent('ox_lib:notify', args.id, { type = 'success', description = ('Tu VIP ahora es %s.'):format(tier) })
 end)

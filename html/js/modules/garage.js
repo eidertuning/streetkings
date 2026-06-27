@@ -64,6 +64,35 @@
     return Math.floor(n).toLocaleString('en-US');
   }
 
+  function vehicleImageSrc(entry) {
+    if (!entry || !entry.image) return '';
+    if (typeof entry.image === 'string') return entry.image;
+    return entry.image.src || entry.image.localSrc || entry.image.externalSrc || '';
+  }
+
+  function createVehicleImage(entry) {
+    var wrap = document.createElement('span');
+    wrap.className = 'sk-garage-thumb-image';
+    var src = vehicleImageSrc(entry);
+    if (!src) {
+      wrap.classList.add('is-empty');
+      wrap.textContent = entry.modelName || 'SK';
+      return wrap;
+    }
+    var img = document.createElement('img');
+    img.src = src;
+    img.alt = entry.displayName || entry.modelName || 'Vehicle';
+    img.loading = 'lazy';
+    img.draggable = false;
+    img.addEventListener('error', function () {
+      wrap.classList.add('is-empty');
+      wrap.textContent = entry.modelName || 'SK';
+      img.remove();
+    });
+    wrap.appendChild(img);
+    return wrap;
+  }
+
   function isOpen() {
     return !!els.root && els.root.style.display !== 'none';
   }
@@ -387,6 +416,7 @@
       level.className = 'sk-garage-thumb-level';
       level.textContent = t('garage.thumb_level', { level: (entry.progression && entry.progression.level) || 1 });
 
+      btn.appendChild(createVehicleImage(entry));
       btn.appendChild(name);
       btn.appendChild(level);
       btn.appendChild(tag);

@@ -31,6 +31,8 @@ end
 ---@field price integer
 ---@field class string
 ---@field customizability integer
+---@field image table|nil
+---@field requiredVipTier string|nil
 
 -- Display config ------------------------------------------------------------
 
@@ -196,7 +198,8 @@ end
 ---@param displayHeading number
 ---@return SKDealershipVehicleEntry[]
 local function getSortedVehicles(dealerType, displayCoords, displayHeading)
-    local all = SKGameVehicles[dealerType]
+    local all = assert(SKGameVehicles[dealerType], ('streetkings: missing dealership vehicles for %s'):format(dealerType))
+    local dealerConfig = assert(getDealerTypes()[dealerType], ('streetkings: missing dealership config for %s'):format(dealerType))
     local sorted = {}
     for _, cls in ipairs(getClassOrder()) do
         for _, v in ipairs(all) do
@@ -209,6 +212,8 @@ local function getSortedVehicles(dealerType, displayCoords, displayHeading)
                     brand = sharedVehicle.brand,
                     price = v.price,
                     class = v.class,
+                    image = SKResolveVehicleImage(v.model, v.image),
+                    requiredVipTier = v.vipTier or dealerConfig.vipTier,
                     customizability = getVehicleCustomizability(v.model, displayCoords, displayHeading),
                 }
             end
@@ -291,6 +296,7 @@ SKC.RegisterGameState(GameState.DEALERSHIP, {
                 vehicles   = vehicles,
                 balance    = dealershipState.balance,
                 playerLevel = dealershipState.playerLevel,
+                playerVipTier = dealershipState.vipTier,
                 ownedModels = dealershipState.ownedModels,
             })
 
