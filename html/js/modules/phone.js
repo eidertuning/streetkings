@@ -785,20 +785,24 @@
     suppressNextClick = true;
     var rect = btn.getBoundingClientRect();
     var slot = btn.closest('.phone-app-slot');
+    var ghost = btn.cloneNode(true);
+    ghost.classList.add('phone-app-drag-ghost');
+    ghost.classList.remove('is-dragging');
+    document.body.appendChild(ghost);
+    var ghostRect = ghost.getBoundingClientRect();
     dragState = {
       btn: btn,
+      ghost: ghost,
       slot: slot,
       pointerId: event.pointerId,
-      offsetX: rect.width / 2,
-      offsetY: rect.height / 2,
-      width: rect.width,
-      height: rect.height,
+      offsetX: ghostRect.width / 2,
+      offsetY: ghostRect.height / 2,
+      width: ghostRect.width,
+      height: ghostRect.height,
     };
     btn.classList.add('is-dragging');
-    btn.style.width = rect.width + 'px';
-    btn.style.height = rect.height + 'px';
-    btn.style.left = (event.clientX - dragState.offsetX) + 'px';
-    btn.style.top = (event.clientY - dragState.offsetY) + 'px';
+    ghost.style.left = (event.clientX - dragState.offsetX) + 'px';
+    ghost.style.top = (event.clientY - dragState.offsetY) + 'px';
     btn.setPointerCapture(event.pointerId);
     event.preventDefault();
   }
@@ -829,8 +833,10 @@
       return;
     }
     var btn = dragState.btn;
-    btn.style.left = (event.clientX - dragState.offsetX) + 'px';
-    btn.style.top = (event.clientY - dragState.offsetY) + 'px';
+    if (dragState.ghost) {
+      dragState.ghost.style.left = (event.clientX - dragState.offsetX) + 'px';
+      dragState.ghost.style.top = (event.clientY - dragState.offsetY) + 'px';
+    }
     var target = document.elementFromPoint(event.clientX, event.clientY);
     var targetSlot = target && target.closest ? target.closest('.phone-app-slot') : null;
     if (targetSlot && targetSlot !== dragState.slot && elAppsGrid.contains(targetSlot)) {
@@ -852,10 +858,7 @@
     }
     var btn = dragState.btn;
     btn.classList.remove('is-dragging');
-    btn.style.width = '';
-    btn.style.height = '';
-    btn.style.left = '';
-    btn.style.top = '';
+    if (dragState.ghost) dragState.ghost.remove();
     try { btn.releasePointerCapture(event.pointerId); } catch (_) {}
     dragState = null;
     saveTabletConfig();
@@ -867,10 +870,7 @@
     if (!dragState) return;
     var btn = dragState.btn;
     btn.classList.remove('is-dragging');
-    btn.style.width = '';
-    btn.style.height = '';
-    btn.style.left = '';
-    btn.style.top = '';
+    if (dragState.ghost) dragState.ghost.remove();
     dragState = null;
   }
 

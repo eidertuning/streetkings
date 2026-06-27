@@ -405,11 +405,6 @@
   border-radius: 0.55rem;
 }
 
-.sk-phone.is-customizing-home .phone-app-slot {
-  background: rgba(255, 255, 255, 0.025);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.035);
-}
-
 .phone-app {
   position: relative;
   display: flex;
@@ -426,8 +421,9 @@
   border-radius: 0.5rem;
   touch-action: none;
   user-select: none;
-  width: 100%;
-  height: 100%;
+  width: min(100%, 6.3rem);
+  height: auto;
+  min-height: 5.65rem;
   justify-content: center;
 }
 
@@ -440,12 +436,17 @@
 }
 
 .phone-app.is-dragging {
+  opacity: 0;
+}
+
+.phone-app-drag-ghost {
   position: fixed;
   z-index: 50;
   opacity: 0.94;
   transform: scale(1.08);
   pointer-events: none;
   animation: none;
+  width: min(6.3rem, 24vw);
 }
 
 @keyframes phone-icon-wiggle {
