@@ -8,7 +8,8 @@ version '1.1.0'
 dependencies {
     'oxmysql',
     'ox_lib',
-    'streetkings_audio'
+    'streetkings_audio',
+    'xsound'
 }
 
 client_scripts {
@@ -126,6 +127,7 @@ server_scripts {
     'modules/pausemenu/pausemenu_s.lua',
     'modules/settings/settings_s.lua',
     'modules/stats/stats_s.lua',
+    'modules/soundtrack/sotyfly_s.lua',
     'modules/phone/tablet_customization_s.lua',
     'modules/phone/phone_sdk_s.lua',
     'modules/phone/profile_app_s.lua',

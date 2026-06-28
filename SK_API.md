@@ -290,9 +290,12 @@ exports['streetkings']:SetSpeedometerEnabled(true)
 |--------|--------|---------|-------------|
 | `GetCurrentTrack()` | | `table?` | Current playing track: `{ key, title, stationKey, durationMs }` or nil |
 | `GetSoundtrackPlayerState()` | | `table` | Current Sotyfly/player state including progress, dataset, enabled/blocked flags |
-| `SearchSoundtrackTracks(query, limit?)` | string, number? | `table[]` | Search playable internal soundtrack tracks |
-| `PlaySoundtrackTrack(trackKey)` | string | `boolean, string?` | Play an internal soundtrack track in the current vehicle |
-| `SkipSoundtrackTrack()` | | `boolean` | Skip the current managed track |
+| `GetSotyflyPlayerState()` | | `table` | Current xsound-backed Sotyfly state for this player |
+| `PlaySotyflyUrl(url, title?, options?)` | string, string?, table? | `boolean, string?` | Start a synced positional Sotyfly session. `options.distance`, `options.volume`, and `options.netId` are supported. |
+| `StopSotyfly()` | | `boolean` | Stop this player's synced Sotyfly session |
+| `SearchSoundtrackTracks(query, limit?)` | string, number? | `table[]` | Legacy internal soundtrack catalog search |
+| `PlaySoundtrackTrack(trackKey)` | string | `boolean, string?` | Legacy compatibility only. GTA radio playback is disabled; use `PlaySotyflyUrl` for music. |
+| `SkipSoundtrackTrack()` | | `boolean` | Legacy compatibility helper |
 | `SetSoundtrackEnabled(on)` | `boolean` | `boolean` | Enable or disable the managed soundtrack system. Returns `false` if `on` is not a boolean. |
 
 ```lua
@@ -302,11 +305,18 @@ if track then
     exports['streetkings']:ShowNotification({ title = 'Now playing: ' .. track.title, type = 'info' })
 end
 
--- mute the soundtrack during custom audio
-exports['streetkings']:SetSoundtrackEnabled(false)
+-- play synced positional music from another client script
+local ok, err = exports['streetkings']:PlaySotyflyUrl('https://example.com/song.mp3', 'Night Drive', {
+    distance = 35.0,
+    volume = 0.45,
+})
+
+if not ok then print(err) end
 ```
 
-The player UI is now handled by the tablet app **Sotyfly** (`sotyfly`). The legacy lower HUD is disabled so music controls stay inside the tablet. Sotyfly can search playable internal tracks, skip songs, save YouTube links as a searchable library, and organize them into playlists. YouTube links are stored as library entries; playback still uses the internal FiveM/GTA radio soundtrack unless a separate audio backend is added.
+The player UI is handled by the tablet app **Sotyfly** (`sotyfly`). The legacy lower HUD and GTA vehicle radio playback are disabled so music controls stay inside the tablet. Sotyfly requires the `xsound` resource and uses positional synced audio: when a player plays a saved link, nearby players hear it based on the configured distance and the owner's vehicle/player position.
+
+Sotyfly searches the local saved library and playlists. External catalog search requires a separate backend or API; without one, add-on scripts should import links directly with `PlaySotyflyUrl` or through the tablet import form.
 
 ### Environment
 

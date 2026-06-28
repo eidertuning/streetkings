@@ -34,7 +34,7 @@
   }
 
   function currentItems() {
-    if (state.view === 'youtube') return state.links.filter(matches);
+    if (state.view === 'sources') return state.links.filter(matches);
     if (state.view === 'playlists') {
       var items = [];
       state.playlists.forEach(function (playlist) {
@@ -69,32 +69,33 @@
 
   function renderPlayer() {
     var player = state.player || {};
-    var title = player.title || 'Sin pista activa';
+    var title = player.title || 'Sin reproduccion';
     var duration = Math.max(1, Number(player.durationMs || 0));
     var current = Math.max(0, Math.min(Number(player.currentMs || 0), duration));
     els.app.classList.toggle('is-audio-disabled', player.musicDisabled === true);
     els.nowTitle.textContent = title;
-    els.nowMeta.textContent = player.key ? ((player.stationKey || 'radio') + ' - ' + (player.dataset || 'default')) : 'Selecciona una pista interna para reproducir.';
+    els.nowMeta.textContent = player.xsoundReady === false ? 'Falta iniciar xsound para reproducir.' : (player.key ? 'Audio sincronizado por distancia' : 'Importa o selecciona un link guardado.');
     els.panelTitle.textContent = title;
-    els.panelMeta.textContent = player.key ? (player.stationKey || 'radio') : 'Elige una pista para empezar.';
+    els.panelMeta.textContent = player.key ? 'Sesion activa' : 'Elige un link para empezar.';
     els.barTitle.textContent = title;
-    els.barMeta.textContent = player.key ? ((player.stationKey || 'radio') + ' - ' + (player.dataset || 'default')) : 'Sotyfly';
+    els.barMeta.textContent = player.key ? 'Drive audio' : 'Sotyfly';
     els.current.textContent = formatTime(current);
     els.duration.textContent = formatTime(duration);
     els.progress.style.width = (duration ? (current / duration) * 100 : 0).toFixed(2) + '%';
-    els.enable.textContent = player.enabled === false ? 'Activar' : 'Soundtrack ON';
+    els.enable.textContent = player.enabled === false ? 'Activar audio' : 'Audio ON';
     els.enable.classList.toggle('is-off', player.enabled === false);
+    els.play.textContent = player.playing ? 'Pause' : 'Play';
     els.coverGlyph.textContent = title.trim().slice(0, 2).toUpperCase() || 'Sf';
     els.panelGlyph.textContent = title.trim().slice(0, 2).toUpperCase() || 'Sf';
     els.barGlyph.textContent = title.trim().slice(0, 2).toUpperCase() || 'Sf';
-    els.libraryCount.textContent = String((state.tracks || []).length + (state.links || []).length) + ' pistas';
+    els.libraryCount.textContent = String((state.links || []).length) + ' links';
   }
 
   function renderListMeta() {
     var labels = {
-      library: ['Biblioteca', 'Pistas internas y links guardados.'],
-      youtube: ['YouTube', 'Links guardados para buscar y organizar.'],
-      playlists: ['Playlists', 'Colecciones creadas desde tus links y pistas.']
+      library: ['Tu biblioteca', 'Links guardados listos para reproducir.'],
+      sources: ['Fuentes', 'Agrega links y organizalos sin salir de la tablet.'],
+      playlists: ['Playlists', 'Colecciones creadas desde tus links.']
     };
     var meta = labels[state.view] || labels.library;
     els.listTitle.textContent = meta[0];
@@ -102,7 +103,7 @@
     document.querySelectorAll('.sf-nav').forEach(function (btn) {
       btn.classList.toggle('is-active', btn.dataset.view === state.view);
     });
-    document.querySelector('[data-panel="youtube"]').style.display = state.view === 'youtube' ? 'block' : 'none';
+    document.querySelector('[data-panel="sources"]').style.display = state.view === 'sources' ? 'block' : 'none';
     document.querySelector('[data-panel="playlists"]').style.display = state.view === 'playlists' ? 'block' : 'none';
   }
 
@@ -132,22 +133,20 @@
 
     var badge = document.createElement('span');
     badge.className = 'sf-track-badge';
-    badge.textContent = item.type === 'link' ? 'YT' : 'IN';
+    badge.textContent = 'S';
 
     var body = document.createElement('span');
     body.className = 'sf-track-body';
     var title = document.createElement('strong');
     title.textContent = item.title || item.url || 'Sin titulo';
     var meta = document.createElement('small');
-    meta.textContent = item.type === 'link'
-      ? ((item.provider || 'link') + ' - guardado')
-      : ((item.stationKey || 'radio') + ' - ' + formatTime(item.durationMs));
+    meta.textContent = item.type === 'link' ? 'Link guardado' : formatTime(item.durationMs);
     body.appendChild(title);
     body.appendChild(meta);
 
     var action = document.createElement('span');
     action.className = 'sf-track-action';
-    action.textContent = item.type === 'link' ? 'Guardar' : 'Play';
+    action.textContent = 'Play';
 
     row.appendChild(badge);
     row.appendChild(body);
@@ -191,11 +190,32 @@
   }
 
   function playSelected() {
+    if (state.player && state.player.key && state.player.playing && (!state.selectedKey || state.selectedKey === state.player.key)) {
+      fetchNui('sotyfly:pause').then(function (result) {
+        state.player = result && result.player || state.player;
+        render();
+        window.setTimeout(loadData, 250);
+      });
+      return;
+    }
+    if (state.player && state.player.key && state.player.playing === false && !state.selectedKey) {
+      fetchNui('sotyfly:resume').then(function (result) {
+        state.player = result && result.player || state.player;
+        render();
+        window.setTimeout(loadData, 250);
+      });
+      return;
+    }
     var key = state.selectedKey || (state.player && state.player.key);
     if (!key) return;
-    fetchNui('sotyfly:playTrack', { key: key }).then(function (result) {
+    var item = state.tracks.concat(state.links).find(function (entry) {
+      return entry.key === key || entry.id === key;
+    });
+    if (!item) return;
+    fetchNui('sotyfly:playItem', { id: item.id, key: item.key, url: item.url, title: item.title }).then(function (result) {
       state.player = result && result.player || state.player;
       render();
+      window.setTimeout(loadData, 350);
     });
   }
 
@@ -259,11 +279,7 @@
       var row = event.target.closest('.sf-track');
       if (!row) return;
       state.selectedKey = row.dataset.key;
-      if (row.dataset.type === 'internal') {
-        playSelected();
-      } else {
-        renderTracks();
-      }
+      playSelected();
     });
     els.lockRefresh.addEventListener('click', loadData);
   }

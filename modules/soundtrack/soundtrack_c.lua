@@ -430,15 +430,8 @@ local function applyTrack(vehicle, trackKey)
     removeTrackFromShuffleBag(trackKey)
     refreshNowPlayingUiVisibilityWindow()
 
-    SetVehicleRadioEnabled(vehicle, true)
-    SetVehRadioStation(vehicle, track.radioName)
-    SetRadioToStationName(track.radioName)
-    SetInitialPlayerStation(track.radioName)
-    FreezeRadioStation(track.radioName)
-    SetRadioAutoUnfreeze(false)
-    SetRadioTrack(track.radioName, track.audioId)
-    UnfreezeRadioStation(track.radioName)
-    SetRadioAutoUnfreeze(true)
+    SetVehicleRadioEnabled(vehicle, false)
+    SetVehRadioStation(vehicle, 'OFF')
 
     sendPlayerState(trackKey, 0)
 end
@@ -575,7 +568,12 @@ function SKSoundtrack.SetRadioTrackByKey(trackKey)
         error('SKSoundtrack: no active vehicle')
     end
 
-    applyTrack(vehicle, trackKey)
+    resolveTrack(trackKey)
+    currentVehicle = vehicle
+    currentTrackKey = trackKey
+    skipRequested = false
+    SetVehicleRadioEnabled(vehicle, false)
+    SetVehRadioStation(vehicle, 'OFF')
 end
 
 ---@param stationKey string
@@ -627,10 +625,6 @@ end
 
 ---@return nil
 function SKSoundtrack.SkipCurrentTrack()
-    if currentVehicle == 0 or not currentTrackKey then
-        return
-    end
-
     skipRequested = true
 end
 
@@ -664,9 +658,6 @@ end
 function SKSoundtrack.GetPlayerState()
     local currentMs = 0
     local track = currentTrackKey and getActiveDataset().trackByKey[currentTrackKey] or nil
-    if track then
-        currentMs = clampPlaybackMs(GetCurrentRadioTrackPlaybackTime(track.radioName))
-    end
     return {
         visible = currentTrackKey ~= nil,
         key = currentTrackKey,
@@ -679,6 +670,7 @@ function SKSoundtrack.GetPlayerState()
         blocked = soundtrackBlocked,
         enabled = soundtrackEnabled,
         musicDisabled = musicDisabled,
+        externalPlayer = true,
     }
 end
 
@@ -801,7 +793,11 @@ CreateThread(function()
                     resetVehicleState(0)
                 end
             else
-                updateManagedTrack(vehicle)
+                if currentVehicle ~= vehicle then
+                    resetVehicleState(vehicle)
+                end
+                SetVehicleRadioEnabled(vehicle, false)
+                SetVehRadioStation(vehicle, 'OFF')
             end
         elseif not soundtrackEnabled then
             if currentVehicle ~= 0 or currentTrackKey then

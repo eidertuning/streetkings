@@ -4,29 +4,32 @@
 
 /* Flat bottom edge so the timer bar stays full-width; top keeps a light SK angle. */
 .sk-msg-notif {
-  --sk-msg-notif-mask: polygon(0 0, 100% 2%, 100% 100%, 0 100%);
+  --sk-msg-notif-mask: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 
   position: fixed;
-  top: calc((100vh - min(100vh, calc(100vw * var(--sk-ui-aspect-y) / var(--sk-ui-aspect-x)))) / 2 + 12rem);
-  right: calc((100vw - min(100vw, calc(100vh * var(--sk-ui-aspect-x) / var(--sk-ui-aspect-y)))) / 2 + 6rem);
+  top: calc((100vh - min(100vh, calc(100vw * var(--sk-ui-aspect-y) / var(--sk-ui-aspect-x)))) / 2 + 1.2rem);
+  left: 50%;
   z-index: 8000;
-  width: clamp(300px, 28vw, 440px);
-  background: linear-gradient(145deg, rgba(4, 3, 8, 0.98) 0%, rgba(1, 1, 4, 0.99) 100%);
-  border: 2px solid var(--sk-border-panel);
-  border-top: 4px solid var(--sk-color-spray);
-  border-radius: var(--sk-radius-panel);
+  width: clamp(320px, 31vw, 480px);
+  background:
+    linear-gradient(145deg, rgba(23, 18, 24, 0.97) 0%, rgba(3, 3, 7, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 3px solid var(--sk-color-spray);
+  border-radius: 10px;
   clip-path: var(--sk-msg-notif-mask);
-  box-shadow: var(--sk-shadow-panel-inset), var(--sk-shadow-panel-drop);
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.56),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
   pointer-events: none;
   user-select: none;
-  transform: translateX(calc(100% + 2.5rem));
+  transform: translate(-50%, -1.25rem) scale(0.98);
   opacity: 0;
-  transition: transform 0.38s var(--sk-menu-transition-ease), opacity 0.28s ease;
+  transition: transform 0.34s var(--sk-menu-transition-ease), opacity 0.24s ease;
   overflow: hidden;
 }
 
 .sk-msg-notif.is-active {
-  transform: translateX(0);
+  transform: translate(-50%, 0) scale(1);
   opacity: 1;
 }
 
@@ -35,8 +38,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  padding: 0.45rem 0.85rem 0.4rem;
-  border-bottom: 1px solid var(--sk-border-panel);
+  padding: 0.45rem 0.9rem 0.38rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   background: linear-gradient(
     90deg,
     rgba(255, 209, 71, 0.1) 0%,
@@ -80,7 +83,7 @@
   display: flex;
   align-items: flex-start;
   gap: 0.65rem;
-  padding: 0.75rem 0.85rem 0.75rem;
+  padding: 0.78rem 0.9rem 0.8rem;
 }
 
 .sk-msg-notif-avatar {
@@ -135,8 +138,8 @@
   color: var(--sk-text-detail);
   margin: 0;
   display: -webkit-box;
-  line-clamp: 8;
-  -webkit-line-clamp: 8;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
