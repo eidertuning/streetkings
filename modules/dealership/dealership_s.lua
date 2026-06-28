@@ -192,6 +192,18 @@ lib.callback.register('streetkings:dealership:purchase', function(source, model,
         isFirstVehicle = vehicleCount == 0,
     })
 
+    if SKLogs then
+        SKLogs.Emit('dealershipPurchase', {
+            source = source,
+            dealershipId = serverDealerType,
+            vehicleName = sharedVehicle.name,
+            vehicleModel = model,
+            price = price,
+            balance = document.economy.cash,
+            requiredVip = requiredVipTier,
+        })
+    end
+
     return { ok = true, balance = document.economy.cash, vehicleId = vehicleId }
 end)
 
@@ -219,7 +231,16 @@ lib.addCommand('setvip', {
         return
     end
 
+    local previousTier = SKSaves.read(args.id, 'profile.vipTier')
     SKSaves.write(args.id, 'profile.vipTier', tier == 'none' and '' or tier)
+    if SKLogs then
+        SKLogs.Emit('vipChanged', {
+            source = source,
+            target = args.id,
+            oldTier = previousTier == '' and 'none' or previousTier,
+            newTier = tier,
+        })
+    end
     if source > 0 then
         TriggerClientEvent('streetkings:notify', source, { type = 'success', title = 'Sistema', body = ('VIP actualizado a %s.'):format(tier) })
     end

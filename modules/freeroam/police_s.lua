@@ -59,9 +59,19 @@ lib.callback.register('streetkings:police:confirmBust', function(src)
     lastBustAt[src] = GetGameTimer()
     local current = SKSaves.read(src, 'economy.cash')
     local deducted = math.min(current, BUST_AMOUNT)
-    SKSaves.write(src, 'economy.cash', math.max(0, current - BUST_AMOUNT))
+    local afterCash = math.max(0, current - BUST_AMOUNT)
+    SKSaves.write(src, 'economy.cash', afterCash)
     SKStats.increment(src, 'totalCashSpent', deducted)
     SKStats.increment(src, 'policeBusts', 1)
+
+    if SKLogs then
+        SKLogs.Emit('policeBust', {
+            source = src,
+            deducted = deducted,
+            beforeCash = current,
+            afterCash = afterCash,
+        })
+    end
 
     return { ok = true }
 end)

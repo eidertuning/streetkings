@@ -18,6 +18,13 @@ lib.addCommand('tp', {
 
     if not x or not y or not z then return end
     TriggerClientEvent('streetkings:admin:teleport', source, x, y, z)
+    if SKLogs then
+        SKLogs.Admin('adminCommand', {
+            source = source,
+            command = 'tp',
+            details = ('x=%.3f, y=%.3f, z=%.3f'):format(x, y, z),
+        })
+    end
 end)
 
 lib.addCommand({'tpm', 'warp'}, {
@@ -25,6 +32,13 @@ lib.addCommand({'tpm', 'warp'}, {
     restricted = 'group.admin',
 }, function(source)
     TriggerClientEvent('streetkings:admin:teleportMarker', source)
+    if SKLogs then
+        SKLogs.Admin('adminCommand', {
+            source = source,
+            command = 'tpm/warp',
+            details = 'Teleport al waypoint del mapa',
+        })
+    end
 end)
 
 lib.addCommand('logout', {
@@ -36,6 +50,13 @@ lib.addCommand('logout', {
         SKSaves.clearActive(source)
     end
     TriggerClientEvent('streetkings:admin:logout', source)
+    if SKLogs then
+        SKLogs.Admin('adminCommand', {
+            source = source,
+            command = 'logout',
+            details = 'Save persistido y vuelta al menu principal',
+        })
+    end
 end)
 
 lib.addCommand('givemoney', {
@@ -46,10 +67,20 @@ lib.addCommand('givemoney', {
         { name = 'amount', help = 'Amount to give',    type = 'number'   },
     },
     restricted = 'group.admin',
-}, function(_, args)
+}, function(source, args)
     local path = MONEY_PATHS[args.type]
     if not path or not SKSaves.hasActiveSave(args.id) then return end
-    SKSaves.write(args.id, path, SKSaves.read(args.id, path) + args.amount)
+    local before = SKSaves.read(args.id, path)
+    local after = before + args.amount
+    SKSaves.write(args.id, path, after)
+    if SKLogs then
+        SKLogs.Admin('adminCommand', {
+            source = source,
+            target = args.id,
+            command = 'givemoney',
+            details = ('tipo=%s, cantidad=$%s, antes=$%s, despues=$%s'):format(args.type, args.amount, before, after),
+        })
+    end
 end)
 
 lib.addCommand('setmoney', {
@@ -60,10 +91,19 @@ lib.addCommand('setmoney', {
         { name = 'amount', help = 'Amount to set',     type = 'number'   },
     },
     restricted = 'group.admin',
-}, function(_, args)
+}, function(source, args)
     local path = MONEY_PATHS[args.type]
     if not path or not SKSaves.hasActiveSave(args.id) then return end
+    local before = SKSaves.read(args.id, path)
     SKSaves.write(args.id, path, args.amount)
+    if SKLogs then
+        SKLogs.Admin('adminCommand', {
+            source = source,
+            target = args.id,
+            command = 'setmoney',
+            details = ('tipo=%s, antes=$%s, nuevo=$%s'):format(args.type, before, args.amount),
+        })
+    end
 end)
 
 lib.addCommand('v3', {
@@ -72,6 +112,13 @@ lib.addCommand('v3', {
 }, function(source)
     local coords = GetEntityCoords(GetPlayerPed(source))
     TriggerClientEvent('streetkings:admin:copyCoords', source, coords)
+    if SKLogs then
+        SKLogs.Admin('adminCommand', {
+            source = source,
+            command = 'v3',
+            details = ('x=%.3f, y=%.3f, z=%.3f'):format(coords.x, coords.y, coords.z),
+        })
+    end
 end)
 
 lib.addCommand('v4', {
@@ -82,6 +129,13 @@ lib.addCommand('v4', {
     local coords = GetEntityCoords(ped)
     local heading = GetEntityHeading(ped)
     TriggerClientEvent('streetkings:admin:copyCoords4', source, coords, heading)
+    if SKLogs then
+        SKLogs.Admin('adminCommand', {
+            source = source,
+            command = 'v4',
+            details = ('x=%.3f, y=%.3f, z=%.3f, h=%.3f'):format(coords.x, coords.y, coords.z, heading),
+        })
+    end
 end)
 
 lib.addCommand('time', {
@@ -90,8 +144,15 @@ lib.addCommand('time', {
         { name = 'hour', help = 'Hour (0–23)', type = 'number' },
     },
     restricted = 'group.admin',
-}, function(_, args)
+}, function(source, args)
     SKEnvironment.SetHour(args.hour)
+    if SKLogs then
+        SKLogs.Admin('adminCommand', {
+            source = source,
+            command = 'time',
+            details = ('hora=%s'):format(args.hour),
+        })
+    end
 end)
 
 local VALID_WEATHERS = {
@@ -107,8 +168,15 @@ lib.addCommand('weather', {
         { name = 'weather', help = 'Weather type (e.g. CLEAR, RAIN, FOGGY)', type = 'string' },
     },
     restricted = 'group.admin',
-}, function(_, args)
+}, function(source, args)
     local weather = args.weather:upper()
     if not VALID_WEATHERS[weather] then return end
     SKEnvironment.SetWeather(weather)
+    if SKLogs then
+        SKLogs.Admin('adminCommand', {
+            source = source,
+            command = 'weather',
+            details = ('clima=%s'):format(weather),
+        })
+    end
 end)

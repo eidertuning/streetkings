@@ -104,6 +104,7 @@ server_scripts {
     'modules/environment/environment_s.lua',
     'modules/core/game_state_s.lua',
     'modules/storage/saves_s.lua',
+    'modules/logs/logs_s.lua',
     'modules/avatar/avatar_s.lua',
     'modules/progression/progression_s.lua',
     'modules/initiation/initiation_s.lua',
@@ -149,6 +150,7 @@ server_scripts {
 shared_scripts {
     '@ox_lib/init.lua',
     'data/sk_config.lua',
+    'data/logs.lua',
     'locales/en.lua',
     'locales/es.lua',
     'modules/core/locales_sh.lua',

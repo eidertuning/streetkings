@@ -262,6 +262,16 @@ lib.callback.register('streetkings:npcchallenge:reward', function(src, vehClass,
     local document = SKSaves.getDocument(src)
     if not document then
         TriggerEvent('streetkings:server:recordNpcRace', src, true, vehicleModel)
+        if SKLogs then
+            SKLogs.Emit('npcRace', {
+                source = src,
+                won = true,
+                elapsedMs = elapsedMs,
+                vehicleModel = vehicleModel,
+                vehicleClass = vehClass,
+                cash = reward,
+            })
+        end
         return { cash = reward, reward = nil }
     end
     local progression = document.progression
@@ -302,6 +312,17 @@ lib.callback.register('streetkings:npcchallenge:reward', function(src, vehClass,
     end
 
     TriggerEvent('streetkings:server:recordNpcRace', src, true, vehicleModel)
+    if SKLogs then
+        SKLogs.Emit('npcRace', {
+            source = src,
+            won = true,
+            elapsedMs = elapsedMs,
+            vehicleModel = vehicleModel,
+            vehicleClass = vehClass,
+            cash = reward,
+            reward = rewardData,
+        })
+    end
     TriggerEvent('streetkings:messages:trigger', src, 'activityCompleted', {
         eventId = 'npc_street',
         scoreType = 'time',
@@ -338,5 +359,14 @@ lib.callback.register('streetkings:npcchallenge:penalty', function(src, vehClass
     SKStats.increment(src, 'totalCashSpent', deducted)
 
     TriggerEvent('streetkings:server:recordNpcRace', src, false, vehicleModel)
+    if SKLogs then
+        SKLogs.Emit('npcRace', {
+            source = src,
+            won = false,
+            vehicleModel = vehicleModel,
+            vehicleClass = vehClass,
+            cash = -deducted,
+        })
+    end
     return { cash = stake }
 end)

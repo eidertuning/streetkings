@@ -1,5 +1,18 @@
 SKEventsSubmit = {}
 
+local function logActivityRejected(source, eventId, scoreValue, vehicleModel, reason)
+    if SKLogs then
+        SKLogs.Emit('activityRejected', {
+            source = source,
+            eventId = eventId,
+            scoreValue = scoreValue,
+            vehicleModel = vehicleModel,
+            reason = reason,
+        })
+    end
+    return { ok = false, reason = reason }
+end
+
 ---@param source integer
 ---@param eventId string
 ---@param scoreValue integer
@@ -8,13 +21,13 @@ SKEventsSubmit = {}
 function SKEventsSubmit.submitExEventScore(source, eventId, scoreValue, vehicleModel)
     local valid, reason = SKExEventValidation.validateScore(source, eventId, scoreValue)
     if not valid then
-        return { ok = false, reason = reason }
+        return logActivityRejected(source, eventId, scoreValue, vehicleModel, reason)
     end
 
     local _, scoreType = SKEventsQuery.getActivityContext(eventId)
     local license = GetPlayerIdentifierByType(source --[[@as string]], 'license')
     if not license then
-        return { ok = false, reason = 'no_license' }
+        return logActivityRejected(source, eventId, scoreValue, vehicleModel, 'no_license')
     end
 
     local savedAlias = SKSaves.read(source, 'profile.alias')
@@ -50,6 +63,20 @@ function SKEventsSubmit.submitExEventScore(source, eventId, scoreValue, vehicleM
         })
     end
 
+    if SKLogs then
+        SKLogs.Emit('activitySubmitted', {
+            source = source,
+            eventId = eventId,
+            scoreType = scoreType,
+            scoreValue = scoreValue,
+            vehicleModel = model,
+            vehicleClass = '',
+            daily = false,
+            goalMet = false,
+            reward = reward,
+        })
+    end
+
     return {
         ok = true,
         reward = reward,
@@ -71,17 +98,17 @@ function SKEventsSubmit.submitTimeTrialScore(source, eventId, scoreValue, vehicl
     local eventState = SKEventsDaily.ensureEventState(source)
     local vehicleClass = SKEventsRewards.getActiveVehicleClass(source)
     if not vehicleClass then
-        return { ok = false, reason = 'no_active_vehicle' }
+        return logActivityRejected(source, eventId, scoreValue, vehicleModel, 'no_active_vehicle')
     end
 
     local validRun, invalidReason = SKEventsValidation.validateTimedRun(source, eventId, scoreValue)
     if not validRun then
-        return { ok = false, reason = invalidReason }
+        return logActivityRejected(source, eventId, scoreValue, vehicleModel, invalidReason)
     end
 
     local license = GetPlayerIdentifierByType(source --[[@as string]], 'license')
     if not license then
-        return { ok = false, reason = 'no_license' }
+        return logActivityRejected(source, eventId, scoreValue, vehicleModel, 'no_license')
     end
 
     local savedAlias = SKSaves.read(source, 'profile.alias')
@@ -118,6 +145,20 @@ function SKEventsSubmit.submitTimeTrialScore(source, eventId, scoreValue, vehicl
     })
     SKEventsRewards.notifyEventReward(source, eventId, rewardData, rewardContext)
 
+    if SKLogs then
+        SKLogs.Emit('activitySubmitted', {
+            source = source,
+            eventId = eventId,
+            scoreType = 'time',
+            scoreValue = scoreValue,
+            vehicleModel = model,
+            vehicleClass = vehicleClass,
+            daily = isDaily,
+            goalMet = goalMet,
+            reward = rewardData,
+        })
+    end
+
     return {
         ok = true,
         reward = rewardData,
@@ -135,21 +176,21 @@ end
 ---@param vehicleModel string|nil
 ---@return table
 function SKEventsSubmit.submitActivityScore(source, eventId, scoreValue, vehicleModel)
-    if not SKEventsServer.dbReady then return { ok = false, reason = 'db_not_ready' } end
-    if not SKSaves.hasActiveSave(source) then return { ok = false, reason = 'no_active_save' } end
-    if type(eventId) ~= 'string' or #eventId > 64 then return { ok = false, reason = 'invalid_event' } end
-    if type(scoreValue) ~= 'number' then return { ok = false, reason = 'invalid_score' } end
+    if not SKEventsServer.dbReady then return logActivityRejected(source, eventId, scoreValue, vehicleModel, 'db_not_ready') end
+    if not SKSaves.hasActiveSave(source) then return logActivityRejected(source, eventId, scoreValue, vehicleModel, 'no_active_save') end
+    if type(eventId) ~= 'string' or #eventId > 64 then return logActivityRejected(source, eventId, scoreValue, vehicleModel, 'invalid_event') end
+    if type(scoreValue) ~= 'number' then return logActivityRejected(source, eventId, scoreValue, vehicleModel, 'invalid_score') end
 
     scoreValue = math.floor(scoreValue)
-    if scoreValue <= 0 or scoreValue > 9999999 then return { ok = false, reason = 'invalid_score' } end
+    if scoreValue <= 0 or scoreValue > 9999999 then return logActivityRejected(source, eventId, scoreValue, vehicleModel, 'invalid_score') end
 
     local activity, scoreType = SKEventsQuery.getActivityContext(eventId)
-    if not activity or not scoreType then return { ok = false, reason = 'unknown_event' } end
+    if not activity or not scoreType then return logActivityRejected(source, eventId, scoreValue, vehicleModel, 'unknown_event') end
 
     local cfg = SKEventsConfig
     local now = GetGameTimer()
     if SKEventsServer.lastSubmit[source] and (now - SKEventsServer.lastSubmit[source]) < cfg.RATE_LIMIT_MS then
-        return { ok = false, reason = 'rate_limited' }
+        return logActivityRejected(source, eventId, scoreValue, vehicleModel, 'rate_limited')
     end
     SKEventsServer.lastSubmit[source] = now
 

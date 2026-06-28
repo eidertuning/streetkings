@@ -132,6 +132,11 @@ RegisterNetEvent('streetkings:stats:policeEscape', function()
     lastEscape[src] = now
 
     SKStats.increment(src, 'policeEscapes', 1)
+    if SKLogs then
+        SKLogs.Emit('policeEscape', {
+            source = src,
+        })
+    end
 end)
 
 AddEventHandler('playerDropped', function()
