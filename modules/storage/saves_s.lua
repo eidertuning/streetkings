@@ -321,9 +321,10 @@ end
 
 lib.callback.register('streetkings:saves:list', function(source)
     if not dbReady then return { ok = false, error = SKSaves.Error.DB_NOT_READY } end
+    local streetkingsId = SKPlayerIds and SKPlayerIds.Get and SKPlayerIds.Get(source) or nil
     local owner = ownerLicense(source)
     if not owner then return { ok = false, error = SKSaves.Error.NO_LICENSE } end
-    return { ok = true, slots = attachDiscordAvatars(source, dbListSlots(owner)), slotsVersion = SKSaves.SLOTS_VERSION }
+    return { ok = true, streetkingsId = streetkingsId, slots = attachDiscordAvatars(source, dbListSlots(owner)), slotsVersion = SKSaves.SLOTS_VERSION }
 end)
 
 lib.callback.register('streetkings:saves:select', function(source, slotIndex, isNew, saveId, saveName)
@@ -367,6 +368,7 @@ lib.callback.register('streetkings:saves:select', function(source, slotIndex, is
         isNew = isNew,
     })
 
+    result.streetkingsId = SKPlayerIds and SKPlayerIds.Get and SKPlayerIds.Get(source) or nil
     return result
 end)
 
@@ -374,7 +376,7 @@ lib.callback.register('streetkings:saves:loadActive', function(source)
     if not dbReady then return { ok = false, error = SKSaves.Error.DB_NOT_READY } end
     local document = activeDocuments[source]
     if not document then return { ok = false, error = SKSaves.Error.NO_ACTIVE_DOCUMENT } end
-    return { ok = true, saveId = activeSaves[source], document = document }
+    return { ok = true, saveId = activeSaves[source], streetkingsId = SKPlayerIds and SKPlayerIds.Get and SKPlayerIds.Get(source) or nil, document = document }
 end)
 
 lib.callback.register('streetkings:saves:delete', function(source, slotIndex, saveId)
@@ -404,11 +406,29 @@ lib.callback.register('streetkings:saves:getLastPlayed', function(source)
     if not owner then return { ok = false, error = SKSaves.Error.NO_LICENSE } end
     return {
         ok = true,
+        streetkingsId = SKPlayerIds and SKPlayerIds.Get and SKPlayerIds.Get(source) or nil,
         save = attachDiscordAvatar(source, dbGetLastPlayedSave(owner)),
     }
 end)
 
 exports('HasActiveSave', SKSaves.hasActiveSave)
+exports('GetActiveSaveId', SKSaves.getActiveSaveId)
+exports('GetSaveDocument', SKSaves.getDocument)
+exports('GetPlayerProfile', function(source)
+    local doc = SKSaves.getDocument(source)
+    if not doc then return nil end
+    return doc.profile or {}
+end)
+exports('GetPlayerEconomy', function(source)
+    local doc = SKSaves.getDocument(source)
+    if not doc then return nil end
+    return doc.economy or {}
+end)
+exports('GetPlayerProgression', function(source)
+    local doc = SKSaves.getDocument(source)
+    if not doc then return nil end
+    return doc.progression or {}
+end)
 exports('ReadSaveData', function(source, path)
     if type(path) ~= 'string' or path == '' then return nil end
     if not SKSaves.hasActiveSave(source) then return nil end

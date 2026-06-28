@@ -19,6 +19,10 @@ Global configuration flags that can be toggled before the resource starts. Edit 
 |-----|------|---------|-------------|
 | `SKConfig.DisableSpeedometer` | `boolean` | `false` | Completely disables the built-in speedometer, allowing a third-party speedometer resource to be used instead. |
 | `SKConfig.DisablePauseMenu` | `boolean` | `false` | Completely disables the built-in pause menu, allowing a custom pause menu resource to be used instead. |
+| `SKConfig.Locale` | `string` | `'es'` | Default locale. |
+| `SKConfig.FallbackLocale` | `string` | `'en'` | Locale fallback when a key is missing. |
+| `SKConfig.DiscordAvatarEndpoint` | `string` | `''` | Optional external endpoint such as `https://api.example/avatar/{id}`. If set, profile UI uses it for Discord avatars. |
+| `SKConfig.DiscordBotToken` | `string` | `''` | Optional bot token fallback for real Discord avatars. Prefer `set streetkings_discord_bot_token "BOT_TOKEN"` in `server.cfg`. |
 
 ```lua
 -- data/sk_config.lua
@@ -302,8 +306,10 @@ exports['streetkings']:SetSoundtrackEnabled(false)
 
 | Export | Returns | Description |
 |--------|---------|-------------|
+| `GetEnvironmentState()` | `table` | Full synced environment state `{ h, m, s, weather, prevWeather, transitionPct, timeFrozen, weatherFrozen, autoWeather }` |
 | `GetCurrentTime()` | `{ h, m, s }` | Current in-game time (hours, minutes, seconds) |
 | `GetCurrentWeather()` | `string?` | Current weather type (e.g. `'CLEAR'`, `'RAIN'`, `'FOGGY'`) |
+| `RequestEnvironmentSync()` | `boolean` | Ask the server to resend the current synced environment to this client |
 
 ```lua
 local time = exports['streetkings']:GetCurrentTime()
@@ -311,15 +317,34 @@ local weather = exports['streetkings']:GetCurrentWeather()
 print(('Time: %02d:%02d  Weather: %s'):format(time.h, time.m, weather or 'unknown'))
 ```
 
+StreetKings re-applies the synced weather on the client so external resources do not accidentally leave players with a stale local override. If another weather resource is used, either disable that resource while StreetKings is running or drive StreetKings through the server exports below.
+
 ---
 
 ## Server Exports
+
+### General Framework
+
+| Export | Params | Returns | Description |
+|--------|--------|---------|-------------|
+| `GetAllVehicleData()` | | `table` | Full shared vehicle catalog on the server |
+| `GetVehicleData(model)` | model string | `table?` | Vehicle catalog entry for a spawn code |
+| `GetOnlinePlayers()` | | `integer[]` | Current FiveM source IDs |
+| `GetPlayersWithActiveSaves()` | | `integer[]` | Online players with an active StreetKings save loaded |
+| `GetValidGameStates()` | | `string[]` | Built-in registered game state ids |
+
+The synced environment is also mirrored at `GlobalState.streetkingsEnvironment` for resources that prefer state bag reads.
 
 ### Save System
 
 | Export | Params | Returns | Description |
 |--------|--------|---------|-------------|
 | `HasActiveSave(source)` | player server id | `boolean` | Check if a player has an active save loaded |
+| `GetActiveSaveId(source)` | server id | `string?` | Current save UUID for the player |
+| `GetSaveDocument(source)` | server id | `table?` | Full active save document. Treat as read-only unless you own the mutation flow. |
+| `GetPlayerProfile(source)` | server id | `table?` | `profile` section of the active save |
+| `GetPlayerEconomy(source)` | server id | `table?` | `economy` section of the active save |
+| `GetPlayerProgression(source)` | server id | `table?` | `progression` section of the active save |
 | `ReadSaveData(source, path)` | server id, dot-path key | `any` | Read a value from the player's save document (e.g. `'economy.cash'`). Returns `nil` if no save or invalid path. |
 | `WriteSaveData(source, path, value)` | server id, dot-path key, value | `boolean` | Write a value to the player's save document. Returns `false` if no save or invalid path. |
 | `PersistSave(source)` | server id | `boolean` | Flush the player's save to the database. Returns `false` if no active save. |
@@ -335,6 +360,30 @@ exports['streetkings']:WriteSaveData(source, 'myAddon.reputation', rep + 10)
 -- flush to database after important changes
 exports['streetkings']:PersistSave(source)
 ```
+
+### Persistent Player IDs
+
+FiveM `source` IDs are temporary. StreetKings also assigns a permanent numeric ID per license in the `streetkings_player_ids` table. The migration is automatic and does not modify existing saves.
+
+| Export | Params | Returns | Description |
+|--------|--------|---------|-------------|
+| `GetStreetKingsId(source)` | server id | `integer?` | Stable StreetKings ID for this license |
+| `GetPersistentPlayerId(source)` | server id | `integer?` | Alias of `GetStreetKingsId` |
+| `GetPlayerIdentity(source)` | server id | `table` | `{ source, streetkingsId, license, name, discordId, discordAvatarUrl }` |
+| `GetDiscordAvatarUrl(source)` | server id | `string` | Real Discord avatar URL when a bot token or avatar endpoint is configured |
+
+```lua
+local identity = exports['streetkings']:GetPlayerIdentity(source)
+print(('SK #%s / source %s / %s'):format(identity.streetkingsId or '?', identity.source, identity.name))
+```
+
+Server configuration for real Discord avatars:
+
+```cfg
+set streetkings_discord_bot_token "YOUR_DISCORD_BOT_TOKEN"
+```
+
+Without a token or `SKConfig.DiscordAvatarEndpoint`, Discord only allows a default avatar URL because the player identifier does not include the user's avatar hash.
 
 ### Economy
 
@@ -447,6 +496,8 @@ exports['streetkings']:BroadcastPhoneMessage('News', 'news', 'A new event is sta
 | Export | Params | Returns | Description |
 |--------|--------|---------|-------------|
 | `GetPlayerGameState(source)` | server id | `string?` | Get a player's current game state from the server side |
+| `SetPlayerGameState(source, state)` | server id, state string or nil | `boolean` | Force the server-side state mirror. Use carefully; clients should normally transition via `SetGameState`. |
+| `IsPlayerInGameState(source, state)` | server id, state | `boolean` | Convenience check for server-side gates. |
 
 ```lua
 -- only allow an action while the player is in freeroam
@@ -461,13 +512,23 @@ end
 
 | Export | Params | Returns | Description |
 |--------|--------|---------|-------------|
-| `SetTime(hour)` | integer 0-23 | `boolean` | Set the in-game hour. Returns `false` if hour is not a number. |
-| `SetWeather(weather)` | weather string | `boolean` | Set the weather (e.g. `'CLEAR'`, `'RAIN'`, `'THUNDER'`). Returns `false` if weather is empty or not a string. |
+| `GetEnvironmentState()` | | `table` | Full server environment state |
+| `ForceEnvironmentSync(target?)` | target server id or nil | `boolean` | Resend the environment state to one player or everyone |
+| `SetTime(hour, minute?)` | integer 0-23, integer 0-59 | `boolean` | Set the in-game time |
+| `SetWeather(weather)` | weather string | `boolean` | Set the weather (`CLEAR`, `RAIN`, `THUNDER`, etc.) |
+| `SetTimeFrozen(frozen)` | boolean | `boolean` | Freeze or unfreeze StreetKings time progression |
+| `SetWeatherFrozen(frozen)` | boolean | `boolean` | Freeze or unfreeze automatic weather rotation |
+| `SetAutoWeather(enabled)` | boolean | `boolean` | Enable or disable automatic weather changes |
 
 ```lua
 -- set up a night race atmosphere
-exports['streetkings']:SetTime(22)
+exports['streetkings']:SetTime(22, 30)
 exports['streetkings']:SetWeather('CLEAR')
+
+-- let an external weather script drive StreetKings
+exports['streetkings']:SetAutoWeather(false)
+exports['streetkings']:SetWeather('RAIN')
+exports['streetkings']:ForceEnvironmentSync()
 ```
 
 ### Garage
@@ -521,6 +582,25 @@ local sid = exports['streetkings']:CreateServerWaypoint(-1, {
 
 -- remove it when the event ends
 exports['streetkings']:RemoveServerWaypoint(sid)
+```
+
+### Logs
+
+All public/admin Discord logs can also be emitted by external resources. Configure webhooks in `data/logs.lua`.
+
+| Export | Params | Returns | Description |
+|--------|--------|---------|-------------|
+| `LogModulePublic(moduleName, action, data)` | string, string, table | `boolean` | Send a public module log |
+| `LogModuleAdmin(moduleName, action, data)` | string, string, table | `boolean` | Send a detailed admin module log |
+| `LogModule(moduleName, action, data, channel?)` | string, string, table, `'public'`\|`'admin'` | `boolean` | Send one channel or both depending on config |
+
+```lua
+exports['streetkings']:LogModule('my_resource', 'delivery_complete', {
+    source = source,
+    title = 'Delivery complete',
+    publicMessage = 'A driver completed a delivery.',
+    details = 'route=paleto\nreward=1200',
+})
 ```
 
 ---

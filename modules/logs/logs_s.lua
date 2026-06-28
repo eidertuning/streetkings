@@ -117,7 +117,9 @@ end
 
 local function playerAdmin(source)
     if type(source) ~= 'number' or source <= 0 then return 'Consola / sistema' end
-    return appendDiscordMention(('%s | ID %d | %s'):format(getAlias(source), source, GetPlayerName(source) or 'Desconocido'), source)
+    local skId = SKPlayerIds and SKPlayerIds.Get and SKPlayerIds.Get(source) or nil
+    local idText = skId and ('SK #%s | Source %d'):format(skId, source) or ('Source %d'):format(source)
+    return appendDiscordMention(('%s | %s | %s'):format(getAlias(source), idText, GetPlayerName(source) or 'Desconocido'), source)
 end
 
 local function coordsText(source)

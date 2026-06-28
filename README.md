@@ -146,3 +146,12 @@ Cualquier redistribución, modificación o reutilización debe respetar los tér
 
 The original base remains credited to its creators, while this fork represents the custom direction, branding, and modifications of this project.  
 La base original sigue acreditada a sus creadores, mientras que este fork representa la dirección personalizada, el branding y las modificaciones de este proyecto.
+---
+
+## Developer API
+
+Integration exports, weather sync controls, persistent StreetKings IDs, Discord avatar support, tablet apps, logs, saves, economy, progression, garage, messages, and waypoint APIs are documented in:
+
+```text
+SK_API.md
+```

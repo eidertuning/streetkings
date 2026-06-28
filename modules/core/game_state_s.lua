@@ -120,3 +120,11 @@ AddEventHandler('playerDropped', function()
 end)
 
 exports('GetPlayerGameState', SKGameStateServer.get)
+exports('SetPlayerGameState', function(source, state)
+    if state ~= nil and type(state) ~= 'string' then return false end
+    SKGameStateServer.set(source, state)
+    return true
+end)
+exports('IsPlayerInGameState', function(source, state)
+    return type(state) == 'string' and SKGameStateServer.get(source) == state
+end)

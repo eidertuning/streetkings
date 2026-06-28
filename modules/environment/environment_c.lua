@@ -11,6 +11,7 @@ local clockH = 0
 local clockM = 0
 local clockS = 0
 local clockReady = false
+local lastSyncPayload = nil
 
 local function updateContrails(weather)
     if SUNNY_WEATHERS[weather] and clockH >= DAYTIME_START_H and clockH < DAYTIME_END_H then
@@ -28,8 +29,12 @@ end
 ---@param pct     number 0.0–1.0
 local function applyWeather(weather, prev, pct)
     SetWeatherOwnedByNetwork(false)
+    ClearOverrideWeather()
+    ClearWeatherTypePersist()
     if pct >= 1.0 then
         transitioning = false
+        SetOverrideWeather(weather)
+        SetWeatherTypeNowPersist(weather)
         SetWeatherTypeOvertimePersist(weather, 0.0)
     else
         transitioning = true
@@ -39,6 +44,8 @@ end
 
 ---@param payload table
 local function onSync(payload)
+    if type(payload) ~= 'table' then return end
+    lastSyncPayload = payload
     clockH = payload.h
     clockM = payload.m
     clockS = payload.s
@@ -81,8 +88,35 @@ CreateThread(function()
     end
 end)
 
+CreateThread(function()
+    while true do
+        if currentWeather and not transitioning then
+            SetWeatherOwnedByNetwork(false)
+            SetOverrideWeather(currentWeather)
+            SetWeatherTypeNowPersist(currentWeather)
+            Wait(5000)
+        else
+            Wait(1000)
+        end
+    end
+end)
+
+exports('GetEnvironmentState', function()
+    return lastSyncPayload or {
+        h = clockH,
+        m = clockM,
+        s = clockS,
+        weather = currentWeather,
+        prevWeather = prevWeather,
+        transitionPct = transitionPct,
+    }
+end)
 exports('GetCurrentTime', function() return { h = clockH, m = clockM, s = clockS } end)
 exports('GetCurrentWeather', function() return currentWeather end)
+exports('RequestEnvironmentSync', function()
+    TriggerServerEvent('streetkings:environment:requestSync')
+    return true
+end)
 
 -- Traffic density -----------------------------------------------------------
 
