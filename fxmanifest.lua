@@ -103,6 +103,7 @@ server_scripts {
     'modules/waypoints/waypoints_s.lua',
     'modules/environment/environment_s.lua',
     'modules/core/game_state_s.lua',
+    'modules/core/discord_s.lua',
     'modules/storage/saves_s.lua',
     'modules/logs/logs_s.lua',
     'modules/avatar/avatar_s.lua',

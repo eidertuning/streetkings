@@ -82,15 +82,10 @@ local function ownerLicense(source)
 end
 
 local function discordAvatarUrl(source)
-    local identifier = GetPlayerIdentifierByType(source --[[@as string]], 'discord')
-    local id = type(identifier) == 'string' and identifier:match('^discord:(%d+)$') or nil
-    if not id then return '' end
-    local endpoint = SKConfig and SKConfig.DiscordAvatarEndpoint or ''
-    if type(endpoint) == 'string' and endpoint ~= '' then
-        local url = endpoint:gsub('{id}', id)
-        return url
+    if SKDiscord and type(SKDiscord.GetAvatarUrl) == 'function' then
+        return SKDiscord.GetAvatarUrl(source)
     end
-    return ('https://cdn.discordapp.com/embed/avatars/%d.png'):format(tonumber(id) % 5)
+    return ''
 end
 
 local function attachDiscordAvatar(source, slot)
