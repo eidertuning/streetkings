@@ -9,6 +9,7 @@ local DEFAULT_TABLET = {
         'Map',
         'Vehicles',
         'Stats',
+        'sotyfly',
         'profile',
         'RealEstate',
         'Towing',

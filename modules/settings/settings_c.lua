@@ -27,7 +27,7 @@ local GENERAL_DEFAULTS = {
     musicDisabled = false,
     nametagsEnabled = true,
     soundtrackEnabled = true,
-    soundtrackNowPlayingUiEnabled = true,
+    soundtrackNowPlayingUiEnabled = false,
     soundtrackNowPlayingUiAlwaysVisible = false,
 }
 

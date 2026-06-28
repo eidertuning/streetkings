@@ -289,6 +289,10 @@ exports['streetkings']:SetSpeedometerEnabled(true)
 | Export | Params | Returns | Description |
 |--------|--------|---------|-------------|
 | `GetCurrentTrack()` | | `table?` | Current playing track: `{ key, title, stationKey, durationMs }` or nil |
+| `GetSoundtrackPlayerState()` | | `table` | Current Sotyfly/player state including progress, dataset, enabled/blocked flags |
+| `SearchSoundtrackTracks(query, limit?)` | string, number? | `table[]` | Search playable internal soundtrack tracks |
+| `PlaySoundtrackTrack(trackKey)` | string | `boolean, string?` | Play an internal soundtrack track in the current vehicle |
+| `SkipSoundtrackTrack()` | | `boolean` | Skip the current managed track |
 | `SetSoundtrackEnabled(on)` | `boolean` | `boolean` | Enable or disable the managed soundtrack system. Returns `false` if `on` is not a boolean. |
 
 ```lua
@@ -301,6 +305,8 @@ end
 -- mute the soundtrack during custom audio
 exports['streetkings']:SetSoundtrackEnabled(false)
 ```
+
+The player UI is now handled by the tablet app **Sotyfly** (`sotyfly`). The legacy lower HUD is disabled so music controls stay inside the tablet. Sotyfly can search playable internal tracks, skip songs, save YouTube links as a searchable library, and organize them into playlists. YouTube links are stored as library entries; playback still uses the internal FiveM/GTA radio soundtrack unless a separate audio backend is added.
 
 ### Environment
 

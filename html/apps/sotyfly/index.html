@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sotyfly</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="sf-app">
+    <aside class="sf-sidebar">
+      <div class="sf-brand">
+        <span class="sf-brand-mark">S</span>
+        <div>
+          <p>Sotyfly</p>
+          <strong>Drive Music</strong>
+        </div>
+      </div>
+      <button class="sf-nav is-active" data-view="library" type="button">Biblioteca</button>
+      <button class="sf-nav" data-view="youtube" type="button">YouTube</button>
+      <button class="sf-nav" data-view="playlists" type="button">Playlists</button>
+      <button id="sfRefresh" class="sf-ghost" type="button">Actualizar</button>
+    </aside>
+
+    <section class="sf-main">
+      <header class="sf-topbar">
+        <div class="sf-search">
+          <span>Buscar</span>
+          <input id="sfSearch" type="search" placeholder="Cancion, artista, radio o link guardado">
+        </div>
+        <button id="sfEnable" class="sf-pill" type="button">Soundtrack</button>
+      </header>
+
+      <section class="sf-hero">
+        <div class="sf-cover">
+          <span id="sfCoverGlyph">Sf</span>
+        </div>
+        <div class="sf-now">
+          <p>Reproduciendo ahora</p>
+          <h1 id="sfNowTitle">Sin pista activa</h1>
+          <span id="sfNowMeta">Abre una pista interna para controlar la radio del vehiculo.</span>
+          <div class="sf-progress">
+            <span id="sfCurrent">00:00</span>
+            <div><i id="sfProgress"></i></div>
+            <span id="sfDuration">00:00</span>
+          </div>
+          <div class="sf-controls">
+            <button id="sfPrev" type="button" title="Anterior">&lt;</button>
+            <button id="sfPlay" type="button" title="Reproducir seleccion">Play</button>
+            <button id="sfSkip" type="button" title="Saltar">&gt;</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="sf-youtube" data-panel="youtube">
+        <div class="sf-section-head">
+          <h2>Links de YouTube</h2>
+          <p>Guarda links para buscarlos y organizarlos. Las pistas internas son las que puede reproducir el motor de radio.</p>
+        </div>
+        <form id="sfAddLink" class="sf-link-form">
+          <input id="sfLinkTitle" type="text" placeholder="Titulo opcional">
+          <input id="sfLinkUrl" type="url" placeholder="https://youtube.com/watch?v=...">
+          <button type="submit">Agregar</button>
+        </form>
+      </section>
+
+      <section class="sf-playlists" data-panel="playlists">
+        <div class="sf-section-head">
+          <h2>Crear playlist</h2>
+          <p>Selecciona una pista o link y guardalo en una lista.</p>
+        </div>
+        <form id="sfCreatePlaylist" class="sf-link-form">
+          <input id="sfPlaylistName" type="text" placeholder="Nombre de playlist">
+          <select id="sfPlaylistSelect"></select>
+          <button type="submit">Crear</button>
+        </form>
+        <button id="sfAddSelected" class="sf-wide-action" type="button">Agregar seleccion a playlist</button>
+      </section>
+
+      <section class="sf-content">
+        <div class="sf-section-head">
+          <h2 id="sfListTitle">Biblioteca</h2>
+          <p id="sfListHint">Pistas internas disponibles para reproducir en el vehiculo.</p>
+        </div>
+        <div id="sfTracks" class="sf-track-list"></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="../../js/tablet-sdk.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

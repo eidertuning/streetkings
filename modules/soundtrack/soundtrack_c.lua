@@ -216,15 +216,7 @@ local nowPlayingUiEnabled = true
 local nowPlayingUiAlwaysVisible = false
 local nowPlayingUiVisibleUntilMs = 0
 local playerUiVisible = false
-
-local NOW_PLAYING_ALLOWED_STATES = {
-    [GameState.FREEROAM] = true,
-    [GameState.EVENT] = true,
-    [GameState.MISSION] = true,
-    [GameState.GARAGE] = true,
-    [GameState.MULTIPLAYER_LOBBY] = true,
-    [GameState.MULTIPLAYER_EVENT] = true,
-}
+local sotyflyVisible = false
 
 ---@return string|nil
 local function getCurrentGameState()
@@ -306,16 +298,7 @@ end
 
 ---@return boolean
 local function canShowNowPlayingUi()
-    if not nowPlayingUiEnabled then
-        return false
-    end
-
-    local state = getCurrentGameState()
-    if not state then
-        return true
-    end
-
-    return NOW_PLAYING_ALLOWED_STATES[state] == true
+    return false
 end
 
 ---@return boolean
@@ -354,6 +337,18 @@ end
 ---@param playbackMs integer
 ---@return nil
 local function sendPlayerState(trackKey, playbackMs)
+    local track = resolveTrack(trackKey)
+    SendNUIMessage({
+        type = 'sotyfly:state',
+        visible = true,
+        title = track.title,
+        key = trackKey,
+        stationKey = track.stationKey,
+        currentMs = playbackMs,
+        durationMs = track.durationMs,
+        playing = soundtrackEnabled and not musicDisabled and not soundtrackBlocked,
+    })
+
     if not canShowNowPlayingUi() then
         sendPlayerHidden()
         return
@@ -363,8 +358,6 @@ local function sendPlayerState(trackKey, playbackMs)
         sendPlayerHidden()
         return
     end
-
-    local track = resolveTrack(trackKey)
 
     playerUiVisible = true
     SendNUIMessage({
@@ -641,11 +634,81 @@ function SKSoundtrack.SkipCurrentTrack()
     skipRequested = true
 end
 
+---@param query string|nil
+---@param limit integer|nil
+---@return table[]
+function SKSoundtrack.SearchTracks(query, limit)
+    local dataset = getActiveDataset()
+    query = tostring(query or ''):lower()
+    limit = math.max(1, math.min(tonumber(limit) or 80, 200))
+    local results = {}
+
+    for _, trackKey in ipairs(dataset.trackKeys) do
+        local track = dataset.trackByKey[trackKey]
+        local haystack = (trackKey .. ' ' .. track.title .. ' ' .. track.stationKey):lower()
+        if query == '' or haystack:find(query, 1, true) then
+            results[#results + 1] = {
+                key = trackKey,
+                title = track.title,
+                stationKey = track.stationKey,
+                durationMs = track.durationMs,
+                type = 'internal',
+            }
+            if #results >= limit then break end
+        end
+    end
+
+    return results
+end
+
+function SKSoundtrack.GetPlayerState()
+    local currentMs = 0
+    local track = currentTrackKey and getActiveDataset().trackByKey[currentTrackKey] or nil
+    if track then
+        currentMs = clampPlaybackMs(GetCurrentRadioTrackPlaybackTime(track.radioName))
+    end
+    return {
+        visible = currentTrackKey ~= nil,
+        key = currentTrackKey,
+        title = track and track.title or nil,
+        stationKey = track and track.stationKey or nil,
+        currentMs = currentMs,
+        durationMs = track and track.durationMs or 0,
+        playing = soundtrackEnabled and not musicDisabled and not soundtrackBlocked and currentTrackKey ~= nil,
+        dataset = getActiveDatasetKey(),
+        blocked = soundtrackBlocked,
+        enabled = soundtrackEnabled,
+    }
+end
+
+function SKSoundtrack.SetSotyflyVisible(visible)
+    sotyflyVisible = visible == true
+    if sotyflyVisible then
+        sendPlayerHidden()
+    end
+end
+
 exports('GetCurrentTrack', function()
     if not currentTrackKey then return nil end
     local track = getActiveDataset().trackByKey[currentTrackKey]
     if not track then return nil end
     return { key = currentTrackKey, title = track.title, stationKey = track.stationKey, durationMs = track.durationMs }
+end)
+exports('SearchSoundtrackTracks', function(query, limit)
+    return SKSoundtrack.SearchTracks(query, limit)
+end)
+exports('GetSoundtrackPlayerState', function()
+    return SKSoundtrack.GetPlayerState()
+end)
+exports('PlaySoundtrackTrack', function(trackKey)
+    if type(trackKey) ~= 'string' or trackKey == '' then return false, 'invalid_track' end
+    local ok, err = pcall(SKSoundtrack.SetRadioTrackByKey, trackKey)
+    if not ok then return false, tostring(err) end
+    return true
+end)
+exports('SkipSoundtrackTrack', function()
+    SKSoundtrack.SkipCurrentTrack()
+    return true
 end)
 exports('SetSoundtrackEnabled', function(on)
     if type(on) ~= 'boolean' then return false end
@@ -712,6 +775,10 @@ CreateThread(function()
         local lastNowPlayingUiAlwaysVisible = nowPlayingUiAlwaysVisible
         local lastMusicDisabled = musicDisabled
         soundtrackEnabled, nowPlayingUiEnabled, nowPlayingUiAlwaysVisible, musicDisabled = getToggleState()
+
+        if sotyflyVisible then
+            nowPlayingUiEnabled = false
+        end
 
         if soundtrackEnabled ~= lastSoundtrackEnabled or nowPlayingUiEnabled ~= lastNowPlayingUiEnabled or nowPlayingUiAlwaysVisible ~= lastNowPlayingUiAlwaysVisible or musicDisabled ~= lastMusicDisabled then
             SKSoundtrack.ApplyRadioDefaults()

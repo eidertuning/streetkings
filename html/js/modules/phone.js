@@ -89,7 +89,7 @@
     return {
       wallpaper: 'streetkings',
       notifications: { enabled: true, messagePreviews: true },
-      appOrder: ['Messages', 'Map', 'Vehicles', 'Stats', 'profile', 'RealEstate', 'Towing', 'Leaderboards', 'Settings'],
+      appOrder: ['Messages', 'Map', 'Vehicles', 'Stats', 'sotyfly', 'profile', 'RealEstate', 'Towing', 'Leaderboards', 'Settings'],
       appSlots: {}
     };
   }

@@ -84,6 +84,7 @@ client_scripts {
     'modules/phone/tablet_customization_c.lua',
     'modules/phone/phone_sdk_c.lua',
     'modules/phone/profile_app_c.lua',
+    'modules/phone/sotyfly_app_c.lua',
     'modules/phone/towing_c.lua',
     'modules/phone/map_c.lua',
     'modules/settings/settings_c.lua',
