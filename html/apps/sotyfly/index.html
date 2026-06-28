@@ -7,83 +7,127 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="sf-app">
-    <aside class="sf-sidebar">
-      <div class="sf-brand">
-        <span class="sf-brand-mark">S</span>
-        <div>
-          <p>Sotyfly</p>
-          <strong>Drive Music</strong>
-        </div>
+  <main id="sfApp" class="sf-app">
+    <section class="sf-audio-lock" id="sfAudioLock">
+      <div class="sf-lock-card">
+        <span class="sf-lock-mark">S</span>
+        <p>Audio desactivado</p>
+        <h1>Debes ir a Ajustes y activar el audio.</h1>
+        <span>Cuando la casilla de audio esta apagada, Sotyfly no carga el reproductor.</span>
+        <button id="sfLockRefresh" type="button">Comprobar de nuevo</button>
       </div>
-      <button class="sf-nav is-active" data-view="library" type="button">Biblioteca</button>
-      <button class="sf-nav" data-view="youtube" type="button">YouTube</button>
-      <button class="sf-nav" data-view="playlists" type="button">Playlists</button>
-      <button id="sfRefresh" class="sf-ghost" type="button">Actualizar</button>
-    </aside>
+    </section>
 
-    <section class="sf-main">
-      <header class="sf-topbar">
-        <div class="sf-search">
-          <span>Buscar</span>
-          <input id="sfSearch" type="search" placeholder="Cancion, artista, radio o link guardado">
+    <section class="sf-shell">
+      <aside class="sf-library">
+        <div class="sf-brand">
+          <span class="sf-brand-mark">S</span>
+          <div>
+            <strong>Sotyfly</strong>
+            <small>Drive Music</small>
+          </div>
         </div>
-        <button id="sfEnable" class="sf-pill" type="button">Soundtrack</button>
-      </header>
 
-      <section class="sf-hero">
-        <div class="sf-cover">
-          <span id="sfCoverGlyph">Sf</span>
+        <nav class="sf-tabs">
+          <button class="sf-nav is-active" data-view="library" type="button">Tu biblioteca</button>
+          <button class="sf-nav" data-view="youtube" type="button">YouTube</button>
+          <button class="sf-nav" data-view="playlists" type="button">Playlists</button>
+        </nav>
+
+        <div class="sf-mini-list" id="sfMiniList"></div>
+        <button id="sfRefresh" class="sf-refresh" type="button">Actualizar</button>
+      </aside>
+
+      <section class="sf-main">
+        <header class="sf-topbar">
+          <button class="sf-home" type="button">H</button>
+          <label class="sf-search">
+            <span>Buscar</span>
+            <input id="sfSearch" type="search" placeholder="Que quieres reproducir?">
+          </label>
+          <button id="sfEnable" class="sf-pill" type="button">Soundtrack ON</button>
+        </header>
+
+        <section class="sf-quick">
+          <button class="sf-chip is-active" type="button">Todo</button>
+          <button class="sf-chip" type="button">Musica</button>
+          <button class="sf-chip" type="button">Links</button>
+        </section>
+
+        <section class="sf-hero-row">
+          <div class="sf-hero-card">
+            <div class="sf-cover"><span id="sfCoverGlyph">Sf</span></div>
+            <div class="sf-hero-copy">
+              <p>Reproduciendo ahora</p>
+              <h1 id="sfNowTitle">Sin pista activa</h1>
+              <span id="sfNowMeta">Selecciona una pista interna para reproducir.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="sf-youtube" data-panel="youtube">
+          <div class="sf-section-head">
+            <h2>Links de YouTube</h2>
+            <p>Guarda links para buscarlos y organizarlos. La reproduccion usa las pistas internas del soundtrack.</p>
+          </div>
+          <form id="sfAddLink" class="sf-link-form">
+            <input id="sfLinkTitle" type="text" placeholder="Titulo opcional">
+            <input id="sfLinkUrl" type="url" placeholder="https://youtube.com/watch?v=...">
+            <button type="submit">Agregar</button>
+          </form>
+        </section>
+
+        <section class="sf-playlists" data-panel="playlists">
+          <div class="sf-section-head">
+            <h2>Playlists</h2>
+            <p>Crea listas y agrega la pista o link seleccionado.</p>
+          </div>
+          <form id="sfCreatePlaylist" class="sf-link-form">
+            <input id="sfPlaylistName" type="text" placeholder="Nueva playlist">
+            <select id="sfPlaylistSelect"></select>
+            <button type="submit">Crear</button>
+          </form>
+          <button id="sfAddSelected" class="sf-wide-action" type="button">Agregar seleccion a playlist</button>
+        </section>
+
+        <section class="sf-content">
+          <div class="sf-section-head">
+            <h2 id="sfListTitle">Tu biblioteca</h2>
+            <p id="sfListHint">Pistas internas y links guardados.</p>
+          </div>
+          <div id="sfTracks" class="sf-track-list"></div>
+        </section>
+      </section>
+
+      <aside class="sf-now-panel">
+        <div class="sf-panel-cover"><span id="sfPanelGlyph">Sf</span></div>
+        <h2 id="sfPanelTitle">Sotyfly</h2>
+        <p id="sfPanelMeta">Elige una pista para empezar.</p>
+        <div class="sf-related">
+          <strong>Biblioteca activa</strong>
+          <span id="sfLibraryCount">0 pistas</span>
         </div>
-        <div class="sf-now">
-          <p>Reproduciendo ahora</p>
-          <h1 id="sfNowTitle">Sin pista activa</h1>
-          <span id="sfNowMeta">Abre una pista interna para controlar la radio del vehiculo.</span>
+      </aside>
+
+      <footer class="sf-playerbar">
+        <div class="sf-bar-track">
+          <span class="sf-bar-cover" id="sfBarGlyph">Sf</span>
+          <div>
+            <strong id="sfBarTitle">Sin pista activa</strong>
+            <small id="sfBarMeta">Sotyfly</small>
+          </div>
+        </div>
+        <div class="sf-bar-controls">
+          <button id="sfPrev" type="button" title="Anterior">&lt;</button>
+          <button id="sfPlay" type="button" title="Reproducir seleccion">Play</button>
+          <button id="sfSkip" type="button" title="Saltar">&gt;</button>
           <div class="sf-progress">
             <span id="sfCurrent">00:00</span>
             <div><i id="sfProgress"></i></div>
             <span id="sfDuration">00:00</span>
           </div>
-          <div class="sf-controls">
-            <button id="sfPrev" type="button" title="Anterior">&lt;</button>
-            <button id="sfPlay" type="button" title="Reproducir seleccion">Play</button>
-            <button id="sfSkip" type="button" title="Saltar">&gt;</button>
-          </div>
         </div>
-      </section>
-
-      <section class="sf-youtube" data-panel="youtube">
-        <div class="sf-section-head">
-          <h2>Links de YouTube</h2>
-          <p>Guarda links para buscarlos y organizarlos. Las pistas internas son las que puede reproducir el motor de radio.</p>
-        </div>
-        <form id="sfAddLink" class="sf-link-form">
-          <input id="sfLinkTitle" type="text" placeholder="Titulo opcional">
-          <input id="sfLinkUrl" type="url" placeholder="https://youtube.com/watch?v=...">
-          <button type="submit">Agregar</button>
-        </form>
-      </section>
-
-      <section class="sf-playlists" data-panel="playlists">
-        <div class="sf-section-head">
-          <h2>Crear playlist</h2>
-          <p>Selecciona una pista o link y guardalo en una lista.</p>
-        </div>
-        <form id="sfCreatePlaylist" class="sf-link-form">
-          <input id="sfPlaylistName" type="text" placeholder="Nombre de playlist">
-          <select id="sfPlaylistSelect"></select>
-          <button type="submit">Crear</button>
-        </form>
-        <button id="sfAddSelected" class="sf-wide-action" type="button">Agregar seleccion a playlist</button>
-      </section>
-
-      <section class="sf-content">
-        <div class="sf-section-head">
-          <h2 id="sfListTitle">Biblioteca</h2>
-          <p id="sfListHint">Pistas internas disponibles para reproducir en el vehiculo.</p>
-        </div>
-        <div id="sfTracks" class="sf-track-list"></div>
-      </section>
+      </footer>
     </section>
   </main>
 

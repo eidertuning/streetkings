@@ -72,14 +72,22 @@
     var title = player.title || 'Sin pista activa';
     var duration = Math.max(1, Number(player.durationMs || 0));
     var current = Math.max(0, Math.min(Number(player.currentMs || 0), duration));
+    els.app.classList.toggle('is-audio-disabled', player.musicDisabled === true);
     els.nowTitle.textContent = title;
     els.nowMeta.textContent = player.key ? ((player.stationKey || 'radio') + ' - ' + (player.dataset || 'default')) : 'Selecciona una pista interna para reproducir.';
+    els.panelTitle.textContent = title;
+    els.panelMeta.textContent = player.key ? (player.stationKey || 'radio') : 'Elige una pista para empezar.';
+    els.barTitle.textContent = title;
+    els.barMeta.textContent = player.key ? ((player.stationKey || 'radio') + ' - ' + (player.dataset || 'default')) : 'Sotyfly';
     els.current.textContent = formatTime(current);
     els.duration.textContent = formatTime(duration);
     els.progress.style.width = (duration ? (current / duration) * 100 : 0).toFixed(2) + '%';
     els.enable.textContent = player.enabled === false ? 'Activar' : 'Soundtrack ON';
     els.enable.classList.toggle('is-off', player.enabled === false);
     els.coverGlyph.textContent = title.trim().slice(0, 2).toUpperCase() || 'Sf';
+    els.panelGlyph.textContent = title.trim().slice(0, 2).toUpperCase() || 'Sf';
+    els.barGlyph.textContent = title.trim().slice(0, 2).toUpperCase() || 'Sf';
+    els.libraryCount.textContent = String((state.tracks || []).length + (state.links || []).length) + ' pistas';
   }
 
   function renderListMeta() {
@@ -96,6 +104,22 @@
     });
     document.querySelector('[data-panel="youtube"]').style.display = state.view === 'youtube' ? 'block' : 'none';
     document.querySelector('[data-panel="playlists"]').style.display = state.view === 'playlists' ? 'block' : 'none';
+  }
+
+  function renderMiniList() {
+    if (!els.miniList) return;
+    els.miniList.innerHTML = '';
+    state.playlists.slice(0, 8).forEach(function (playlist) {
+      var row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'sf-mini-item';
+      row.textContent = playlist.name || playlist.id;
+      row.addEventListener('click', function () {
+        state.view = 'playlists';
+        renderTracks();
+      });
+      els.miniList.appendChild(row);
+    });
   }
 
   function trackRow(item) {
@@ -149,6 +173,7 @@
 
   function render() {
     renderPlayer();
+    renderMiniList();
     renderTracks();
   }
 
@@ -240,6 +265,7 @@
         renderTracks();
       }
     });
+    els.lockRefresh.addEventListener('click', loadData);
   }
 
   function startPolling() {
@@ -256,6 +282,8 @@
 
   function init() {
     els.search = $('sfSearch');
+    els.app = $('sfApp');
+    els.lockRefresh = $('sfLockRefresh');
     els.refresh = $('sfRefresh');
     els.enable = $('sfEnable');
     els.nowTitle = $('sfNowTitle');
@@ -264,6 +292,14 @@
     els.duration = $('sfDuration');
     els.progress = $('sfProgress');
     els.coverGlyph = $('sfCoverGlyph');
+    els.panelGlyph = $('sfPanelGlyph');
+    els.panelTitle = $('sfPanelTitle');
+    els.panelMeta = $('sfPanelMeta');
+    els.barGlyph = $('sfBarGlyph');
+    els.barTitle = $('sfBarTitle');
+    els.barMeta = $('sfBarMeta');
+    els.libraryCount = $('sfLibraryCount');
+    els.miniList = $('sfMiniList');
     els.play = $('sfPlay');
     els.prev = $('sfPrev');
     els.skip = $('sfSkip');

@@ -678,6 +678,7 @@ function SKSoundtrack.GetPlayerState()
         dataset = getActiveDatasetKey(),
         blocked = soundtrackBlocked,
         enabled = soundtrackEnabled,
+        musicDisabled = musicDisabled,
     }
 end
 

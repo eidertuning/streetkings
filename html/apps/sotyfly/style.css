@@ -1,13 +1,13 @@
 :root {
   color-scheme: dark;
   --green: #1ed760;
-  --green-dark: #0f8f44;
-  --ink: #050607;
-  --panel: rgba(18, 20, 20, 0.92);
-  --panel-soft: rgba(255, 255, 255, 0.065);
-  --line: rgba(255, 255, 255, 0.11);
-  --text: rgba(255, 255, 255, 0.94);
-  --muted: rgba(255, 255, 255, 0.58);
+  --ink: #000;
+  --panel: #121212;
+  --panel-2: #181818;
+  --panel-3: #242424;
+  --text: #f5f5f5;
+  --muted: #a7a7a7;
+  --line: rgba(255, 255, 255, 0.08);
 }
 
 * { box-sizing: border-box; min-width: 0; }
@@ -18,21 +18,15 @@ body {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: #050607;
+  background: #000;
   color: var(--text);
   font-family: Poppins, Inter, system-ui, sans-serif;
 }
 
 button,
-input {
-  font: inherit;
-}
-
+input,
 select {
   font: inherit;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--line);
 }
 
 button {
@@ -42,21 +36,110 @@ button {
 }
 
 .sf-app {
+  position: relative;
+  width: 100%;
   height: 100%;
-  display: grid;
-  grid-template-columns: minmax(11rem, 20%) 1fr;
-  background:
-    radial-gradient(circle at 72% 4%, rgba(30, 215, 96, 0.2), transparent 28%),
-    linear-gradient(135deg, #070908 0%, #101212 45%, #050607 100%);
+  background: #000;
 }
 
-.sf-sidebar {
-  padding: clamp(0.75rem, 1.8vw, 1.25rem);
-  background: rgba(0, 0, 0, 0.72);
-  border-right: 1px solid var(--line);
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
+.sf-shell {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(13rem, 20%) 1fr minmax(13rem, 20%);
+  grid-template-rows: 1fr 5.2rem;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.sf-audio-lock {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: none;
+  place-items: center;
+  padding: 2rem;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(30, 215, 96, 0.16), transparent 26%),
+    #050505;
+}
+
+.sf-app.is-audio-disabled .sf-shell {
+  display: none;
+}
+
+.sf-app.is-audio-disabled .sf-audio-lock {
+  display: grid;
+}
+
+.sf-lock-card {
+  width: min(32rem, 92%);
+  padding: 2rem;
+  border-radius: 1.2rem;
+  background: #121212;
+  border: 1px solid var(--line);
+  text-align: center;
+}
+
+.sf-lock-mark,
+.sf-brand-mark,
+.sf-home,
+.sf-bar-cover {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--green);
+  color: #031006;
+  font-weight: 950;
+}
+
+.sf-lock-mark {
+  width: 4rem;
+  aspect-ratio: 1;
+  margin: 0 auto 1rem;
+  font-size: 2rem;
+}
+
+.sf-lock-card p {
+  margin: 0;
+  color: var(--green);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.sf-lock-card h1 {
+  margin: 0.45rem 0 0.65rem;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  letter-spacing: 0;
+}
+
+.sf-lock-card span {
+  display: block;
+  color: var(--muted);
+}
+
+.sf-lock-card button {
+  margin-top: 1.25rem;
+  padding: 0.8rem 1.2rem;
+  border-radius: 999px;
+  background: var(--green);
+  color: #031006;
+  font-weight: 900;
+}
+
+.sf-library,
+.sf-main,
+.sf-now-panel {
+  min-height: 0;
+  border-radius: 0.55rem;
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.sf-library {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 0.75rem;
+  padding: 1rem;
 }
 
 .sf-brand {
@@ -64,90 +147,102 @@ button {
   grid-template-columns: auto 1fr;
   gap: 0.75rem;
   align-items: center;
-  margin-bottom: 0.7rem;
-}
-
-.sf-brand-mark,
-.sf-cover {
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, var(--green), var(--green-dark));
-  box-shadow: 0 18px 48px rgba(30, 215, 96, 0.24);
 }
 
 .sf-brand-mark {
   width: 2.6rem;
   aspect-ratio: 1;
-  border-radius: 50%;
-  font-weight: 900;
-  color: #041007;
 }
 
-.sf-brand p,
-.sf-now p,
-.sf-section-head p {
-  margin: 0;
+.sf-brand strong,
+.sf-brand small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-brand small {
   color: var(--muted);
 }
 
-.sf-brand strong {
-  display: block;
-  font-size: 0.82rem;
+.sf-tabs {
+  display: grid;
+  gap: 0.35rem;
 }
 
 .sf-nav,
-.sf-ghost {
+.sf-refresh,
+.sf-mini-item {
   width: 100%;
-  padding: 0.78rem 0.85rem;
-  border-radius: 0.55rem;
+  padding: 0.72rem 0.8rem;
+  border-radius: 0.45rem;
   background: transparent;
   text-align: left;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--muted);
 }
 
 .sf-nav.is-active,
 .sf-nav:hover,
-.sf-ghost:hover {
-  background: var(--panel-soft);
+.sf-refresh:hover,
+.sf-mini-item:hover {
+  background: var(--panel-3);
   color: #fff;
 }
 
-.sf-main {
+.sf-mini-list {
   min-height: 0;
-  display: grid;
-  grid-template-rows: auto auto auto 1fr;
-  gap: clamp(0.75rem, 1.6vw, 1rem);
-  padding: clamp(0.85rem, 2vw, 1.35rem);
   overflow: auto;
+  display: grid;
+  align-content: start;
+  gap: 0.35rem;
+}
+
+.sf-main {
+  display: grid;
+  grid-template-rows: auto auto auto auto 1fr;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  overflow: auto;
+  background:
+    linear-gradient(180deg, rgba(64, 18, 26, 0.88), rgba(18, 18, 18, 0.98) 18rem),
+    var(--panel);
 }
 
 .sf-topbar {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.7rem;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.sf-home {
+  width: 2.75rem;
+  aspect-ratio: 1;
+  background: #242424;
+  color: #fff;
 }
 
 .sf-search {
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.55rem 0.75rem;
+  gap: 0.65rem;
+  height: 2.75rem;
+  padding: 0 0.95rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--line);
+  background: #242424;
+  color: var(--muted);
 }
 
 .sf-search span {
-  color: var(--green);
-  font-size: 0.72rem;
-  font-weight: 800;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 900;
   text-transform: uppercase;
 }
 
-.sf-search input,
-.sf-link-form input {
-  min-width: 0;
+.sf-search input {
   border: 0;
   outline: 0;
   background: transparent;
@@ -155,110 +250,102 @@ button {
 }
 
 .sf-pill,
-.sf-link-form button {
-  padding: 0.7rem 1rem;
+.sf-link-form button,
+.sf-wide-action {
   border-radius: 999px;
   background: var(--green);
-  color: #041007;
+  color: #031006;
   font-weight: 900;
 }
 
+.sf-pill {
+  padding: 0.75rem 1rem;
+}
+
 .sf-pill.is-off {
-  background: rgba(255, 255, 255, 0.14);
+  background: #2a2a2a;
   color: #fff;
 }
 
-.sf-hero {
-  display: grid;
-  grid-template-columns: minmax(8rem, 22%) 1fr;
-  gap: clamp(0.85rem, 2vw, 1.5rem);
-  align-items: stretch;
-  padding: clamp(0.8rem, 2vw, 1.35rem);
-  border-radius: 0.75rem;
-  background: linear-gradient(135deg, rgba(30, 215, 96, 0.28), rgba(255, 255, 255, 0.05));
-  border: 1px solid rgba(30, 215, 96, 0.24);
-}
-
-.sf-cover {
-  aspect-ratio: 1;
-  border-radius: 0.45rem;
-  color: #041007;
-  font-size: clamp(2rem, 6vw, 4rem);
-  font-weight: 950;
-}
-
-.sf-now {
+.sf-quick {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-.sf-now h1 {
+.sf-chip {
+  padding: 0.55rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-weight: 800;
+}
+
+.sf-chip.is-active {
+  background: #fff;
+  color: #000;
+}
+
+.sf-hero-card {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  gap: 1rem;
+  align-items: end;
+}
+
+.sf-cover,
+.sf-panel-cover {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 0.4rem;
+  background: linear-gradient(135deg, #1ed760, #0d7d36);
+  color: #031006;
+  box-shadow: 0 1.25rem 3rem rgba(0, 0, 0, 0.35);
+  font-weight: 950;
+}
+
+.sf-cover {
+  font-size: 3.2rem;
+}
+
+.sf-hero-copy p,
+.sf-section-head p,
+.sf-panelMeta,
+.sf-now-panel p,
+.sf-bar-track small {
+  color: var(--muted);
+}
+
+.sf-hero-copy p {
+  margin: 0 0 0.35rem;
+  font-weight: 800;
+}
+
+.sf-hero-copy h1 {
   margin: 0;
-  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: clamp(1.35rem, 4vw, 3rem);
+  font-size: clamp(2rem, 5vw, 4rem);
   letter-spacing: 0;
 }
 
-.sf-progress {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 0.65rem;
-  align-items: center;
-  color: var(--muted);
-  font-size: 0.78rem;
-}
-
-.sf-progress div {
-  height: 0.38rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
-  overflow: hidden;
-}
-
-.sf-progress i {
-  display: block;
-  width: 0%;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--green);
-}
-
-.sf-controls {
-  display: flex;
-  gap: 0.6rem;
-  align-items: center;
-}
-
-.sf-controls button {
-  width: 2.7rem;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
-  font-size: 1.3rem;
-}
-
-.sf-controls #sfPlay {
-  background: #fff;
-  color: #050607;
+.sf-hero-copy span {
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .sf-youtube,
 .sf-playlists,
 .sf-content {
-  border-radius: 0.75rem;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  padding: clamp(0.75rem, 1.6vw, 1rem);
+  border-radius: 0.55rem;
 }
 
 .sf-youtube,
 .sf-playlists {
   display: none;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
 }
 
 .sf-section-head {
@@ -271,84 +358,90 @@ button {
 
 .sf-section-head h2 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 
 .sf-section-head p {
-  max-width: 28rem;
-  font-size: 0.75rem;
+  margin: 0;
+  max-width: 31rem;
   text-align: right;
+  font-size: 0.78rem;
 }
 
 .sf-link-form {
   display: grid;
-  grid-template-columns: minmax(9rem, 0.8fr) 1.4fr auto;
-  gap: 0.6rem;
+  grid-template-columns: minmax(8rem, 0.8fr) 1.4fr auto;
+  gap: 0.65rem;
 }
 
 .sf-link-form input,
 .sf-link-form select {
-  border-radius: 0.55rem;
-  padding: 0.72rem 0.8rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--line);
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  border-radius: 0.45rem;
+  padding: 0.75rem 0.85rem;
+  background: #242424;
+  color: #fff;
+}
+
+.sf-link-form button,
+.sf-wide-action {
+  padding: 0.75rem 1rem;
 }
 
 .sf-wide-action {
   width: 100%;
-  margin-top: 0.6rem;
-  padding: 0.72rem 0.8rem;
-  border-radius: 0.55rem;
-  background: rgba(30, 215, 96, 0.14);
-  color: var(--green);
-  font-weight: 900;
+  margin-top: 0.65rem;
 }
 
 .sf-track-list {
   display: grid;
-  gap: 0.45rem;
-  max-height: 21rem;
-  overflow: auto;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 0.6rem;
 }
 
 .sf-track,
 .sf-empty {
   width: 100%;
+  border-radius: 0.45rem;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sf-track {
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 0.75rem;
-  align-items: center;
-  padding: 0.65rem 0.75rem;
-  border-radius: 0.5rem;
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid transparent;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 1fr auto;
+  gap: 0.65rem;
+  padding: 0.75rem;
   text-align: left;
 }
 
 .sf-track:hover,
 .sf-track.is-selected {
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(30, 215, 96, 0.32);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .sf-track-badge {
-  width: 2.35rem;
+  width: 3rem;
   aspect-ratio: 1;
   display: grid;
   place-items: center;
-  border-radius: 0.4rem;
-  background: rgba(30, 215, 96, 0.18);
+  border-radius: 0.35rem;
+  background: linear-gradient(135deg, #333, #151515);
   color: var(--green);
-  font-weight: 900;
+  font-weight: 950;
 }
 
 .sf-track-body {
+  align-self: center;
   display: grid;
   gap: 0.2rem;
 }
 
 .sf-track strong,
-.sf-track small {
+.sf-track small,
+.sf-track-action {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -359,33 +452,170 @@ button {
 }
 
 .sf-track-action {
+  grid-column: 1 / -1;
   color: var(--green);
   font-size: 0.78rem;
   font-weight: 900;
 }
 
 .sf-empty {
-  display: block;
+  grid-column: 1 / -1;
+  padding: 1rem;
   color: var(--muted);
   text-align: center;
 }
 
-@media (max-width: 760px) {
-  .sf-app {
+.sf-now-panel {
+  padding: 1rem;
+  background: var(--panel);
+}
+
+.sf-panel-cover {
+  width: 100%;
+  font-size: 4rem;
+}
+
+.sf-now-panel h2 {
+  margin: 0.85rem 0 0.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-now-panel p {
+  margin: 0;
+}
+
+.sf-related {
+  margin-top: 1rem;
+  padding: 0.9rem;
+  border-radius: 0.55rem;
+  background: var(--panel-2);
+}
+
+.sf-related strong,
+.sf-related span {
+  display: block;
+}
+
+.sf-related span {
+  margin-top: 0.25rem;
+  color: var(--muted);
+}
+
+.sf-playerbar {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(14rem, 25%) 1fr minmax(10rem, 20%);
+  gap: 1rem;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background: #000;
+}
+
+.sf-bar-track {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.sf-bar-cover {
+  width: 3rem;
+  aspect-ratio: 1;
+  border-radius: 0.3rem;
+}
+
+.sf-bar-track strong,
+.sf-bar-track small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-bar-controls {
+  display: grid;
+  grid-template-columns: auto auto auto minmax(12rem, 1fr);
+  gap: 0.6rem;
+  align-items: center;
+  justify-self: center;
+  width: min(42rem, 100%);
+}
+
+.sf-bar-controls button {
+  width: 2.35rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #242424;
+}
+
+.sf-bar-controls #sfPlay {
+  width: auto;
+  aspect-ratio: auto;
+  padding: 0.55rem 0.95rem;
+  background: #fff;
+  color: #000;
+  font-weight: 900;
+}
+
+.sf-progress {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.sf-progress div {
+  height: 0.28rem;
+  border-radius: 999px;
+  background: #4d4d4d;
+  overflow: hidden;
+}
+
+.sf-progress i {
+  display: block;
+  width: 0%;
+  height: 100%;
+  background: #fff;
+}
+
+@media (max-width: 900px) {
+  .sf-shell {
+    grid-template-columns: 11rem 1fr;
+  }
+
+  .sf-now-panel {
+    display: none;
+  }
+
+  .sf-playerbar {
+    grid-template-columns: minmax(10rem, 34%) 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .sf-shell {
     grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr 5.5rem;
   }
 
-  .sf-sidebar {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+  .sf-library {
+    grid-template-rows: auto auto;
   }
 
-  .sf-brand {
-    grid-column: 1 / -1;
+  .sf-mini-list,
+  .sf-refresh {
+    display: none;
   }
 
-  .sf-hero,
-  .sf-link-form {
+  .sf-topbar,
+  .sf-hero-card,
+  .sf-link-form,
+  .sf-playerbar,
+  .sf-bar-controls {
     grid-template-columns: 1fr;
   }
 
