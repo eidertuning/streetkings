@@ -6,9 +6,9 @@ local PROFILE_APP = {
     color = '#14b8a6',
     category = 'system',
     ui = 'html/apps/profile/index.html',
-    description = 'Demo app for the StreetKings tablet external app SDK.',
+    description = 'Profile app for the tablet external app SDK.',
     version = '1.0.0',
-    developer = 'StreetKings',
+    developer = 'Five Horizon',
 }
 
 local function registerProfileApp()
@@ -21,14 +21,16 @@ local function cleanAlias(value)
     return value:sub(1, 32)
 end
 
-local function cleanPhotoUrl(value)
-    value = tostring(value or ''):gsub('[\r\n\t]', '')
-    value = value:gsub('^%s+', ''):gsub('%s+$', '')
-    if value == '' then return '' end
-    if not value:match('^https?://') and not value:match('^nui://') then
-        return nil
+local function discordAvatarUrl(source)
+    local identifier = GetPlayerIdentifierByType(source --[[@as string]], 'discord')
+    local id = type(identifier) == 'string' and identifier:match('^discord:(%d+)$') or nil
+    if not id then return '' end
+    local endpoint = SKConfig and SKConfig.DiscordAvatarEndpoint or ''
+    if type(endpoint) == 'string' and endpoint ~= '' then
+        local url = endpoint:gsub('{id}', id)
+        return url
     end
-    return value:sub(1, 512)
+    return ('https://cdn.discordapp.com/embed/avatars/%d.png'):format(tonumber(id) % 5)
 end
 
 lib.callback.register('streetkings:profileApp:getProfile', function(source)
@@ -40,7 +42,8 @@ lib.callback.register('streetkings:profileApp:getProfile', function(source)
         ok = true,
         profile = {
             alias = SKSaves.read(source, 'profile.alias') or '',
-            photoUrl = SKSaves.read(source, 'profile.photoUrl') or '',
+            photoUrl = discordAvatarUrl(source),
+            discordAvatarUrl = discordAvatarUrl(source),
             cash = SKSaves.read(source, 'economy.cash') or 0,
             level = SKSaves.read(source, 'progression.level') or 1,
             playerXp = SKSaves.read(source, 'progression.playerXp') or 0,
@@ -55,23 +58,27 @@ lib.callback.register('streetkings:profileApp:saveProfile', function(source, dat
     end
 
     local alias = cleanAlias(data and data.alias)
-    local photoUrl = cleanPhotoUrl(data and data.photoUrl)
     if alias == '' then
         return { ok = false, error = 'empty_alias' }
     end
-    if photoUrl == nil then
-        return { ok = false, error = 'invalid_photo_url' }
-    end
 
     local okAlias = SKSaves.write(source, 'profile.alias', alias)
-    local okPhoto = SKSaves.write(source, 'profile.photoUrl', photoUrl)
-    local ok = okAlias and okPhoto
+    local ok = okAlias
+    if ok and SKLogs then
+        SKLogs.Module('phone', 'profile_alias_update', {
+            source = source,
+            title = 'Perfil actualizado',
+            publicMessage = 'Un jugador actualizo su alias de perfil.',
+            details = ('alias=%s\ndiscordAvatar=%s'):format(alias, discordAvatarUrl(source)),
+        }, 'admin')
+    end
     return {
         ok = ok,
         error = ok and nil or 'write_failed',
         profile = {
             alias = alias,
-            photoUrl = photoUrl,
+            photoUrl = discordAvatarUrl(source),
+            discordAvatarUrl = discordAvatarUrl(source),
             cash = SKSaves.read(source, 'economy.cash') or 0,
             level = SKSaves.read(source, 'progression.level') or 1,
             playerXp = SKSaves.read(source, 'progression.playerXp') or 0,

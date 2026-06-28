@@ -8,7 +8,6 @@
   var elCash = document.getElementById('profileCash');
   var elAvatar = document.getElementById('profileAvatar');
   var elAlias = document.getElementById('aliasInput');
-  var elPhoto = document.getElementById('photoInput');
   var elMessage = document.getElementById('profileMessage');
   var notifEnabled = document.getElementById('notifEnabled');
   var notifPreview = document.getElementById('notifPreview');
@@ -37,15 +36,14 @@
   }
 
   function renderProfile(profile) {
-    var alias = profile && profile.alias ? String(profile.alias) : 'Piloto StreetKings';
-    var photoUrl = profile && profile.photoUrl ? String(profile.photoUrl) : '';
+    var alias = profile && profile.alias ? String(profile.alias) : 'Piloto';
+    var photoUrl = profile && profile.discordAvatarUrl ? String(profile.discordAvatarUrl) : '';
     elName.textContent = alias;
     elStatus.textContent = 'App externa activa: ' + (window.resourceName || 'streetkings') + ' / ' + (window.appName || 'profile');
     elAlias.value = profile && profile.alias ? profile.alias : '';
-    elPhoto.value = photoUrl;
     elAvatar.classList.toggle('has-image', !!photoUrl);
     elAvatar.style.backgroundImage = photoUrl ? 'url("' + photoUrl.replace(/"/g, '%22') + '")' : '';
-    elAvatar.querySelector('span').textContent = alias.trim().slice(0, 2).toUpperCase() || 'SK';
+    elAvatar.querySelector('span').textContent = alias.trim().slice(0, 2).toUpperCase() || 'FH';
     elLevel.textContent = String(profile && profile.level ? profile.level : 1);
     elXp.textContent = Number(profile && profile.playerXp ? profile.playerXp : 0).toLocaleString('en-US');
     elCash.textContent = formatCash(profile && profile.cash);
@@ -85,7 +83,7 @@
   saveBtn.addEventListener('click', function () {
     saveBtn.disabled = true;
     setMessage('Guardando alias...');
-    fetchNui('skProfileSave', { alias: elAlias.value, photoUrl: elPhoto.value })
+    fetchNui('skProfileSave', { alias: elAlias.value })
       .then(function (result) {
         if (!result || !result.ok) throw new Error(result && result.error || 'profile_save_failed');
         renderProfile(result.profile || {});

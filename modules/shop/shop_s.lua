@@ -35,6 +35,14 @@ lib.callback.register('streetkings:shop:discover', function(source, shopId)
     list[#list + 1] = shopId
     world.discoveredShops = list
     SKSaves.write(source, 'world.state', world)
+    if SKLogs then
+        SKLogs.Module('shop', 'discover_shop', {
+            source = source,
+            title = 'Tienda descubierta',
+            publicMessage = 'Un jugador descubrio una tienda.',
+            details = ('shopId=%s'):format(shopId),
+        }, 'admin')
+    end
     return { ok = true }
 end)
 
@@ -205,6 +213,14 @@ lib.callback.register('streetkings:shop:purchaseColor', function(source, slot, r
     SKSaves.write(source, 'economy.cash', document.economy.cash)
     SKSaves.write(source, 'garage.vehicles.' .. vehicleId .. '.data', entry.data)
     SKStats.increment(source, 'totalCashSpent', SKShopShared.COLOR_PRICE)
+    if SKLogs then
+        SKLogs.Module('shop', 'purchase_color', {
+            source = source,
+            title = 'Color comprado',
+            publicMessage = 'Un jugador compro pintura para su vehiculo.',
+            details = ('vehicleId=%s\nmodel=%s\nslot=%s\nrgb=%s,%s,%s\npaintType=%s\nprice=%s\nbalance=%s'):format(vehicleId, entry.modelName, slot, clampColor(r), clampColor(g), clampColor(b), clampPaintType(paintType), SKShopShared.COLOR_PRICE, document.economy.cash),
+        }, 'admin')
+    end
 
     return { ok = true, balance = document.economy.cash, color = entry.data.colors[slot] }
 end)
@@ -251,6 +267,14 @@ lib.callback.register('streetkings:shop:purchaseNeons', function(source, enabled
     if price > 0 then
         SKStats.increment(source, 'totalCashSpent', price)
     end
+    if SKLogs then
+        SKLogs.Module('shop', 'purchase_neons', {
+            source = source,
+            title = 'Neones actualizados',
+            publicMessage = enabled and 'Un jugador instalo neones.' or 'Un jugador retiro neones.',
+            details = ('vehicleId=%s\nmodel=%s\nenabled=%s\nprice=%s\nbalance=%s'):format(vehicleId, entry.modelName, tostring(enabled), price, document.economy.cash),
+        }, 'admin')
+    end
 
     return { ok = true, balance = document.economy.cash, neons = entry.data.neons }
 end)
@@ -270,6 +294,14 @@ lib.callback.register('streetkings:shop:updateNeons', function(source, color, si
 
     entry.data.neons = buildNeonData(color, sides)
     SKSaves.write(source, 'garage.vehicles.' .. vehicleId .. '.data', entry.data)
+    if SKLogs then
+        SKLogs.Module('shop', 'update_neons', {
+            source = source,
+            title = 'Setup de neones actualizado',
+            publicMessage = 'Un jugador cambio el color o lados de neones.',
+            details = ('vehicleId=%s\nmodel=%s\nrgb=%s,%s,%s\nfront=%s back=%s left=%s right=%s'):format(vehicleId, entry.modelName, clampColor(color.r), clampColor(color.g), clampColor(color.b), tostring(sides.front), tostring(sides.back), tostring(sides.left), tostring(sides.right)),
+        }, 'admin')
+    end
 
     return { ok = true, neons = entry.data.neons }
 end)
@@ -312,6 +344,14 @@ lib.callback.register('streetkings:shop:purchaseMod', function(source, shopTypeK
     SKSaves.write(source, 'economy.cash', document.economy.cash)
     SKSaves.write(source, 'garage.vehicles.' .. vehicleId .. '.data', entry.data)
     SKStats.increment(source, 'totalCashSpent', price)
+    if SKLogs then
+        SKLogs.Module('shop', 'purchase_mod', {
+            source = source,
+            title = 'Modificacion comprada',
+            publicMessage = 'Un jugador compro una modificacion visual o de rendimiento.',
+            details = ('vehicleId=%s\nmodel=%s\nshopType=%s\nmodType=%s\nmodIndex=%s\nvipRequired=%s\nprice=%s\nbalance=%s'):format(vehicleId, entry.modelName, shopTypeKey, modType, modIndex, requiredVipTier or 'none', price, document.economy.cash),
+        })
+    end
 
     return { ok = true, balance = document.economy.cash, price = price }
 end)
@@ -351,6 +391,14 @@ lib.callback.register('streetkings:shop:purchaseGearbox', function(source, gearb
     SKSaves.write(source, 'garage.vehicles.' .. vehicleId .. '.data', entry.data)
     if price > 0 then
         SKStats.increment(source, 'totalCashSpent', price)
+    end
+    if SKLogs then
+        SKLogs.Module('shop', 'purchase_gearbox', {
+            source = source,
+            title = 'Caja de cambios actualizada',
+            publicMessage = 'Un jugador cambio la caja de cambios.',
+            details = ('vehicleId=%s\nmodel=%s\ngearbox=%s\nprice=%s\nbalance=%s'):format(vehicleId, entry.modelName, gearboxType, price, document.economy.cash),
+        }, 'admin')
     end
 
     return { ok = true, balance = document.economy.cash }
@@ -394,6 +442,14 @@ lib.callback.register('streetkings:shop:purchaseNitrous', function(source, nitro
     SKSaves.write(source, 'garage.vehicles.' .. vehicleId .. '.data', entry.data)
     if price > 0 then
         SKStats.increment(source, 'totalCashSpent', price)
+    end
+    if SKLogs then
+        SKLogs.Module('shop', 'purchase_nitrous', {
+            source = source,
+            title = 'Nitro actualizado',
+            publicMessage = 'Un jugador cambio su nitro.',
+            details = ('vehicleId=%s\nmodel=%s\nnitrous=%s\nprice=%s\nbalance=%s'):format(vehicleId, entry.modelName, nitrousType, price, document.economy.cash),
+        }, 'admin')
     end
 
     return { ok = true, balance = document.economy.cash }

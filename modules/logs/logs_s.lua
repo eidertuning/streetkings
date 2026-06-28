@@ -428,15 +428,17 @@ builders.dealershipPurchase = function(data, channel)
     addField(fields, 'Concesionario', cleanText(data.dealershipId), true)
     addField(fields, 'Vehiculo', cleanText(data.vehicleName or data.vehicleModel), true)
     addField(fields, 'Modelo spawn', cleanText(data.vehicleModel), true)
+    addField(fields, 'Clase', cleanText(data.vehicleClass), true)
     addField(fields, 'Precio', money(data.price or 0), true)
     addField(fields, 'Balance despues', money(data.balance or 0), true)
-    addField(fields, 'VIP requerido', cleanText(data.requiredVip, 'No'), true)
+    addField(fields, 'Etiqueta', data.requiredVip and ('VIP: ' .. cleanText(data.requiredVip)) or 'Publico', true)
     addAdminContext(fields, data.source)
     return {
         title = 'Compra en concesionario',
         description = 'Compra validada y guardada en garage.',
         colorKey = 'success',
         fields = fields,
+        image = data.vehicleImageUrl,
     }
 end
 
@@ -473,6 +475,37 @@ builders.adminCommand = function(data)
     }
 end
 
+builders.moduleEvent = function(data, channel)
+    local fields = {}
+    if channel == 'public' then
+        addField(fields, 'Apartado', cleanText(data.module), true)
+        addField(fields, 'Accion', cleanText(data.action), true)
+        addField(fields, 'Jugador', data.source and playerPublic(data.source) or nil, false)
+        addField(fields, 'Resumen', cleanText(data.publicMessage), false)
+        return {
+            title = cleanText(data.title, 'Actividad del framework'),
+            description = cleanText(data.publicMessage, 'Se registro una accion del servidor.'),
+            colorKey = 'public',
+            fields = fields,
+        }
+    end
+
+    addField(fields, 'Modulo', cleanText(data.module), true)
+    addField(fields, 'Accion', cleanText(data.action), true)
+    addField(fields, 'Jugador', data.source and playerAdmin(data.source) or nil, false)
+    addField(fields, 'Objetivo', data.target and playerAdmin(data.target) or nil, false)
+    addField(fields, 'Resumen publico', cleanText(data.publicMessage), false)
+    addField(fields, 'Detalles', cleanText(data.details), false)
+    addAdminContext(fields, data.source)
+
+    return {
+        title = cleanText(data.title, 'Actividad del framework'),
+        description = cleanText(data.adminMessage, 'Accion detallada del framework.'),
+        colorKey = 'admin',
+        fields = fields,
+    }
+end
+
 local function resolveChannels(kind, preferred)
     if preferred then
         if type(preferred) == 'table' then return preferred end
@@ -488,6 +521,14 @@ end
 local function getWebhook(kind, channel)
     local channelConfig = (getConfig().channels or {})[channel]
     if type(channelConfig) ~= 'table' or channelConfig.enabled == false then return nil end
+
+    if kind == 'moduleEvent' then
+        local moduleName = SKLogs._activeModuleName
+        local moduleConfig = moduleName and (getConfig().moduleWebhooks or {})[moduleName] or nil
+        if type(moduleConfig) == 'table' and type(moduleConfig[channel]) == 'string' and moduleConfig[channel] ~= '' then
+            return moduleConfig[channel]
+        end
+    end
 
     local webhookConfig = (getConfig().webhooks or {})[kind]
     if type(webhookConfig) == 'table' and type(webhookConfig[channel]) == 'string' and webhookConfig[channel] ~= '' then
@@ -531,6 +572,8 @@ local function buildEmbed(kind, data, channel)
         description = trim(built.description or '', MAX_DESCRIPTION),
         color = color,
         fields = built.fields or {},
+        image = type(built.image) == 'string' and built.image ~= '' and { url = built.image } or nil,
+        thumbnail = type(built.thumbnail) == 'string' and built.thumbnail ~= '' and { url = built.thumbnail } or nil,
         timestamp = os.date('!%Y-%m-%dT%H:%M:%SZ'),
         footer = {
             text = cleanText(cfg.footer, 'StreetKings'),
@@ -547,9 +590,31 @@ function SKLogs.Emit(kind, data, preferredChannel)
     end
 end
 
+function SKLogs.Module(moduleName, action, data, preferredChannel)
+    if type(moduleName) ~= 'string' or moduleName == '' then return end
+    data = type(data) == 'table' and data or {}
+    data.module = moduleName
+    data.action = action or data.action or 'event'
+    SKLogs._activeModuleName = moduleName
+    SKLogs.Emit('moduleEvent', data, preferredChannel)
+    SKLogs._activeModuleName = nil
+end
+
 function SKLogs.Public(kind, data)
     SKLogs.Emit(kind, data, 'public')
 end
+
+exports('LogModulePublic', function(moduleName, action, data)
+    SKLogs.Module(moduleName, action, data, 'public')
+end)
+
+exports('LogModuleAdmin', function(moduleName, action, data)
+    SKLogs.Module(moduleName, action, data, 'admin')
+end)
+
+exports('LogModule', function(moduleName, action, data, channel)
+    SKLogs.Module(moduleName, action, data, channel)
+end)
 
 function SKLogs.Admin(kind, data)
     SKLogs.Emit(kind, data, 'admin')

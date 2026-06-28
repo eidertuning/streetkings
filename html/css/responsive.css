@@ -57,12 +57,12 @@
 
   #sk-pausemenu-panel {
     width: 840px;
-    padding: 96px 104px 72px 104px;
+    padding: 68px 104px 56px 104px;
   }
 
   #sk-pausemenu-logo {
-    margin-bottom: 72px;
-    width: min(100%, 660px);
+    margin-bottom: 48px;
+    width: min(100%, 480px);
   }
 
   #sk-pausemenu-logo .pm-beta-badge {

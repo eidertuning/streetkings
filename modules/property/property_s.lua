@@ -127,6 +127,14 @@ lib.callback.register('streetkings:property:purchase', function(source, property
     end
 
     SKStats.increment(source, 'totalCashSpent', entry.purchasePrice)
+    if SKLogs then
+        SKLogs.Module('property', 'purchase_property', {
+            source = source,
+            title = 'Propiedad comprada',
+            publicMessage = ('%s compro una propiedad.'):format(entry.name),
+            details = ('propertyId=%s\nname=%s\nbuilding=%s\nprice=%s\ncash=%s'):format(propertyId, entry.name, entry.building, entry.purchasePrice, document.economy.cash),
+        })
+    end
 
     return {
         ok = true,
@@ -161,6 +169,14 @@ lib.callback.register('streetkings:property:requestWarp', function(source, prope
     if not SKSaves.persist(source) then
         document.economy.cash = document.economy.cash + SKProperty.WARP_PRICE
         return { ok = false, reason = 'save_failed' }
+    end
+    if SKLogs then
+        SKLogs.Module('property', 'warp_property', {
+            source = source,
+            title = 'Viaje a propiedad',
+            publicMessage = ('%s uso viaje rapido a una propiedad.'):format(entry.name),
+            details = ('propertyId=%s\nprice=%s\ncash=%s\ncoords=%.2f, %.2f, %.2f'):format(propertyId, SKProperty.WARP_PRICE, document.economy.cash, entry.exterior.x, entry.exterior.y, entry.exterior.z),
+        }, 'admin')
     end
 
     return {

@@ -161,13 +161,11 @@ h1 {
   margin-top: 0.55rem;
 }
 
-.profile-photo-label {
+.profile-photo-note {
   margin-top: 0.8rem;
-}
-
-#photoInput {
-  width: 100%;
-  margin-top: 0.55rem;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: clamp(0.72rem, 1.15vw, 0.86rem);
+  line-height: 1.45;
 }
 
 input {

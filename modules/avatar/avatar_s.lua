@@ -432,6 +432,14 @@ lib.callback.register('streetkings:avatar:setGender', function(source, gender)
     local account = getAccount(source)
     account.activeGender = gender
     persistAccount(source, account)
+    if SKLogs then
+        SKLogs.Module('avatar', 'set_gender', {
+            source = source,
+            title = 'Genero de avatar cambiado',
+            publicMessage = 'Un jugador cambio el tipo base de avatar.',
+            details = ('gender=%s'):format(gender),
+        }, 'admin')
+    end
 
     return {
         ok = true,
@@ -452,6 +460,14 @@ lib.callback.register('streetkings:avatar:saveAppearance', function(source, appe
     local ownedLookup = account.ownedClothing[gender]
     account.appearances[gender] = sanitizeAppearance(gender, account.appearances[gender], appearance, ownedLookup)
     persistAccount(source, account)
+    if SKLogs then
+        SKLogs.Module('avatar', 'save_appearance', {
+            source = source,
+            title = 'Apariencia guardada',
+            publicMessage = 'Un jugador guardo su apariencia.',
+            details = ('gender=%s'):format(gender),
+        }, 'admin')
+    end
 
     return {
         ok = true,
@@ -484,6 +500,14 @@ lib.callback.register('streetkings:avatar:equipOwnedVariation', function(source,
     applyVariationToAppearance(account.appearances[gender], category, normalizedDrawable, normalizedTexture)
     account.appearances[gender] = sanitizeAppearance(gender, account.appearances[gender], account.appearances[gender], account.ownedClothing[gender])
     persistAccount(source, account)
+    if SKLogs then
+        SKLogs.Module('avatar', 'equip_owned_variation', {
+            source = source,
+            title = 'Ropa equipada',
+            publicMessage = 'Un jugador equipo una prenda ya comprada.',
+            details = ('gender=%s\ncategory=%s\ndrawable=%s\ntexture=%s'):format(gender, category.key, normalizedDrawable, normalizedTexture),
+        }, 'admin')
+    end
 
     return {
         ok = true,
@@ -524,6 +548,14 @@ lib.callback.register('streetkings:avatar:purchaseClothing', function(source, ca
     applyVariationToAppearance(account.appearances[gender], category, normalizedDrawable, normalizedTexture)
     account.appearances[gender] = sanitizeAppearance(gender, account.appearances[gender], account.appearances[gender], account.ownedClothing[gender])
     persistAccount(source, account)
+    if SKLogs then
+        SKLogs.Module('avatar', 'purchase_clothing', {
+            source = source,
+            title = purchased and 'Ropa equipada' or 'Ropa comprada',
+            publicMessage = purchased and 'Un jugador equipo ropa.' or 'Un jugador compro ropa.',
+            details = ('gender=%s\ncategory=%s\ndrawable=%s\ntexture=%s\nprice=%s\nbalance=%s\npurchased=%s'):format(gender, category.key, normalizedDrawable, normalizedTexture, purchased and 0 or category.price, account.cosmetic_currency, tostring(not purchased)),
+        }, purchased and 'admin' or nil)
+    end
 
     return {
         ok = true,
@@ -585,6 +617,14 @@ lib.callback.register('streetkings:avatar:purchaseCart', function(source, items)
 
     account.appearances[gender] = sanitizeAppearance(gender, account.appearances[gender], account.appearances[gender], account.ownedClothing[gender])
     persistAccount(source, account)
+    if SKLogs then
+        SKLogs.Module('avatar', 'purchase_cart', {
+            source = source,
+            title = 'Carrito de ropa comprado',
+            publicMessage = 'Un jugador compro varias prendas.',
+            details = ('gender=%s\nitems=%s\npurchased=%s\ntotalCost=%s\nbalance=%s'):format(gender, #validated, purchasedCount, totalCost, account.cosmetic_currency),
+        })
+    end
 
     return {
         ok = true,

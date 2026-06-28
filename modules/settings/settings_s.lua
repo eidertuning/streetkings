@@ -28,6 +28,14 @@ lib.callback.register('phone:settings:deleteSave', function(source)
         { license, saveId }
     )
     SKSaves.clearActive(source)
+    if SKLogs then
+        SKLogs.Module('settings', 'delete_active_save', {
+            source = source,
+            title = 'Save eliminado desde ajustes',
+            publicMessage = 'Un administrador elimino un save.',
+            details = ('saveId=%s\nlicense=%s'):format(saveId, license),
+        }, 'admin')
+    end
 
     return { ok = true }
 end)
@@ -49,7 +57,16 @@ lib.callback.register('phone:settings:setVehicleLevel', function(source, level)
         return { ok = false }
     end
 
-    return { ok = SKProgression.setVehicleLevel(source, level) }
+    local ok = SKProgression.setVehicleLevel(source, level)
+    if ok and SKLogs then
+        SKLogs.Module('settings', 'set_vehicle_level', {
+            source = source,
+            title = 'Nivel de vehiculo ajustado',
+            publicMessage = 'Un administrador cambio el nivel de un vehiculo.',
+            details = ('level=%s'):format(level),
+        }, 'admin')
+    end
+    return { ok = ok }
 end)
 
 lib.callback.register('phone:settings:setPlayerLevel', function(source, level)
@@ -57,7 +74,16 @@ lib.callback.register('phone:settings:setPlayerLevel', function(source, level)
         return { ok = false }
     end
 
-    return { ok = SKProgression.setPlayerLevel(source, level) }
+    local ok = SKProgression.setPlayerLevel(source, level)
+    if ok and SKLogs then
+        SKLogs.Module('settings', 'set_player_level', {
+            source = source,
+            title = 'Nivel de jugador ajustado',
+            publicMessage = 'Un administrador cambio el nivel de un jugador.',
+            details = ('level=%s'):format(level),
+        }, 'admin')
+    end
+    return { ok = ok }
 end)
 
 lib.callback.register('phone:settings:grantCosmeticCurrency', function(source)
@@ -66,6 +92,14 @@ lib.callback.register('phone:settings:grantCosmeticCurrency', function(source)
     end
 
     local awardedAmount, balance = SKAvatar.addCosmeticCurrency(source, 1000)
+    if SKLogs then
+        SKLogs.Module('settings', 'grant_cosmetic_currency', {
+            source = source,
+            title = 'Moneda cosmetica otorgada',
+            publicMessage = 'Un administrador otorgo moneda cosmetica.',
+            details = ('amount=%s\nbalance=%s'):format(awardedAmount, balance),
+        }, 'admin')
+    end
     return {
         ok = true,
         amount = awardedAmount,

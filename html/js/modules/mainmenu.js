@@ -424,10 +424,11 @@
         });
 
         var $portrait = $('<span/>', { class: 'save-portrait', text: hasSave ? getProfileInitials(slot) : '+' });
-        if (hasSave && profile.photoUrl) {
+        var avatarUrl = hasSave && profile.discordAvatarUrl ? profile.discordAvatarUrl : '';
+        if (hasSave && avatarUrl) {
           $portrait
             .addClass('has-image')
-            .css('background-image', 'url("' + String(profile.photoUrl).replace(/"/g, '%22') + '")')
+            .css('background-image', 'url("' + String(avatarUrl).replace(/"/g, '%22') + '")')
             .text('');
         }
 

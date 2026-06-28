@@ -353,6 +353,15 @@ lib.callback.register('streetkings:garage:setActiveVehicle', function(source, ve
     end
     document.garage.activeVehicleId = vehicleId
     SKSaves.write(source, 'garage.activeVehicleId', vehicleId)
+    if SKLogs then
+        local entry = document.garage.vehicles[vehicleId]
+        SKLogs.Module('garage', 'set_active_vehicle', {
+            source = source,
+            title = 'Vehiculo activo cambiado',
+            publicMessage = ('Vehiculo activo: %s'):format(entry and (entry.displayName or entry.modelName) or vehicleId),
+            details = ('vehicleId=%s\nmodel=%s\nplate=%s'):format(vehicleId, entry and entry.modelName or '-', entry and entry.plate or '-'),
+        }, 'admin')
+    end
     return { ok = true }
 end)
 
@@ -377,6 +386,14 @@ lib.callback.register('streetkings:garage:requestTowToLastGarage', function(sour
     document.economy.cash = cash - TOW_TO_GARAGE_PRICE
     SKSaves.write(source, 'economy.cash', document.economy.cash)
     SKStats.increment(source, 'totalCashSpent', TOW_TO_GARAGE_PRICE)
+    if SKLogs then
+        SKLogs.Module('garage', 'tow_to_garage', {
+            source = source,
+            title = 'Remolque solicitado',
+            publicMessage = 'Un jugador solicito remolque al ultimo garage.',
+            details = ('garageId=%s\nprice=%s\nbalance=%s'):format(garageId, TOW_TO_GARAGE_PRICE, document.economy.cash),
+        })
+    end
 
     return {
         ok = true,
@@ -400,6 +417,14 @@ lib.callback.register('streetkings:garage:recordVisit', function(source, garageI
     world.discoveredGarages = list
     world.lastGarageId      = garageId
     SKSaves.write(source, 'world.state', world)
+    if SKLogs and not found then
+        SKLogs.Module('garage', 'discover_garage', {
+            source = source,
+            title = 'Garage descubierto',
+            publicMessage = 'Un jugador descubrio un garage.',
+            details = ('garageId=%s'):format(garageId),
+        }, 'admin')
+    end
     return { ok = true }
 end)
 
@@ -409,6 +434,14 @@ lib.callback.register('streetkings:garage:setTint', function(source, tintKey)
 
     world.garageTint = tintKey
     SKSaves.write(source, 'world.state', world)
+    if SKLogs then
+        SKLogs.Module('garage', 'set_garage_tint', {
+            source = source,
+            title = 'Color de garage cambiado',
+            publicMessage = 'Un jugador cambio el estilo de su garage.',
+            details = ('tint=%s'):format(tintKey),
+        }, 'admin')
+    end
 
     return { ok = true, garageTint = tintKey }
 end)

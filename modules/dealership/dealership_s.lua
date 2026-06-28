@@ -85,6 +85,33 @@ local function buildOwnedModels(vehicles)
     return ownedModels
 end
 
+local function getVehicleLogImage(model, override)
+    local cfg = SKVehicleImageConfig or {}
+    local jgEntry = nil
+
+    if cfg.provider == 'jg' and GetResourceState('jg-vehiclestudio') == 'started' then
+        local ok, image, fallbacks = pcall(function()
+            return exports['jg-vehiclestudio']:getImage(model, cfg.jgImageId or 'default')
+        end)
+        if ok then
+            jgEntry = {
+                image = type(image) == 'string' and image or nil,
+                fallbacks = type(fallbacks) == 'table' and fallbacks or {},
+            }
+        end
+    end
+
+    local resolved = SKResolveVehicleImage(model, override, jgEntry)
+    if type(resolved.src) == 'string' and resolved.src:match('^https?://') then return resolved.src end
+    if type(resolved.externalSrc) == 'string' and resolved.externalSrc:match('^https?://') then return resolved.externalSrc end
+    if type(resolved.fallbacks) == 'table' then
+        for _, url in ipairs(resolved.fallbacks) do
+            if type(url) == 'string' and url:match('^https?://') then return url end
+        end
+    end
+    return ''
+end
+
 lib.callback.register('streetkings:dealership:getState', function(source)
     local document = SKSaves.getDocument(source)
     local vipTier = getPlayerVipTier(source, document)
@@ -110,6 +137,14 @@ lib.callback.register('streetkings:dealership:discover', function(source, dealer
     list[#list + 1]           = dealerId
     world.discoveredDealerships = list
     SKSaves.write(source, 'world.state', world)
+    if SKLogs then
+        SKLogs.Module('dealership', 'discover_dealership', {
+            source = source,
+            title = 'Concesionario descubierto',
+            publicMessage = 'Un jugador descubrio un concesionario.',
+            details = ('dealerId=%s'):format(dealerId),
+        }, 'admin')
+    end
     return { ok = true }
 end)
 
@@ -201,6 +236,8 @@ lib.callback.register('streetkings:dealership:purchase', function(source, model,
             price = price,
             balance = document.economy.cash,
             requiredVip = requiredVipTier,
+            vehicleClass = serverVehicle.class,
+            vehicleImageUrl = getVehicleLogImage(model, serverVehicle.image),
         })
     end
 

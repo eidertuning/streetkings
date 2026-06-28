@@ -81,6 +81,33 @@ local function ownerLicense(source)
     return GetPlayerIdentifierByType(source --[[@as string]], 'license')
 end
 
+local function discordAvatarUrl(source)
+    local identifier = GetPlayerIdentifierByType(source --[[@as string]], 'discord')
+    local id = type(identifier) == 'string' and identifier:match('^discord:(%d+)$') or nil
+    if not id then return '' end
+    local endpoint = SKConfig and SKConfig.DiscordAvatarEndpoint or ''
+    if type(endpoint) == 'string' and endpoint ~= '' then
+        local url = endpoint:gsub('{id}', id)
+        return url
+    end
+    return ('https://cdn.discordapp.com/embed/avatars/%d.png'):format(tonumber(id) % 5)
+end
+
+local function attachDiscordAvatar(source, slot)
+    if type(slot) ~= 'table' or not slot.occupied then return slot end
+    slot.profile = slot.profile or {}
+    slot.profile.photoUrl = ''
+    slot.profile.discordAvatarUrl = discordAvatarUrl(source)
+    return slot
+end
+
+local function attachDiscordAvatars(source, slots)
+    for _, slot in ipairs(slots or {}) do
+        attachDiscordAvatar(source, slot)
+    end
+    return slots
+end
+
 ---@param row table
 ---@return SKSaveSlotDto
 local function rowToSlot(row)
@@ -88,11 +115,9 @@ local function rowToSlot(row)
     local ok, document = pcall(SKSaves.decodeDocument, row.document_json or '{}', row.schema_version or SKSaves.SCHEMA_VERSION)
     if ok and type(document) == 'table' then
         local profile = document.profile or {}
-        local photoUrl = profile.photoUrl or profile.avatarUrl or profile.imageUrl
-        if type(photoUrl) ~= 'string' then photoUrl = '' end
         slot.profile = {
             alias = profile.alias or row.display_name,
-            photoUrl = photoUrl,
+            photoUrl = '',
             level = document.progression and document.progression.level or 1,
             cash = document.economy and document.economy.cash or 0,
         }
@@ -303,7 +328,7 @@ lib.callback.register('streetkings:saves:list', function(source)
     if not dbReady then return { ok = false, error = SKSaves.Error.DB_NOT_READY } end
     local owner = ownerLicense(source)
     if not owner then return { ok = false, error = SKSaves.Error.NO_LICENSE } end
-    return { ok = true, slots = dbListSlots(owner), slotsVersion = SKSaves.SLOTS_VERSION }
+    return { ok = true, slots = attachDiscordAvatars(source, dbListSlots(owner)), slotsVersion = SKSaves.SLOTS_VERSION }
 end)
 
 lib.callback.register('streetkings:saves:select', function(source, slotIndex, isNew, saveId, saveName)
@@ -384,7 +409,7 @@ lib.callback.register('streetkings:saves:getLastPlayed', function(source)
     if not owner then return { ok = false, error = SKSaves.Error.NO_LICENSE } end
     return {
         ok = true,
-        save = dbGetLastPlayedSave(owner),
+        save = attachDiscordAvatar(source, dbGetLastPlayedSave(owner)),
     }
 end)
 
