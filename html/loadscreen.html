@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Street Kings</title>
+  <title>Five Horizon Motorsport</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&family=Permanent+Marker&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
@@ -182,12 +182,10 @@
     }
 
     .brand {
-      font-family: 'Permanent Marker', cursive;
-      font-size: clamp(5.5rem, 15vmin, 11rem);
-      line-height: 0.88;
-      text-align: center;
+      width: min(72vw, 620px);
+      line-height: 0;
       transform: rotate(-2deg);
-      letter-spacing: 0.02em;
+      filter: drop-shadow(0 18px 30px rgba(255, 0, 106, 0.18)) drop-shadow(0 0 46px rgba(255, 196, 0, 0.18));
       animation: sk-brand-enter 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
@@ -204,21 +202,13 @@
       }
     }
 
-    .brand-street {
+    .brand img {
       display: block;
-      color: #f5f0e6;
-      text-shadow:
-        6px 6px 0 #1a1a1a,
-        -3px -3px 0 rgba(255, 45, 120, 0.5),
-        0 0 52px rgba(255, 196, 0, 0.2);
-    }
-
-    .brand-kings {
-      display: block;
-      color: #ff006a;
-      text-shadow:
-        6px 6px 0 #3d2800,
-        0 0 40px rgba(255, 209, 71, 0.3);
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      user-select: none;
+      pointer-events: none;
     }
 
     .accent-line {
@@ -421,8 +411,7 @@
   <div id="loadscreen">
     <div class="load-content">
       <h1 class="brand">
-        <span class="brand-street">Street</span>
-        <span class="brand-kings">Kings</span>
+        <img src="assets/fhm.png" alt="Five Horizon Motorsport" draggable="false" />
       </h1>
       <div class="accent-line">
         <span class="accent-dash"></span>

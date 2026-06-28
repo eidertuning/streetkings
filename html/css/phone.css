@@ -371,16 +371,18 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%) rotate(-12deg);
-  font-family: var(--sk-font-display);
-  font-size: clamp(3rem, 10vw, 8rem);
-  letter-spacing: 0.08em;
-  color: rgba(255, 209, 71, 0.055);
-  text-shadow:
-    0 0 18px rgba(255, 209, 71, 0.08),
-    0 0 42px rgba(255, 45, 120, 0.06);
-  white-space: nowrap;
+  width: min(68vw, 50rem);
+  opacity: 0.08;
+  filter: drop-shadow(0 0 24px rgba(255, 209, 71, 0.16)) drop-shadow(0 0 46px rgba(255, 45, 120, 0.1));
   pointer-events: none;
   z-index: 0;
+}
+
+.phone-wallpaper-wordmark img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 .phone-apps-grid {

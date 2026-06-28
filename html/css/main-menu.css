@@ -140,26 +140,25 @@
 
 .sk-brand,
 .brand {
-  font-family: var(--sk-font-display);
-  font-size: clamp(2.75rem, 7cqi, 3.85rem);
-  line-height: 1;
+  line-height: 0;
   margin: 0 0 0.12em;
-  white-space: nowrap;
-  color: var(--sk-color-chalk);
-  text-shadow:
-    4px 4px 0 var(--sk-ink),
-    -2px -2px 0 rgba(255, 45, 120, 0.55),
-    0 0 32px rgba(255, 196, 0, 0.28);
   transform: rotate(-2.5deg);
-  letter-spacing: 0.02em;
+  width: min(100%, 27rem);
+  filter: drop-shadow(0 14px 22px rgba(255, 0, 106, 0.14)) drop-shadow(0 0 30px rgba(255, 196, 0, 0.18));
 }
 
-.sk-brand span,
-.brand span {
-  color: var(--sk-color-spray);
-  text-shadow:
-    4px 4px 0 var(--sk-gold-shadow),
-    0 0 28px rgba(255, 209, 71, 0.38);
+.brand img,
+.sk-brand img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  pointer-events: none;
+}
+
+.brand-logo {
+  margin-bottom: 0.65rem;
 }
 
 .sk-brand-version,
@@ -881,24 +880,17 @@
 
 .credits-logo {
   margin: 0 0 0.2rem;
-  font-family: var(--sk-font-display);
-  font-size: clamp(2.4rem, 6cqi, 3.3rem);
-  line-height: 1;
-  color: var(--sk-color-chalk);
-  text-align: center;
-  text-shadow:
-    4px 4px 0 var(--sk-ink),
-    -2px -2px 0 rgba(255, 45, 120, 0.55),
-    0 0 32px rgba(255, 196, 0, 0.28);
+  line-height: 0;
   transform: rotate(-2deg);
-  letter-spacing: 0.02em;
+  width: min(100%, 24rem);
+  filter: drop-shadow(0 14px 22px rgba(255, 0, 106, 0.16));
 }
 
-.credits-logo span {
-  color: var(--sk-color-spray);
-  text-shadow:
-    4px 4px 0 var(--sk-gold-shadow),
-    0 0 28px rgba(255, 209, 71, 0.38);
+.credits-logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 .credits-section-title {

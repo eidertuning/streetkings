@@ -29,25 +29,19 @@
 }
 
 #sk-pausemenu-logo {
-    font-family: 'Permanent Marker', cursive;
     line-height: 1;
     margin-bottom: 36px;
     user-select: none;
+    width: min(100%, 330px);
+    filter: drop-shadow(0 14px 24px rgba(255, 0, 106, 0.18)) drop-shadow(0 0 26px rgba(255, 196, 0, 0.15));
 }
 
-#sk-pausemenu-logo .pm-logo-street {
+#sk-pausemenu-logo .pm-logo-image {
     display: block;
-    font-size: 4.8rem;
-    color: #ffffff;
-    letter-spacing: 0.02em;
-}
-
-#sk-pausemenu-logo .pm-logo-kings {
-    display: block;
-    font-size: 4.8rem;
-    color: #FFD000;
-    letter-spacing: 0.02em;
-    margin-top: -12px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    pointer-events: none;
 }
 
 #sk-pausemenu-logo .pm-beta-badge {

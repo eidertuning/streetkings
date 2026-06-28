@@ -62,10 +62,7 @@
 
   #sk-pausemenu-logo {
     margin-bottom: 72px;
-  }
-
-  #sk-pausemenu-logo .pm-logo-kings {
-    margin-top: -24px;
+    width: min(100%, 660px);
   }
 
   #sk-pausemenu-logo .pm-beta-badge {

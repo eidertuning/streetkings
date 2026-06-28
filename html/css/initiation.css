@@ -44,6 +44,21 @@
   margin: 0 0 0.5rem;
 }
 
+.initiation-header-logo {
+  width: min(46vw, 24rem);
+  margin: 0 auto 0.45rem;
+  line-height: 0;
+  filter: drop-shadow(0 12px 22px rgba(255, 0, 106, 0.18)) drop-shadow(0 0 26px rgba(255, 196, 0, 0.12));
+}
+
+.initiation-header-logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+}
+
 .initiation-header-title {
   font-family: var(--sk-font-display);
   font-size: clamp(2.2rem, 5vw, 3.8rem);
