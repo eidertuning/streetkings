@@ -84,5 +84,6 @@ SKLogsConfig = {
     },
 
     includeIdentifiers = true,
+    includeDiscordMentions = true,
     mirrorPublicToAdmin = false,
 }

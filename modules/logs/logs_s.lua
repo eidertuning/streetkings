@@ -63,13 +63,35 @@ local function getIdentifiers(source)
     return identifiers
 end
 
+local function discordMention(source)
+    if getConfig().includeDiscordMentions == false then return nil end
+
+    local discordIdentifier = getIdentifiers(source).discord
+    local discordId = type(discordIdentifier) == 'string' and discordIdentifier:match('^discord:(%d+)$') or nil
+    if not discordId then return nil end
+
+    return ('<@%s>'):format(discordId)
+end
+
+local function appendDiscordMention(label, source)
+    local mention = discordMention(source)
+    if not mention then return label end
+    return ('%s | %s'):format(label, mention)
+end
+
 local function identifierSummary(source)
     if getConfig().includeIdentifiers == false then return nil end
 
     local identifiers = getIdentifiers(source)
     local lines = {}
     for _, key in ipairs({ 'license', 'discord', 'fivem', 'steam', 'ip' }) do
-        if identifiers[key] then lines[#lines + 1] = identifiers[key] end
+        if identifiers[key] then
+            if key == 'discord' then
+                lines[#lines + 1] = ('%s | %s'):format(identifiers[key], discordMention(source) or 'sin @')
+            else
+                lines[#lines + 1] = identifiers[key]
+            end
+        end
     end
 
     if #lines == 0 then return nil end
@@ -90,12 +112,12 @@ end
 
 local function playerPublic(source)
     if type(source) ~= 'number' or source <= 0 then return 'Sistema' end
-    return getAlias(source)
+    return appendDiscordMention(getAlias(source), source)
 end
 
 local function playerAdmin(source)
     if type(source) ~= 'number' or source <= 0 then return 'Consola / sistema' end
-    return ('%s | ID %d | %s'):format(getAlias(source), source, GetPlayerName(source) or 'Desconocido')
+    return appendDiscordMention(('%s | ID %d | %s'):format(getAlias(source), source, GetPlayerName(source) or 'Desconocido'), source)
 end
 
 local function coordsText(source)
