@@ -26,8 +26,16 @@ MySQL.ready(function()
     dbReady = true
 end)
 
-AddEventHandler('playerDropped', function()
+AddEventHandler('playerDropped', function(reason)
     local src = source --[[@as integer]]
+    if SKLogs then
+        SKLogs.Emit('playerDisconnected', {
+            source = src,
+            name = GetPlayerName(src) or 'Desconocido',
+            alias = activeDocuments[src] and activeDocuments[src].profile and activeDocuments[src].profile.alias or nil,
+            reason = reason,
+        })
+    end
     activeSaves[src]     = nil
     activeDocuments[src] = nil
 end)
@@ -325,6 +333,14 @@ lib.callback.register('streetkings:saves:select', function(source, slotIndex, is
     end
 
     dbSetLastPlayedSave(owner, result.saveId)
+    if SKLogs then
+        SKLogs.Emit('saveSelected', {
+            source = source,
+            slotIndex = slotIndex,
+            saveId = result.saveId,
+            isNew = isNew,
+        })
+    end
     TriggerEvent('streetkings:messages:trigger', source, 'saveSessionBound', {
         saveId = result.saveId,
         slotIndex = slotIndex,

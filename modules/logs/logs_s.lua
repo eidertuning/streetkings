@@ -31,14 +31,24 @@ end
 local function duration(ms)
     ms = math.max(0, math.floor(tonumber(ms) or 0))
     local totalSeconds = math.floor(ms / 1000)
-    local minutes = math.floor(totalSeconds / 60)
-    local seconds = totalSeconds % 60
-    local millis = ms % 1000
-    return ('%02d:%02d.%03d'):format(minutes, seconds, millis)
+    return ('%02d:%02d.%03d'):format(math.floor(totalSeconds / 60), totalSeconds % 60, ms % 1000)
 end
 
 local function yesNo(value)
     return value and 'Si' or 'No'
+end
+
+local function nowLabel()
+    return os.date('%Y-%m-%d %H:%M:%S')
+end
+
+local function addField(fields, name, value, inline)
+    if value == nil or value == '' then return end
+    fields[#fields + 1] = {
+        name = trim(name, 256),
+        value = trim(value, MAX_FIELD_VALUE),
+        inline = inline == true,
+    }
 end
 
 local function getIdentifiers(source)
@@ -53,28 +63,12 @@ local function getIdentifiers(source)
     return identifiers
 end
 
-local function playerSummary(source)
-    if type(source) ~= 'number' or source <= 0 then
-        return 'Consola / sistema'
-    end
-
-    local name = GetPlayerName(source) or 'Desconocido'
-    local alias = nil
-    if SKSaves and SKSaves.hasActiveSave and SKSaves.hasActiveSave(source) then
-        alias = SKSaves.read(source, 'profile.alias')
-    end
-    if type(alias) ~= 'string' or alias == '' then alias = name end
-
-    return ('%s | ID %d | %s'):format(alias, source, name)
-end
-
 local function identifierSummary(source)
-    local cfg = getConfig()
-    if cfg.includeIdentifiers == false then return nil end
+    if getConfig().includeIdentifiers == false then return nil end
 
     local identifiers = getIdentifiers(source)
     local lines = {}
-    for _, key in ipairs({ 'license', 'discord', 'fivem', 'steam' }) do
+    for _, key in ipairs({ 'license', 'discord', 'fivem', 'steam', 'ip' }) do
         if identifiers[key] then lines[#lines + 1] = identifiers[key] end
     end
 
@@ -82,18 +76,72 @@ local function identifierSummary(source)
     return table.concat(lines, '\n')
 end
 
-local function addField(fields, name, value, inline)
-    if value == nil or value == '' then return end
-    fields[#fields + 1] = {
-        name = trim(name, 256),
-        value = trim(value, MAX_FIELD_VALUE),
-        inline = inline == true,
-    }
+local function getDocument(source)
+    return SKSaves and SKSaves.getDocument and SKSaves.getDocument(source) or nil
 end
 
-local function eventName(eventId)
+local function getAlias(source)
+    local document = getDocument(source)
+    local profile = document and document.profile or nil
+    local alias = profile and profile.alias or nil
+    if type(alias) == 'string' and alias ~= '' then return alias end
+    return GetPlayerName(source) or 'Desconocido'
+end
+
+local function playerPublic(source)
+    if type(source) ~= 'number' or source <= 0 then return 'Sistema' end
+    return getAlias(source)
+end
+
+local function playerAdmin(source)
+    if type(source) ~= 'number' or source <= 0 then return 'Consola / sistema' end
+    return ('%s | ID %d | %s'):format(getAlias(source), source, GetPlayerName(source) or 'Desconocido')
+end
+
+local function coordsText(source)
+    if type(source) ~= 'number' or source <= 0 then return nil end
+
+    local ped = GetPlayerPed(source)
+    if not ped or ped == 0 then return nil end
+
+    local coords = GetEntityCoords(ped)
+    local heading = GetEntityHeading(ped)
+    if not coords then return nil end
+
+    return ('x=%.2f, y=%.2f, z=%.2f, h=%.2f'):format(coords.x, coords.y, coords.z, heading or 0.0)
+end
+
+local function saveSummary(source)
+    if not SKSaves or not SKSaves.hasActiveSave or not SKSaves.hasActiveSave(source) then return nil end
+
+    local document = getDocument(source)
+    local profile = document and document.profile or {}
+    local economy = document and document.economy or {}
+    local progression = document and document.progression or {}
+    local saveId = SKSaves.getActiveSaveId and SKSaves.getActiveSaveId(source) or nil
+
+    return table.concat({
+        ('saveId=%s'):format(cleanText(saveId)),
+        ('alias=%s'):format(cleanText(profile.alias)),
+        ('nivel=%s'):format(cleanText(progression.level)),
+        ('cash=%s'):format(money(economy.cash or 0)),
+        ('vip=%s'):format(cleanText(profile.vipTier, 'none')),
+    }, '\n')
+end
+
+local function eventInfo(eventId)
     local event = type(eventId) == 'string' and SKEvents and SKEvents[eventId] or nil
-    return event and (event.name or event.title or event.id) or eventId or 'Desconocido'
+    if not event then return cleanText(eventId, 'Desconocido'), nil end
+
+    local details = {}
+    details[#details + 1] = ('id=%s'):format(cleanText(event.id or eventId))
+    details[#details + 1] = ('tipo=%s'):format(cleanText(event.type))
+    details[#details + 1] = ('modo=%s'):format(cleanText(event.mode))
+    details[#details + 1] = ('trazado=%s'):format(cleanText(event.scheme))
+    if event.goalTime then details[#details + 1] = ('meta=%ss'):format(event.goalTime) end
+    if event.duration then details[#details + 1] = ('duracion=%ss'):format(event.duration) end
+
+    return event.name or event.title or event.id or eventId, table.concat(details, '\n')
 end
 
 local function scoreText(scoreType, score)
@@ -112,58 +160,145 @@ local function rewardText(reward, cash)
             parts[#parts + 1] = reward.summary
         end
         if reward.player and tonumber(reward.player.xpGained) and reward.player.xpGained > 0 then
-            parts[#parts + 1] = ('Jugador XP +%d'):format(reward.player.xpGained)
+            parts[#parts + 1] = ('Jugador XP +%d | nivel %s -> %s'):format(reward.player.xpGained, cleanText(reward.player.oldLevel), cleanText(reward.player.newLevel))
         end
         if reward.vehicle and tonumber(reward.vehicle.xpGained) and reward.vehicle.xpGained > 0 then
-            parts[#parts + 1] = ('Vehiculo XP +%d'):format(reward.vehicle.xpGained)
+            parts[#parts + 1] = ('Vehiculo XP +%d | nivel %s -> %s'):format(reward.vehicle.xpGained, cleanText(reward.vehicle.oldLevel), cleanText(reward.vehicle.newLevel))
         end
     end
     if #parts == 0 then return nil end
     return table.concat(parts, '\n')
 end
 
-local function buildGenericFields(data)
+local function addAdminContext(fields, source)
+    addField(fields, 'Hora servidor', nowLabel(), true)
+    addField(fields, 'Coordenadas', coordsText(source), false)
+    addField(fields, 'Save activo', saveSummary(source), false)
+    addField(fields, 'Identificadores', identifierSummary(source), false)
+end
+
+local function buildGeneric(kind, data, channel)
     local fields = {}
-    if type(data) ~= 'table' then return fields end
-    for key, value in pairs(data) do
+    for key, value in pairs(data or {}) do
         if type(value) ~= 'table' then
             addField(fields, key, tostring(value), true)
         end
     end
-    return fields
+    return {
+        title = kind,
+        description = channel == 'public' and 'Evento del servidor.' or 'Evento interno de StreetKings.',
+        colorKey = channel == 'public' and 'public' or 'admin',
+        fields = fields,
+    }
 end
 
 local builders = {}
 
-builders.activitySubmitted = function(data)
+builders.playerConnected = function(data, channel)
     local fields = {}
-    addField(fields, 'Jugador', playerSummary(data.source), false)
-    addField(fields, 'Evento', ('%s (`%s`)'):format(eventName(data.eventId), cleanText(data.eventId)), true)
-    addField(fields, 'Tipo', cleanText(data.scoreType), true)
-    addField(fields, 'Resultado', scoreText(data.scoreType, data.scoreValue), true)
-    addField(fields, 'Vehiculo', cleanText(data.vehicleModel, 'Sin modelo'), true)
-    addField(fields, 'Clase', cleanText(data.vehicleClass, '-'), true)
-    addField(fields, 'Diario', yesNo(data.daily), true)
-    addField(fields, 'Meta cumplida', yesNo(data.goalMet), true)
-    addField(fields, 'Recompensa', rewardText(data.reward, data.cash), false)
-    addField(fields, 'Identificadores', identifierSummary(data.source), false)
+    if channel == 'public' then
+        addField(fields, 'Jugador', cleanText(data.name), true)
+        return {
+            title = 'Jugador conectado',
+            description = ('%s se conecto a StreetKings.'):format(cleanText(data.name)),
+            colorKey = 'success',
+            fields = fields,
+        }
+    end
 
+    addField(fields, 'Jugador', ('%s | ID %s'):format(cleanText(data.name), cleanText(data.source)), false)
+    addAdminContext(fields, data.source)
     return {
-        title = 'Resultado de carrera / actividad',
-        description = ('%s envio un resultado valido.'):format(playerSummary(data.source)),
+        title = 'Jugador conectado',
+        description = 'Un jugador entro al servidor.',
         colorKey = 'success',
         fields = fields,
     }
 end
 
-builders.activityRejected = function(data)
+builders.playerDisconnected = function(data, channel)
     local fields = {}
-    addField(fields, 'Jugador', playerSummary(data.source), false)
+    if channel == 'public' then
+        addField(fields, 'Jugador', cleanText(data.alias or data.name), true)
+        return {
+            title = 'Jugador desconectado',
+            description = ('%s salio de StreetKings.'):format(cleanText(data.alias or data.name)),
+            colorKey = 'warning',
+            fields = fields,
+        }
+    end
+
+    addField(fields, 'Jugador', playerAdmin(data.source), false)
+    addField(fields, 'Motivo', cleanText(data.reason), false)
+    addAdminContext(fields, data.source)
+    return {
+        title = 'Jugador desconectado',
+        description = 'Un jugador salio del servidor.',
+        colorKey = 'warning',
+        fields = fields,
+    }
+end
+
+builders.saveSelected = function(data, channel)
+    local fields = {}
+    addField(fields, 'Jugador', playerAdmin(data.source), false)
+    addField(fields, 'Slot', cleanText(data.slotIndex), true)
+    addField(fields, 'Save ID', cleanText(data.saveId), false)
+    addField(fields, 'Nuevo save', yesNo(data.isNew), true)
+    addAdminContext(fields, data.source)
+    return {
+        title = 'Partida cargada',
+        description = 'Un jugador selecciono una ranura de personaje.',
+        colorKey = channel == 'public' and 'public' or 'admin',
+        fields = fields,
+    }
+end
+
+builders.activitySubmitted = function(data, channel)
+    local eventName, eventDetails = eventInfo(data.eventId)
+    local fields = {}
+
+    if channel == 'public' then
+        addField(fields, 'Jugador', playerPublic(data.source), true)
+        addField(fields, 'Evento', eventName, true)
+        addField(fields, 'Resultado', scoreText(data.scoreType, data.scoreValue), true)
+        addField(fields, 'Vehiculo', cleanText(data.vehicleModel, 'Sin modelo'), true)
+        return {
+            title = data.scoreType == 'speed' and 'Radar registrado' or 'Resultado publicado',
+            description = ('%s completo %s.'):format(playerPublic(data.source), eventName),
+            colorKey = 'success',
+            fields = fields,
+        }
+    end
+
+    addField(fields, 'Jugador', playerAdmin(data.source), false)
+    addField(fields, 'Evento', ('%s (`%s`)'):format(eventName, cleanText(data.eventId)), true)
+    addField(fields, 'Tipo de actividad', cleanText(data.scoreType), true)
+    addField(fields, 'Resultado', scoreText(data.scoreType, data.scoreValue), true)
+    addField(fields, 'Vehiculo', cleanText(data.vehicleModel, 'Sin modelo'), true)
+    addField(fields, 'Clase', cleanText(data.vehicleClass, '-'), true)
+    addField(fields, 'Diario', yesNo(data.daily), true)
+    addField(fields, 'Meta cumplida', yesNo(data.goalMet), true)
+    addField(fields, 'Datos del evento', eventDetails, false)
+    addField(fields, 'Recompensa', rewardText(data.reward, data.cash), false)
+    addAdminContext(fields, data.source)
+
+    return {
+        title = 'Resultado de carrera / actividad',
+        description = 'Resultado validado y guardado en leaderboard.',
+        colorKey = 'success',
+        fields = fields,
+    }
+end
+
+builders.activityRejected = function(data, channel)
+    local fields = {}
+    addField(fields, 'Jugador', playerAdmin(data.source), false)
     addField(fields, 'Motivo', cleanText(data.reason), true)
     addField(fields, 'Evento', cleanText(data.eventId), true)
     addField(fields, 'Puntuacion enviada', cleanText(data.scoreValue), true)
     addField(fields, 'Vehiculo', cleanText(data.vehicleModel), true)
-    addField(fields, 'Identificadores', identifierSummary(data.source), false)
+    addAdminContext(fields, data.source)
 
     return {
         title = 'Resultado rechazado',
@@ -173,16 +308,28 @@ builders.activityRejected = function(data)
     }
 end
 
-builders.npcRace = function(data)
+builders.npcRace = function(data, channel)
     local fields = {}
-    addField(fields, 'Jugador', playerSummary(data.source), false)
+    if channel == 'public' then
+        addField(fields, 'Jugador', playerPublic(data.source), true)
+        addField(fields, 'Resultado', data.won and 'Victoria' or 'Derrota', true)
+        addField(fields, 'Tiempo', data.elapsedMs and duration(data.elapsedMs) or nil, true)
+        return {
+            title = 'Reto callejero',
+            description = data.won and ('%s gano un reto callejero.'):format(playerPublic(data.source)) or ('%s perdio un reto callejero.'):format(playerPublic(data.source)),
+            colorKey = data.won and 'success' or 'warning',
+            fields = fields,
+        }
+    end
+
+    addField(fields, 'Jugador', playerAdmin(data.source), false)
     addField(fields, 'Resultado', data.won and 'Victoria' or 'Derrota', true)
     addField(fields, 'Tiempo', data.elapsedMs and duration(data.elapsedMs) or nil, true)
     addField(fields, 'Vehiculo', cleanText(data.vehicleModel), true)
     addField(fields, 'Clase GTA', cleanText(data.vehicleClass), true)
     addField(fields, 'Dinero', data.cash and money(data.cash) or nil, true)
     addField(fields, 'Recompensa', rewardText(data.reward, nil), false)
-    addField(fields, 'Identificadores', identifierSummary(data.source), false)
+    addAdminContext(fields, data.source)
 
     return {
         title = 'Reto callejero NPC',
@@ -192,12 +339,21 @@ builders.npcRace = function(data)
     }
 end
 
-builders.policeEscape = function(data)
+builders.policeEscape = function(data, channel)
     local fields = {}
-    addField(fields, 'Jugador', playerSummary(data.source), false)
-    addField(fields, 'Resultado', 'Escapo de la policia', true)
-    addField(fields, 'Identificadores', identifierSummary(data.source), false)
+    if channel == 'public' then
+        addField(fields, 'Jugador', playerPublic(data.source), true)
+        return {
+            title = 'Persecucion escapada',
+            description = ('%s escapo de la policia.'):format(playerPublic(data.source)),
+            colorKey = 'success',
+            fields = fields,
+        }
+    end
 
+    addField(fields, 'Jugador', playerAdmin(data.source), false)
+    addField(fields, 'Resultado', 'Escapo de la policia', true)
+    addAdminContext(fields, data.source)
     return {
         title = 'Persecucion completada',
         description = 'El jugador escapo de una persecucion policial.',
@@ -206,14 +362,24 @@ builders.policeEscape = function(data)
     }
 end
 
-builders.policeBust = function(data)
+builders.policeBust = function(data, channel)
     local fields = {}
-    addField(fields, 'Jugador', playerSummary(data.source), false)
+    if channel == 'public' then
+        addField(fields, 'Jugador', playerPublic(data.source), true)
+        addField(fields, 'Multa', money(data.deducted or 0), true)
+        return {
+            title = 'Arresto policial',
+            description = ('%s fue arrestado por la policia.'):format(playerPublic(data.source)),
+            colorKey = 'error',
+            fields = fields,
+        }
+    end
+
+    addField(fields, 'Jugador', playerAdmin(data.source), false)
     addField(fields, 'Multa', money(data.deducted or 0), true)
     addField(fields, 'Efectivo antes', money(data.beforeCash or 0), true)
     addField(fields, 'Efectivo despues', money(data.afterCash or 0), true)
-    addField(fields, 'Identificadores', identifierSummary(data.source), false)
-
+    addAdminContext(fields, data.source)
     return {
         title = 'Jugador arrestado',
         description = 'Se aplico una multa policial.',
@@ -222,20 +388,31 @@ builders.policeBust = function(data)
     }
 end
 
-builders.dealershipPurchase = function(data)
+builders.dealershipPurchase = function(data, channel)
     local fields = {}
-    addField(fields, 'Jugador', playerSummary(data.source), false)
+    if channel == 'public' then
+        addField(fields, 'Jugador', playerPublic(data.source), true)
+        addField(fields, 'Vehiculo', cleanText(data.vehicleName or data.vehicleModel), true)
+        addField(fields, 'Precio', money(data.price or 0), true)
+        return {
+            title = 'Compra de vehiculo',
+            description = ('%s compro un %s.'):format(playerPublic(data.source), cleanText(data.vehicleName or data.vehicleModel)),
+            colorKey = 'success',
+            fields = fields,
+        }
+    end
+
+    addField(fields, 'Jugador', playerAdmin(data.source), false)
     addField(fields, 'Concesionario', cleanText(data.dealershipId), true)
     addField(fields, 'Vehiculo', cleanText(data.vehicleName or data.vehicleModel), true)
-    addField(fields, 'Modelo', cleanText(data.vehicleModel), true)
+    addField(fields, 'Modelo spawn', cleanText(data.vehicleModel), true)
     addField(fields, 'Precio', money(data.price or 0), true)
-    addField(fields, 'Balance', money(data.balance or 0), true)
+    addField(fields, 'Balance despues', money(data.balance or 0), true)
     addField(fields, 'VIP requerido', cleanText(data.requiredVip, 'No'), true)
-    addField(fields, 'Identificadores', identifierSummary(data.source), false)
-
+    addAdminContext(fields, data.source)
     return {
         title = 'Compra en concesionario',
-        description = 'Un jugador compro un vehiculo.',
+        description = 'Compra validada y guardada en garage.',
         colorKey = 'success',
         fields = fields,
     }
@@ -243,11 +420,12 @@ end
 
 builders.vipChanged = function(data)
     local fields = {}
-    addField(fields, 'Admin', playerSummary(data.source), false)
-    addField(fields, 'Jugador', playerSummary(data.target), false)
+    addField(fields, 'Admin', playerAdmin(data.source), false)
+    addField(fields, 'Jugador', playerAdmin(data.target), false)
     addField(fields, 'VIP anterior', cleanText(data.oldTier, 'none'), true)
     addField(fields, 'VIP nuevo', cleanText(data.newTier, 'none'), true)
-    addField(fields, 'Identificadores jugador', identifierSummary(data.target), false)
+    addField(fields, 'Identificadores admin', identifierSummary(data.source), false)
+    addAdminContext(fields, data.target)
 
     return {
         title = 'VIP actualizado',
@@ -259,11 +437,11 @@ end
 
 builders.adminCommand = function(data)
     local fields = {}
-    addField(fields, 'Admin', playerSummary(data.source), false)
+    addField(fields, 'Admin', playerAdmin(data.source), false)
     addField(fields, 'Comando', '/' .. cleanText(data.command), true)
-    addField(fields, 'Objetivo', data.target and playerSummary(data.target) or nil, false)
+    addField(fields, 'Objetivo', data.target and playerAdmin(data.target) or nil, false)
     addField(fields, 'Detalles', cleanText(data.details), false)
-    addField(fields, 'Identificadores admin', identifierSummary(data.source), false)
+    addAdminContext(fields, data.source)
 
     return {
         title = 'Comando administrativo',
@@ -314,21 +492,13 @@ local function sendEmbed(channel, embed)
     end, 'POST', json.encode(payload), { ['Content-Type'] = 'application/json' })
 end
 
-function SKLogs.Emit(kind, data, preferredChannel)
-    if type(kind) ~= 'string' or kind == '' then return end
-
-    data = type(data) == 'table' and data or {}
-    local built = builders[kind] and builders[kind](data) or {
-        title = kind,
-        description = 'Evento StreetKings',
-        colorKey = 'admin',
-        fields = buildGenericFields(data),
-    }
-
+local function buildEmbed(kind, data, channel)
+    local built = builders[kind] and builders[kind](data, channel) or buildGeneric(kind, data, channel)
     local cfg = getConfig()
-    local colorKey = built.colorKey or 'admin'
+    local colorKey = built.colorKey or (channel == 'public' and 'public' or 'admin')
     local color = (cfg.colors or {})[colorKey] or (cfg.colors or {}).admin or 16763904
-    local embed = {
+
+    return {
         title = trim(built.title or kind, 256),
         description = trim(built.description or '', MAX_DESCRIPTION),
         color = color,
@@ -338,9 +508,14 @@ function SKLogs.Emit(kind, data, preferredChannel)
             text = cleanText(cfg.footer, 'StreetKings'),
         },
     }
+end
 
+function SKLogs.Emit(kind, data, preferredChannel)
+    if type(kind) ~= 'string' or kind == '' then return end
+
+    data = type(data) == 'table' and data or {}
     for _, channel in ipairs(resolveChannels(kind, preferredChannel)) do
-        sendEmbed(channel, embed)
+        sendEmbed(channel, buildEmbed(kind, data, channel))
     end
 end
 
@@ -351,3 +526,11 @@ end
 function SKLogs.Admin(kind, data)
     SKLogs.Emit(kind, data, 'admin')
 end
+
+AddEventHandler('playerJoining', function()
+    local src = source --[[@as integer]]
+    SKLogs.Emit('playerConnected', {
+        source = src,
+        name = GetPlayerName(src) or 'Desconocido',
+    })
+end)

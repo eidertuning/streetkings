@@ -25,11 +25,14 @@ SKLogsConfig = {
     },
 
     routing = {
+        playerConnected = { 'public', 'admin' },
+        playerDisconnected = { 'public', 'admin' },
+        saveSelected = 'admin',
         activitySubmitted = { 'public', 'admin' },
         activityRejected = 'admin',
         npcRace = { 'public', 'admin' },
         policeEscape = { 'public', 'admin' },
-        policeBust = 'admin',
+        policeBust = { 'public', 'admin' },
         dealershipPurchase = { 'public', 'admin' },
         vipChanged = 'admin',
         adminCommand = 'admin',
