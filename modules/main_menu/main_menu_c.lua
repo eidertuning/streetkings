@@ -3,8 +3,8 @@ SKC.RegisterGameState(GameState.MAIN_MENU, {
         SKMainMenu.enterScene()
         CreateThread(function()
             SKMainMenu.waitForNui()
-            SKMainMenu.open()
             while not SKMainMenu.isCameraReady() do Wait(100) end
+            SKMainMenu.open()
             DoScreenFadeIn(500)
         end)
     end,

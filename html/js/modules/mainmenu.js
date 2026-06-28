@@ -13,6 +13,7 @@
   var isLoading = false;
   var CREDITS_SCROLL_SPEED = 0.5;
   var controllerEnabled = false;
+  var mainMenuLinks = {};
 
   function t(key, replacements) {
     return SK.i18n ? SK.i18n.t(key, replacements) : key;
@@ -219,6 +220,20 @@
     nui.post('mainMenuExitGame', {});
   }
 
+  function openExternalLink(key) {
+    var url = mainMenuLinks && mainMenuLinks[key];
+    if (url) window.invokeNative('openUrl', url);
+  }
+
+  function getProfileInitials(slot) {
+    var profile = slot.profile || {};
+    var label = profile.alias || slot.name || 'SK';
+    var parts = String(label).trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return 'SK';
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
+  }
+
   function setContinueState(save) {
     var hasSave = !!save;
     lastPlayedSave = hasSave ? save : null;
@@ -401,27 +416,41 @@
       (function (slot) {
         var hasSave = slot.occupied;
         var slotIndex = slot.slotIndex;
+        var profile = slot.profile || {};
 
         var $card = $('<button/>', {
           type: 'button',
           class: 'save-card' + (hasSave ? '' : ' is-empty'),
         });
 
-        $card.append(
-          $('<span/>', { class: 'save-slot', text: t('main_menu.slot', { index: slotIndex }) })
-        );
-        $card.append(
-          $('<p/>', {
-            class: 'save-name' + (hasSave ? '' : ' is-new'),
-            text: hasSave ? slot.name : t('main_menu.create_new_save'),
-          })
-        );
+        var $portrait = $('<span/>', { class: 'save-portrait', text: hasSave ? getProfileInitials(slot) : '+' });
+        if (hasSave && profile.photoUrl) {
+          $portrait
+            .addClass('has-image')
+            .css('background-image', 'url("' + String(profile.photoUrl).replace(/"/g, '%22') + '")')
+            .text('');
+        }
+
+        var $body = $('<span/>', { class: 'save-card-body' });
+        $body.append($('<span/>', { class: 'save-slot', text: t('main_menu.slot', { index: slotIndex }) }));
+        $body.append($('<p/>', {
+          class: 'save-name' + (hasSave ? '' : ' is-new'),
+          text: hasSave ? (profile.alias || slot.name) : t('main_menu.create_new_save'),
+        }));
 
         if (hasSave && slot.detail !== '') {
-          $card.append(
-            $('<p/>', { class: 'save-detail', text: slot.detail })
+          $body.append($('<p/>', { class: 'save-detail', text: slot.detail }));
+        }
+
+        if (hasSave) {
+          $body.append(
+            $('<span/>', { class: 'save-meta' })
+              .append($('<span/>', { text: t('common.level') + ' ' + (profile.level || 1) }))
+              .append($('<span/>', { text: '$' + Number(profile.cash || 0).toLocaleString('en-US') }))
           );
         }
+
+        $card.append($portrait, $body);
 
         if (hasSave) {
           var $del = $('<button/>', {
@@ -514,6 +543,7 @@
         isLoading = false;
         $app.removeClass('is-leaving');
         $('#mainMenuVersion').text('BETA');
+        mainMenuLinks = data.links || {};
         if (data.saveSlotCount != null) {
           saveSlotCount = data.saveSlotCount;
         }
@@ -548,6 +578,10 @@
 
     $('#btnExitGame').on('click', function () {
       exitGame();
+    });
+
+    $('.main-menu-social').on('click', function () {
+      openExternalLink($(this).data('social-link'));
     });
 
     $('#viewCredits').on('click', function (e) {

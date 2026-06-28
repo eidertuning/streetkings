@@ -29,6 +29,7 @@ local chaseCam = nil
 local chaseVehicle = nil
 local mainMenuTimeSlowMo = false
 local sceneGeneration = 0
+local fallbackCam = nil
 
 local HOOD_CAM_BONES = { 'bonnet' }
 
@@ -46,9 +47,34 @@ local function destroyChaseCamera()
         DestroyCam(chaseCam, false)
         chaseCam = nil
     end
+    if fallbackCam then
+        RenderScriptCams(false, false, 0, true, true)
+        DestroyCam(fallbackCam, false)
+        fallbackCam = nil
+    end
     chaseVehicle = nil
     mainMenuTimeSlowMo = false
     SetTimeScale(MENU_CAM_TIMESCALE_NORMAL)
+end
+
+---@param pos vector3
+local function createFallbackCamera(pos)
+    if fallbackCam then return end
+
+    RequestCollisionAtCoord(pos.x, pos.y, pos.z)
+    SetEntityCoordsNoOffset(cache.ped, pos.x, pos.y, pos.z + 1.0, false, false, false)
+
+    local cam = CreateCamera('DEFAULT_SCRIPTED_CAMERA', true)
+    SetCamCoord(cam, pos.x - 7.5, pos.y - 10.5, pos.z + 5.5)
+    PointCamAtCoord(cam, pos.x, pos.y, pos.z + 1.0)
+    SetCamFov(cam, 52.0)
+    SetCamUseShallowDofMode(cam, true)
+    SetCamNearDof(cam, 5.0)
+    SetCamFarDof(cam, 38.0)
+    SetCamDofStrength(cam, 0.35)
+    SetCamActive(cam, true)
+    RenderScriptCams(true, false, 0, true, true)
+    fallbackCam = cam
 end
 
 ---@param vehicle integer
@@ -138,6 +164,8 @@ local function attachToTrafficVehicle(vehicle)
     end
 
     DetachEntity(cache.ped, true, true)
+    SetEntityVisible(cache.ped, false, false)
+    SetEntityCollision(cache.ped, false, false)
     AttachEntityToEntity(cache.ped, vehicle, 0, 0, 0, -20.0, 0, 0, 0, false, false, false, false, 20, true)
 
     destroyChaseCamera()
@@ -227,7 +255,7 @@ local function startCameraBootstrap(generation)
             attemptsAtPosition = attemptsAtPosition + 1
             if attemptsAtPosition >= MENU_CAM_BOOTSTRAP_ATTEMPTS_PER_POSITION then
                 local pos = getRoamTrafficNode(ROAM_POSITIONS[math.random(#ROAM_POSITIONS)])
-                SetEntityCoords(cache.ped, pos.x, pos.y, pos.z, false, false, false, false)
+                createFallbackCamera(pos)
                 attemptsAtPosition = 0
                 Wait(MENU_CAM_BOOTSTRAP_SETTLE_MS)
             else
@@ -279,7 +307,7 @@ end
 
 ---@return boolean
 function SKMainMenu.isCameraReady()
-    return chaseCam ~= nil
+    return chaseCam ~= nil or fallbackCam ~= nil
 end
 
 ---@return nil
@@ -290,7 +318,10 @@ function SKMainMenu.enterScene()
     if not chaseCam then
         destroyChaseCamera()
         DetachEntity(cache.ped, true, true)
+        SetEntityVisible(cache.ped, false, false)
+        SetEntityCollision(cache.ped, false, false)
         if not tryPickRandomTrafficShot() then
+            createFallbackCamera(getRoamTrafficNode(ROAM_POSITIONS[math.random(#ROAM_POSITIONS)]))
             startCameraBootstrap(generation)
         end
     end
@@ -303,12 +334,16 @@ function SKMainMenu.leaveScene()
     sceneGeneration = sceneGeneration + 1
     destroyChaseCamera()
     DetachEntity(cache.ped, true, true)
+    SetEntityVisible(cache.ped, true, false)
+    SetEntityCollision(cache.ped, true, true)
 end
 
 ---@return nil
 function SKMainMenu.tickScene()
     if chaseVehicle and not DoesEntityExist(chaseVehicle) then
         destroyChaseCamera()
+        DetachEntity(cache.ped, true, true)
+        createFallbackCamera(getRoamTrafficNode(ROAM_POSITIONS[math.random(#ROAM_POSITIONS)]))
     end
 
     if chaseVehicle and DoesEntityExist(chaseVehicle) then

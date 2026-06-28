@@ -76,14 +76,27 @@ end
 ---@param row table
 ---@return SKSaveSlotDto
 local function rowToSlot(row)
-    return { slotIndex = row.slot_index, occupied = true, id = row.id, name = row.display_name, detail = row.updated_at }
+    local slot = { slotIndex = row.slot_index, occupied = true, id = row.id, name = row.display_name, detail = row.updated_at }
+    local ok, document = pcall(SKSaves.decodeDocument, row.document_json or '{}', row.schema_version or SKSaves.SCHEMA_VERSION)
+    if ok and type(document) == 'table' then
+        local profile = document.profile or {}
+        local photoUrl = profile.photoUrl or profile.avatarUrl or profile.imageUrl
+        if type(photoUrl) ~= 'string' then photoUrl = '' end
+        slot.profile = {
+            alias = profile.alias or row.display_name,
+            photoUrl = photoUrl,
+            level = document.progression and document.progression.level or 1,
+            cash = document.economy and document.economy.cash or 0,
+        }
+    end
+    return slot
 end
 
 ---@param owner string
 ---@return SKSaveSlotDto[]
 local function dbListSlots(owner)
     local rows = MySQL.query.await(
-        'SELECT id, slot_index, display_name, updated_at FROM player_saves WHERE owner_identifier = ? ORDER BY slot_index ASC',
+        'SELECT id, slot_index, display_name, updated_at, schema_version, document_json FROM player_saves WHERE owner_identifier = ? ORDER BY slot_index ASC',
         { owner }
     )
     local slots = SKSaves.emptySlots()

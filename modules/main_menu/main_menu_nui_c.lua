@@ -1,6 +1,11 @@
 SKMainMenu = SKMainMenu or {}
 
 local MAIN_MENU_RESOURCE_VERSION = GetResourceMetadata(GetCurrentResourceName(), 'version', 0)
+local MAIN_MENU_LINKS = {
+    discord = 'https://discord.gg/streetkings',
+    tiktok  = 'https://www.tiktok.com/@streetkings',
+    tebex   = 'https://streetkings.tebex.io',
+}
 
 local menuNuiOpen = false
 local nuiReady    = false
@@ -37,6 +42,7 @@ function SKMainMenu.open()
         version = MAIN_MENU_RESOURCE_VERSION,
         saveSlotCount = SKSaves.SLOT_COUNT,
         slotsVersion = SKSaves.SLOTS_VERSION,
+        links = MAIN_MENU_LINKS,
     })
 end
 

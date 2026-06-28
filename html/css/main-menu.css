@@ -9,6 +9,19 @@
   width: min(100%, var(--sk-shell-max-width), 100cqi);
 }
 
+.sk-mainmenu-frame {
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 0;
+}
+
+.sk-mainmenu-frame .menu-views-stack {
+  align-self: stretch;
+  width: min(620px, 38vw);
+  min-width: min(620px, 100vw);
+  height: 100%;
+}
+
 .sk-menu-view,
 .menu-view {
   position: absolute;
@@ -31,6 +44,10 @@
   transform: translateX(0);
   pointer-events: auto;
   z-index: 2;
+}
+
+.sk-mainmenu-frame .menu-view.is-active {
+  height: 100%;
 }
 
 .sk-menu-view.is-off-left,
@@ -99,10 +116,19 @@
 #viewMain .panel {
   min-width: min(560px, 92cqi);
   max-width: min(600px, 100cqi);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden auto;
   background:
-    linear-gradient(90deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.58)),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.98), rgba(0, 0, 0, 0.68)),
     linear-gradient(145deg, rgba(12, 12, 14, 0.95), rgba(18, 10, 14, 0.82));
   border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 0;
+  border-bottom: 0;
+  border-left: 0;
   border-radius: 0;
   clip-path: none;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 28px 70px rgba(0, 0, 0, 0.42);
@@ -321,6 +347,35 @@
   background: #ffd200;
 }
 
+.main-menu-socials {
+  display: flex;
+  gap: 0.65rem;
+  margin-top: 1.15rem;
+}
+
+.main-menu-social {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  font-family: var(--sk-font-body);
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  color: #0b0d12;
+  background: #ffd200;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  transition: transform var(--sk-ease), background var(--sk-ease), color var(--sk-ease);
+}
+
+.main-menu-social:hover,
+.main-menu-social:focus-visible {
+  outline: none;
+  transform: translateY(-2px);
+  color: #ffffff;
+  background: var(--sk-color-spray);
+}
+
 /* -------------------------------------------------------------------------- */
 /* Save picker                                                                */
 /* -------------------------------------------------------------------------- */
@@ -396,13 +451,37 @@
   gap: 0.85rem;
 }
 
+#viewSaves .saves-panel {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden auto;
+  padding: clamp(2.6rem, 5.5vh, 5rem) clamp(2.2rem, 3.8vw, 4rem);
+  background:
+    linear-gradient(90deg, rgba(10, 8, 18, 0.94), rgba(10, 8, 18, 0.58)),
+    linear-gradient(160deg, rgba(255, 45, 120, 0.08), rgba(158, 229, 255, 0.05));
+  border: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0;
+  clip-path: none;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.04), 24px 0 70px rgba(0, 0, 0, 0.34);
+}
+
+#viewSaves .saves-title {
+  font-size: clamp(2.05rem, 4.3cqi, 3.1rem);
+}
+
 .sk-save-card,
 .save-card {
   position: relative;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.35rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
   padding: 1.15rem 1.1rem 1.05rem;
   text-align: left;
   cursor: pointer;
@@ -413,6 +492,34 @@
   border-radius: 0;
   transition: border-color var(--sk-ease), transform var(--sk-ease), box-shadow var(--sk-ease);
   box-shadow: var(--sk-shadow-card-inset);
+}
+
+.save-card-body {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.save-portrait {
+  flex: 0 0 auto;
+  width: 4.15rem;
+  height: 4.15rem;
+  display: grid;
+  place-items: center;
+  color: #0b0d12;
+  background:
+    linear-gradient(135deg, rgba(255, 0, 149, 0.96), rgba(255, 210, 0, 0.92));
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  font-family: var(--sk-font-body);
+  font-size: 1.25rem;
+  letter-spacing: 0.12em;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.24);
+}
+
+.save-portrait.has-image {
+  color: transparent;
 }
 
 .sk-save-card:nth-child(1),
@@ -484,6 +591,17 @@
   letter-spacing: 0.12em;
   color: var(--sk-text-detail);
   margin: 0;
+  text-transform: uppercase;
+}
+
+.save-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.85rem;
+  font-family: var(--sk-font-ui);
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.82);
   text-transform: uppercase;
 }
 

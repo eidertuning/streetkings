@@ -60,6 +60,12 @@ select {
   color: var(--cyan);
   font-size: clamp(1.6rem, 3vw, 2.3rem);
   box-shadow: 0 0 28px rgba(20, 184, 166, 0.18);
+  background-size: cover;
+  background-position: center;
+}
+
+.profile-avatar.has-image span {
+  opacity: 0;
 }
 
 .profile-avatar span {
@@ -152,6 +158,15 @@ h1 {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 0.6rem;
+  margin-top: 0.55rem;
+}
+
+.profile-photo-label {
+  margin-top: 0.8rem;
+}
+
+#photoInput {
+  width: 100%;
   margin-top: 0.55rem;
 }
 

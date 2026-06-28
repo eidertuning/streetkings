@@ -14,7 +14,7 @@
 </head>
 <body>
   <div id="app" class="sk-root">
-    <div class="sk-ui-frame sk-letterbox">
+    <div class="sk-ui-frame sk-letterbox sk-mainmenu-frame">
       <div class="menu-views-stack">
         <div id="viewMain" class="menu-view is-active">
           <div class="panel">
@@ -38,10 +38,15 @@
                 <li data-i18n="pause_menu.patch_3">Mejoras de rendimiento en todos los módulos</li>
               </ul>
             </div>
+            <div class="main-menu-socials" aria-label="Social links">
+              <button type="button" class="main-menu-social" data-social-link="discord" aria-label="Discord">D</button>
+              <button type="button" class="main-menu-social" data-social-link="tiktok" aria-label="TikTok">T</button>
+              <button type="button" class="main-menu-social" data-social-link="tebex" aria-label="Tebex">$</button>
+            </div>
           </div>
         </div>
         <div id="viewSaves" class="menu-view is-off-right">
-          <div class="panel">
+          <div class="panel saves-panel">
             <div class="saves-head">
               <button type="button" class="btn-back" id="btnSaveBack" data-i18n="common.back">← Atrás</button>
               <h2 class="saves-title" data-i18n="main_menu.choose_save">Elija una partida</h2>
