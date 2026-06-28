@@ -4,131 +4,172 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Sotyfly</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main id="sfApp" class="sf-app">
     <section class="sf-audio-lock" id="sfAudioLock">
       <div class="sf-lock-card">
-        <span class="sf-lock-mark">S</span>
+        <i class="fa-solid fa-volume-xmark"></i>
         <p>Audio desactivado</p>
         <h1>Debes ir a Ajustes y activar el audio.</h1>
-        <span>Cuando la casilla de audio esta apagada, Sotyfly no carga el reproductor.</span>
+        <span>Sotyfly permanece bloqueado mientras el audio general este apagado.</span>
         <button id="sfLockRefresh" type="button">Comprobar de nuevo</button>
       </div>
     </section>
 
     <section class="sf-shell">
-      <aside class="sf-library">
+      <aside class="sf-sidebar">
         <div class="sf-brand">
-          <span class="sf-brand-mark">S</span>
+          <span class="sf-brand-mark"><i class="fa-solid fa-music"></i></span>
           <div>
             <strong>Sotyfly</strong>
-            <small>Drive Music</small>
+            <small>StreetKings Audio</small>
           </div>
         </div>
 
-        <nav class="sf-tabs">
-          <button class="sf-nav is-active" data-view="library" type="button">Tu biblioteca</button>
-          <button class="sf-nav" data-view="sources" type="button">Fuentes</button>
-          <button class="sf-nav" data-view="playlists" type="button">Playlists</button>
+        <nav class="sf-nav">
+          <button class="is-active" data-view="home" type="button"><i class="fa-solid fa-house"></i><span>Inicio</span></button>
+          <button data-view="search" type="button"><i class="fa-solid fa-magnifying-glass"></i><span>Buscar</span></button>
+          <button data-view="playlists" type="button"><i class="fa-solid fa-list"></i><span>Playlists</span></button>
+          <button data-view="recent" type="button"><i class="fa-solid fa-clock-rotate-left"></i><span>Recientes</span></button>
+          <button data-view="popular" type="button"><i class="fa-solid fa-fire"></i><span>Populares</span></button>
         </nav>
 
-        <div class="sf-mini-list" id="sfMiniList"></div>
-        <button id="sfRefresh" class="sf-refresh" type="button">Actualizar</button>
+        <button id="sfCreatePlaylistOpen" class="sf-create-btn" type="button">
+          <i class="fa-solid fa-plus"></i><span>Crear playlist</span>
+        </button>
+
+        <div id="sfPlaylistRail" class="sf-playlist-rail"></div>
       </aside>
 
       <section class="sf-main">
         <header class="sf-topbar">
-          <button class="sf-home" type="button">H</button>
-          <label class="sf-search">
-            <span>Buscar</span>
-            <input id="sfSearch" type="search" placeholder="Cancion, artista o link guardado">
-          </label>
-          <button id="sfEnable" class="sf-pill" type="button">Soundtrack ON</button>
+          <div class="sf-searchbox">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="sfSearch" type="search" maxlength="100" placeholder="Que quieres reproducir?">
+          </div>
+          <button id="sfImportOpen" class="sf-round-action" type="button" title="Pegar enlace"><i class="fa-solid fa-plus"></i></button>
         </header>
 
-        <section class="sf-quick">
-          <button class="sf-chip is-active" type="button">Todo</button>
-          <button class="sf-chip" type="button">Musica</button>
-          <button class="sf-chip" type="button">Links</button>
-        </section>
+        <div id="sfStatus" class="sf-status">Canciones hoy: 0 / 50</div>
 
-        <section class="sf-hero-row">
-          <div class="sf-hero-card">
-            <div class="sf-cover"><span id="sfCoverGlyph">Sf</span></div>
-            <div class="sf-hero-copy">
-              <p>Reproduciendo ahora</p>
-              <h1 id="sfNowTitle">Sin pista activa</h1>
-              <span id="sfNowMeta">Elige un link guardado o importa uno nuevo.</span>
+        <section id="sfHomeView" class="sf-view is-active" data-view-panel="home">
+          <section class="sf-hero">
+            <div class="sf-cover-xl" id="sfHeroCover"><i class="fa-solid fa-car"></i></div>
+            <div>
+              <p>Reproduccion sincronizada</p>
+              <h1 id="sfNowTitle">Sin musica activa</h1>
+              <span id="sfNowMeta">Busca, pega un enlace o reproduce una playlist.</span>
             </div>
+          </section>
+          <div class="sf-section-head">
+            <h2><i class="fa-solid fa-fire"></i> Populares</h2>
+            <button data-view-link="popular" type="button">Ver todo</button>
           </div>
+          <div id="sfHomePopular" class="sf-card-grid"></div>
         </section>
 
-        <section class="sf-sources" data-panel="sources">
+        <section class="sf-view" data-view-panel="search">
           <div class="sf-section-head">
-            <h2>Importar musica</h2>
-            <p>Pega un enlace reproducible, ponle nombre y quedara guardado para buscarlo desde la tablet.</p>
+            <h2><i class="fa-solid fa-magnifying-glass"></i> Buscar</h2>
+            <button id="sfSearchBtn" type="button">Buscar</button>
           </div>
-          <form id="sfAddLink" class="sf-link-form">
-            <input id="sfLinkTitle" type="text" placeholder="Titulo opcional">
-            <input id="sfLinkUrl" type="url" placeholder="https://...">
-            <button type="submit">Agregar</button>
-          </form>
+          <div id="sfSearchResults" class="sf-track-list"></div>
         </section>
 
-        <section class="sf-playlists" data-panel="playlists">
+        <section class="sf-view" data-view-panel="playlists">
           <div class="sf-section-head">
-            <h2>Playlists</h2>
-            <p>Crea listas y agrega la pista o link seleccionado.</p>
+            <h2><i class="fa-solid fa-list"></i> Playlists</h2>
+            <button id="sfPlaylistRefresh" type="button">Actualizar</button>
           </div>
-          <form id="sfCreatePlaylist" class="sf-link-form">
-            <input id="sfPlaylistName" type="text" placeholder="Nueva playlist">
-            <select id="sfPlaylistSelect"></select>
-            <button type="submit">Crear</button>
-          </form>
-          <button id="sfAddSelected" class="sf-wide-action" type="button">Agregar seleccion a playlist</button>
+          <div id="sfPlaylists" class="sf-playlist-grid"></div>
+          <div id="sfPlaylistTracks" class="sf-track-list"></div>
         </section>
 
-        <section class="sf-content">
+        <section class="sf-view" data-view-panel="recent">
           <div class="sf-section-head">
-            <h2 id="sfListTitle">Tu biblioteca</h2>
-            <p id="sfListHint">Links guardados y playlists.</p>
+            <h2><i class="fa-solid fa-clock-rotate-left"></i> Recientes</h2>
           </div>
-          <div id="sfTracks" class="sf-track-list"></div>
+          <div id="sfRecent" class="sf-track-list"></div>
+        </section>
+
+        <section class="sf-view" data-view-panel="popular">
+          <div class="sf-section-head">
+            <h2><i class="fa-solid fa-fire"></i> Populares</h2>
+          </div>
+          <div id="sfPopular" class="sf-track-list"></div>
         </section>
       </section>
 
-      <aside class="sf-now-panel">
-        <div class="sf-panel-cover"><span id="sfPanelGlyph">Sf</span></div>
-        <h2 id="sfPanelTitle">Sotyfly</h2>
-        <p id="sfPanelMeta">Elige una pista para empezar.</p>
-        <div class="sf-related">
-          <strong>Biblioteca activa</strong>
-          <span id="sfLibraryCount">0 pistas</span>
-        </div>
+      <aside class="sf-right">
+        <div id="sfSideCover" class="sf-side-cover"><i class="fa-solid fa-signal"></i></div>
+        <h2 id="sfSideTitle">Audio 3D</h2>
+        <p id="sfSideMeta">Hasta 25 metros con fade por distancia.</p>
+        <div class="sf-stat"><span>Canciones hoy</span><strong id="sfDailyText">0 / 50</strong></div>
+        <div class="sf-stat"><span>Modo</span><strong id="sfSyncText">xSound</strong></div>
       </aside>
 
-      <footer class="sf-playerbar">
-        <div class="sf-bar-track">
-          <span class="sf-bar-cover" id="sfBarGlyph">Sf</span>
+      <footer class="sf-player">
+        <div class="sf-current">
+          <img id="sfBarThumb" alt="">
           <div>
-            <strong id="sfBarTitle">Sin pista activa</strong>
+            <strong id="sfBarTitle">Sin musica activa</strong>
             <small id="sfBarMeta">Sotyfly</small>
           </div>
         </div>
-        <div class="sf-bar-controls">
-          <button id="sfPrev" type="button" title="Anterior">&lt;</button>
-          <button id="sfPlay" type="button" title="Reproducir seleccion">Play</button>
-          <button id="sfSkip" type="button" title="Saltar">&gt;</button>
-          <div class="sf-progress">
-            <span id="sfCurrent">00:00</span>
-            <div><i id="sfProgress"></i></div>
-            <span id="sfDuration">00:00</span>
+        <div class="sf-controls">
+          <div class="sf-buttons">
+            <button id="sfShuffle" type="button" title="Aleatorio"><i class="fa-solid fa-shuffle"></i></button>
+            <button id="sfPrev" type="button" title="Anterior"><i class="fa-solid fa-backward-step"></i></button>
+            <button id="sfPlay" class="sf-play" type="button" title="Reproducir"><i class="fa-solid fa-play"></i></button>
+            <button id="sfNext" type="button" title="Siguiente"><i class="fa-solid fa-forward-step"></i></button>
+            <button id="sfRepeat" type="button" title="Repetir"><i class="fa-solid fa-repeat"></i></button>
           </div>
+          <div class="sf-progress">
+            <span id="sfCurrentTime">0:00</span>
+            <div><i id="sfProgress"></i></div>
+            <span id="sfDuration">0:00</span>
+          </div>
+        </div>
+        <div class="sf-volume">
+          <i class="fa-solid fa-signal"></i>
+          <input id="sfSourceVolume" type="range" min="0" max="1" step="0.01">
+          <i class="fa-solid fa-volume-high"></i>
+          <input id="sfListenerVolume" type="range" min="0" max="1" step="0.01">
+          <button id="sfStop" type="button" title="Detener"><i class="fa-solid fa-xmark"></i></button>
         </div>
       </footer>
     </section>
+
+    <div id="sfImportModal" class="sf-modal" aria-hidden="true">
+      <form id="sfImportForm" class="sf-modal-card">
+        <button class="sf-modal-close" type="button" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+        <h2>Pegar enlace</h2>
+        <input id="sfImportUrl" type="url" placeholder="https://www.youtube.com/watch?v=..." maxlength="300">
+        <button type="submit"><i class="fa-solid fa-play"></i> Reproducir</button>
+      </form>
+    </div>
+
+    <div id="sfPlaylistModal" class="sf-modal" aria-hidden="true">
+      <form id="sfPlaylistForm" class="sf-modal-card">
+        <button class="sf-modal-close" type="button" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+        <h2 id="sfPlaylistModalTitle">Crear playlist</h2>
+        <input id="sfPlaylistName" type="text" maxlength="50" placeholder="Nombre">
+        <textarea id="sfPlaylistDescription" maxlength="200" placeholder="Descripcion"></textarea>
+        <button id="sfPlaylistSubmit" type="submit"><i class="fa-solid fa-plus"></i> Crear</button>
+      </form>
+    </div>
+
+    <div id="sfAddModal" class="sf-modal" aria-hidden="true">
+      <form id="sfAddForm" class="sf-modal-card">
+        <button class="sf-modal-close" type="button" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+        <h2>Anadir a playlist</h2>
+        <select id="sfAddPlaylist"></select>
+        <button type="submit"><i class="fa-solid fa-plus"></i> Anadir</button>
+      </form>
+    </div>
   </main>
 
   <script src="../../js/tablet-sdk.js"></script>

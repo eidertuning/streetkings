@@ -5,11 +5,12 @@ author '919DESIGN & Envi-Scripts'
 description 'StreetKings txAdmin Recipe'
 version '1.1.0'
 
+dependency 'xsound'
+
 dependencies {
     'oxmysql',
     'ox_lib',
-    'streetkings_audio',
-    'xsound'
+    'streetkings_audio'
 }
 
 client_scripts {
@@ -156,6 +157,7 @@ server_scripts {
 shared_scripts {
     '@ox_lib/init.lua',
     'data/sk_config.lua',
+    'data/sotyfly.lua',
     'data/logs.lua',
     'locales/en.lua',
     'locales/es.lua',

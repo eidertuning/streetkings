@@ -1,6 +1,6 @@
 # StreetKings Developer API
 
-StreetKings is a standalone FiveM framework that manages its own game states, vehicles, progression, police, economy, and more. Third-party add-on resources can interact with StreetKings through the exports documented here.
+StreetKings is an independent FiveM framework that manages its own game states, vehicles, progression, police, economy, and more. Third-party add-on resources can interact with StreetKings through the exports documented here.
 
 All exports live on the `streetkings` resource. Call them the standard FiveM way:
 
@@ -290,8 +290,8 @@ exports['streetkings']:SetSpeedometerEnabled(true)
 |--------|--------|---------|-------------|
 | `GetCurrentTrack()` | | `table?` | Current playing track: `{ key, title, stationKey, durationMs }` or nil |
 | `GetSoundtrackPlayerState()` | | `table` | Current Sotyfly/player state including progress, dataset, enabled/blocked flags |
-| `GetSotyflyPlayerState()` | | `table` | Current xsound-backed Sotyfly state for this player |
-| `PlaySotyflyUrl(url, title?, options?)` | string, string?, table? | `boolean, string?` | Start a synced positional Sotyfly session. `options.distance`, `options.volume`, and `options.netId` are supported. |
+| `GetSotyflyPlayerState()` | | `table` | Current xSound-backed Sotyfly state for this player |
+| `PlaySotyflyUrl(url, title?, options?)` | string, string?, table? | `boolean, string?` | Start a synced positional Sotyfly session from a direct video URL. `options.volume` and `options.vehicleNetId` are supported. |
 | `StopSotyfly()` | | `boolean` | Stop this player's synced Sotyfly session |
 | `SearchSoundtrackTracks(query, limit?)` | string, number? | `table[]` | Legacy internal soundtrack catalog search |
 | `PlaySoundtrackTrack(trackKey)` | string | `boolean, string?` | Legacy compatibility only. GTA radio playback is disabled; use `PlaySotyflyUrl` for music. |
@@ -306,17 +306,28 @@ if track then
 end
 
 -- play synced positional music from another client script
-local ok, err = exports['streetkings']:PlaySotyflyUrl('https://example.com/song.mp3', 'Night Drive', {
-    distance = 35.0,
+local ok, err = exports['streetkings']:PlaySotyflyUrl('https://www.youtube.com/watch?v=VIDEO_ID', 'Night Drive', {
     volume = 0.45,
 })
 
 if not ok then print(err) end
 ```
 
-The player UI is handled by the tablet app **Sotyfly** (`sotyfly`). The legacy lower HUD and GTA vehicle radio playback are disabled so music controls stay inside the tablet. Sotyfly requires the `xsound` resource and uses positional synced audio: when a player plays a saved link, nearby players hear it based on the configured distance and the owner's vehicle/player position.
+The player UI is handled by the tablet app **Sotyfly** (`sotyfly`). The legacy lower HUD and GTA vehicle radio playback are disabled so music controls stay inside the tablet. Sotyfly requires the `xsound` resource and uses positional synced audio: when a player plays a track, nearby players hear it with local distance fade up to the configured maximum.
 
-Sotyfly searches the local saved library and playlists. External catalog search requires a separate backend or API; without one, add-on scripts should import links directly with `PlaySotyflyUrl` or through the tablet import form.
+Server order:
+
+```cfg
+set streetkings_youtube_api_key "PON_AQUI_TU_API_KEY"
+ensure xsound
+ensure streetkings
+```
+
+Sotyfly is StreetKings-only. It does not detect or bridge external frameworks. Search calls go through the server with the official YouTube Data API key kept server-side. Searches are cached in `music_search_cache` before any API call, API searches are capped globally per day, and each player is capped by `music_user_daily_usage` (default 50 songs per day). The resource creates the required `music_*` tables automatically; the same schema is documented in `sql/music.sql`.
+
+Logical server callbacks/events exposed internally:
+
+`streetmusic:server:search`, `streetmusic:server:playTrack3D`, `streetmusic:server:pauseTrack`, `streetmusic:server:resumeTrack`, `streetmusic:server:stopTrack`, `streetmusic:server:setSourceVolume`, `streetmusic:server:setListenerVolume`, `streetmusic:server:playFromUrl`, `streetmusic:server:createPlaylist`, `streetmusic:server:deletePlaylist`, `streetmusic:server:renamePlaylist`, `streetmusic:server:addTrackToPlaylist`, `streetmusic:server:removeTrackFromPlaylist`, `streetmusic:server:getPlaylists`, `streetmusic:server:getPlaylistTracks`, `streetmusic:server:getRecentTracks`, `streetmusic:server:getPopularTracks`, `streetmusic:server:syncState`.
 
 ### Environment
 
