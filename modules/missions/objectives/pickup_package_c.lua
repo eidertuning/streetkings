@@ -28,7 +28,7 @@ function handler.start(ctx)
     SetBlipSprite(blip, 478)
     SetBlipColour(blip, 46)
     SetBlipRoute(blip, true)
-    SetBlipRouteColour(blip, 46)
+    SetBlipRouteColour(blip, 8)
     ctx.blip = blip
 
     local function showPrompt(text)

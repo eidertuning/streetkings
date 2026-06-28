@@ -12,6 +12,7 @@ local freeroamPlayers = {}
 --- source -> assigned vehicle net ID
 ---@type table<integer, integer>
 local assignedNetIds = {}
+local spawnInProgress = {}
 
 ---@param src integer
 local function deleteAssignedVehicle(src)
@@ -127,28 +128,46 @@ end
 ---@param bucket integer
 ---@return integer|nil
 function SKFreeroamServer.spawnPlayerVehicleInBucket(src, x, y, z, heading, bucket)
+    if spawnInProgress[src] then
+        local waitUntil = GetGameTimer() + 3000
+        while spawnInProgress[src] and GetGameTimer() < waitUntil do Wait(0) end
+        return assignedNetIds[src]
+    end
+    spawnInProgress[src] = true
+
+    local function finish(netId)
+        spawnInProgress[src] = nil
+        return netId
+    end
+
     local document = SKSaves.getDocument(src)
     if not document then
-        return nil
+        return finish(nil)
     end
     local garage = document.garage
     local entry  = garage.vehicles[garage.activeVehicleId]
     if not entry then
-        return nil
+        return finish(nil)
     end
     local vehicleType = entry.data.vehicleType
 
     deleteAssignedVehicle(src)
 
     local veh = CreateVehicleServerSetter(entry.modelName, vehicleType, x, y, z, heading)
-    while not DoesEntityExist(veh) do Wait(0) end
+    local deadline = GetGameTimer() + 3000
+    while (veh == 0 or not DoesEntityExist(veh)) and GetGameTimer() < deadline do Wait(0) end
+    if veh == 0 or not DoesEntityExist(veh) then
+        return finish(nil)
+    end
 
     SetEntityOrphanMode(veh, 1)
     SetVehicleDoorsLocked(veh, PLAYER_VEHICLE_LOCK_STATE)
     SetVehicleNumberPlateText(veh, entry.plate)
     SetEntityRoutingBucket(veh, bucket)
 
-    return NetworkGetNetworkIdFromEntity(veh)
+    local netId = NetworkGetNetworkIdFromEntity(veh)
+    assignedNetIds[src] = netId
+    return finish(netId)
 end
 
 AddEventHandler('playerJoining', function()
@@ -159,6 +178,7 @@ end)
 AddEventHandler('playerDropped', function()
     local src = source --[[@as integer]]
     deleteAssignedVehicle(src)
+    spawnInProgress[src] = nil
     freeroamPlayers[src] = nil
     syncFreeroamVehicleNetIds()
 end)
@@ -203,7 +223,6 @@ lib.callback.register('streetkings:freeroam:spawnVehicle', function(source, x, y
     if not netId then
         return { ok = false, reason = 'spawn_failed' }
     end
-    assignedNetIds[source] = netId
     syncFreeroamVehicleNetIds()
     return { ok = true, netId = netId }
 end)
@@ -228,6 +247,7 @@ AddEventHandler('onResourceStop', function(resourceName)
     end
     freeroamPlayers = {}
     assignedNetIds  = {}
+    spawnInProgress = {}
     TriggerClientEvent('streetkings:freeroam:setNoCollisionVehicles', -1, {})
 end)
 

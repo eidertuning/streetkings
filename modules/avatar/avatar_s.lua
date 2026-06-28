@@ -6,7 +6,7 @@ local accountCache = {}
 MySQL.ready(function()
     MySQL.query.await([[
         CREATE TABLE IF NOT EXISTS `player_avatars` (
-            `owner_identifier` VARCHAR(60) NOT NULL,
+            `owner_identifier` VARCHAR(128) NOT NULL,
             `schema_version` SMALLINT UNSIGNED NOT NULL,
             `document_json` LONGTEXT NOT NULL,
             `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -14,6 +14,7 @@ MySQL.ready(function()
             PRIMARY KEY (`owner_identifier`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ]])
+    MySQL.query.await('ALTER TABLE `player_avatars` MODIFY COLUMN `owner_identifier` VARCHAR(128) NOT NULL')
     dbReady = true
 end)
 
@@ -25,6 +26,20 @@ end)
 ---@return string|nil
 local function ownerLicense(source)
     return GetPlayerIdentifierByType(source --[[@as string]], 'license')
+end
+
+---@param source integer
+---@return string|nil
+local function avatarOwnerKey(source)
+    local owner = ownerLicense(source)
+    if not owner then return nil end
+
+    local saveId = SKSaves and SKSaves.getActiveSaveId and SKSaves.getActiveSaveId(source)
+    if type(saveId) == 'string' and saveId ~= '' then
+        return ('%s:%s'):format(owner, saveId)
+    end
+
+    return owner
 end
 
 ---@param owner string
@@ -60,18 +75,24 @@ end
 ---@return table
 local function getAccount(source)
     local cached = accountCache[source]
-    if cached then
-        return cached
+    local owner = avatarOwnerKey(source)
+    if not owner then
+        return SKAvatarShared.newAccountDocument()
     end
 
-    local owner = ownerLicense(source)
+    if cached and cached.owner == owner then
+        return cached.document
+    end
+
     local document = dbSelectAccount(owner)
     if not document then
-        document = SKAvatarShared.newAccountDocument()
+        local legacyOwner = ownerLicense(source)
+        document = legacyOwner and legacyOwner ~= owner and dbSelectAccount(legacyOwner) or nil
+        document = document and SKAvatarShared.clone(document) or SKAvatarShared.newAccountDocument()
         dbWriteAccount(owner, document)
     end
 
-    accountCache[source] = document
+    accountCache[source] = { owner = owner, document = document }
     return document
 end
 
@@ -79,10 +100,12 @@ end
 ---@param document table
 ---@return table
 local function persistAccount(source, document)
-    local owner = ownerLicense(source)
+    local owner = avatarOwnerKey(source)
     local normalized = SKAvatarShared.validateAccountDocument(document)
-    dbWriteAccount(owner, normalized)
-    accountCache[source] = normalized
+    if owner then
+        dbWriteAccount(owner, normalized)
+        accountCache[source] = { owner = owner, document = normalized }
+    end
     return normalized
 end
 

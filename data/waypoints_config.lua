@@ -43,7 +43,7 @@ SKWaypointConfig.GuideLines = {
     routeHeight     = 0.22,
     updateInterval  = 2500,
     drawOnFoot      = false,
-    arrowColor      = { r = 255, g = 230, b = 120, a = 220 },
+    arrowColor      = { r = 255, g = 0, b = 149, a = 230 },
     arrowSpacing    = 1.0,
     arrowLength     = 1.5,
     arrowWidth      = 0.8,

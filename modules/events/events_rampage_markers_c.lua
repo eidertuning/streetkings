@@ -37,7 +37,7 @@ local function setupRampagePoints()
             local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
             SetBlipSprite(blip, 378)
             SetBlipColour(blip, 1)
-            SetBlipScale(blip, 1.0)
+            SetBlipScale(blip, 0.5)
             SetBlipAsShortRange(blip, false)
             cfg.setBlipLegendGroup(blip, def.name, RACE_BLIP_CAT_RAMPAGE)
             rampageBlips[#rampageBlips + 1] = blip

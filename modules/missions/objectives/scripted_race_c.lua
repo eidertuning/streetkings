@@ -193,7 +193,7 @@ local function runRace(ctx, start, checkpoints)
     activeState.npcBlip = AddBlipForEntity(npcVeh)
     SetBlipSprite(activeState.npcBlip, 225)
     SetBlipColour(activeState.npcBlip, 47)
-    SetBlipScale(activeState.npcBlip, 1.0)
+    SetBlipScale(activeState.npcBlip, 0.5)
 
     runCountdown(playerVeh, npcVeh)
 
@@ -385,7 +385,7 @@ function handler.start(ctx)
         SetBlipSprite(interactionBlip, 315)
         SetBlipColour(interactionBlip, 66)
         SetBlipRoute(interactionBlip, true)
-        SetBlipRouteColour(interactionBlip, 66)
+        SetBlipRouteColour(interactionBlip, 8)
         SetBlipAsShortRange(interactionBlip, false)
 
         interactionPoint = lib.points.new({

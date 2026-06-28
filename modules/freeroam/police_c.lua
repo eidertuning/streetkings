@@ -31,7 +31,7 @@ SKPolice.TrapConfig = {
         showStatic = false,
         sprite     = 56,
         color      = 3,
-        scale      = 1.0,
+        scale      = 0.5,
         shortRange = true,
         name       = 'Trap Cop',
     },

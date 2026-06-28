@@ -97,6 +97,11 @@ RegisterNUICallback('mainMenuCustomizeAvatar', function(_, cb)
     SKAvatar.enterFromMainMenu()
 end)
 
+RegisterNUICallback('mainMenuExitGame', function(_, cb)
+    cb({ ok = true })
+    TriggerServerEvent('streetkings:pausemenu:exitGame')
+end)
+
 CreateThread(function()
     while true do
         if menuNuiOpen then

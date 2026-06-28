@@ -215,6 +215,10 @@
     nui.post('mainMenuCustomizeAvatar', {});
   }
 
+  function exitGame() {
+    nui.post('mainMenuExitGame', {});
+  }
+
   function setContinueState(save) {
     var hasSave = !!save;
     lastPlayedSave = hasSave ? save : null;
@@ -540,6 +544,10 @@
 
     $('#btnCredits').on('click', function () {
       showCredits();
+    });
+
+    $('#btnExitGame').on('click', function () {
+      exitGame();
     });
 
     $('#viewCredits').on('click', function (e) {

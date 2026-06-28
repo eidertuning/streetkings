@@ -101,7 +101,7 @@ local function addBlip(location)
     local blip = AddBlipForCoord(location.coords.x, location.coords.y, location.coords.z)
     SetBlipSprite(blip, location.shopType == 'visual' and 838 or 833)
     SetBlipColour(blip, 5)
-    SetBlipScale(blip, 1.0)
+    SetBlipScale(blip, 0.5)
     SetBlipAsShortRange(blip, false)
     BeginTextCommandSetBlipName('STRING')
     AddTextComponentString(location.name)
@@ -344,6 +344,10 @@ function SKShop.registerShopState(shopTypeKey)
                 local model = SK.LoadModel(pendingModel --[[@as string|number]])
                 if not model then return end
 
+                if shopVehicle and DoesEntityExist(shopVehicle) then
+                    DeleteEntity(shopVehicle)
+                    shopVehicle = nil
+                end
                 shopVehicle = CreateVehicle(model, display.x, display.y, display.z, display.w, false, false)
                 SetVehicleModKit(shopVehicle, 0)
                 visualShopHoodOpen = nil

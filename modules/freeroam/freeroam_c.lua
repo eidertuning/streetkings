@@ -64,6 +64,34 @@ local function endSpawnProtection()
     if veh ~= 0 then ResetEntityAlpha(veh) end
 end
 
+---@param pos vector4
+---@return vector4
+local function resolveGroundedSpawn(pos)
+    local x, y = pos.x, pos.y
+    RequestCollisionAtCoord(x, y, pos.z)
+
+    local bestZ = pos.z
+    for _ = 1, 40 do
+        local found, groundZ = GetGroundZFor_3dCoord(x, y, pos.z + 25.0, false)
+        if found then
+            bestZ = groundZ + 0.45
+            break
+        end
+        Wait(25)
+    end
+
+    return vector4(x, y, bestZ, pos.w)
+end
+
+---@param vehicle integer
+---@param pos vector4
+local function placeVehicleAtSpawn(vehicle, pos)
+    RequestCollisionAtCoord(pos.x, pos.y, pos.z)
+    SetEntityCoordsNoOffset(vehicle, pos.x, pos.y, pos.z, false, false, false)
+    SetEntityHeading(vehicle, pos.w)
+    SetVehicleOnGroundProperly(vehicle)
+end
+
 ---@return integer|nil
 function SKFreeroam.getActiveVehicle()
     return activeVehicle
@@ -89,19 +117,17 @@ function SKFreeroam.restoreToReturnPosition()
 
     CreateThread(function()
         DoScreenFadeOut(0)
-        local spawnPos = returnPosition or SPAWN_POSITION
+        local spawnPos = resolveGroundedSpawn(returnPosition or SPAWN_POSITION)
         returnPosition = nil
 
         local ped = PlayerPedId()
         FreezeEntityPosition(ped, false)
-        SetEntityCoords(ped, spawnPos.x, spawnPos.y, spawnPos.z, false, false, false, false)
+        SetEntityCoordsNoOffset(ped, spawnPos.x, spawnPos.y, spawnPos.z, false, false, false)
         SKAvatar.applyActiveAppearance()
         ped = PlayerPedId()
         FreezeEntityPosition(ped, false)
 
-        SetEntityCoords(activeVehicle, spawnPos.x, spawnPos.y, spawnPos.z, false, false, false, false)
-        SetEntityHeading(activeVehicle, spawnPos.w)
-        SetVehicleOnGroundProperly(activeVehicle)
+        placeVehicleAtSpawn(activeVehicle, spawnPos)
 
         local savedMods   = lib.callback.await('streetkings:shop:getVehicleMods', false)
         local savedColors = lib.callback.await('streetkings:shop:getVehicleColors', false)
@@ -334,16 +360,16 @@ SKC.RegisterGameState(GameState.FREEROAM, {
 
             DoScreenFadeOut(0)
 
-            local spawnPos   = returnPosition or SPAWN_POSITION
+            local spawnPos   = resolveGroundedSpawn(returnPosition or SPAWN_POSITION)
             returnPosition   = nil
 
             local ped = PlayerPedId()
             FreezeEntityPosition(ped, false)
-            SetEntityCoords(ped, spawnPos.x, spawnPos.y, spawnPos.z, false, false, false, false)
+            SetEntityCoordsNoOffset(ped, spawnPos.x, spawnPos.y, spawnPos.z, false, false, false)
             SKAvatar.applyActiveAppearance()
             ped = PlayerPedId()
             FreezeEntityPosition(ped, false)
-            SetEntityCoords(ped, spawnPos.x, spawnPos.y, spawnPos.z, false, false, false, false)
+            SetEntityCoordsNoOffset(ped, spawnPos.x, spawnPos.y, spawnPos.z, false, false, false)
 
             if activeVehicle and DoesEntityExist(activeVehicle) then
                 DeleteEntity(activeVehicle)
@@ -353,6 +379,7 @@ SKC.RegisterGameState(GameState.FREEROAM, {
             TriggerServerEvent('streetkings:freeroam:enter')
             activeVehicle = requestVehicleFromServer(spawnPos)
             requestVehicleControl(activeVehicle)
+            placeVehicleAtSpawn(activeVehicle, spawnPos)
 
             local savedMods    = lib.callback.await('streetkings:shop:getVehicleMods', false)
             local savedColors  = lib.callback.await('streetkings:shop:getVehicleColors', false)

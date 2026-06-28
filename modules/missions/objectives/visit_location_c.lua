@@ -18,7 +18,7 @@ function handler.start(ctx)
         SetBlipSprite(blip, obj.blipSprite or 480)
         SetBlipColour(blip, obj.blipColor or 5)
         SetBlipRoute(blip, true)
-        SetBlipRouteColour(blip, obj.blipColor or 5)
+        SetBlipRouteColour(blip, obj.blipColor or 8)
         ctx.blip = blip
     end
 

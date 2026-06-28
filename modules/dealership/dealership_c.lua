@@ -56,6 +56,7 @@ local blips                 = {}
 local pendingLocation    = nil
 local dealerVehicle      = nil
 local dealerCam          = nil
+local dealerVehicleBusy  = false
 local camDist            = CAM_DIST_DEFAULT
 local camAngleH          = CAM_ANGLE_H_DEFAULT
 local camAngleV          = CAM_ANGLE_V_DEFAULT
@@ -87,7 +88,7 @@ local function addBlip(location)
     local blip = AddBlipForCoord(location.coords.x, location.coords.y, location.coords.z)
     SetBlipSprite(blip, 811)
     SetBlipColour(blip, 5)
-    SetBlipScale(blip, 1.2)
+    SetBlipScale(blip, 0.5)
     SetBlipAsShortRange(blip, false)
     SetBlipCategory(blip, DEALERSHIP_BLIP_CATEGORY)
     BeginTextCommandSetBlipName('STRING')
@@ -146,6 +147,13 @@ local function spawnDisplayVehicle(modelName, coords, heading)
     SetVehicleRadioEnabled(veh, false)
     SetVehRadioStation(veh, 'OFF')
     return veh
+end
+
+local function deleteDealerVehicle()
+    if dealerVehicle and DoesEntityExist(dealerVehicle) then
+        DeleteEntity(dealerVehicle)
+    end
+    dealerVehicle = nil
 end
 
 ---@param visualOptionCount integer
@@ -285,6 +293,7 @@ SKC.RegisterGameState(GameState.DEALERSHIP, {
             local vehicles = getSortedVehicles(location.dealerType, location.displayCoords, location.displayHeading)
             local first    = assert(vehicles[1], ('streetkings: no dealership vehicles for %s'):format(location.dealerType))
 
+            deleteDealerVehicle()
             dealerVehicle = spawnDisplayVehicle(first.model, location.displayCoords, location.displayHeading)
 
             TaskWarpPedIntoVehicle(ped, dealerVehicle, -1)
@@ -373,9 +382,9 @@ SKC.RegisterGameState(GameState.DEALERSHIP, {
 
         if dealerVehicle and DoesEntityExist(dealerVehicle) then
             FreezeEntityPosition(ped, true)
-            DeleteEntity(dealerVehicle)
-            dealerVehicle = nil
+            deleteDealerVehicle()
         end
+        dealerVehicleBusy = false
 
         pendingLocation = nil
     end,
@@ -498,18 +507,26 @@ end)
 
 RegisterNUICallback('dealership:previewVehicle', function(data, cb)
     if not dealerVehicle or not DoesEntityExist(dealerVehicle) then cb({}); return end
+    if dealerVehicleBusy then cb({ ok = false, reason = 'busy' }); return end
+    dealerVehicleBusy = true
 
     local location = assert(pendingLocation, 'streetkings: missing dealership preview location')
     local ped      = PlayerPedId()
 
     CreateThread(function()
         FreezeEntityPosition(ped, true)
-        DeleteEntity(dealerVehicle)
+        deleteDealerVehicle()
 
         dealerVehicle = spawnDisplayVehicle(data.model, location.displayCoords, location.displayHeading)
+        if dealerVehicle == 0 then
+            FreezeEntityPosition(ped, false)
+            dealerVehicleBusy = false
+            return
+        end
         TaskWarpPedIntoVehicle(ped, dealerVehicle, -1)
         while not IsPedInVehicle(ped, dealerVehicle, false) do Wait(0) end
         FreezeEntityPosition(ped, false)
+        dealerVehicleBusy = false
     end)
 
     cb({})

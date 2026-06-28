@@ -40,7 +40,7 @@ local function setupPoints()
         local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
         SetBlipSprite(blip, 402)
         SetBlipColour(blip, 2)
-        SetBlipScale(blip, 1.0)
+        SetBlipScale(blip, 0.5)
         SetBlipAsShortRange(blip, true)
         repairBlips[#repairBlips + 1] = blip
 

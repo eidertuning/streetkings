@@ -6,11 +6,11 @@ local CHECKPOINT_RENDER_Z_OFFSET = 1.0
 
 local BLIP_SPRITE_CP = 1
 local BLIP_SPRITE_FINISH = 38
-local BLIP_COLOUR_RACE = 66
-local BLIP_SCALE_CURRENT = 1.05
-local BLIP_SCALE_NEXT = 0.72
-local BLIP_SCALE_FINISH = 1.1
-local BLIP_SCALE_UNORDERED = 0.95
+local BLIP_COLOUR_RACE = 8
+local BLIP_SCALE_CURRENT = 0.5
+local BLIP_SCALE_NEXT = 0.5
+local BLIP_SCALE_FINISH = 0.5
+local BLIP_SCALE_UNORDERED = 0.5
 
 ---@param point vector3
 ---@return number

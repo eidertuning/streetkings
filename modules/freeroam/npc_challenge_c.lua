@@ -246,7 +246,7 @@ local function startChallenge(npcVeh, npcPed)
     SetBlipSprite(activeBlip, 38)
     SetBlipColour(activeBlip, 66)
     SetBlipRoute(activeBlip, true)
-    SetBlipRouteColour(activeBlip, 66)
+    SetBlipRouteColour(activeBlip, 8)
     SetBlipAsShortRange(activeBlip, false)
     SetBlipHighDetail(activeBlip, true)
     SetBlipDisplay(activeBlip, 4)
@@ -255,7 +255,7 @@ local function startChallenge(npcVeh, npcPed)
     activeNpcBlip = AddBlipForEntity(npcVeh)
     SetBlipSprite(activeNpcBlip, 225)
     SetBlipColour(activeNpcBlip, 47)
-    SetBlipScale(activeNpcBlip, 1.0)
+    SetBlipScale(activeNpcBlip, 0.5)
 
     activeCheckpoint = CreateCheckpoint(
         4, destination.x, destination.y, destination.z,

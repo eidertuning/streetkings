@@ -44,6 +44,7 @@ local garageWaypoints   = {}
 local pendingGarage = nil
 local garageCam     = nil
 local garageVehicle = nil
+local garageVehicleBusy = false
 local camDist       = CAM_DIST_DEFAULT
 local camAngleH     = CAM_ANGLE_H_DEFAULT
 local camAngleV     = CAM_ANGLE_V_DEFAULT
@@ -108,7 +109,7 @@ local function addBlip(location)
     local blip = AddBlipForCoord(location.coords.x, location.coords.y, location.coords.z)
     SetBlipSprite(blip, 813)
     SetBlipColour(blip, 3)
-    SetBlipScale(blip, 1.0)
+    SetBlipScale(blip, 0.5)
     SetBlipAsShortRange(blip, false)
     SetBlipCategory(blip, GARAGE_BLIP_CATEGORY)
     BeginTextCommandSetBlipName('STRING')
@@ -198,6 +199,13 @@ local function spawnDisplayVehicle(modelName, spawn, vehicleData, plate)
     SetVehicleNumberPlateText(veh, plate)
     SetVehicleDirtLevel(veh, 0.0)
     return veh
+end
+
+local function deleteGarageVehicle()
+    if garageVehicle and DoesEntityExist(garageVehicle) then
+        DeleteEntity(garageVehicle)
+    end
+    garageVehicle = nil
 end
 
 ---@param ped integer
@@ -322,6 +330,7 @@ SKC.RegisterGameState(GameState.GARAGE, {
             end
 
             applyGarageTint(data.garageTint or DEFAULT_GARAGE_TINT, true)
+            deleteGarageVehicle()
             garageVehicle = spawnDisplayVehicle(
                 activeEntry.modelName,
                 spawn,
@@ -408,9 +417,9 @@ SKC.RegisterGameState(GameState.GARAGE, {
         local ped = PlayerPedId()
         if garageVehicle and DoesEntityExist(garageVehicle) then
             FreezeEntityPosition(ped, true)
-            DeleteEntity(garageVehicle)
-            garageVehicle = nil
+            deleteGarageVehicle()
         end
+        garageVehicleBusy = false
 
         pendingGarage = nil
     end,
@@ -550,6 +559,8 @@ end)
 
 RegisterNUICallback('garage:previewVehicle', function(data, cb)
     if not garageVehicle or not DoesEntityExist(garageVehicle) then cb({}); return end
+    if garageVehicleBusy then cb({ ok = false, reason = 'busy' }); return end
+    garageVehicleBusy = true
 
     local garage = pendingGarage
     local interior = getGarageInterior(garage)
@@ -559,9 +570,13 @@ RegisterNUICallback('garage:previewVehicle', function(data, cb)
     CreateThread(function()
         local serverData = lib.callback.await('streetkings:garage:getEnterData', false)
         local entry      = serverData.vehicles[data.vehicleId]
+        if not entry then
+            garageVehicleBusy = false
+            return
+        end
 
         FreezeEntityPosition(ped, true)
-        DeleteEntity(garageVehicle)
+        deleteGarageVehicle()
 
         garageVehicle = spawnDisplayVehicle(
             entry.modelName,
@@ -569,28 +584,43 @@ RegisterNUICallback('garage:previewVehicle', function(data, cb)
             entry.data,
             entry.plate
         )
+        if garageVehicle == 0 then
+            FreezeEntityPosition(ped, false)
+            garageVehicleBusy = false
+            return
+        end
         putPedInGarageVehicle(ped, garageVehicle)
         FreezeEntityPosition(ped, false)
+        garageVehicleBusy = false
     end)
 
     cb({})
 end)
 
 RegisterNUICallback('garage:setActiveVehicle', function(data, cb)
+    if garageVehicleBusy then cb({ ok = false, reason = 'busy' }); return end
+    garageVehicleBusy = true
     local result = lib.callback.await('streetkings:garage:setActiveVehicle', false, data.vehicleId)
     cb(result)
-    if not result.ok then return end
+    if not result.ok then
+        garageVehicleBusy = false
+        return
+    end
 
     local garage     = pendingGarage
     local interior   = getGarageInterior(garage)
     local spawn      = interior.displaySpawn
     local serverData = lib.callback.await('streetkings:garage:getEnterData', false)
     local entry      = serverData.vehicles[data.vehicleId]
+    if not entry then
+        garageVehicleBusy = false
+        return
+    end
 
     CreateThread(function()
         local ped = PlayerPedId()
         FreezeEntityPosition(ped, true)
-        DeleteEntity(garageVehicle)
+        deleteGarageVehicle()
 
         garageVehicle = spawnDisplayVehicle(
             entry.modelName,
@@ -598,8 +628,14 @@ RegisterNUICallback('garage:setActiveVehicle', function(data, cb)
             entry.data,
             entry.plate
         )
+        if garageVehicle == 0 then
+            FreezeEntityPosition(ped, false)
+            garageVehicleBusy = false
+            return
+        end
         putPedInGarageVehicle(ped, garageVehicle)
         FreezeEntityPosition(ped, false)
+        garageVehicleBusy = false
     end)
 end)
 

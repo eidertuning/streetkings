@@ -141,7 +141,7 @@ local function addGiverBlip(blipDef, titleOverride)
     local coords = blipDef.coords
     local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
     SetBlipSprite(blip, blipDef.sprite or 480)
-    SetBlipScale(blip, 0.9)
+    SetBlipScale(blip, 0.5)
     SetBlipColour(blip, blipDef.color or 5)
     SetBlipAsShortRange(blip, false)
     ShowHeadingIndicatorOnBlip(blip, false)

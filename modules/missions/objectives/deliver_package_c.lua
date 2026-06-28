@@ -68,7 +68,7 @@ function handler.start(ctx)
     SetBlipSprite(blip, 501)
     SetBlipColour(blip, 46)
     SetBlipRoute(blip, true)
-    SetBlipRouteColour(blip, 46)
+    SetBlipRouteColour(blip, 8)
     ctx.blip = blip
 
     if type(obj.timerSeconds) == 'number' and obj.timerSeconds > 0 then

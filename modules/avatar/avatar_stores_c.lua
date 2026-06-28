@@ -12,7 +12,7 @@ local function addBlip(store)
     end
     local blip = AddBlipForCoord(store.marker.x, store.marker.y, store.marker.z)
     SetBlipSprite(blip, store.blip)
-    SetBlipScale(blip, 0.7)
+    SetBlipScale(blip, 0.5)
     SetBlipColour(blip, 47)
     SetBlipAsShortRange(blip, false)
     SetBlipCategory(blip, CLOTHING_BLIP_CATEGORY)

@@ -189,7 +189,7 @@ function stopHandler.start(ctx)
     SetBlipSprite(blip, 501)
     SetBlipColour(blip, 46)
     SetBlipRoute(blip, true)
-    SetBlipRouteColour(blip, 46)
+    SetBlipRouteColour(blip, 8)
     session.startBlip = blip
 
     session.outerZone = lib.zones.sphere({

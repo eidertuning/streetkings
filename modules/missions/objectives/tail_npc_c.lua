@@ -224,7 +224,7 @@ function handler.start(ctx)
     SetBlipSprite(blip, 280)
     SetBlipColour(blip, 46)
     SetBlipRoute(blip, true)
-    SetBlipRouteColour(blip, 46)
+    SetBlipRouteColour(blip, 8)
     session.startBlip = blip
     local spawnCenter = obj.target and obj.target.startCoords or parkCoords
     session.outerZone = lib.zones.sphere({

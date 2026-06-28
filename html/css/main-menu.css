@@ -99,6 +99,13 @@
 #viewMain .panel {
   min-width: min(560px, 92cqi);
   max-width: min(600px, 100cqi);
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.92), rgba(0, 0, 0, 0.58)),
+    linear-gradient(145deg, rgba(12, 12, 14, 0.95), rgba(18, 10, 14, 0.82));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0;
+  clip-path: none;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 28px 70px rgba(0, 0, 0, 0.42);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -196,6 +203,16 @@
   transition: color var(--sk-ease), border-color var(--sk-ease), transform var(--sk-ease);
 }
 
+.menu #btnExitGame {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.menu #btnExitGame:hover,
+.menu #btnExitGame:focus-visible {
+  color: #ffd200;
+  border-bottom-color: rgba(255, 210, 0, 0.78);
+}
+
 .sk-menu button:hover,
 .sk-menu button:focus-visible,
 .menu button:hover,
@@ -252,6 +269,56 @@
 
 #app.is-mainmenu-controller-nav.is-glyph-ps5 #viewMain .menu button.is-controller-focused::after {
   background-image: url("../assets/PS5_Cross.png");
+}
+
+.main-menu-patchnotes {
+  margin-top: 1.45rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  font-family: var(--sk-font-body);
+}
+
+.main-menu-patchnotes-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--sk-text-primary);
+}
+
+.main-menu-patchnotes-head span:last-child {
+  color: #ffd200;
+}
+
+.main-menu-patchnotes ul {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--sk-font-ui);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.main-menu-patchnotes li {
+  position: relative;
+  padding-left: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.main-menu-patchnotes li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.28rem;
+  height: 0.28rem;
+  background: #ffd200;
 }
 
 /* -------------------------------------------------------------------------- */

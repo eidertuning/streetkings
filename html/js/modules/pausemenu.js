@@ -66,6 +66,7 @@
         var btnContinue = document.getElementById('pm-btn-continue');
         var btnMap      = document.getElementById('pm-btn-map');
         var btnSettings = document.getElementById('pm-btn-settings');
+        var btnMainMenu = document.getElementById('pm-btn-mainmenu');
         var btnExit     = document.getElementById('pm-btn-exit');
         var btnStore    = document.getElementById('pm-btn-store');
 
@@ -88,6 +89,11 @@
             if (storeUrl) window.invokeNative('openUrl', storeUrl);
         });
 
+        btnMainMenu.addEventListener('click', function () {
+            hide();
+            nuiPost('pausemenu:mainmenu');
+        });
+
         btnExit.addEventListener('click', function () {
             hide();
             nuiPost('pausemenu:exitgame');
@@ -106,7 +112,7 @@
                 overlay.classList.toggle('is-pausemenu-controller-nav', enabled);
             },
             getFocusables: function () {
-                return [btnContinue, btnMap, btnSettings, btnExit];
+                return [btnContinue, btnMap, btnSettings, btnMainMenu, btnExit];
             },
             getPreferredFocus: function () {
                 return btnContinue;

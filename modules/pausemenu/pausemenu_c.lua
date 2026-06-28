@@ -220,6 +220,17 @@ RegisterNUICallback('pausemenu:map', function(_, cb)
     cb('ok')
 end)
 
+RegisterNUICallback('pausemenu:mainmenu', function(_, cb)
+    closeMenu()
+    Cinematic = false
+    CreateThread(function()
+        DoScreenFadeOut(300)
+        Wait(300)
+        SKC.SetGameState(GameState.MAIN_MENU)
+    end)
+    cb('ok')
+end)
+
 RegisterNUICallback('pausemenu:exitgame', function(_, cb)
     TriggerServerEvent('streetkings:pausemenu:exitGame')
     closeMenu()
