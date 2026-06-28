@@ -463,17 +463,23 @@ local function resolveChannels(kind, preferred)
     return { 'admin' }
 end
 
-local function getWebhook(channel)
+local function getWebhook(kind, channel)
     local channelConfig = (getConfig().channels or {})[channel]
     if type(channelConfig) ~= 'table' or channelConfig.enabled == false then return nil end
+
+    local webhookConfig = (getConfig().webhooks or {})[kind]
+    if type(webhookConfig) == 'table' and type(webhookConfig[channel]) == 'string' and webhookConfig[channel] ~= '' then
+        return webhookConfig[channel]
+    end
+
     return type(channelConfig.webhook) == 'string' and channelConfig.webhook ~= '' and channelConfig.webhook or nil
 end
 
-local function sendEmbed(channel, embed)
+local function sendEmbed(kind, channel, embed)
     local cfg = getConfig()
     if cfg.enabled == false then return end
 
-    local webhook = getWebhook(channel)
+    local webhook = getWebhook(kind, channel)
     if not webhook then return end
 
     local payload = {
@@ -515,7 +521,7 @@ function SKLogs.Emit(kind, data, preferredChannel)
 
     data = type(data) == 'table' and data or {}
     for _, channel in ipairs(resolveChannels(kind, preferredChannel)) do
-        sendEmbed(channel, buildEmbed(kind, data, channel))
+        sendEmbed(kind, channel, buildEmbed(kind, data, channel))
     end
 end
 

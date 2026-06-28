@@ -16,6 +16,51 @@ SKLogsConfig = {
         },
     },
 
+    -- Each log type can use its own public/admin webhook.
+    -- If one is empty, the logger falls back to channels.public/admin.webhook.
+    webhooks = {
+        playerConnected = {
+            public = '',
+            admin = '',
+        },
+        playerDisconnected = {
+            public = '',
+            admin = '',
+        },
+        saveSelected = {
+            admin = '',
+        },
+        activitySubmitted = {
+            public = '',
+            admin = '',
+        },
+        activityRejected = {
+            admin = '',
+        },
+        npcRace = {
+            public = '',
+            admin = '',
+        },
+        policeEscape = {
+            public = '',
+            admin = '',
+        },
+        policeBust = {
+            public = '',
+            admin = '',
+        },
+        dealershipPurchase = {
+            public = '',
+            admin = '',
+        },
+        vipChanged = {
+            admin = '',
+        },
+        adminCommand = {
+            admin = '',
+        },
+    },
+
     colors = {
         public = 16711935,
         admin = 16763904,
