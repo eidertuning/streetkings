@@ -186,6 +186,8 @@ local function buildPlayerState(sourceData, daily)
         sourceVolume = tonumber(sourceData.volume) or cfg('DefaultSourceVolume', 0.35),
         listenerVolume = listenerVolume,
         synced = true,
+        playlistId = sourceData.playlistId,
+        queue = type(sourceData.queue) == 'table' and sourceData.queue or {},
         xsoundReady = xsoundReady(),
         musicDisabled = musicDisabled(),
         daily = daily,

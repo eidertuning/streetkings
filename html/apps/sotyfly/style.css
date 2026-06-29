@@ -234,8 +234,9 @@ img { display: block; max-width: 100%; }
   top: 0;
   z-index: 12;
   display: grid;
-  grid-template-columns: minmax(18rem, 42rem);
-  justify-content: center;
+  grid-template-columns: minmax(6rem, 1fr) minmax(18rem, 42rem) minmax(10rem, 1fr);
+  gap: 1rem;
+  align-items: center;
   margin: 0 -1.25rem;
   padding: 0.72rem 1.25rem;
   background: #000;
@@ -244,7 +245,36 @@ img { display: block; max-width: 100%; }
 
 .sf-search-wrap {
   position: relative;
+  grid-column: 2;
   width: 100%;
+}
+
+.sf-topstats {
+  grid-column: 3;
+  justify-self: end;
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.sf-topstats span {
+  min-height: 2.15rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 0.65rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.sf-topstats i {
+  color: var(--accent-color);
+}
+
+.sf-topstats strong {
+  color: #fff;
 }
 
 .sf-searchbox {
@@ -524,15 +554,25 @@ img { display: block; max-width: 100%; }
   color: #041006;
 }
 
-.sf-playlist-card .sf-icon-btn {
-  position: absolute;
-  top: 0.45rem;
-  right: 0.45rem;
-  background: rgba(0, 0, 0, 0.58);
+.sf-playlist-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.35rem;
+  padding: 0 0.85rem 0.85rem;
 }
 
-.sf-playlist-card .sf-playlist-edit {
-  right: 3.35rem;
+.sf-playlist-actions button {
+  min-height: 2.2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+}
+
+.sf-playlist-actions button:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
 }
 
 .sf-track-list {
@@ -543,12 +583,16 @@ img { display: block; max-width: 100%; }
 .sf-track {
   min-height: 4.5rem;
   display: grid;
-  grid-template-columns: 3.2rem minmax(0, 1fr) repeat(3, auto);
+  grid-template-columns: 3.2rem minmax(0, 1fr) 3.4rem repeat(2, auto);
   gap: 0.75rem;
   align-items: center;
   padding: 0.55rem;
   border-radius: 0.45rem;
   background: rgba(255, 255, 255, 0.035);
+}
+
+.sf-track.has-remove {
+  grid-template-columns: 3.2rem minmax(0, 1fr) 3.4rem repeat(3, auto);
 }
 
 .sf-search-dropdown .sf-track {
@@ -570,6 +614,14 @@ img { display: block; max-width: 100%; }
   gap: 0.2rem;
   background: transparent;
   text-align: left;
+}
+
+.sf-track-duration {
+  justify-self: end;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }
 
 .sf-empty {
@@ -685,10 +737,12 @@ img { display: block; max-width: 100%; }
 .sf-volume {
   width: min(14rem, 100%);
   justify-self: end;
+  align-self: end;
   display: grid;
   grid-template-columns: 1.2rem minmax(7rem, 10rem);
   gap: 0.65rem;
   align-items: center;
+  margin-bottom: 0.42rem;
   color: var(--muted);
 }
 
@@ -822,6 +876,19 @@ img { display: block; max-width: 100%; }
     grid-template-columns: 12.5rem minmax(0, 1fr);
   }
 
+  .sf-topbar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sf-search-wrap {
+    grid-column: 1;
+  }
+
+  .sf-topstats {
+    grid-column: 1;
+    justify-self: center;
+  }
+
   .sf-right { display: none; }
 
   .sf-player {
@@ -832,6 +899,8 @@ img { display: block; max-width: 100%; }
     grid-column: 1 / -1;
     width: 100%;
     justify-self: stretch;
+    align-self: center;
+    margin-bottom: 0;
     grid-template-columns: auto minmax(0, 1fr);
   }
 }
@@ -858,5 +927,21 @@ img { display: block; max-width: 100%; }
 
   .sf-volume {
     grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .sf-track {
+    grid-template-columns: 3rem minmax(0, 1fr) repeat(2, auto);
+  }
+
+  .sf-track.has-remove {
+    grid-template-columns: 3rem minmax(0, 1fr) repeat(3, auto);
+  }
+
+  .sf-track-duration {
+    display: none;
+  }
+
+  .sf-topstats {
+    flex-wrap: wrap;
   }
 }

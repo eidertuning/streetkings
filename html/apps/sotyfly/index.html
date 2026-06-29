@@ -46,6 +46,7 @@
 
       <section class="sf-main">
         <header class="sf-topbar">
+          <div class="sf-top-spacer"></div>
           <div class="sf-search-wrap">
             <div class="sf-searchbox">
               <i class="fa-solid fa-magnifying-glass"></i>
@@ -54,6 +55,10 @@
               <button id="sfImportOpen" class="sf-search-action" type="button" title="Pegar enlace"><i class="fa-solid fa-plus"></i></button>
             </div>
             <div id="sfSearchDropdown" class="sf-search-dropdown" hidden></div>
+          </div>
+          <div class="sf-topstats">
+            <span title="Canciones reproducidas hoy"><i class="fa-solid fa-headphones"></i><strong id="sfTopDailyText">0 / 50</strong></span>
+            <span title="Busquedas externas hoy"><i class="fa-solid fa-cloud-arrow-down"></i><strong id="sfApiText">0 / 90</strong></span>
           </div>
         </header>
 
@@ -88,7 +93,6 @@
         <section class="sf-view" data-view-panel="playlists">
           <div class="sf-section-head">
             <h2><i class="fa-solid fa-list"></i> Playlists</h2>
-            <button id="sfPlaylistRefresh" type="button">Actualizar</button>
           </div>
           <div id="sfPlaylists" class="sf-playlist-grid"></div>
           <div id="sfPlaylistTracks" class="sf-track-list"></div>

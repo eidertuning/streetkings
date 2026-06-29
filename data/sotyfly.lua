@@ -13,8 +13,9 @@ else
 end
 
 SKMusicConfig.CacheTTL = 604800
-SKMusicConfig.SearchCooldown = 30
+SKMusicConfig.SearchCooldown = 2
 SKMusicConfig.MaxResults = 10
+SKMusicConfig.MinSearchDuration = 60
 SKMusicConfig.MaxDailyApiSearches = 90
 SKMusicConfig.ReservedDailyApiSearches = 10
 

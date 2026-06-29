@@ -313,6 +313,10 @@ local function getApiUsage()
     return tonumber(row and row.api_searches) or 0
 end
 
+local function apiStats()
+    return { used = getApiUsage(), max = tonumber(cfg('MaxDailyApiSearches', 90)) or 90 }
+end
+
 local function canUseApiSearch()
     return getApiUsage() < (tonumber(cfg('MaxDailyApiSearches', 90)) or 90)
 end
@@ -609,7 +613,7 @@ lib.callback.register('streetmusic:server:syncState', function(source)
         popular = popularTracks(),
         activeSources = ACTIVE_SOURCES,
         daily = { played = dailyUsage(identifier), max = tonumber(cfg('MaxDailySongsPerUser', 50)) or 50 },
-        api = { used = getApiUsage(), max = tonumber(cfg('MaxDailyApiSearches', 90)) or 90 },
+        api = apiStats(),
         config = {
             maxAudibleDistance = cfg('MaxAudibleDistance', 25.0),
             fullVolumeDistance = cfg('FullVolumeDistance', 5.0),
@@ -624,23 +628,23 @@ lib.callback.register('streetmusic:server:search', function(source, query)
     if not dbReady then return { ok = false, reason = 'db_not_ready' } end
     query = cleanText(query, 100)
     local normalized = normalizeQuery(query)
-    if normalized == '' then return { ok = true, tracks = {}, source = 'empty' } end
+    if normalized == '' then return { ok = true, tracks = {}, source = 'empty', api = apiStats() } end
 
     local videoId = extractVideoId(query)
     if videoId then
         local track, reason = ensureTrackFromUrl(videoUrl(videoId))
-        if not track then return { ok = false, reason = reason or 'invalid_video' } end
-        return { ok = true, tracks = { track }, source = 'direct', message = 'Link directo listo.' }
+        if not track then return { ok = false, reason = reason or 'invalid_video', api = apiStats() } end
+        return { ok = true, tracks = { track }, source = 'direct', message = 'Link directo listo.', api = apiStats() }
     end
 
     local cached = getSearchCache(normalized)
     if cached then
-        return { ok = true, tracks = cached, source = 'cache', message = 'Resultados cargados desde cache.' }
+        return { ok = true, tracks = cached, source = 'cache', message = 'Resultados cargados desde cache.', api = apiStats() }
     end
 
     local cooldownUntil = SEARCH_COOLDOWN[source] or 0
     if cooldownUntil > now() then
-        return { ok = false, reason = 'cooldown', message = 'Has buscado demasiado rapido.' }
+        return { ok = false, reason = 'cooldown', message = 'Has buscado demasiado rapido.', api = apiStats() }
     end
     SEARCH_COOLDOWN[source] = now() + (tonumber(cfg('SearchCooldown', 30)) or 30)
 
@@ -649,6 +653,7 @@ lib.callback.register('streetmusic:server:search', function(source, query)
             ok = false,
             reason = 'api_key_missing',
             message = 'Falta la API key de busqueda. En server.cfg usa: set streetkings_youtube_api_key "TU_CLAVE_DE_YOUTUBE_DATA_API_V3".',
+            api = apiStats(),
         }
     end
     if not canUseApiSearch() then
@@ -656,11 +661,14 @@ lib.callback.register('streetmusic:server:search', function(source, query)
             ok = false,
             reason = 'daily_api_limit',
             message = 'Se alcanzo el limite diario de busquedas nuevas. Puedes usar canciones guardadas, populares, recientes o pegar un enlace directo.',
+            api = apiStats(),
         }
     end
 
+    local maxResults = tonumber(cfg('MaxResults', 10)) or 10
+    local requestResults = math.max(1, math.min(maxResults * 2, 25))
     local url = ('https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=%d&q=%s&key=%s'):format(
-        tonumber(cfg('MaxResults', 10)) or 10,
+        requestResults,
         urlEncode(normalized),
         urlEncode(youtubeApiKey())
     )
@@ -671,6 +679,7 @@ lib.callback.register('streetmusic:server:search', function(source, query)
             ok = false,
             reason = 'youtube_error',
             message = ('La busqueda externa fallo (HTTP %s). Revisa la API key y que la API de busqueda este activa.'):format(tostring(response.status or '?')),
+            api = apiStats(),
         }
     end
 
@@ -681,17 +690,25 @@ lib.callback.register('streetmusic:server:search', function(source, query)
     end
     local details = fetchVideoDetails(videoIds)
     local tracks = {}
+    local minDuration = tonumber(cfg('MinSearchDuration', 60)) or 60
     for _, item in ipairs(response.data.items or {}) do
         local videoIdForItem = item.id and item.id.videoId or nil
         local track = trackFromYoutubeItem(item, details[videoIdForItem])
         if track then
-            local row = upsertTrack(track)
-            if row then tracks[#tracks + 1] = row end
+            local title = cleanText(track.title, 255):lower()
+            local duration = tonumber(track.duration) or 0
+            local isShortClip = minDuration > 0 and duration > 0 and duration < minDuration
+            local isReelLike = title:find('#short') ~= nil or title:find('#reel') ~= nil
+            if not isShortClip and not isReelLike then
+                local row = upsertTrack(track)
+                if row then tracks[#tracks + 1] = row end
+                if #tracks >= maxResults then break end
+            end
         end
     end
 
     saveSearchCache(query, normalized, tracks)
-    return { ok = true, tracks = tracks, source = 'api', message = 'Busqueda completada.' }
+    return { ok = true, tracks = tracks, source = 'api', message = 'Busqueda completada.', api = apiStats() }
 end)
 
 lib.callback.register('streetmusic:server:playTrack3D', function(source, data)
