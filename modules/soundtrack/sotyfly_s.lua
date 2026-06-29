@@ -296,6 +296,24 @@ local function getSearchCache(normalized)
     return decoded
 end
 
+local function searchStoredTracks(normalized, limit)
+    normalized = cleanText(normalized, 100)
+    limit = math.max(1, math.min(tonumber(limit) or tonumber(cfg('MaxResults', 10)) or 10, 30))
+    if normalized == '' then return {} end
+    local like = '%' .. normalized:gsub('([%%_])', '\\%1') .. '%'
+    local rows = MySQL.query.await([[
+        SELECT *
+        FROM music_tracks
+        WHERE LOWER(title) LIKE ? ESCAPE '\\'
+           OR LOWER(channel_title) LIKE ? ESCAPE '\\'
+        ORDER BY play_count DESC, updated_at DESC
+        LIMIT ?
+    ]], { like, like, limit }) or {}
+    local tracks = {}
+    for _, row in ipairs(rows) do tracks[#tracks + 1] = trackFromRow(row) end
+    return tracks
+end
+
 local function saveSearchCache(query, normalized, tracks)
     MySQL.query.await([[
         INSERT INTO music_search_cache (query, normalized_query, results_json, expires_at)
@@ -626,6 +644,9 @@ end)
 
 lib.callback.register('streetmusic:server:search', function(source, query)
     if not dbReady then return { ok = false, reason = 'db_not_ready' } end
+    local payload = type(query) == 'table' and query or nil
+    local cacheOnly = payload and payload.cacheOnly == true or false
+    query = payload and payload.query or query
     query = cleanText(query, 100)
     local normalized = normalizeQuery(query)
     if normalized == '' then return { ok = true, tracks = {}, source = 'empty', api = apiStats() } end
@@ -640,6 +661,11 @@ lib.callback.register('streetmusic:server:search', function(source, query)
     local cached = getSearchCache(normalized)
     if cached then
         return { ok = true, tracks = cached, source = 'cache', message = 'Resultados cargados desde cache.', api = apiStats() }
+    end
+
+    if cacheOnly then
+        local tracks = searchStoredTracks(normalized, tonumber(cfg('MaxResults', 10)) or 10)
+        return { ok = true, tracks = tracks, source = 'cache', message = tracks[1] and 'Resultados cargados desde cache.' or 'No hay resultados guardados en cache.', api = apiStats() }
     end
 
     local cooldownUntil = SEARCH_COOLDOWN[source] or 0

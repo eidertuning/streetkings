@@ -22,7 +22,6 @@
 
     els.title.textContent = player.title || 'Sotyfly';
     els.meta.textContent = player.channelTitle || (player.playing ? 'Reproduciendo' : 'Pausado');
-    els.daily.textContent = 'Canciones hoy: ' + ((state.daily && state.daily.played) || 0) + ' / ' + ((state.daily && state.daily.max) || 50);
     els.play.innerHTML = '<i class="fa-solid ' + (player.playing ? 'fa-pause' : 'fa-play') + '"></i>';
 
     if (player.thumbnail) {
@@ -33,10 +32,12 @@
       els.thumb.style.visibility = 'hidden';
     }
 
-    var duration = Math.max(1, Number(player.durationMs || 0));
-    var pct = Math.max(0, Math.min(Number(player.currentMs || 0), duration)) / duration * 100;
+    var duration = Math.max(0, Number(player.durationMs || 0));
+    var current = Math.max(0, duration > 0 ? Math.min(Number(player.currentMs || 0), duration) : Number(player.currentMs || 0));
+    var pct = duration > 0 ? current / duration * 100 : 0;
     els.progress.style.width = pct.toFixed(2) + '%';
-    els.meta.title = formatTime(player.currentMs) + ' / ' + formatTime(player.durationMs);
+    els.daily.textContent = formatTime(current) + ' / ' + (duration > 0 ? formatTime(duration) : '--:--');
+    els.meta.title = els.daily.textContent;
   }
 
   function post(name, data) {

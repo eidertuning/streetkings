@@ -10,10 +10,11 @@
     recent: [],
     popular: [],
     player: null,
-    daily: { played: 0, max: 50 },
-    api: { used: 0, max: 90 },
+    daily: { played: 0, max: 0 },
+    api: { used: 0, max: 50 },
     xsoundReady: true,
     musicDisabled: false,
+    cacheOnly: false,
     selectedTrack: null,
     selectedPlaylist: null,
     editingPlaylistId: null,
@@ -164,7 +165,7 @@
     }
     tracks = tracks || previewTracks(query);
     var header = query
-      ? '<div class="sf-search-hint"><i class="fa-solid fa-magnifying-glass"></i><strong>' + esc(query) + '</strong><span>Busqueda automatica</span></div>'
+      ? '<div class="sf-search-hint"><i class="fa-solid ' + (state.cacheOnly ? 'fa-database' : 'fa-magnifying-glass') + '"></i><strong>' + esc(query) + '</strong><span>' + (state.cacheOnly ? 'Solo cache' : 'Busqueda externa') + '</span></div>'
       : '<div class="sf-search-hint"><i class="fa-solid fa-clock-rotate-left"></i><strong>Escuchado recientemente</strong><span>Resultados guardados</span></div>';
     els.searchDropdown.innerHTML = header + (tracks.length
       ? tracks.map(function (track) { return trackRow(track); }).join('')
@@ -233,11 +234,14 @@
   }
 
   function renderCounters() {
-    var dailyText = (state.daily.played || 0) + ' / ' + (state.daily.max || 50);
-    var apiText = (state.api.used || 0) + ' / ' + (state.api.max || 90);
-    els.dailyText.textContent = dailyText;
-    if (els.topDailyText) els.topDailyText.textContent = dailyText;
+    var apiText = (state.api.used || 0) + ' / ' + (state.api.max || 50);
+    if (els.apiHeroText) els.apiHeroText.textContent = apiText;
     if (els.apiText) els.apiText.textContent = apiText;
+    if (els.cacheToggle) {
+      els.cacheToggle.classList.toggle('is-active', state.cacheOnly);
+      els.cacheToggle.setAttribute('aria-pressed', state.cacheOnly ? 'true' : 'false');
+      els.cacheToggle.title = state.cacheOnly ? 'Modo cache activo' : 'Modo busqueda externa';
+    }
   }
 
   function renderPlayer() {
@@ -245,8 +249,8 @@
     var hasTrack = !!(player.key || player.trackId || player.videoId || player.url);
     var title = hasTrack ? trackTitle(player) : 'Sin musica activa';
     var meta = hasTrack ? trackArtist(player) : (player.synced ? 'Audio 3D sincronizado' : 'Sotyfly');
-    var duration = Math.max(1, Number(player.durationMs || 0));
-    var current = Math.max(0, Math.min(Number(player.currentMs || 0), duration));
+    var duration = Math.max(0, Number(player.durationMs || 0));
+    var current = Math.max(0, duration > 0 ? Math.min(Number(player.currentMs || 0), duration) : Number(player.currentMs || 0));
     var pct = duration ? (current / duration) * 100 : 0;
 
     if ((player.key || '') !== state.lastPlayerKey) {
@@ -266,7 +270,7 @@
     els.syncText.textContent = player.synced ? 'Sincronizado' : 'xSound';
     els.progress.style.width = pct.toFixed(2) + '%';
     els.currentTime.textContent = formatTime(current);
-    els.duration.textContent = formatTime(duration);
+    els.duration.textContent = duration > 0 ? formatTime(duration) : '--:--';
     els.play.innerHTML = icon(player.playing ? 'fa-pause' : 'fa-play');
     setVolumeSlider(state.listenerVolume);
 
@@ -333,8 +337,8 @@
     state.lastSearchQuery = query;
     state.lastSearchSentAt = Date.now();
     state.searchDropdownOpen = true;
-    if (!options.silent) showStatus('Buscando canciones...', 'info');
-    fetchNui('sotyfly:search', { query: query }).then(function (result) {
+    if (!options.silent) showStatus(state.cacheOnly ? 'Buscando en cache...' : 'Buscando canciones...', 'info');
+    fetchNui('sotyfly:search', { query: query, cacheOnly: state.cacheOnly }).then(function (result) {
       if (requestId !== state.searchSerial) return;
       if (!result || !result.ok) {
         if (result && result.api) {
@@ -385,7 +389,7 @@
       return;
     }
 
-    showStatus('Preparando busqueda automatica...', 'info');
+    showStatus(state.cacheOnly ? 'Buscando automaticamente en cache...' : 'Preparando busqueda automatica...', 'info');
     state.searchTimer = window.setTimeout(function () {
       search(query, { silent: true });
     }, 650);
@@ -569,6 +573,18 @@
       renderSearchDropdown(previewTracks(els.search.value), els.search.value);
     });
     if (els.searchBtn) els.searchBtn.addEventListener('click', function () { search(null, { force: true }); });
+    if (els.cacheToggle) {
+      els.cacheToggle.addEventListener('click', function () {
+        state.cacheOnly = !state.cacheOnly;
+        state.lastSearchQuery = '';
+        renderCounters();
+        if (String(els.search.value || '').trim().length >= 3) {
+          scheduleSearch();
+        } else {
+          showStatus(state.cacheOnly ? 'Modo cache activado.' : 'Modo busqueda externa activado.', 'info');
+        }
+      });
+    }
     document.addEventListener('click', function (event) {
       if (event.target.closest('.sf-search-wrap')) return;
       state.searchDropdownOpen = false;
@@ -726,6 +742,7 @@
     els.lockRefresh = $('sfLockRefresh');
     els.search = $('sfSearch');
     els.searchBtn = $('sfSearchBtn');
+    els.cacheToggle = $('sfCacheToggle');
     els.status = $('sfStatus');
     els.importOpen = $('sfImportOpen');
     els.searchDropdown = $('sfSearchDropdown');
@@ -742,8 +759,7 @@
     els.sideCover = $('sfSideCover');
     els.sideTitle = $('sfSideTitle');
     els.sideMeta = $('sfSideMeta');
-    els.dailyText = $('sfDailyText');
-    els.topDailyText = $('sfTopDailyText');
+    els.apiHeroText = $('sfApiHeroText');
     els.apiText = $('sfApiText');
     els.syncText = $('sfSyncText');
     els.barThumb = $('sfBarThumb');

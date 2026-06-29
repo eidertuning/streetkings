@@ -17,6 +17,7 @@ local startedSounds = {}
 local appVisible = false
 local listenerVolume = tonumber(GetResourceKvpString('sk_sotyfly_listener_volume')) or (Config.DefaultPlayerMusicVolume or 0.7)
 local currentPlayerState = nil
+local lastAutoSkipAt = 0
 
 local function cfg(key, fallback)
     local value = Config[key]
@@ -215,6 +216,33 @@ local function mergeSource(sourceData)
     updateOwnPlayerState()
 end
 
+local function requestNextWhenEnded()
+    if not currentPlayerState or currentPlayerState.playing ~= true then return end
+    local durationMs = tonumber(currentPlayerState.durationMs) or 0
+    if durationMs <= 0 then return end
+    local queue = type(currentPlayerState.queue) == 'table' and currentPlayerState.queue or {}
+    if #queue <= 1 then return end
+    local nowMs = GetGameTimer()
+    if nowMs - lastAutoSkipAt < 2500 then return end
+
+    local currentMs = tonumber(currentPlayerState.currentMs) or 0
+    local endedByTime = currentMs >= math.max(0, durationMs - 750)
+    local endedBySound = false
+    if currentPlayerState.soundName and startedSounds[currentPlayerState.soundName] and xsoundReady() then
+        local ok, playing = pcall(function()
+            return exports['xsound']:isPlaying(currentPlayerState.soundName)
+        end)
+        endedBySound = ok and playing == false and currentPlayerState.paused ~= true and currentMs > 5000
+    end
+    if not endedByTime and not endedBySound then return end
+
+    lastAutoSkipAt = nowMs
+    CreateThread(function()
+        local result = lib.callback.await('streetmusic:server:skipTrack', false, 1) or { ok = false }
+        if result.ok and result.player then mergeSource(result.player) end
+    end)
+end
+
 RegisterNUICallback('sotyfly:getData', function(_, cb)
     local result = lib.callback.await('streetmusic:server:syncState', false) or { ok = false }
     activeSources = {}
@@ -232,7 +260,7 @@ RegisterNUICallback('sotyfly:getData', function(_, cb)
 end)
 
 RegisterNUICallback('sotyfly:search', function(data, cb)
-    cb(lib.callback.await('streetmusic:server:search', false, data and data.query or '') or { ok = false, reason = 'search_failed' })
+    cb(lib.callback.await('streetmusic:server:search', false, data or {}) or { ok = false, reason = 'search_failed' })
 end)
 
 RegisterNUICallback('sotyfly:playTrack', function(data, cb)
@@ -483,6 +511,7 @@ CreateThread(function()
             end
 
             updateOwnPlayerState()
+            requestNextWhenEnded()
         end
     end
 end)

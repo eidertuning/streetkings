@@ -46,23 +46,22 @@
 
       <section class="sf-main">
         <header class="sf-topbar">
-          <div class="sf-top-spacer"></div>
           <div class="sf-search-wrap">
             <div class="sf-searchbox">
               <i class="fa-solid fa-magnifying-glass"></i>
               <input id="sfSearch" type="search" maxlength="100" placeholder="Que quieres reproducir?">
               <span class="sf-search-divider"></span>
+              <button id="sfCacheToggle" class="sf-cache-toggle" type="button" aria-pressed="false" title="Buscar solo en cache"><i class="fa-solid fa-database"></i></button>
               <button id="sfImportOpen" class="sf-search-action" type="button" title="Pegar enlace"><i class="fa-solid fa-plus"></i></button>
             </div>
             <div id="sfSearchDropdown" class="sf-search-dropdown" hidden></div>
           </div>
           <div class="sf-topstats">
-            <span title="Canciones reproducidas hoy"><i class="fa-solid fa-headphones"></i><strong id="sfTopDailyText">0 / 50</strong></span>
-            <span title="Busquedas externas hoy"><i class="fa-solid fa-cloud-arrow-down"></i><strong id="sfApiText">0 / 90</strong></span>
+            <span title="Busquedas externas hoy"><i class="fa-solid fa-cloud-arrow-down"></i><strong id="sfApiText">0 / 50</strong></span>
           </div>
         </header>
 
-        <div id="sfStatus" class="sf-status">Canciones hoy: 0 / 50</div>
+        <div id="sfStatus" class="sf-status">Listo para buscar.</div>
 
         <section id="sfHomeView" class="sf-view is-active" data-view-panel="home">
           <section class="sf-hero">
@@ -71,7 +70,7 @@
               <h1 id="sfNowTitle">Sin musica activa</h1>
               <span id="sfNowMeta">Busca, pega un enlace o reproduce una playlist.</span>
               <div class="sf-hero-stats">
-                <span>Canciones hoy <strong id="sfDailyText">0 / 50</strong></span>
+                <span>Busquedas externas <strong id="sfApiHeroText">0 / 50</strong></span>
                 <span>Modo <strong id="sfSyncText">xSound</strong></span>
               </div>
             </div>

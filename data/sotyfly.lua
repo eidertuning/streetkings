@@ -16,10 +16,10 @@ SKMusicConfig.CacheTTL = 604800
 SKMusicConfig.SearchCooldown = 2
 SKMusicConfig.MaxResults = 10
 SKMusicConfig.MinSearchDuration = 60
-SKMusicConfig.MaxDailyApiSearches = 90
+SKMusicConfig.MaxDailyApiSearches = 50
 SKMusicConfig.ReservedDailyApiSearches = 10
 
-SKMusicConfig.EnableDailySongLimit = true
+SKMusicConfig.EnableDailySongLimit = false
 SKMusicConfig.MaxDailySongsPerUser = 50
 
 SKMusicConfig.UseXSound = true

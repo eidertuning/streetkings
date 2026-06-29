@@ -234,8 +234,8 @@ img { display: block; max-width: 100%; }
   top: 0;
   z-index: 12;
   display: grid;
-  grid-template-columns: minmax(6rem, 1fr) minmax(18rem, 42rem) minmax(10rem, 1fr);
-  gap: 1rem;
+  grid-template-columns: minmax(18rem, 42rem);
+  justify-content: center;
   align-items: center;
   margin: 0 -1.25rem;
   padding: 0.72rem 1.25rem;
@@ -245,13 +245,14 @@ img { display: block; max-width: 100%; }
 
 .sf-search-wrap {
   position: relative;
-  grid-column: 2;
   width: 100%;
 }
 
 .sf-topstats {
-  grid-column: 3;
-  justify-self: end;
+  position: absolute;
+  top: 50%;
+  right: 1.25rem;
+  transform: translateY(-50%);
   display: flex;
   gap: 0.45rem;
   align-items: center;
@@ -280,7 +281,7 @@ img { display: block; max-width: 100%; }
 .sf-searchbox {
   height: 3rem;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto;
   gap: 0.65rem;
   align-items: center;
   padding: 0 0.7rem 0 1rem;
@@ -320,6 +321,34 @@ img { display: block; max-width: 100%; }
   border-radius: 50%;
   background: transparent;
   color: rgba(255, 255, 255, 0.72);
+}
+
+.sf-cache-toggle {
+  min-width: 4.25rem;
+  height: 2rem;
+  display: inline-grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem;
+  place-items: center;
+  padding: 0 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.sf-cache-toggle::after {
+  content: "Ext";
+}
+
+.sf-cache-toggle.is-active {
+  background: rgba(29, 185, 84, 0.22);
+  color: var(--accent-color);
+}
+
+.sf-cache-toggle.is-active::after {
+  content: "Cache";
 }
 
 .sf-search-action:hover {
@@ -878,14 +907,16 @@ img { display: block; max-width: 100%; }
 
   .sf-topbar {
     grid-template-columns: minmax(0, 1fr);
+    gap: 0.65rem;
   }
 
   .sf-search-wrap {
-    grid-column: 1;
+    grid-column: auto;
   }
 
   .sf-topstats {
-    grid-column: 1;
+    position: static;
+    transform: none;
     justify-self: center;
   }
 
