@@ -149,15 +149,11 @@ end
 
 -- Cinematic -----------------------------------------------------------------
 
-local function cleanupCinematic(cinCam)
+local function cleanupCinematic()
     Cinematic = false
     SetTimeScale(1.0)
     StopGameplayCamShaking(true)
     ClearTimecycleModifier()
-    if cinCam and DoesCamExist(cinCam) then
-        SetCamActive(cinCam, false)
-        DestroyCam(cinCam, false)
-    end
     RenderScriptCams(false, true, 0, true, true)
     SendNUIMessage({ type = 'speedcam:flash', show = false })
 end
@@ -194,7 +190,7 @@ local function triggerSpeedCam(cam, speedMph, camIndex)
 
     PlaySoundFrontend(-1, 'speedcamera', 'sk_soundset', true)
     Wait(1250)
-    cleanupCinematic(cinCam)
+    cleanupCinematic()
     Cinematic = false
 
     if policePayload and wantedLevel > 0 then
@@ -233,7 +229,7 @@ local function onCamEnter(cam, camIndex)
     CreateThread(function()
         local ok, err = pcall(triggerSpeedCam, cam, speedMph, camIndex)
         if not ok then
-            cleanupCinematic(nil)
+            cleanupCinematic()
         end
     end)
 end
