@@ -34,6 +34,10 @@ SKLogsConfig = {
             public = '',
             admin = '',
         },
+        speedCameraPhoto = {
+            public = '',
+            admin = '',
+        },
         activityRejected = {
             admin = '',
         },
@@ -100,6 +104,22 @@ SKLogsConfig = {
         waypoints = { public = '', admin = '' },
     },
 
+    -- Optional speed camera screenshots. If screenshot-basic is running, the
+    -- client can upload directly to this dedicated webhook or to
+    -- webhooks.speedCameraPhoto.admin. Leave both empty to log without images.
+    speedCameraPhoto = {
+        enabled = true,
+        displayForMs = 15000,
+        discord = {
+            enabled = true,
+            webhook = '',
+        },
+        screenshot = {
+            encoding = 'jpg',
+            quality = 0.85,
+        },
+    },
+
     colors = {
         public = 16711935,
         admin = 16763904,
@@ -113,6 +133,7 @@ SKLogsConfig = {
         playerDisconnected = { 'public', 'admin' },
         saveSelected = 'admin',
         activitySubmitted = { 'public', 'admin' },
+        speedCameraPhoto = 'admin',
         activityRejected = 'admin',
         npcRace = { 'public', 'admin' },
         policeEscape = { 'public', 'admin' },

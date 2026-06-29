@@ -23,6 +23,14 @@
   var elScTimestamp  = document.getElementById('skSpeedcamTimestamp');
   var elScFlashWhite = elSc ? elSc.querySelector('.sk-speedcam-flash-white') : null;
   var scTimer        = null;
+  var elTicket       = document.getElementById('skSpeedcamTicket');
+  var elTicketImage  = document.getElementById('skSpeedcamTicketImage');
+  var elTicketFallback = document.getElementById('skSpeedcamTicketFallback');
+  var elTicketStars  = document.getElementById('skSpeedcamTicketStars');
+  var elTicketName   = document.getElementById('skSpeedcamTicketName');
+  var elTicketSpeed  = document.getElementById('skSpeedcamTicketSpeed');
+  var elTicketVehicle = document.getElementById('skSpeedcamTicketVehicle');
+  var ticketTimer    = null;
   var controllerGlyphs = window.StreetKings.controllerGlyphs;
   var lastPromptKey = '';
   var lastPromptUsesDefaultActionText = false;
@@ -44,6 +52,52 @@
   function buildCamId(index) {
     var num = index || 1;
     return 'CAM-' + (num < 10 ? '0' + num : '' + num);
+  }
+
+  function renderWantedStars(level) {
+    var count = Math.max(0, Math.min(5, Number(level) || 0));
+    var html = '';
+    for (var i = 0; i < 5; i++) {
+      html += '<i class="fa-solid fa-star' + (i < count ? ' is-active' : '') + '"></i>';
+    }
+    return html;
+  }
+
+  function hideTicket() {
+    if (!elTicket) return;
+    if (ticketTimer) {
+      clearTimeout(ticketTimer);
+      ticketTimer = null;
+    }
+    elTicket.classList.remove('is-active');
+    elTicket.setAttribute('aria-hidden', 'true');
+  }
+
+  function showTicket(data) {
+    if (!elTicket) return;
+    if (ticketTimer) clearTimeout(ticketTimer);
+
+    var image = typeof data.image === 'string' && data.image.length > 0 ? data.image : '';
+    if (elTicketImage && elTicketFallback) {
+      if (image) {
+        elTicketImage.style.display = '';
+        elTicketImage.src = image;
+        elTicketFallback.style.display = 'none';
+      } else {
+        elTicketImage.removeAttribute('src');
+        elTicketImage.style.display = 'none';
+        elTicketFallback.style.display = 'grid';
+      }
+    }
+
+    if (elTicketStars) elTicketStars.innerHTML = renderWantedStars(data.wantedLevel);
+    if (elTicketName) elTicketName.textContent = data.name || 'Speed Camera';
+    if (elTicketSpeed) elTicketSpeed.textContent = String(data.speed || 0) + ' MPH';
+    if (elTicketVehicle) elTicketVehicle.textContent = data.vehicle || '';
+
+    elTicket.classList.add('is-active');
+    elTicket.setAttribute('aria-hidden', 'false');
+    ticketTimer = setTimeout(hideTicket, Number(data.duration) || 15000);
   }
 
   function formatPromptTime(ms) {
@@ -75,6 +129,14 @@
       elPromptAction.textContent = formatPromptActionText(lastPromptKey, '');
     }
   });
+
+  if (elTicketImage && elTicketFallback) {
+    elTicketImage.addEventListener('error', function () {
+      elTicketImage.removeAttribute('src');
+      elTicketImage.style.display = 'none';
+      elTicketFallback.style.display = 'grid';
+    });
+  }
 
   window.addEventListener('message', function (e) {
     if (e.data.type === 'youDied') {
@@ -155,6 +217,12 @@
       } else {
         if (scTimer) { clearTimeout(scTimer); scTimer = null; }
         elSc.style.display = 'none';
+      }
+    } else if (e.data.type === 'speedcam:ticketPhoto') {
+      if (e.data.show) {
+        showTicket(e.data);
+      } else {
+        hideTicket();
       }
     } else if (e.data.type === 'police:bustCountdown') {
       if (!elBust || !elBustNum) return;

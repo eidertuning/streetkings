@@ -150,6 +150,36 @@ function SKPolice.setPoliceDisabled(disabled)
     incidents = {}
 end
 
+---@param data table
+---@return boolean
+function SKPolice.applySpeedCameraWanted(data)
+    if policeDisabled then return false end
+    if not SKPolice.isInFreeroam() then return false end
+
+    local wantedLevel = math.floor(tonumber(data and data.wantedLevel) or 0)
+    wantedLevel = math.max(0, math.min(5, wantedLevel))
+    if wantedLevel <= 0 then return false end
+
+    local ped = PlayerPedId()
+    local vehicle = GetVehiclePedIsIn(ped, false)
+    if vehicle == 0 then return false end
+
+    local current = GetPlayerWantedLevel(PlayerId())
+    if current >= wantedLevel then return false end
+
+    local applied = math.max(current, wantedLevel)
+    SetDispatchCopsForPlayer(PlayerId(), true)
+    SetPlayerWantedLevel(PlayerId(), applied, false)
+    SetPlayerWantedLevelNow(PlayerId(), false)
+    SetVehicleIsWanted(vehicle, true)
+    ReportPoliceSpottedPlayer(PlayerId())
+    return true
+end
+
+RegisterNetEvent('streetkings:police:applySpeedCameraWanted', function(data)
+    SKPolice.applySpeedCameraWanted(data)
+end)
+
 -- Pursuit state reset -------------------------------------------------------
 
 function SKPolice.resetPursuit()
@@ -627,3 +657,4 @@ end
 exports('IsPoliceChasing', SKPolice.isChasing)
 exports('GetWantedLevel', function() return GetPlayerWantedLevel(PlayerId()) end)
 exports('IsNearPolice', SKPolice.IsNearPolice)
+exports('ApplySpeedCameraWanted', SKPolice.applySpeedCameraWanted)

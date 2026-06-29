@@ -135,6 +135,17 @@ local function coordsText(source)
     return ('x=%.2f, y=%.2f, z=%.2f, h=%.2f'):format(coords.x, coords.y, coords.z, heading or 0.0)
 end
 
+local function coordsPayloadText(coords)
+    if not coords then return nil end
+
+    local x = tonumber(coords.x)
+    local y = tonumber(coords.y)
+    local z = tonumber(coords.z)
+    if not x or not y or not z then return nil end
+
+    return ('x=%.2f, y=%.2f, z=%.2f, h=%.2f'):format(x, y, z, tonumber(coords.h) or 0.0)
+end
+
 local function saveSummary(source)
     if not SKSaves or not SKSaves.hasActiveSave or not SKSaves.hasActiveSave(source) then return nil end
 
@@ -166,6 +177,18 @@ local function eventInfo(eventId)
     if event.duration then details[#details + 1] = ('duracion=%ss'):format(event.duration) end
 
     return event.name or event.title or event.id or eventId, table.concat(details, '\n')
+end
+
+local function speedCameraInfo(eventId)
+    for _, cam in ipairs(SKSpeedCameras or {}) do
+        if cam.id == eventId then
+            return cam.name or cam.id, {
+                coords = cam.coords,
+                triggerSpeedMph = cam.triggerSpeedMph,
+            }
+        end
+    end
+    return cleanText(eventId, 'Radar'), nil
 end
 
 local function scoreText(scoreType, score)
@@ -312,6 +335,47 @@ builders.activitySubmitted = function(data, channel)
         description = 'Resultado validado y guardado en leaderboard.',
         colorKey = 'success',
         fields = fields,
+    }
+end
+
+builders.speedCameraPhoto = function(data, channel)
+    local camName, cam = speedCameraInfo(data.eventId)
+    local speed = math.floor(tonumber(data.speedMph or data.speed) or 0)
+    local wantedLevel = math.max(0, math.min(5, math.floor(tonumber(data.wantedLevel) or 0)))
+    local fields = {}
+
+    if channel == 'public' then
+        addField(fields, 'Jugador', playerPublic(data.source), true)
+        addField(fields, 'Radar', camName, true)
+        addField(fields, 'Velocidad', scoreText('speed', speed), true)
+        addField(fields, 'Vehiculo', cleanText(data.vehicleModel, 'Sin modelo'), true)
+        return {
+            title = 'Radar de velocidad',
+            description = ('%s fue captado por un radar.'):format(playerPublic(data.source)),
+            colorKey = 'warning',
+            fields = fields,
+            image = data.imageUrl,
+        }
+    end
+
+    addField(fields, 'Jugador', playerAdmin(data.source), false)
+    addField(fields, 'Radar', ('%s (`%s`)'):format(camName, cleanText(data.eventId)), true)
+    addField(fields, 'Velocidad', scoreText('speed', speed), true)
+    addField(fields, 'Nivel de busqueda', tostring(wantedLevel), true)
+    addField(fields, 'Vehiculo', cleanText(data.vehicleModel, 'Sin modelo'), true)
+    if cam and cam.triggerSpeedMph then
+        addField(fields, 'Velocidad minima', scoreText('speed', cam.triggerSpeedMph), true)
+    end
+    addField(fields, 'Coordenadas radar', coordsPayloadText(cam and cam.coords), false)
+    addField(fields, 'Coordenadas vehiculo', coordsPayloadText(data.vehicleCoords), false)
+    addAdminContext(fields, data.source)
+
+    return {
+        title = 'Foto de radar',
+        description = 'Un radar valido capturo al jugador y se envio el ticket al NUI.',
+        colorKey = 'warning',
+        fields = fields,
+        image = data.imageUrl,
     }
 end
 
@@ -540,6 +604,14 @@ local function getWebhook(kind, channel)
     return type(channelConfig.webhook) == 'string' and channelConfig.webhook ~= '' and channelConfig.webhook or nil
 end
 
+local function getDedicatedWebhook(kind, channel)
+    local webhookConfig = (getConfig().webhooks or {})[kind]
+    if type(webhookConfig) == 'table' and type(webhookConfig[channel]) == 'string' and webhookConfig[channel] ~= '' then
+        return webhookConfig[channel]
+    end
+    return nil
+end
+
 local function sendEmbed(kind, channel, embed)
     local cfg = getConfig()
     if cfg.enabled == false then return end
@@ -621,6 +693,67 @@ end)
 function SKLogs.Admin(kind, data)
     SKLogs.Emit(kind, data, 'admin')
 end
+
+local function speedCameraPhotoConfigForClient()
+    local cfg = getConfig()
+    local photo = type(cfg.speedCameraPhoto) == 'table' and cfg.speedCameraPhoto or {}
+    if photo.enabled == false then
+        return { enabled = false }
+    end
+
+    local discord = type(photo.discord) == 'table' and photo.discord or {}
+    local screenshot = type(photo.screenshot) == 'table' and photo.screenshot or {}
+    local webhook = nil
+    if discord.enabled ~= false then
+        webhook = type(discord.webhook) == 'string' and discord.webhook ~= '' and discord.webhook or nil
+        webhook = webhook or getDedicatedWebhook('speedCameraPhoto', 'admin')
+    end
+
+    return {
+        enabled = true,
+        displayForMs = tonumber(photo.displayForMs) or 15000,
+        webhook = webhook,
+        screenshot = {
+            encoding = type(screenshot.encoding) == 'string' and screenshot.encoding or 'jpg',
+            quality = tonumber(screenshot.quality) or 0.85,
+        },
+    }
+end
+
+local function clampSpeedCameraPhotoData(data)
+    data = type(data) == 'table' and data or {}
+    return {
+        eventId = type(data.eventId) == 'string' and data.eventId:sub(1, 64) or '',
+        name = type(data.name) == 'string' and data.name:sub(1, 96) or '',
+        speedMph = math.max(0, math.min(300, math.floor(tonumber(data.speedMph) or 0))),
+        wantedLevel = math.max(0, math.min(5, math.floor(tonumber(data.wantedLevel) or 0))),
+        vehicleModel = type(data.vehicleModel) == 'string' and data.vehicleModel:sub(1, 64) or '',
+        vehicleCoords = type(data.vehicleCoords) == 'table' and data.vehicleCoords or nil,
+        imageUrl = type(data.imageUrl) == 'string' and data.imageUrl:sub(1, 1024) or nil,
+    }
+end
+
+lib.callback.register('streetkings:speedcam:getPhotoConfig', function(_)
+    return speedCameraPhotoConfigForClient()
+end)
+
+RegisterNetEvent('streetkings:speedcam:photoLog', function(data)
+    local src = source --[[@as integer]]
+    if not SKSaves or not SKSaves.hasActiveSave or not SKSaves.hasActiveSave(src) then return end
+
+    local payload = clampSpeedCameraPhotoData(data)
+    local context = SKEventsSubmit and SKEventsSubmit.consumeSpeedCameraPhotoContext
+        and SKEventsSubmit.consumeSpeedCameraPhotoContext(src, payload.eventId)
+        or nil
+    if not context then return end
+
+    payload.eventId = context.eventId
+    payload.speedMph = context.speedMph
+    payload.wantedLevel = context.wantedLevel
+    payload.vehicleModel = context.vehicleModel
+    payload.source = src
+    SKLogs.Emit('speedCameraPhoto', payload, 'admin')
+end)
 
 AddEventHandler('playerJoining', function()
     local src = source --[[@as integer]]

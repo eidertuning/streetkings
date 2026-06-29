@@ -1,5 +1,48 @@
 SKEventsSubmit = {}
 
+local SPEED_CAMERA_PHOTO_CONTEXT_MS = 20000
+
+local function speedCameraWantedLevel(speedMph)
+    local speed = math.floor(tonumber(speedMph) or 0)
+    if speed >= 250 then return 5 end
+    if speed >= 200 then return 4 end
+    if speed >= 150 then return 3 end
+    if speed >= 100 then return 2 end
+    if speed >= 5 then return 1 end
+    return 0
+end
+
+SKEventsSubmit.speedCameraPhotoContext = {}
+
+function SKEventsSubmit.storeSpeedCameraPhotoContext(source, payload)
+    if type(source) ~= 'number' or type(payload) ~= 'table' then return end
+    SKEventsSubmit.speedCameraPhotoContext[source] = {
+        eventId = payload.eventId,
+        speedMph = payload.speedMph,
+        wantedLevel = payload.wantedLevel,
+        vehicleModel = payload.vehicleModel,
+        expiresAt = GetGameTimer() + SPEED_CAMERA_PHOTO_CONTEXT_MS,
+    }
+end
+
+function SKEventsSubmit.consumeSpeedCameraPhotoContext(source, eventId)
+    local context = SKEventsSubmit.speedCameraPhotoContext[source]
+    if not context then return nil end
+    if GetGameTimer() > (context.expiresAt or 0) then
+        SKEventsSubmit.speedCameraPhotoContext[source] = nil
+        return nil
+    end
+    if type(eventId) == 'string' and eventId ~= '' and context.eventId ~= eventId then
+        return nil
+    end
+    SKEventsSubmit.speedCameraPhotoContext[source] = nil
+    return context
+end
+
+AddEventHandler('playerDropped', function()
+    SKEventsSubmit.speedCameraPhotoContext[source --[[@as integer]]] = nil
+end)
+
 local function logActivityRejected(source, eventId, scoreValue, vehicleModel, reason)
     if SKLogs then
         SKLogs.Emit('activityRejected', {
@@ -33,6 +76,13 @@ function SKEventsSubmit.submitExEventScore(source, eventId, scoreValue, vehicleM
     local savedAlias = SKSaves.read(source, 'profile.alias')
     local alias = (savedAlias ~= '' and savedAlias) or GetPlayerName(source) or 'Unknown'
     local model = (type(vehicleModel) == 'string' and #vehicleModel <= 64) and vehicleModel or ''
+    local wantedLevel = scoreType == 'speed' and speedCameraWantedLevel(scoreValue) or 0
+    local speedCameraPolice = scoreType == 'speed' and {
+        wantedLevel = wantedLevel,
+        speedMph = scoreValue,
+        eventId = eventId,
+        vehicleModel = model,
+    } or nil
 
     MySQL.insert.await(
         'INSERT INTO `event_leaderboards` (`license`, `alias`, `event_id`, `vehicle_class`, `score_value`, `vehicle_model`) VALUES (?, ?, ?, ?, ?, ?)',
@@ -43,6 +93,7 @@ function SKEventsSubmit.submitExEventScore(source, eventId, scoreValue, vehicleM
     if scoreType == 'speed' then
         reward = SKEventsRewards.awardSpeedCameraXp(source, eventId, scoreValue)
         SKStats.increment(source, 'speedCameraFlashes', 1)
+        SKEventsSubmit.storeSpeedCameraPhotoContext(source, speedCameraPolice)
     elseif SKEventsQuery.isRampageEvent(eventId) then
         reward = SKEventsRewards.awardRampageXp(source, eventId, scoreValue)
         SKStats.increment(source, 'rampagesCompleted', 1)
@@ -85,6 +136,8 @@ function SKEventsSubmit.submitExEventScore(source, eventId, scoreValue, vehicleM
         daily = false,
         rewardClaimed = false,
         claimAwarded = false,
+        wantedLevel = wantedLevel,
+        speedCameraPolice = speedCameraPolice,
     }
 end
 
