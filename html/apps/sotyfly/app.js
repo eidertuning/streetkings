@@ -30,6 +30,20 @@
 
   function icon(name) { return '<i class="fa-solid ' + name + '"></i>'; }
 
+  function trackTitle(track) {
+    return String(track && track.title || '').trim() || 'Cancion sin nombre';
+  }
+
+  function trackArtist(track) {
+    return String(track && track.channelTitle || '').trim() || 'Sotyfly';
+  }
+
+  function trackThumbnail(track) {
+    if (track && track.thumbnail) return String(track.thumbnail);
+    if (track && track.videoId) return 'https://img.youtube.com/vi/' + encodeURIComponent(track.videoId) + '/hqdefault.jpg';
+    return '';
+  }
+
   function formatTime(ms) {
     var total = Math.max(0, Math.floor(Number(ms || 0) / 1000));
     var min = Math.floor(total / 60);
@@ -80,21 +94,22 @@
   }
 
   function coverHtml(track, size) {
-    if (track && track.thumbnail) {
-      return '<img src="' + esc(track.thumbnail) + '" alt="">';
+    var src = trackThumbnail(track);
+    if (src) {
+      return '<img src="' + esc(src) + '" alt="" onerror="this.style.display=&quot;none&quot;">';
     }
     return '<span class="sf-fallback-cover ' + (size || '') + '">' + icon('fa-music') + '</span>';
   }
 
   function trackRow(track, options) {
     options = options || {};
-    var meta = [track.channelTitle || 'Sotyfly'];
+    var meta = [trackArtist(track)];
     if (track.durationMs || track.duration) meta.push(formatTime(track.durationMs || (track.duration * 1000)));
     if (track.playCount) meta.push(track.playCount + ' plays');
     return '<article class="sf-track" data-track-id="' + esc(track.id) + '">' +
       '<div class="sf-track-cover">' + coverHtml(track) + '</div>' +
       '<button class="sf-track-main" data-action="play" data-track-id="' + esc(track.id) + '" type="button">' +
-        '<strong>' + esc(track.title || 'Sin titulo') + '</strong>' +
+        '<strong>' + esc(trackTitle(track)) + '</strong>' +
         '<small>' + esc(meta.join(' - ')) + '</small>' +
       '</button>' +
       '<button class="sf-icon-btn" data-action="add" data-track-id="' + esc(track.id) + '" title="Anadir" type="button">' + icon('fa-plus') + '</button>' +
@@ -111,8 +126,8 @@
       return '<article class="sf-card" data-track-id="' + esc(track.id) + '">' +
         '<button data-action="play" data-track-id="' + esc(track.id) + '" type="button">' +
           '<div class="sf-card-cover">' + coverHtml(track, 'large') + '</div>' +
-          '<strong>' + esc(track.title || 'Sin titulo') + '</strong>' +
-          '<small>' + esc(track.channelTitle || 'Sotyfly') + '</small>' +
+          '<strong>' + esc(trackTitle(track)) + '</strong>' +
+          '<small>' + esc(trackArtist(track)) + '</small>' +
         '</button>' +
       '</article>';
     }).join('');
@@ -151,18 +166,35 @@
       : '<div class="sf-empty">No se encontraron resultados.</div>';
   }
 
+  function isFavoritesPlaylist(playlist) {
+    return String(playlist && playlist.name || '').toLowerCase() === 'favoritos';
+  }
+
+  function orderedPlaylists() {
+    return (state.playlists || []).slice().sort(function (a, b) {
+      if (isFavoritesPlaylist(a)) return -1;
+      if (isFavoritesPlaylist(b)) return 1;
+      return String(a.name || '').localeCompare(String(b.name || ''), 'es', { sensitivity: 'base' });
+    });
+  }
+
+  function playlistIcon(playlist) {
+    return icon(isFavoritesPlaylist(playlist) ? 'fa-heart' : 'fa-list');
+  }
+
   function renderPlaylists() {
-    els.playlistRail.innerHTML = state.playlists.length
-      ? state.playlists.map(function (playlist) {
-          return '<button type="button" data-playlist-id="' + esc(playlist.id) + '">' + icon('fa-list') + '<span>' + esc(playlist.name) + '</span></button>';
+    var playlists = orderedPlaylists();
+    els.playlistRail.innerHTML = playlists.length
+      ? playlists.map(function (playlist) {
+          return '<button class="' + (isFavoritesPlaylist(playlist) ? 'is-favorites' : '') + '" type="button" data-playlist-id="' + esc(playlist.id) + '">' + playlistIcon(playlist) + '<span>' + esc(playlist.name) + '</span></button>';
         }).join('')
       : '<span class="sf-muted">Sin playlists.</span>';
 
-    els.playlists.innerHTML = state.playlists.length
-      ? state.playlists.map(function (playlist) {
-          return '<article class="sf-playlist-card" data-playlist-id="' + esc(playlist.id) + '">' +
+    els.playlists.innerHTML = playlists.length
+      ? playlists.map(function (playlist) {
+          return '<article class="sf-playlist-card ' + (isFavoritesPlaylist(playlist) ? 'is-favorites' : '') + '" data-playlist-id="' + esc(playlist.id) + '">' +
             '<button data-action="open-playlist" data-playlist-id="' + esc(playlist.id) + '" type="button">' +
-              '<div>' + icon('fa-list') + '</div>' +
+              '<div>' + playlistIcon(playlist) + '</div>' +
               '<strong>' + esc(playlist.name) + '</strong>' +
               '<small>' + esc((playlist.description || '') || ((playlist.track_count || 0) + ' canciones')) + '</small>' +
             '</button>' +
@@ -172,15 +204,23 @@
         }).join('')
       : '<div class="sf-empty">Crea tu primera playlist.</div>';
 
-    els.addPlaylist.innerHTML = state.playlists.map(function (playlist) {
+    els.addPlaylist.innerHTML = playlists.map(function (playlist) {
       return '<option value="' + esc(playlist.id) + '">' + esc(playlist.name) + '</option>';
     }).join('');
   }
 
+  function setVolumeSlider(value) {
+    var numeric = Math.max(0, Math.min(Number(value == null ? state.listenerVolume : value) || 0, 1));
+    if (!els.listenerVolume) return;
+    els.listenerVolume.value = numeric;
+    els.listenerVolume.style.setProperty('--volume-pct', (numeric * 100).toFixed(0) + '%');
+  }
+
   function renderPlayer() {
     var player = state.player || {};
-    var title = player.title || 'Sin musica activa';
-    var meta = player.channelTitle || (player.synced ? 'Audio 3D sincronizado' : 'Sotyfly');
+    var hasTrack = !!(player.key || player.trackId || player.videoId || player.url);
+    var title = hasTrack ? trackTitle(player) : 'Sin musica activa';
+    var meta = hasTrack ? trackArtist(player) : (player.synced ? 'Audio 3D sincronizado' : 'Sotyfly');
     var duration = Math.max(1, Number(player.durationMs || 0));
     var current = Math.max(0, Math.min(Number(player.currentMs || 0), duration));
     var pct = duration ? (current / duration) * 100 : 0;
@@ -199,12 +239,13 @@
     els.currentTime.textContent = formatTime(current);
     els.duration.textContent = formatTime(duration);
     els.play.innerHTML = icon(player.playing ? 'fa-pause' : 'fa-play');
-    els.listenerVolume.value = state.listenerVolume;
+    setVolumeSlider(state.listenerVolume);
 
-    if (player.thumbnail) {
-      els.barThumb.src = player.thumbnail;
+    var thumb = trackThumbnail(player);
+    if (thumb) {
+      els.barThumb.src = thumb;
       els.barThumb.style.display = '';
-      els.sideCover.innerHTML = '<img src="' + esc(player.thumbnail) + '" alt="">';
+      els.sideCover.innerHTML = '<img src="' + esc(thumb) + '" alt="">';
     } else {
       els.barThumb.style.display = 'none';
       els.sideCover.innerHTML = icon('fa-signal');
@@ -247,20 +288,23 @@
     var query = String(els.search.value || '').trim();
     if (!query) return;
     state.searchDropdownOpen = true;
-    showStatus('Buscando en cache...', 'info');
+    showStatus('Buscando canciones...', 'info');
     fetchNui('sotyfly:search', { query: query }).then(function (result) {
       if (!result || !result.ok) {
-        showStatus((result && result.message) || 'No se pudo conectar con YouTube.', 'error');
+        showStatus((result && result.message) || 'No se pudo completar la busqueda.', 'error');
         return;
       }
       state.searchResults = result.tracks || [];
-      if (result.source === 'cache') showStatus('Resultados cargados desde cache.', 'success');
-      else if (result.source === 'api') showStatus('Buscando en YouTube...', 'success');
+      if (!state.searchResults.length) showStatus(result.message || 'No se encontraron resultados.', 'info');
+      else if (result.source === 'cache') showStatus('Resultados cargados desde cache.', 'success');
+      else if (result.source === 'api') showStatus('Resultados nuevos listos.', 'success');
       else if (result.source === 'direct') showStatus('Link directo listo.', 'success');
       else showStatus(result.message || 'No se encontraron resultados.', 'info');
       setView('search');
       render();
       renderSearchDropdown(state.searchResults, query);
+    }).catch(function () {
+      showStatus('No se pudo completar la busqueda. Revisa la API y el servidor.', 'error');
     });
   }
 
@@ -504,6 +548,7 @@
     els.next.addEventListener('click', function () { playRelative(1); });
     els.listenerVolume.addEventListener('input', function () {
       state.listenerVolume = Number(els.listenerVolume.value);
+      setVolumeSlider(state.listenerVolume);
       fetchNui('sotyfly:setListenerVolume', { volume: state.listenerVolume });
     });
     onNuiEvent('state', function (payload) {

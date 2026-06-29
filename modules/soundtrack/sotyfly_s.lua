@@ -61,7 +61,30 @@ local function urlEncode(value)
 end
 
 local function youtubeApiKey()
-    return GetConvar('streetkings_youtube_api_key', cfg('YouTubeApiKey', '')) or ''
+    local names = cfg('YouTubeApiKeyConvars', {
+        'streetkings_youtube_api_key',
+        'sotyfly_youtube_api_key',
+        'sk_youtube_api_key',
+        'youtube_api_key',
+    })
+    if type(names) ~= 'table' then
+        names = { 'streetkings_youtube_api_key', 'sotyfly_youtube_api_key', 'sk_youtube_api_key', 'youtube_api_key' }
+    end
+    for _, name in ipairs(names) do
+        local value = cleanText(GetConvar(name, ''), 180)
+        if value ~= '' and value ~= 'PON_AQUI_TU_API_KEY' and value ~= 'TU_CLAVE_DE_YOUTUBE_DATA_API_V3' then
+            return value
+        end
+    end
+    local fallback = cleanText(cfg('YouTubeApiKey', ''), 180)
+    if fallback == 'PON_AQUI_TU_API_KEY' or fallback == 'TU_CLAVE_DE_YOUTUBE_DATA_API_V3' then return '' end
+    return fallback
+end
+
+local function debugLog(message)
+    if cfg('Debug', false) then
+        print(('[Sotyfly] %s'):format(message))
+    end
 end
 
 local function extractVideoId(value)
@@ -78,6 +101,43 @@ local function videoUrl(videoId)
     return ('https://www.youtube.com/watch?v=%s'):format(videoId)
 end
 
+local function youtubeThumbnail(videoId)
+    return ('https://img.youtube.com/vi/%s/hqdefault.jpg'):format(cleanText(videoId, 32))
+end
+
+local HTML_ENTITIES = {
+    amp = '&',
+    quot = '"',
+    apos = "'",
+    lt = '<',
+    gt = '>',
+}
+
+local HTML_NUMERIC_ENTITIES = {
+    [8211] = '-',
+    [8212] = '-',
+    [8216] = "'",
+    [8217] = "'",
+    [8220] = '"',
+    [8221] = '"',
+    [8230] = '...',
+}
+
+local function decodeHtmlEntities(value)
+    value = tostring(value or '')
+    value = value:gsub('&#(%d+);', function(num)
+        local code = tonumber(num)
+        if not code then return '' end
+        if HTML_NUMERIC_ENTITIES[code] then return HTML_NUMERIC_ENTITIES[code] end
+        if code >= 32 and code <= 126 then return string.char(code) end
+        return ''
+    end)
+    value = value:gsub('&(%a+);', function(entity)
+        return HTML_ENTITIES[entity] or ('&' .. entity .. ';')
+    end)
+    return value
+end
+
 local function parseDuration(iso)
     iso = tostring(iso or '')
     local h = tonumber(iso:match('(%d+)H')) or 0
@@ -89,6 +149,7 @@ end
 local function httpJson(url)
     local p = promise.new()
     PerformHttpRequest(url, function(status, body)
+        status = tonumber(status) or 0
         if status < 200 or status >= 300 then
             p:resolve({ ok = false, status = status, body = body })
             return
@@ -128,6 +189,13 @@ end
 
 local function upsertTrack(track)
     if type(track) ~= 'table' or not track.videoId or track.videoId == '' then return nil end
+    local videoId = cleanText(track.videoId, 32)
+    local title = cleanText(decodeHtmlEntities(track.title), 255)
+    if title == '' then title = 'Video ' .. videoId end
+    local channelTitle = cleanText(decodeHtmlEntities(track.channelTitle), 255)
+    if channelTitle == '' then channelTitle = 'Sotyfly' end
+    local thumbnail = cleanText(track.thumbnail, 500)
+    if thumbnail == '' then thumbnail = youtubeThumbnail(videoId) end
     MySQL.query.await([[
         INSERT INTO music_tracks (video_id, title, channel_title, thumbnail, duration, url)
         VALUES (?, ?, ?, ?, ?, ?)
@@ -139,14 +207,14 @@ local function upsertTrack(track)
             url = VALUES(url),
             updated_at = CURRENT_TIMESTAMP(3)
     ]], {
-        cleanText(track.videoId, 32),
-        cleanText(track.title, 255),
-        cleanText(track.channelTitle, 255),
-        cleanText(track.thumbnail, 500),
+        videoId,
+        title,
+        channelTitle,
+        thumbnail,
         tonumber(track.duration) or 0,
-        cleanText(track.url or videoUrl(track.videoId), 500),
+        cleanText(track.url or videoUrl(videoId), 500),
     })
-    return selectTrackByVideoId(track.videoId)
+    return selectTrackByVideoId(videoId)
 end
 
 local function trackFromYoutubeItem(item, details)
@@ -155,12 +223,13 @@ local function trackFromYoutubeItem(item, details)
     if not videoId or not tostring(videoId):match('^[%w_%-]+$') then return nil end
     local snippet = item.snippet or {}
     local thumbnails = snippet.thumbnails or {}
-    local thumb = thumbnails.medium or thumbnails.default or thumbnails.high or {}
+    local thumb = thumbnails.high or thumbnails.medium or thumbnails.default or {}
+    details = type(details) == 'table' and details or {}
     return {
         videoId = cleanText(videoId, 32),
-        title = cleanText(snippet.title or ('Video ' .. videoId), 255),
-        channelTitle = cleanText(snippet.channelTitle or '', 255),
-        thumbnail = cleanText(thumb.url or '', 500),
+        title = cleanText(decodeHtmlEntities(details.title or snippet.title or ('Video ' .. videoId)), 255),
+        channelTitle = cleanText(decodeHtmlEntities(details.channelTitle or snippet.channelTitle or 'Sotyfly'), 255),
+        thumbnail = cleanText(details.thumbnail or thumb.url or youtubeThumbnail(videoId), 500),
         duration = details and details.duration or 0,
         url = videoUrl(videoId),
     }
@@ -174,18 +243,21 @@ local function fetchVideoDetails(videoIds)
         urlEncode(key)
     )
     local response = httpJson(url)
-    if not response.ok or type(response.data) ~= 'table' then return {} end
+    if not response.ok or type(response.data) ~= 'table' then
+        debugLog(('Video details API failed status=%s body=%s'):format(tostring(response.status or 'unknown'), cleanText(response.body, 240)))
+        return {}
+    end
     local details = {}
     for _, item in ipairs(response.data.items or {}) do
         local videoId = item.id
         local snippet = item.snippet or {}
         local thumbnails = snippet.thumbnails or {}
-        local thumb = thumbnails.medium or thumbnails.default or thumbnails.high or {}
+        local thumb = thumbnails.high or thumbnails.medium or thumbnails.default or {}
         details[videoId] = {
             videoId = videoId,
-            title = cleanText(snippet.title or ('Video ' .. tostring(videoId)), 255),
-            channelTitle = cleanText(snippet.channelTitle or '', 255),
-            thumbnail = cleanText(thumb.url or '', 500),
+            title = cleanText(decodeHtmlEntities(snippet.title or ('Video ' .. tostring(videoId))), 255),
+            channelTitle = cleanText(decodeHtmlEntities(snippet.channelTitle or 'Sotyfly'), 255),
+            thumbnail = cleanText(thumb.url or youtubeThumbnail(videoId), 500),
             duration = parseDuration(item.contentDetails and item.contentDetails.duration),
             url = videoUrl(videoId),
         }
@@ -204,7 +276,7 @@ local function ensureTrackFromUrl(url)
         videoId = videoId,
         title = 'Video ' .. videoId,
         channelTitle = 'Direct link',
-        thumbnail = '',
+        thumbnail = youtubeThumbnail(videoId),
         duration = 0,
         url = videoUrl(videoId),
     }
@@ -573,13 +645,17 @@ lib.callback.register('streetmusic:server:search', function(source, query)
     SEARCH_COOLDOWN[source] = now() + (tonumber(cfg('SearchCooldown', 30)) or 30)
 
     if youtubeApiKey() == '' then
-        return { ok = false, reason = 'api_key_missing', message = 'No se pudo conectar con YouTube.' }
+        return {
+            ok = false,
+            reason = 'api_key_missing',
+            message = 'Falta la API key de busqueda. En server.cfg usa: set streetkings_youtube_api_key "TU_CLAVE_DE_YOUTUBE_DATA_API_V3".',
+        }
     end
     if not canUseApiSearch() then
         return {
             ok = false,
             reason = 'daily_api_limit',
-            message = 'Se alcanzo el limite diario de busquedas nuevas. Puedes usar canciones guardadas, populares, recientes o pegar un enlace directo de YouTube.',
+            message = 'Se alcanzo el limite diario de busquedas nuevas. Puedes usar canciones guardadas, populares, recientes o pegar un enlace directo.',
         }
     end
 
@@ -590,7 +666,12 @@ lib.callback.register('streetmusic:server:search', function(source, query)
     )
     local response = httpJson(url)
     if not response.ok or type(response.data) ~= 'table' then
-        return { ok = false, reason = 'youtube_error', message = 'No se pudo conectar con YouTube.' }
+        debugLog(('Search API failed status=%s body=%s'):format(tostring(response.status or 'unknown'), cleanText(response.body, 300)))
+        return {
+            ok = false,
+            reason = 'youtube_error',
+            message = ('La busqueda externa fallo (HTTP %s). Revisa la API key y que la API de busqueda este activa.'):format(tostring(response.status or '?')),
+        }
     end
 
     incrementApiUsage()
@@ -610,7 +691,7 @@ lib.callback.register('streetmusic:server:search', function(source, query)
     end
 
     saveSearchCache(query, normalized, tracks)
-    return { ok = true, tracks = tracks, source = 'api', message = 'Buscando en YouTube...' }
+    return { ok = true, tracks = tracks, source = 'api', message = 'Busqueda completada.' }
 end)
 
 lib.callback.register('streetmusic:server:playTrack3D', function(source, data)

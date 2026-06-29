@@ -198,6 +198,15 @@ img { display: block; max-width: 100%; }
   background: var(--hover);
 }
 
+.sf-playlist-rail button.is-favorites {
+  color: #fff;
+  background: linear-gradient(90deg, rgba(29, 185, 84, 0.24), rgba(255, 255, 255, 0.04));
+}
+
+.sf-playlist-rail button.is-favorites i {
+  color: var(--accent-color);
+}
+
 .sf-create-btn {
   background: var(--panel);
   color: #fff;
@@ -214,7 +223,7 @@ img { display: block; max-width: 100%; }
 .sf-main {
   min-height: 0;
   overflow: auto;
-  padding: 1rem 1.25rem 1.5rem;
+  padding: 0 1.25rem 1.5rem;
   background:
     linear-gradient(180deg, rgba(29, 185, 84, 0.14), transparent 16rem),
     var(--bg);
@@ -225,10 +234,12 @@ img { display: block; max-width: 100%; }
   top: 0;
   z-index: 12;
   display: grid;
-  grid-template-columns: minmax(18rem, 40rem);
+  grid-template-columns: minmax(18rem, 42rem);
   justify-content: center;
-  padding-bottom: 0.8rem;
-  background: linear-gradient(180deg, var(--bg) 70%, transparent);
+  margin: 0 -1.25rem;
+  padding: 0.72rem 1.25rem;
+  background: #000;
+  border-bottom: 1px solid var(--line);
 }
 
 .sf-search-wrap {
@@ -341,6 +352,7 @@ img { display: block; max-width: 100%; }
   min-height: 2rem;
   display: flex;
   align-items: center;
+  margin-top: 0.75rem;
   margin-bottom: 0.85rem;
   color: var(--muted);
   font-size: 0.86rem;
@@ -470,6 +482,12 @@ img { display: block; max-width: 100%; }
   background: var(--panel);
 }
 
+.sf-playlist-card.is-favorites {
+  background:
+    linear-gradient(135deg, rgba(29, 185, 84, 0.26), rgba(255, 255, 255, 0.04)),
+    var(--panel);
+}
+
 .sf-card button,
 .sf-playlist-card > button:first-child {
   width: 100%;
@@ -492,6 +510,18 @@ img { display: block; max-width: 100%; }
   aspect-ratio: 1;
   border-radius: 0.45rem;
   font-size: 2.3rem;
+}
+
+.sf-playlist-card div:first-child {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #282828, #181818);
+  color: var(--muted);
+}
+
+.sf-playlist-card.is-favorites div:first-child {
+  background: linear-gradient(135deg, #1DB954, #0c6b2e);
+  color: #041006;
 }
 
 .sf-playlist-card .sf-icon-btn {
@@ -653,16 +683,79 @@ img { display: block; max-width: 100%; }
 }
 
 .sf-volume {
+  width: min(14rem, 100%);
+  justify-self: end;
   display: grid;
-  grid-template-columns: auto minmax(7rem, 1fr);
-  gap: 0.5rem;
+  grid-template-columns: 1.2rem minmax(7rem, 10rem);
+  gap: 0.65rem;
   align-items: center;
   color: var(--muted);
 }
 
+.sf-volume i {
+  text-align: center;
+  font-size: 0.9rem;
+}
+
 .sf-volume input {
+  --volume-pct: 70%;
   width: 100%;
-  accent-color: var(--accent-color);
+  height: 1rem;
+  appearance: none;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.sf-volume input::-webkit-slider-runnable-track {
+  height: 0.25rem;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--accent-color) 0,
+    var(--accent-color) var(--volume-pct),
+    #535353 var(--volume-pct),
+    #535353 100%
+  );
+}
+
+.sf-volume input::-webkit-slider-thumb {
+  width: 0.85rem;
+  height: 0.85rem;
+  margin-top: -0.3rem;
+  appearance: none;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  box-shadow: 0 0.15rem 0.5rem rgba(0, 0, 0, 0.45);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.sf-volume:hover input::-webkit-slider-thumb,
+.sf-volume input:focus::-webkit-slider-thumb {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.sf-volume input::-moz-range-track {
+  height: 0.25rem;
+  border-radius: 999px;
+  background: #535353;
+}
+
+.sf-volume input::-moz-range-progress {
+  height: 0.25rem;
+  border-radius: 999px;
+  background: var(--accent-color);
+}
+
+.sf-volume input::-moz-range-thumb {
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
 }
 
 .sf-modal {
@@ -737,6 +830,9 @@ img { display: block; max-width: 100%; }
 
   .sf-volume {
     grid-column: 1 / -1;
+    width: 100%;
+    justify-self: stretch;
+    grid-template-columns: auto minmax(0, 1fr);
   }
 }
 
@@ -756,8 +852,11 @@ img { display: block; max-width: 100%; }
   }
 
   .sf-hero,
-  .sf-player,
-  .sf-volume {
+  .sf-player {
     grid-template-columns: 1fr;
+  }
+
+  .sf-volume {
+    grid-template-columns: auto minmax(0, 1fr);
   }
 }

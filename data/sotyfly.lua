@@ -1,6 +1,12 @@
 SKMusicConfig = SKMusicConfig or {}
 
 if IsDuplicityVersion and IsDuplicityVersion() then
+    SKMusicConfig.YouTubeApiKeyConvars = {
+        'streetkings_youtube_api_key',
+        'sotyfly_youtube_api_key',
+        'sk_youtube_api_key',
+        'youtube_api_key',
+    }
     SKMusicConfig.YouTubeApiKey = GetConvar('streetkings_youtube_api_key', '')
 else
     SKMusicConfig.YouTubeApiKey = ''

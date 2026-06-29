@@ -318,10 +318,12 @@ The player UI is handled by the tablet app **Sotyfly** (`sotyfly`). The legacy l
 Server order:
 
 ```cfg
-set streetkings_youtube_api_key "PON_AQUI_TU_API_KEY"
+set streetkings_youtube_api_key "TU_CLAVE_DE_YOUTUBE_DATA_API_V3"
 ensure xsound
 ensure streetkings
 ```
+
+`streetkings_youtube_api_key` is the recommended convar. Sotyfly also accepts `sotyfly_youtube_api_key`, `sk_youtube_api_key`, and `youtube_api_key` for compatibility. The key must be a server-side YouTube Data API v3 key with the API enabled in Google Cloud; the client UI never receives the key.
 
 Sotyfly is StreetKings-only. It does not detect or bridge external frameworks. Search calls go through the server with the official YouTube Data API key kept server-side. Searches are cached in `music_search_cache` before any API call, API searches are capped globally per day, and each player is capped by `music_user_daily_usage` (default 50 songs per day). The resource creates the required `music_*` tables automatically; the same schema is documented in `sql/music.sql`.
 
