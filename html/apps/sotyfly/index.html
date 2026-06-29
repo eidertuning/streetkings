@@ -11,7 +11,7 @@
   <main id="sfApp" class="sf-app">
     <section class="sf-audio-lock" id="sfAudioLock">
       <div class="sf-lock-card">
-        <i class="fa-solid fa-volume-xmark"></i>
+        <i class="fa-solid fa-volume-low"></i>
         <p>Audio desactivado</p>
         <h1>Debes ir a Ajustes y activar el audio.</h1>
         <span>Sotyfly permanece bloqueado mientras el audio general este apagado.</span>
@@ -62,6 +62,10 @@
               <p>Reproduccion sincronizada</p>
               <h1 id="sfNowTitle">Sin musica activa</h1>
               <span id="sfNowMeta">Busca, pega un enlace o reproduce una playlist.</span>
+              <div class="sf-hero-stats">
+                <span>Canciones hoy <strong id="sfDailyText">0 / 50</strong></span>
+                <span>Modo <strong id="sfSyncText">xSound</strong></span>
+              </div>
             </div>
           </section>
           <div class="sf-section-head">
@@ -73,8 +77,7 @@
 
         <section class="sf-view" data-view-panel="search">
           <div class="sf-section-head">
-            <h2><i class="fa-solid fa-magnifying-glass"></i> Buscar</h2>
-            <button id="sfSearchBtn" type="button">Buscar</button>
+            <h2><i class="fa-solid fa-magnifying-glass"></i> Resultados</h2>
           </div>
           <div id="sfSearchResults" class="sf-track-list"></div>
         </section>
@@ -103,12 +106,10 @@
         </section>
       </section>
 
-      <aside class="sf-right">
+      <aside class="sf-right" hidden>
         <div id="sfSideCover" class="sf-side-cover"><i class="fa-solid fa-signal"></i></div>
         <h2 id="sfSideTitle">Audio 3D</h2>
         <p id="sfSideMeta">Hasta 25 metros con fade por distancia.</p>
-        <div class="sf-stat"><span>Canciones hoy</span><strong id="sfDailyText">0 / 50</strong></div>
-        <div class="sf-stat"><span>Modo</span><strong id="sfSyncText">xSound</strong></div>
       </aside>
 
       <footer class="sf-player">
@@ -138,14 +139,14 @@
           <input id="sfSourceVolume" type="range" min="0" max="1" step="0.01">
           <i class="fa-solid fa-volume-high"></i>
           <input id="sfListenerVolume" type="range" min="0" max="1" step="0.01">
-          <button id="sfStop" type="button" title="Detener"><i class="fa-solid fa-xmark"></i></button>
+          <button id="sfStop" type="button" title="Detener"><i class="fa-solid fa-stop"></i></button>
         </div>
       </footer>
     </section>
 
     <div id="sfImportModal" class="sf-modal" aria-hidden="true">
       <form id="sfImportForm" class="sf-modal-card">
-        <button class="sf-modal-close" type="button" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+        <button class="sf-modal-close" type="button" data-close-modal><i class="fa-solid fa-arrow-left"></i></button>
         <h2>Pegar enlace</h2>
         <input id="sfImportUrl" type="url" placeholder="https://www.youtube.com/watch?v=..." maxlength="300">
         <button type="submit"><i class="fa-solid fa-play"></i> Reproducir</button>
@@ -154,7 +155,7 @@
 
     <div id="sfPlaylistModal" class="sf-modal" aria-hidden="true">
       <form id="sfPlaylistForm" class="sf-modal-card">
-        <button class="sf-modal-close" type="button" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+        <button class="sf-modal-close" type="button" data-close-modal><i class="fa-solid fa-arrow-left"></i></button>
         <h2 id="sfPlaylistModalTitle">Crear playlist</h2>
         <input id="sfPlaylistName" type="text" maxlength="50" placeholder="Nombre">
         <textarea id="sfPlaylistDescription" maxlength="200" placeholder="Descripcion"></textarea>
@@ -164,7 +165,7 @@
 
     <div id="sfAddModal" class="sf-modal" aria-hidden="true">
       <form id="sfAddForm" class="sf-modal-card">
-        <button class="sf-modal-close" type="button" data-close-modal><i class="fa-solid fa-xmark"></i></button>
+        <button class="sf-modal-close" type="button" data-close-modal><i class="fa-solid fa-arrow-left"></i></button>
         <h2>Anadir a playlist</h2>
         <select id="sfAddPlaylist"></select>
         <button type="submit"><i class="fa-solid fa-plus"></i> Anadir</button>

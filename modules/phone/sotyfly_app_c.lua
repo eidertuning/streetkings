@@ -78,13 +78,17 @@ local function distanceToSource(sourceData)
     return #(playerCoords - sourceCoords(sourceData))
 end
 
+local function clientNow()
+    return math.floor(GetGameTimer() / 1000)
+end
+
 local function timeOffset(sourceData)
-    sourceData._serverOffset = sourceData._serverOffset or ((tonumber(sourceData.serverNow) or os.time()) - os.time())
+    sourceData._serverOffset = sourceData._serverOffset or ((tonumber(sourceData.serverNow) or clientNow()) - clientNow())
     return sourceData._serverOffset
 end
 
 local function serverNow(sourceData)
-    return os.time() + timeOffset(sourceData)
+    return clientNow() + timeOffset(sourceData)
 end
 
 local function elapsedSeconds(sourceData)
@@ -301,13 +305,24 @@ end)
 
 RegisterNUICallback('sotyfly:setSourceVolume', function(data, cb)
     local result = lib.callback.await('streetmusic:server:setSourceVolume', false, data and data.volume) or { ok = false }
-    if result.player then mergeSource(result.player) end
+    if result.player then
+        mergeSource(result.player)
+        if result.player.soundName and startedSounds[result.player.soundName] then
+            setSoundVolume(result.player.soundName, tonumber(result.player.sourceVolume or result.player.volume) or 0.35)
+        end
+    end
     cb(result)
 end)
 
 RegisterNUICallback('sotyfly:setListenerVolume', function(data, cb)
     listenerVolume = math.max(0.0, math.min(tonumber(data and data.volume) or listenerVolume, 1.0))
     SetResourceKvp('sk_sotyfly_listener_volume', tostring(listenerVolume))
+    for _, sourceData in pairs(activeSources) do
+        if startedSounds[sourceData.soundName] then
+            local finalVolume = (tonumber(sourceData.volume) or cfg('DefaultSourceVolume', 0.35)) * listenerVolume * distanceFactor(distanceToSource(sourceData))
+            setSoundVolume(sourceData.soundName, math.max(0.0, math.min(finalVolume, 1.0)))
+        end
+    end
     cb(lib.callback.await('streetmusic:server:setListenerVolume', false, listenerVolume) or { ok = true, volume = listenerVolume })
 end)
 
@@ -325,6 +340,10 @@ end)
 
 RegisterNUICallback('sotyfly:addTrackToPlaylist', function(data, cb)
     cb(lib.callback.await('streetmusic:server:addTrackToPlaylist', false, data or {}) or { ok = false })
+end)
+
+RegisterNUICallback('sotyfly:toggleFavorite', function(data, cb)
+    cb(lib.callback.await('streetmusic:server:toggleFavorite', false, data or {}) or { ok = false })
 end)
 
 RegisterNUICallback('sotyfly:removeTrackFromPlaylist', function(data, cb)

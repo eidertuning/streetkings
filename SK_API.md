@@ -327,7 +327,7 @@ Sotyfly is StreetKings-only. It does not detect or bridge external frameworks. S
 
 Logical server callbacks/events exposed internally:
 
-`streetmusic:server:search`, `streetmusic:server:playTrack3D`, `streetmusic:server:pauseTrack`, `streetmusic:server:resumeTrack`, `streetmusic:server:stopTrack`, `streetmusic:server:setSourceVolume`, `streetmusic:server:setListenerVolume`, `streetmusic:server:playFromUrl`, `streetmusic:server:createPlaylist`, `streetmusic:server:deletePlaylist`, `streetmusic:server:renamePlaylist`, `streetmusic:server:addTrackToPlaylist`, `streetmusic:server:removeTrackFromPlaylist`, `streetmusic:server:getPlaylists`, `streetmusic:server:getPlaylistTracks`, `streetmusic:server:getRecentTracks`, `streetmusic:server:getPopularTracks`, `streetmusic:server:syncState`.
+`streetmusic:server:search`, `streetmusic:server:playTrack3D`, `streetmusic:server:pauseTrack`, `streetmusic:server:resumeTrack`, `streetmusic:server:stopTrack`, `streetmusic:server:setSourceVolume`, `streetmusic:server:setListenerVolume`, `streetmusic:server:playFromUrl`, `streetmusic:server:createPlaylist`, `streetmusic:server:deletePlaylist`, `streetmusic:server:renamePlaylist`, `streetmusic:server:addTrackToPlaylist`, `streetmusic:server:toggleFavorite`, `streetmusic:server:removeTrackFromPlaylist`, `streetmusic:server:getPlaylists`, `streetmusic:server:getPlaylistTracks`, `streetmusic:server:getRecentTracks`, `streetmusic:server:getPopularTracks`, `streetmusic:server:syncState`.
 
 ### Environment
 

@@ -41,6 +41,15 @@
     els.status.dataset.type = type || 'info';
   }
 
+  function normalizePlayer(player) {
+    if (!player) return null;
+    if (player.sourceVolume == null && player.volume != null) player.sourceVolume = player.volume;
+    if (player.durationMs == null && player.duration != null) player.durationMs = Number(player.duration || 0) * 1000;
+    if (player.currentMs == null) player.currentMs = 0;
+    if (player.channelTitle == null && player.channel_title != null) player.channelTitle = player.channel_title;
+    return player;
+  }
+
   function esc(value) {
     return String(value || '').replace(/[&<>"']/g, function (char) {
       return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char];
@@ -88,6 +97,7 @@
         '<small>' + esc(meta.join(' - ')) + '</small>' +
       '</button>' +
       '<button class="sf-icon-btn" data-action="add" data-track-id="' + esc(track.id) + '" title="Anadir" type="button">' + icon('fa-plus') + '</button>' +
+      '<button class="sf-icon-btn" data-action="favorite" data-track-id="' + esc(track.id) + '" title="Favorito" type="button">' + icon('fa-heart') + '</button>' +
       (options.remove ? '<button class="sf-icon-btn" data-action="remove" data-track-id="' + esc(track.id) + '" title="Quitar" type="button">' + icon('fa-trash') + '</button>' : '') +
     '</article>';
   }
@@ -195,7 +205,7 @@
       state.playlists = result.playlists || [];
       state.recent = result.recent || [];
       state.popular = result.popular || [];
-      state.player = result.player || null;
+      state.player = normalizePlayer(result.player || null);
       state.daily = result.daily || state.daily;
       state.api = result.api || state.api;
       state.xsoundReady = result.xsoundReady !== false;
@@ -258,7 +268,7 @@
         showStatus((result && result.message) || 'No se pudo reproducir.', 'error');
         return;
       }
-      state.player = result.player || state.player;
+      state.player = normalizePlayer(result.player || state.player);
       state.daily = result.daily || state.daily;
       render();
       window.setTimeout(loadData, 350);
@@ -279,7 +289,7 @@
       return;
     }
     fetchNui(state.player.playing ? 'sotyfly:pause' : 'sotyfly:resume', {}).then(function (result) {
-      state.player = result && result.player || state.player;
+      state.player = normalizePlayer(result && result.player || state.player);
       render();
     });
   }
@@ -318,6 +328,15 @@
         state.selectedTrack = findTrack(trackId);
         openModal(els.addModal);
       }
+      if (actionName === 'favorite') {
+        fetchNui('sotyfly:toggleFavorite', { trackId: trackId }).then(function (result) {
+          showStatus((result && result.message) || 'Favoritos actualizado.', result && result.ok ? 'success' : 'error');
+          if (result && result.playlists) {
+            state.playlists = result.playlists;
+            renderPlaylists();
+          }
+        });
+      }
       if (actionName === 'remove' && state.selectedPlaylist) {
         fetchNui('sotyfly:removeTrackFromPlaylist', { playlistId: state.selectedPlaylist, trackId: trackId }).then(function (result) {
           showStatus((result && result.message) || 'Cancion eliminada.', 'success');
@@ -337,7 +356,8 @@
     els.search.addEventListener('keydown', function (event) {
       if (event.key === 'Enter') search();
     });
-    els.searchBtn.addEventListener('click', search);
+    els.search.addEventListener('focus', function () { setView('search'); });
+    if (els.searchBtn) els.searchBtn.addEventListener('click', search);
     els.importOpen.addEventListener('click', function () { openModal(els.importModal); });
     els.createPlaylistOpen.addEventListener('click', function () {
       state.editingPlaylistId = null;
@@ -365,7 +385,7 @@
         }
         els.importUrl.value = '';
         closeModals();
-        state.player = result.player || state.player;
+        state.player = normalizePlayer(result.player || state.player);
         state.daily = result.daily || state.daily;
         render();
         window.setTimeout(loadData, 350);
@@ -441,7 +461,7 @@
     });
     els.sourceVolume.addEventListener('input', function () {
       fetchNui('sotyfly:setSourceVolume', { volume: Number(els.sourceVolume.value) }).then(function (result) {
-        state.player = result && result.player || state.player;
+        state.player = normalizePlayer(result && result.player || state.player);
       });
     });
     els.listenerVolume.addEventListener('input', function () {
@@ -450,7 +470,7 @@
     });
     onNuiEvent('state', function (payload) {
       if (payload && Object.prototype.hasOwnProperty.call(payload, 'player')) {
-        state.player = payload.player || null;
+        state.player = normalizePlayer(payload.player || null);
       }
       if (payload && payload.musicDisabled !== undefined) state.musicDisabled = payload.musicDisabled === true;
       renderPlayer();

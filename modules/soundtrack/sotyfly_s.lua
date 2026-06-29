@@ -383,6 +383,19 @@ local function listPlaylists(identifier)
     return playlists
 end
 
+local function ensureFavoritesPlaylist(identifier)
+    local row = MySQL.single.await(
+        'SELECT id FROM music_playlists WHERE player_identifier = ? AND name = ? LIMIT 1',
+        { identifier, 'Favoritos' }
+    )
+    if row and row.id then return tonumber(row.id) end
+
+    return MySQL.insert.await(
+        'INSERT INTO music_playlists (player_identifier, name, description, cover) VALUES (?, ?, ?, ?)',
+        { identifier, 'Favoritos', 'Canciones guardadas', '' }
+    )
+end
+
 local function playlistTracks(playlistId, identifier)
     local rows = MySQL.query.await([[
         SELECT t.*
@@ -720,6 +733,32 @@ lib.callback.register('streetmusic:server:addTrackToPlaylist', function(source, 
     end)
     if not ok then return { ok = false, reason = 'duplicate', message = 'Esta cancion ya esta en la playlist.' } end
     return { ok = true, tracks = playlistTracks(playlistId, identifier), message = 'Cancion anadida a la playlist.' }
+end)
+
+lib.callback.register('streetmusic:server:toggleFavorite', function(source, data)
+    data = type(data) == 'table' and data or {}
+    local identifier = playerIdentifier(source)
+    local playlistId = ensureFavoritesPlaylist(identifier)
+    local trackId = tonumber(data.trackId) or 0
+    if trackId <= 0 or not selectTrackById(trackId) then
+        return { ok = false, reason = 'track_not_found', message = 'Cancion no encontrada.' }
+    end
+
+    local existing = MySQL.single.await(
+        'SELECT id FROM music_playlist_tracks WHERE playlist_id = ? AND track_id = ? LIMIT 1',
+        { playlistId, trackId }
+    )
+    if existing then
+        MySQL.update.await('DELETE FROM music_playlist_tracks WHERE id = ?', { existing.id })
+        return { ok = true, favorited = false, playlists = listPlaylists(identifier), message = 'Cancion quitada de favoritos.' }
+    end
+
+    local posRow = MySQL.single.await('SELECT COALESCE(MAX(position), 0) + 1 AS next_pos FROM music_playlist_tracks WHERE playlist_id = ?', { playlistId })
+    MySQL.insert.await(
+        'INSERT INTO music_playlist_tracks (playlist_id, track_id, position) VALUES (?, ?, ?)',
+        { playlistId, trackId, tonumber(posRow and posRow.next_pos) or 1 }
+    )
+    return { ok = true, favorited = true, playlists = listPlaylists(identifier), message = 'Cancion guardada en favoritos.' }
 end)
 
 lib.callback.register('streetmusic:server:removeTrackFromPlaylist', function(source, data)
