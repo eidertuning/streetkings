@@ -154,7 +154,6 @@ local function cleanupCinematic()
     SetTimeScale(1.0)
     StopGameplayCamShaking(true)
     ClearTimecycleModifier()
-    RenderScriptCams(false, true, 0, true, true)
     SendNUIMessage({ type = 'speedcam:flash', show = false })
 end
 
