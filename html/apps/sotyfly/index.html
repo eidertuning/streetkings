@@ -46,19 +46,22 @@
 
       <section class="sf-main">
         <header class="sf-topbar">
-          <div class="sf-searchbox">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input id="sfSearch" type="search" maxlength="100" placeholder="Que quieres reproducir?">
+          <div class="sf-search-wrap">
+            <div class="sf-searchbox">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input id="sfSearch" type="search" maxlength="100" placeholder="Que quieres reproducir?">
+              <span class="sf-search-divider"></span>
+              <button id="sfImportOpen" class="sf-search-action" type="button" title="Pegar enlace"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            <div id="sfSearchDropdown" class="sf-search-dropdown" hidden></div>
           </div>
-          <button id="sfImportOpen" class="sf-round-action" type="button" title="Pegar enlace"><i class="fa-solid fa-plus"></i></button>
         </header>
 
         <div id="sfStatus" class="sf-status">Canciones hoy: 0 / 50</div>
 
         <section id="sfHomeView" class="sf-view is-active" data-view-panel="home">
           <section class="sf-hero">
-            <div class="sf-cover-xl" id="sfHeroCover"><i class="fa-solid fa-car"></i></div>
-            <div>
+            <div class="sf-hero-copy">
               <p>Reproduccion sincronizada</p>
               <h1 id="sfNowTitle">Sin musica activa</h1>
               <span id="sfNowMeta">Busca, pega un enlace o reproduce una playlist.</span>
@@ -135,11 +138,8 @@
           </div>
         </div>
         <div class="sf-volume">
-          <i class="fa-solid fa-signal"></i>
-          <input id="sfSourceVolume" type="range" min="0" max="1" step="0.01">
           <i class="fa-solid fa-volume-high"></i>
           <input id="sfListenerVolume" type="range" min="0" max="1" step="0.01">
-          <button id="sfStop" type="button" title="Detener"><i class="fa-solid fa-stop"></i></button>
         </div>
       </footer>
     </section>

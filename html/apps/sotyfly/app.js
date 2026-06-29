@@ -17,6 +17,7 @@
     selectedTrack: null,
     selectedPlaylist: null,
     editingPlaylistId: null,
+    searchDropdownOpen: false,
     queue: [],
     queueIndex: -1,
     listenerVolume: 0.7,
@@ -117,6 +118,33 @@
     }).join('');
   }
 
+  function previewTracks(query) {
+    query = String(query || '').trim().toLowerCase();
+    var pool = allTracks();
+    if (!query) return (state.recent.length ? state.recent : state.popular).slice(0, 8);
+    return pool.filter(function (track) {
+      return String(track.title || '').toLowerCase().indexOf(query) !== -1 ||
+        String(track.channelTitle || '').toLowerCase().indexOf(query) !== -1;
+    }).slice(0, 8);
+  }
+
+  function renderSearchDropdown(tracks, query) {
+    if (!els.searchDropdown) return;
+    query = String(query || els.search.value || '').trim();
+    if (!state.searchDropdownOpen) {
+      els.searchDropdown.hidden = true;
+      return;
+    }
+    tracks = tracks || previewTracks(query);
+    var header = query
+      ? '<div class="sf-search-hint"><i class="fa-solid fa-magnifying-glass"></i><strong>' + esc(query) + '</strong><span>Intro para buscar</span></div>'
+      : '<div class="sf-search-hint"><i class="fa-solid fa-clock-rotate-left"></i><strong>Escuchado recientemente</strong><span>Resultados guardados</span></div>';
+    els.searchDropdown.innerHTML = header + (tracks.length
+      ? tracks.map(function (track) { return trackRow(track); }).join('')
+      : '<div class="sf-empty">Pulsa Intro para buscar canciones nuevas.</div>');
+    els.searchDropdown.hidden = false;
+  }
+
   function renderTrackList(container, tracks, options) {
     container.innerHTML = tracks && tracks.length
       ? tracks.map(function (track) { return trackRow(track, options); }).join('')
@@ -171,18 +199,15 @@
     els.currentTime.textContent = formatTime(current);
     els.duration.textContent = formatTime(duration);
     els.play.innerHTML = icon(player.playing ? 'fa-pause' : 'fa-play');
-    els.sourceVolume.value = player.sourceVolume == null ? 0.35 : player.sourceVolume;
     els.listenerVolume.value = state.listenerVolume;
 
     if (player.thumbnail) {
       els.barThumb.src = player.thumbnail;
       els.barThumb.style.display = '';
       els.sideCover.innerHTML = '<img src="' + esc(player.thumbnail) + '" alt="">';
-      els.heroCover.innerHTML = '<img src="' + esc(player.thumbnail) + '" alt="">';
     } else {
       els.barThumb.style.display = 'none';
       els.sideCover.innerHTML = icon('fa-signal');
-      els.heroCover.innerHTML = icon('fa-car');
     }
 
     var dailyText = (state.daily.played || 0) + ' / ' + (state.daily.max || 50);
@@ -197,6 +222,7 @@
     renderTrackList(els.popular, state.popular);
     renderTrackList(els.playlistTracks, state.playlistTracks, { remove: !!state.selectedPlaylist });
     els.homePopular.innerHTML = trackCards(state.popular);
+    renderSearchDropdown();
   }
 
   function loadData() {
@@ -220,6 +246,7 @@
   function search() {
     var query = String(els.search.value || '').trim();
     if (!query) return;
+    state.searchDropdownOpen = true;
     showStatus('Buscando en cache...', 'info');
     fetchNui('sotyfly:search', { query: query }).then(function (result) {
       if (!result || !result.ok) {
@@ -233,6 +260,7 @@
       else showStatus(result.message || 'No se encontraron resultados.', 'info');
       setView('search');
       render();
+      renderSearchDropdown(state.searchResults, query);
     });
   }
 
@@ -261,7 +289,7 @@
     state.queueIndex = state.queue.findIndex(function (item) { return String(item.id) === String(trackId); });
     fetchNui('sotyfly:playTrack', {
       trackId: track.id,
-      volume: Number(els.sourceVolume.value || 0.35),
+      volume: state.player && state.player.sourceVolume != null ? Number(state.player.sourceVolume) : 0.35,
       queue: state.queue.map(function (item) { return item.id; })
     }).then(function (result) {
       if (!result || !result.ok) {
@@ -322,6 +350,8 @@
       var trackId = action.dataset.trackId;
       var actionName = action.dataset.action;
       if (actionName === 'play') {
+        state.searchDropdownOpen = false;
+        renderSearchDropdown();
         playTrack(trackId, container === els.playlistTracks ? state.playlistTracks : null);
       }
       if (actionName === 'add') {
@@ -355,9 +385,27 @@
     });
     els.search.addEventListener('keydown', function (event) {
       if (event.key === 'Enter') search();
+      if (event.key === 'Escape') {
+        state.searchDropdownOpen = false;
+        renderSearchDropdown();
+      }
     });
-    els.search.addEventListener('focus', function () { setView('search'); });
+    els.search.addEventListener('input', function () {
+      state.searchDropdownOpen = true;
+      setView('search');
+      renderSearchDropdown(previewTracks(els.search.value), els.search.value);
+    });
+    els.search.addEventListener('focus', function () {
+      state.searchDropdownOpen = true;
+      setView('search');
+      renderSearchDropdown(previewTracks(els.search.value), els.search.value);
+    });
     if (els.searchBtn) els.searchBtn.addEventListener('click', search);
+    document.addEventListener('click', function (event) {
+      if (event.target.closest('.sf-search-wrap')) return;
+      state.searchDropdownOpen = false;
+      renderSearchDropdown();
+    });
     els.importOpen.addEventListener('click', function () { openModal(els.importModal); });
     els.createPlaylistOpen.addEventListener('click', function () {
       state.editingPlaylistId = null;
@@ -378,7 +426,7 @@
         showStatus('Debes ir a Ajustes y activar el audio para usar Sotyfly.', 'error');
         return;
       }
-      fetchNui('sotyfly:playFromUrl', { url: url, volume: Number(els.sourceVolume.value || 0.35) }).then(function (result) {
+      fetchNui('sotyfly:playFromUrl', { url: url, volume: state.player && state.player.sourceVolume != null ? Number(state.player.sourceVolume) : 0.35 }).then(function (result) {
         if (!result || !result.ok) {
           showStatus((result && result.message) || 'No se pudo reproducir el enlace.', 'error');
           return;
@@ -446,6 +494,7 @@
       }
     });
     bindTrackContainer(els.searchResults);
+    bindTrackContainer(els.searchDropdown);
     bindTrackContainer(els.recent);
     bindTrackContainer(els.popular);
     bindTrackContainer(els.playlistTracks);
@@ -453,17 +502,6 @@
     els.play.addEventListener('click', togglePlayback);
     els.prev.addEventListener('click', function () { playRelative(-1); });
     els.next.addEventListener('click', function () { playRelative(1); });
-    els.stop.addEventListener('click', function () {
-      fetchNui('sotyfly:stop', {}).then(function () {
-        state.player = null;
-        render();
-      });
-    });
-    els.sourceVolume.addEventListener('input', function () {
-      fetchNui('sotyfly:setSourceVolume', { volume: Number(els.sourceVolume.value) }).then(function (result) {
-        state.player = normalizePlayer(result && result.player || state.player);
-      });
-    });
     els.listenerVolume.addEventListener('input', function () {
       state.listenerVolume = Number(els.listenerVolume.value);
       fetchNui('sotyfly:setListenerVolume', { volume: state.listenerVolume });
@@ -495,6 +533,7 @@
     els.searchBtn = $('sfSearchBtn');
     els.status = $('sfStatus');
     els.importOpen = $('sfImportOpen');
+    els.searchDropdown = $('sfSearchDropdown');
     els.createPlaylistOpen = $('sfCreatePlaylistOpen');
     els.playlistRail = $('sfPlaylistRail');
     els.homePopular = $('sfHomePopular');
@@ -505,7 +544,6 @@
     els.popular = $('sfPopular');
     els.nowTitle = $('sfNowTitle');
     els.nowMeta = $('sfNowMeta');
-    els.heroCover = $('sfHeroCover');
     els.sideCover = $('sfSideCover');
     els.sideTitle = $('sfSideTitle');
     els.sideMeta = $('sfSideMeta');
@@ -517,11 +555,9 @@
     els.play = $('sfPlay');
     els.prev = $('sfPrev');
     els.next = $('sfNext');
-    els.stop = $('sfStop');
     els.progress = $('sfProgress');
     els.currentTime = $('sfCurrentTime');
     els.duration = $('sfDuration');
-    els.sourceVolume = $('sfSourceVolume');
     els.listenerVolume = $('sfListenerVolume');
     els.importModal = $('sfImportModal');
     els.importForm = $('sfImportForm');

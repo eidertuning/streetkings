@@ -54,7 +54,6 @@
     els.progress = $('sotyflyMiniProgress');
     els.play = $('sotyflyMiniPlay');
     els.next = $('sotyflyMiniNext');
-    els.stop = $('sotyflyMiniStop');
     els.open = $('sotyflyMiniOpen');
 
     els.play.addEventListener('click', function () {
@@ -62,11 +61,6 @@
     });
     els.next.addEventListener('click', function () {
       post('sotyfly:next');
-    });
-    els.stop.addEventListener('click', function () {
-      post('sotyfly:stop');
-      state.player = null;
-      render();
     });
     els.open.addEventListener('click', function () {
       post('sotyfly:openPlayer');
