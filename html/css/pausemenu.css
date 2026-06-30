@@ -889,3 +889,694 @@
     }
 
 }
+
+/* -- Racing premium rebuild ------------------------------------------------ */
+
+#sk-pausemenu-overlay {
+    --pm-bg: rgba(5, 5, 9, 0.88);
+    --pm-panel: rgba(8, 8, 13, 0.86);
+    --pm-panel-strong: rgba(10, 10, 16, 0.92);
+    --pm-border: rgba(255, 255, 255, 0.10);
+    --pm-border-soft: rgba(255, 255, 255, 0.06);
+    --pm-border-hot: rgba(255, 10, 115, 0.68);
+    --pm-text: #f4f4f7;
+    --pm-muted: rgba(244, 244, 247, 0.65);
+    --pm-soft: rgba(244, 244, 247, 0.52);
+    --pm-hot: #ff0a73;
+    --pm-hot-2: #ff4e9e;
+    --pm-cyan: #8cecff;
+    --pm-gold: #ffd039;
+    --pm-radius-lg: 8px;
+    --pm-radius-md: 6px;
+    --pm-radius-sm: 5px;
+    background:
+        linear-gradient(105deg, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.18) 48%, rgba(0, 0, 0, 0.05) 100%),
+        rgba(0, 0, 0, 0.08);
+}
+
+#sk-pausemenu-panel {
+    width: 100vw;
+    height: 100vh;
+    padding: clamp(0.55rem, 1.15vh, 0.95rem) clamp(0.9rem, 2.2vw, 2.15rem) clamp(0.58rem, 1.2vh, 0.9rem);
+    grid-template-rows: clamp(4.3rem, 7.6vh, 5.25rem) minmax(0, 1fr) auto;
+    gap: clamp(0.52rem, 1.05vh, 0.75rem);
+    font-family: 'Poppins', 'Inter', sans-serif;
+}
+
+#sk-pausemenu-header {
+    min-height: 0;
+    height: clamp(4.3rem, 7.6vh, 5.25rem);
+    display: grid;
+    grid-template-columns: minmax(13rem, 18rem) minmax(0, 1.05fr) minmax(22rem, 0.8fr);
+    gap: 0.65rem;
+    align-items: stretch;
+}
+
+#sk-pausemenu-logo {
+    width: min(12.25rem, 100%);
+    height: 100%;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
+#sk-pausemenu-logo .pm-logo-image {
+    width: min(11.6rem, 100%);
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.pm-profile-card,
+#pm-header-stats,
+.pm-card,
+#pm-session-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(145deg, var(--pm-panel-strong), rgba(8, 8, 13, 0.78));
+    border: 1px solid var(--pm-border);
+    border-radius: var(--pm-radius-lg);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.pm-profile-card::before,
+.pm-profile-card::after,
+#pm-header-stats::before,
+#pm-header-stats::after,
+#pm-session-card::before,
+#pm-session-card::after,
+.pm-card::before,
+.pm-card::after {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.pm-profile-card::before,
+#pm-header-stats::before,
+#pm-session-card::before,
+.pm-card::before {
+    top: -1px;
+    left: -1px;
+    border-top: 2px solid var(--pm-hot);
+    border-left: 2px solid var(--pm-hot);
+    background: none;
+}
+
+.pm-profile-card::after,
+#pm-header-stats::after,
+#pm-session-card::after,
+.pm-card::after {
+    right: -1px;
+    bottom: -1px;
+    border-right: 2px solid var(--pm-hot);
+    border-bottom: 2px solid var(--pm-hot);
+}
+
+.pm-profile-card > *,
+#pm-header-stats > *,
+#pm-session-card > *,
+.pm-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+#pm-session-card {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 0.28rem;
+    height: 100%;
+    min-height: 0;
+    padding: 0.55rem 0.8rem;
+}
+
+#pm-session-card .pm-section-title {
+    margin: 0;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.pm-session-grid {
+    margin: 0;
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-columns:
+        minmax(3.6rem, 0.52fr)
+        minmax(4.6rem, 0.62fr)
+        minmax(5rem, 0.78fr)
+        minmax(5.8rem, 0.95fr)
+        minmax(6.4rem, 1fr)
+        minmax(3.7rem, 0.46fr);
+    gap: 0;
+    align-items: stretch;
+    overflow: hidden;
+}
+
+.pm-session-grid div {
+    min-width: 0;
+    height: 100%;
+    padding: 0.2rem 0.54rem;
+    border: 0;
+    border-right: 1px solid var(--pm-border);
+    border-radius: 0;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.pm-session-grid div:last-child {
+    border-right: 0;
+}
+
+.pm-session-grid span,
+.pm-session-grid strong,
+.pm-header-stat span,
+.pm-header-stat strong,
+#pm-info-name,
+#pm-profile-alias,
+.pm-badge,
+.pm-menu-copy strong,
+.pm-menu-copy small,
+.pm-metric-row strong,
+.pm-metric-row span,
+.pm-card h2,
+.pm-card h3,
+.pm-card p {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pm-session-grid span,
+.pm-session-grid strong,
+.pm-header-stat span,
+.pm-header-stat strong,
+#pm-info-name,
+#pm-profile-alias,
+.pm-badge,
+.pm-menu-copy strong,
+.pm-menu-copy small,
+.pm-metric-row strong,
+.pm-metric-row span {
+    white-space: nowrap;
+}
+
+.pm-session-grid span,
+.pm-header-stat span,
+.pm-section-title,
+.pm-kicker,
+.pm-metric-row span,
+.pm-progress-labels span {
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.pm-section-title {
+    gap: 0.42rem;
+    color: var(--pm-hot);
+    font-size: 0.66rem;
+    font-weight: 800;
+}
+
+.pm-session-grid span {
+    font-size: 0.52rem;
+    color: rgba(244, 244, 247, 0.55);
+}
+
+.pm-session-grid strong {
+    margin-top: 0.22rem;
+    font-size: clamp(0.7rem, 0.82vw, 0.9rem);
+    color: #fff;
+    line-height: 1;
+}
+
+#pm-header-stats {
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 0.55fr 1.25fr 0.85fr 0.85fr;
+    gap: 0;
+    padding: 0.55rem 0.72rem;
+}
+
+.pm-header-stat {
+    min-width: 0;
+    padding: 0.2rem 0.66rem;
+    border: 0;
+    border-right: 1px solid var(--pm-border);
+    border-radius: 0;
+    background: transparent;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.pm-header-stat:last-child {
+    border-right: 0;
+}
+
+.pm-header-stat span {
+    color: rgba(244, 244, 247, 0.55);
+    font-size: 0.52rem;
+}
+
+.pm-header-stat strong {
+    margin-top: 0.25rem;
+    color: #fff;
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(0.95rem, 1.25vw, 1.45rem);
+    line-height: 1;
+}
+
+.pm-header-stat:first-child strong,
+.pm-header-stat:last-child strong {
+    color: var(--pm-hot);
+}
+
+.pm-header-stat:first-child strong {
+    font-size: clamp(1.5rem, 2vw, 2.25rem);
+}
+
+#pm-xp-panel {
+    display: none;
+}
+
+#sk-pausemenu-grid {
+    min-height: 0;
+    grid-template-columns: minmax(16.2rem, 21vw) minmax(0, 1fr);
+    gap: clamp(0.62rem, 1.25vw, 1rem);
+}
+
+#sk-pausemenu-left {
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    gap: 0.55rem;
+}
+
+.pm-profile-card {
+    min-height: 5.35rem;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.72rem;
+    padding: 0.68rem 0.75rem;
+    border-left: 0;
+}
+
+.pm-profile-card--side .pm-profile-avatar-wrap,
+.pm-profile-avatar-wrap {
+    width: clamp(3.1rem, 4vw, 4rem);
+    border-radius: var(--pm-radius-md);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 0 20px rgba(255, 10, 115, 0.18);
+}
+
+.pm-kicker {
+    font-size: 0.64rem;
+    color: var(--pm-cyan);
+}
+
+#pm-info-name,
+.pm-profile-card--side #pm-info-name {
+    margin-top: 0.05rem;
+    font-size: clamp(1.05rem, 1.5vw, 1.55rem);
+    line-height: 1.04;
+}
+
+#pm-profile-alias,
+.pm-profile-card--side #pm-profile-alias {
+    margin-top: 0.08rem;
+    font-size: 0.68rem;
+}
+
+.pm-profile-badges {
+    min-width: 0;
+    min-height: 1.25rem;
+    gap: 0.28rem;
+    margin-top: 0.35rem;
+    flex-wrap: nowrap;
+    overflow: hidden;
+}
+
+.pm-badge {
+    flex: 0 1 auto;
+    max-width: 7.8rem;
+    min-width: 0;
+    border-radius: var(--pm-radius-sm);
+    padding: 0.2rem 0.4rem;
+    font-size: 0.58rem;
+}
+
+#pm-btn-continue {
+    min-height: 4rem;
+    background:
+        linear-gradient(135deg, rgba(255, 10, 115, 0.28), rgba(255, 10, 115, 0.10)),
+        rgba(8, 8, 13, 0.86);
+    border-color: rgba(255, 10, 115, 0.56);
+    box-shadow: 0 0 26px rgba(255, 10, 115, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+#pm-btn-continue .pm-menu-icon {
+    background: rgba(255, 10, 115, 0.24);
+    color: #fff;
+}
+
+#sk-pausemenu-nav {
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 0.35rem;
+    gap: 0.45rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 10, 115, 0.65) rgba(255, 255, 255, 0.04);
+}
+
+#sk-pausemenu-nav::-webkit-scrollbar {
+    width: 0.42rem;
+}
+
+#sk-pausemenu-nav::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+#sk-pausemenu-nav::-webkit-scrollbar-thumb {
+    background: rgba(255, 10, 115, 0.65);
+    border-radius: 4px;
+}
+
+.pm-menu-item {
+    min-height: 3.65rem;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.68rem;
+    padding: 0.68rem 0.75rem;
+    border-radius: var(--pm-radius-lg);
+    background: rgba(8, 8, 13, 0.78);
+    border: 1px solid var(--pm-border);
+    box-shadow: none;
+}
+
+.pm-menu-item:hover,
+.pm-menu-item.is-controller-focused {
+    transform: translateX(0.14rem);
+    border-color: var(--pm-border-hot);
+    background: rgba(255, 10, 115, 0.15);
+    box-shadow: 0 0 20px rgba(255, 10, 115, 0.16);
+}
+
+.pm-menu-icon {
+    width: 2.3rem;
+    border-radius: var(--pm-radius-md);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--pm-cyan);
+    box-shadow: none;
+}
+
+.pm-menu-item.is-primary .pm-menu-icon {
+    background: rgba(255, 10, 115, 0.25);
+    color: #fff;
+}
+
+.pm-menu-copy strong {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(0.98rem, 1.12vw, 1.22rem);
+    letter-spacing: 0.08em;
+}
+
+.pm-menu-copy small {
+    margin-top: 0.18rem;
+    font-size: 0.66rem;
+}
+
+#sk-pausemenu-content {
+    min-height: 0;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) minmax(7.2rem, 28%);
+    gap: clamp(0.62rem, 1.2vh, 0.85rem);
+    overflow: hidden;
+    padding: 0;
+}
+
+.pm-card {
+    border-radius: var(--pm-radius-lg);
+    padding: clamp(0.9rem, 1.45vw, 1.25rem);
+}
+
+.pm-progress-card {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.pm-card h2 {
+    font-size: clamp(1.85rem, 2.6vw, 3rem);
+}
+
+.pm-card h3 {
+    font-size: clamp(1rem, 1.35vw, 1.45rem);
+}
+
+.pm-card p {
+    margin: 0.55rem 0 0;
+    color: var(--pm-muted);
+    font-size: clamp(0.78rem, 0.9vw, 0.95rem);
+    line-height: 1.38;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.pm-card-head {
+    min-width: 0;
+}
+
+.pm-level-chip {
+    border-radius: var(--pm-radius-sm);
+    padding: 0.42rem 0.68rem;
+    white-space: nowrap;
+}
+
+.pm-progress-track-wrap {
+    margin-top: auto;
+    padding-top: 0.95rem;
+}
+
+.pm-progress-labels {
+    min-width: 0;
+    align-items: center;
+}
+
+.pm-progress-labels span,
+.pm-progress-labels strong {
+    min-width: 0;
+    max-width: 50%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pm-progress-track {
+    height: 0.62rem;
+    margin-top: 0.42rem;
+}
+
+.pm-metric-row {
+    margin-top: 0.85rem;
+    gap: 0.52rem;
+}
+
+.pm-metric-row div {
+    padding: 0.68rem;
+    border-radius: var(--pm-radius-md);
+    background: rgba(255, 255, 255, 0.045);
+    border-color: var(--pm-border-soft);
+}
+
+.pm-metric-row i {
+    margin-bottom: 0.42rem;
+}
+
+.pm-metric-row span {
+    font-size: 0.5rem;
+}
+
+.pm-metric-row strong {
+    font-size: clamp(0.98rem, 1.3vw, 1.45rem);
+}
+
+#pm-lower-cards {
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.72fr);
+    gap: clamp(0.62rem, 1.2vw, 0.85rem);
+}
+
+#pm-patchnotes-list {
+    margin-top: 0.68rem;
+    gap: 0.44rem;
+}
+
+#pm-patchnotes-list li {
+    font-size: 0.78rem;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: normal;
+}
+
+#pm-patchnotes-list li::before {
+    border-radius: 999px;
+}
+
+.pm-event-card {
+    gap: 0.48rem;
+}
+
+.pm-event-meta {
+    margin-top: auto;
+}
+
+.pm-event-meta span {
+    border-radius: var(--pm-radius-sm);
+    padding: 0.42rem 0.55rem;
+    min-width: 0;
+}
+
+.pm-event-meta strong {
+    min-width: 0;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#sk-pausemenu-footer {
+    width: fit-content;
+    justify-self: end;
+    display: flex;
+    gap: 0.5rem;
+}
+
+#sk-pausemenu-footer > span {
+    min-height: 2.05rem;
+    gap: 0.38rem;
+    padding: 0.3rem 0.52rem;
+    border-radius: var(--pm-radius-sm);
+    background: rgba(8, 8, 13, 0.82);
+    border: 1px solid var(--pm-border);
+    box-shadow: none;
+    white-space: nowrap;
+}
+
+#sk-pausemenu-footer kbd {
+    min-width: 2.05rem;
+    padding: 0.24rem 0.42rem;
+    border-radius: var(--pm-radius-sm);
+}
+
+@media (max-width: 1366px), (max-height: 768px) {
+    #sk-pausemenu-panel {
+        padding: 0.48rem 0.8rem 0.52rem;
+        gap: 0.46rem;
+    }
+
+    #sk-pausemenu-header {
+        grid-template-columns: minmax(10.5rem, 13.5rem) minmax(0, 1fr) minmax(18.5rem, 0.78fr);
+        gap: 0.5rem;
+        height: clamp(4rem, 7.4vh, 4.65rem);
+    }
+
+    #sk-pausemenu-logo .pm-logo-image {
+        width: min(10.4rem, 100%);
+    }
+
+    #pm-session-card,
+    #pm-header-stats {
+        padding: 0.46rem 0.58rem;
+    }
+
+    .pm-section-title {
+        font-size: 0.58rem;
+    }
+
+    .pm-session-grid span,
+    .pm-header-stat span {
+        font-size: 0.46rem;
+    }
+
+    .pm-session-grid strong {
+        font-size: 0.68rem;
+    }
+
+    .pm-header-stat strong {
+        font-size: 0.94rem;
+    }
+
+    .pm-header-stat:first-child strong {
+        font-size: 1.42rem;
+    }
+
+    #sk-pausemenu-grid {
+        grid-template-columns: minmax(14.5rem, 22vw) minmax(0, 1fr);
+        gap: 0.52rem;
+    }
+
+    .pm-profile-card {
+        min-height: 4.65rem;
+        padding: 0.54rem 0.62rem;
+    }
+
+    .pm-profile-card--side .pm-profile-avatar-wrap,
+    .pm-profile-avatar-wrap {
+        width: 2.75rem;
+    }
+
+    .pm-profile-card--side #pm-info-name,
+    #pm-info-name {
+        font-size: 1rem;
+    }
+
+    #pm-profile-alias,
+    .pm-menu-copy small,
+    .pm-profile-badges {
+        display: none;
+    }
+
+    #pm-btn-continue,
+    .pm-menu-item {
+        min-height: 3.08rem;
+        padding: 0.48rem 0.58rem;
+        gap: 0.5rem;
+    }
+
+    .pm-menu-icon {
+        width: 2rem;
+    }
+
+    .pm-card {
+        padding: 0.72rem;
+    }
+
+    .pm-card h2 {
+        font-size: clamp(1.45rem, 2.2vw, 2rem);
+    }
+
+    .pm-metric-row {
+        margin-top: 0.62rem;
+    }
+
+    .pm-metric-row div {
+        padding: 0.52rem;
+    }
+
+    #pm-lower-cards {
+        grid-template-columns: 1fr 1fr;
+    }
+}

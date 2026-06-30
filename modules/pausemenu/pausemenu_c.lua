@@ -279,6 +279,18 @@ RegisterNUICallback('pausemenu:map', function(_, cb)
     cb('ok')
 end)
 
+RegisterNUICallback('pausemenu:garage', function(_, cb)
+    closeMenu()
+    Cinematic = false
+    CreateThread(function()
+        Wait(350)
+        if SKGarage and type(SKGarage.enterFromMenu) == 'function' then
+            SKGarage.enterFromMenu()
+        end
+    end)
+    cb('ok')
+end)
+
 RegisterNUICallback('pausemenu:mainmenu', function(_, cb)
     closeMenu()
     Cinematic = false

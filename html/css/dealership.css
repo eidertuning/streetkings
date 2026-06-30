@@ -624,3 +624,159 @@
     0 0 0 2px rgba(255, 10, 115, 0.28),
     0 0 18px rgba(255, 10, 115, 0.16);
 }
+
+/* -- Squared racing UI pass ------------------------------------------------ */
+
+.sk-dealership {
+  --dealer-panel: rgba(8, 8, 13, 0.86);
+  --dealer-panel-soft: rgba(10, 10, 16, 0.76);
+  --dealer-border: rgba(255, 255, 255, 0.10);
+  --dealer-hot: #ff0a73;
+  --dealer-cyan: #8cecff;
+  --dealer-text: #f4f4f7;
+  --dealer-muted: rgba(244, 244, 247, 0.65);
+  font-family: 'Poppins', 'Inter', sans-serif;
+}
+
+.sk-dealership-heading,
+.sk-dealership-wallet,
+.sk-dealership-card,
+.sk-dealership-meta-card,
+.sk-dealership-customizability,
+.sk-dealership-actions,
+.sk-dealership-thumb,
+.sk-dealership-thumb-image,
+.sk-dealership-list-arrow,
+.sk-dealership-floating-exit,
+.sk-dealership-class-tab,
+.sk-dealership-btn,
+.sk-dealership-owned-tag {
+  border-radius: 8px;
+}
+
+.sk-dealership-class-badge,
+.sk-dealership-thumb-tag,
+.sk-dealership-owned-tag--vip {
+  border-radius: 5px;
+}
+
+.sk-dealership-heading,
+.sk-dealership-wallet,
+.sk-dealership-card,
+.sk-dealership-thumb {
+  position: relative;
+  overflow: hidden;
+}
+
+.sk-dealership-heading::before,
+.sk-dealership-wallet::before,
+.sk-dealership-card::before,
+.sk-dealership-thumb::before,
+.sk-dealership-heading::after,
+.sk-dealership-wallet::after,
+.sk-dealership-card::after,
+.sk-dealership-thumb::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sk-dealership-heading::before,
+.sk-dealership-wallet::before,
+.sk-dealership-card::before,
+.sk-dealership-thumb::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid var(--dealer-hot);
+  border-left: 2px solid var(--dealer-hot);
+}
+
+.sk-dealership-heading::after,
+.sk-dealership-wallet::after,
+.sk-dealership-card::after,
+.sk-dealership-thumb::after {
+  right: -1px;
+  bottom: -1px;
+  border-right: 2px solid var(--dealer-hot);
+  border-bottom: 2px solid var(--dealer-hot);
+}
+
+.sk-dealership-heading > *,
+.sk-dealership-wallet > *,
+.sk-dealership-card > *,
+.sk-dealership-thumb > * {
+  position: relative;
+  z-index: 1;
+}
+
+.sk-dealership-heading {
+  max-width: min(42rem, 56vw);
+  border-left: 0;
+  font-size: clamp(1.85rem, 3vw, 3.25rem);
+}
+
+.sk-dealership-wallet {
+  min-width: clamp(13.5rem, 18vw, 20rem);
+  border-right: 2px solid var(--dealer-cyan);
+}
+
+.sk-dealership-side {
+  width: clamp(300px, 22vw, 410px);
+  gap: 0.62rem;
+}
+
+.sk-dealership-card {
+  border-left: 0;
+  padding: clamp(0.95rem, 1.35vw, 1.28rem);
+}
+
+.sk-dealership-car-brand,
+.sk-dealership-car-name,
+.sk-dealership-class-badge,
+.sk-dealership-meta-card span,
+.sk-dealership-meta-card strong,
+.sk-dealership-btn,
+.sk-dealership-floating-exit,
+.sk-dealership-thumb-name,
+.sk-dealership-thumb-tag {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sk-dealership-car-name {
+  font-size: clamp(1.75rem, 2.45vw, 2.85rem);
+}
+
+.sk-dealership-btn,
+.sk-dealership-floating-exit {
+  min-height: 2.65rem;
+  letter-spacing: 0.14em;
+}
+
+.sk-dealership-floating-exit {
+  z-index: 8;
+  top: clamp(5.7rem, 10.5vh, 7.4rem);
+  background: rgba(8, 8, 13, 0.88);
+  border-right: 2px solid var(--dealer-hot);
+}
+
+.sk-dealership-strip {
+  z-index: 3;
+  padding-bottom: clamp(0.72rem, 1.35vh, 1.1rem);
+}
+
+.sk-dealership-thumb {
+  min-width: clamp(190px, 14vw, 250px);
+  max-width: clamp(190px, 14vw, 250px);
+  padding: 0.55rem;
+}
+
+.sk-dealership-thumb-image {
+  border-radius: 6px;
+}

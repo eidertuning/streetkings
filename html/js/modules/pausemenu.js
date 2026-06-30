@@ -44,15 +44,22 @@
         panel.innerHTML = [
             '<header id="sk-pausemenu-header">',
             '  <div id="sk-pausemenu-logo"><img class="pm-logo-image" src="assets/fhm.png" alt="" draggable="false" /></div>',
+            '  <section id="pm-session-card">',
+            '    <div class="pm-section-title"><i class="fa-solid fa-satellite-dish"></i><span data-i18n="pause_menu.session">SESIÓN</span></div>',
+            '    <div class="pm-session-grid">',
+            '      <div><span data-i18n="pause_menu.time">HORA</span><strong id="pm-game-time">00:00</strong></div>',
+            '      <div><span data-i18n="pause_menu.weather">CLIMA</span><strong id="pm-session-weather">--</strong></div>',
+            '      <div><span data-i18n="pause_menu.zone">ZONA</span><strong id="pm-zone-name">--</strong></div>',
+            '      <div><span data-i18n="pause_menu.street">CALLE</span><strong id="pm-street-name">--</strong></div>',
+            '      <div><span data-i18n="pause_menu.server">SERVIDOR</span><strong id="pm-session-server">--</strong></div>',
+            '      <div><span data-i18n="pause_menu.players">JUGADORES</span><strong id="pm-session-players">--</strong></div>',
+            '    </div>',
+            '  </section>',
             '  <div id="pm-header-stats">',
-            '    <div class="pm-header-stat"><span data-i18n="pause_menu.level">LEVEL</span><strong id="pm-stat-level">--</strong></div>',
-            '    <div class="pm-header-stat pm-header-stat--wide"><span data-i18n="pause_menu.cash">CASH</span><strong id="pm-stat-cash">--</strong></div>',
-            '    <div class="pm-header-stat"><span data-i18n="pause_menu.points">POINTS</span><strong id="pm-stat-points">--</strong></div>',
-            '    <div class="pm-header-stat"><span data-i18n="pause_menu.rank">RANK</span><strong id="pm-stat-rank">--</strong></div>',
-            '  </div>',
-            '  <div id="pm-xp-panel">',
-            '    <div class="pm-xp-head"><span>XP</span><strong id="pm-xp-label">--</strong></div>',
-            '    <div class="pm-xp-track"><span id="pm-xp-fill"></span></div>',
+            '    <div class="pm-header-stat"><span data-i18n="pause_menu.level">NIVEL</span><strong id="pm-stat-level">--</strong></div>',
+            '    <div class="pm-header-stat pm-header-stat--wide"><span data-i18n="pause_menu.cash">EFECTIVO</span><strong id="pm-stat-cash">--</strong></div>',
+            '    <div class="pm-header-stat"><span data-i18n="pause_menu.points">PUNTOS</span><strong id="pm-stat-points">--</strong></div>',
+            '    <div class="pm-header-stat"><span data-i18n="pause_menu.rank">RANGO</span><strong id="pm-stat-rank">--</strong></div>',
             '  </div>',
             '</header>',
             '<main id="sk-pausemenu-grid">',
@@ -66,30 +73,20 @@
             '        <div id="pm-profile-badges" class="pm-profile-badges"></div>',
             '      </div>',
             '    </div>',
-            '    <nav id="sk-pausemenu-nav">',
             menuButton('pm-btn-continue', 'fa-solid fa-play', 'pause_menu.continue', 'pause_menu.continue_sub', true),
+            '    <nav id="sk-pausemenu-nav">',
             menuButton('pm-btn-map', 'fa-solid fa-map-location-dot', 'pause_menu.map', 'pause_menu.map_sub'),
             menuButton('pm-btn-settings', 'fa-solid fa-sliders', 'pause_menu.settings', 'pause_menu.settings_sub'),
+            menuButton('pm-btn-garage', 'fa-solid fa-warehouse', 'pause_menu.garage', 'pause_menu.garage_sub'),
             menuButton('pm-btn-mainmenu', 'fa-solid fa-house', 'pause_menu.main_menu', 'pause_menu.main_menu_sub'),
             menuButton('pm-btn-exit', 'fa-solid fa-right-from-bracket', 'pause_menu.exit_game', 'pause_menu.exit_game_sub', false, true),
             '    </nav>',
-            '    <section id="pm-session-card">',
-            '      <div class="pm-section-title"><i class="fa-solid fa-satellite-dish"></i><span data-i18n="pause_menu.session">SESSION</span></div>',
-            '      <div class="pm-session-grid">',
-            '        <div><span data-i18n="pause_menu.time">TIME</span><strong id="pm-game-time">00:00</strong></div>',
-            '        <div><span data-i18n="pause_menu.weather">WEATHER</span><strong id="pm-session-weather">--</strong></div>',
-            '        <div class="pm-session-wide"><span data-i18n="pause_menu.zone">ZONE</span><strong id="pm-zone-name">--</strong></div>',
-            '        <div class="pm-session-wide"><span data-i18n="pause_menu.street">STREET</span><strong id="pm-street-name">--</strong></div>',
-            '        <div><span data-i18n="pause_menu.server">SERVER</span><strong id="pm-session-server">--</strong></div>',
-            '        <div><span data-i18n="pause_menu.players">PLAYERS</span><strong id="pm-session-players">--</strong></div>',
-            '      </div>',
-            '    </section>',
             '  </aside>',
             '  <section id="sk-pausemenu-content">',
             '    <div class="pm-card pm-progress-card">',
-            '      <div class="pm-card-head"><div><span class="pm-kicker" data-i18n="pause_menu.progress_kicker">DRIVER PROFILE</span><h2 data-i18n="pause_menu.your_progress">YOUR PROGRESS</h2></div><span class="pm-level-chip">LV. <strong id="pm-progress-level">--</strong></span></div>',
-            '      <p id="pm-progress-copy" data-i18n="pause_menu.progress_copy">Stay sharp, stack XP and keep your garage moving.</p>',
-            '      <div class="pm-progress-track-wrap"><div class="pm-progress-labels"><span data-i18n="pause_menu.next_level">NEXT LEVEL</span><strong id="pm-progress-xp-label">--</strong></div><div class="pm-progress-track"><span id="pm-progress-fill"></span></div></div>',
+            '      <div class="pm-card-head"><div><span class="pm-kicker" data-i18n="pause_menu.progress_kicker">PERFIL DE PILOTO</span><h2 data-i18n="pause_menu.your_progress">TU PROGRESO</h2></div><span class="pm-level-chip">LV. <strong id="pm-progress-level">--</strong></span></div>',
+            '      <p id="pm-progress-copy" data-i18n="pause_menu.progress_copy">Mantente fino, suma XP y sigue moviendo tu garage.</p>',
+            '      <div class="pm-progress-track-wrap"><div class="pm-progress-labels"><span data-i18n="pause_menu.next_level">SIGUIENTE NIVEL</span><strong id="pm-progress-xp-label">--</strong></div><div class="pm-progress-track"><span id="pm-progress-fill"></span></div></div>',
             '      <div class="pm-metric-row">',
             metric('fa-solid fa-road', 'pause_menu.miles_driven', 'pm-stat-miles'),
             metric('fa-solid fa-trophy', 'pause_menu.races_won', 'pm-stat-races'),
@@ -98,12 +95,12 @@
             '      </div>',
             '    </div>',
             '    <div id="pm-lower-cards">',
-            '      <div class="pm-card" id="pm-patchnotes"><div id="pm-patchnotes-header"><div class="pm-section-title"><i class="fa-solid fa-newspaper"></i><span id="pm-patchnotes-title" data-i18n="pause_menu.patch_notes">PATCH NOTES</span></div><span id="pm-patchnotes-version" data-i18n="pause_menu.latest">LATEST</span></div><ul id="pm-patchnotes-list"><li data-i18n="pause_menu.patch_1">New waypoint system with distance tracking</li><li data-i18n="pause_menu.patch_2">Cinematic pause menu added</li><li data-i18n="pause_menu.patch_3">Performance improvements across all modules</li></ul></div>',
-            '      <div class="pm-card pm-event-card"><div class="pm-section-title"><i class="fa-solid fa-flag-checkered"></i><span data-i18n="pause_menu.next_events">NEXT EVENTS</span></div><h3 id="pm-event-title" data-i18n="pause_menu.event_title">Daily track rotation</h3><p id="pm-event-body" data-i18n="pause_menu.event_body">New featured runs go live every day. Watch the boards and claim the street.</p><div class="pm-event-meta"><span><i class="fa-solid fa-clock"></i><strong id="pm-event-time" data-i18n="pause_menu.event_time">Today</strong></span><span><i class="fa-solid fa-users"></i><strong id="pm-event-players">--</strong></span></div></div>',
+            '      <div class="pm-card" id="pm-patchnotes"><div id="pm-patchnotes-header"><div class="pm-section-title"><i class="fa-solid fa-newspaper"></i><span id="pm-patchnotes-title" data-i18n="pause_menu.patch_notes">NOTAS DEL PARCHE</span></div><span id="pm-patchnotes-version" data-i18n="pause_menu.latest">ÚLTIMO</span></div><ul id="pm-patchnotes-list"><li data-i18n="pause_menu.patch_1">Nuevo sistema de waypoints con seguimiento de distancia</li><li data-i18n="pause_menu.patch_2">Menú de pausa cinemático agregado</li><li data-i18n="pause_menu.patch_3">Mejoras de rendimiento en todos los módulos</li></ul></div>',
+            '      <div class="pm-card pm-event-card"><div class="pm-section-title"><i class="fa-solid fa-flag-checkered"></i><span data-i18n="pause_menu.next_events">PRÓXIMOS EVENTOS</span></div><h3 id="pm-event-title" data-i18n="pause_menu.event_title">Rotación diaria de pistas</h3><p id="pm-event-body" data-i18n="pause_menu.event_body">Las rutas destacadas cambian cada día. Mira la tabla y reclama la calle.</p><div class="pm-event-meta"><span><i class="fa-solid fa-clock"></i><strong id="pm-event-time" data-i18n="pause_menu.event_time">Hoy</strong></span><span><i class="fa-solid fa-users"></i><strong id="pm-event-players">--</strong></span></div></div>',
             '    </div>',
             '  </section>',
             '</main>',
-            '<footer id="sk-pausemenu-footer"><span><kbd>ESC</kbd><span data-i18n="pause_menu.shortcut_close">Close</span></span><span><kbd>Enter</kbd><span data-i18n="pause_menu.shortcut_select">Select</span></span><span><kbd>F1</kbd><span data-i18n="pause_menu.shortcut_phone">Tablet</span></span></footer>'
+            '<footer id="sk-pausemenu-footer"><span><kbd>TAB</kbd><span data-i18n="pause_menu.shortcut_phone">Tablet</span></span><span><kbd>Enter</kbd><span data-i18n="pause_menu.shortcut_select">Seleccionar</span></span><span><kbd>ESC</kbd><span data-i18n="pause_menu.shortcut_close">Cerrar</span></span></footer>'
         ].join('');
 
         if (SK.i18n && SK.i18n.apply) SK.i18n.apply(panel);
@@ -273,6 +270,7 @@
         var btnContinue = document.getElementById('pm-btn-continue');
         var btnMap = document.getElementById('pm-btn-map');
         var btnSettings = document.getElementById('pm-btn-settings');
+        var btnGarage = document.getElementById('pm-btn-garage');
         var btnMainMenu = document.getElementById('pm-btn-mainmenu');
         var btnExit = document.getElementById('pm-btn-exit');
 
@@ -289,6 +287,11 @@
         btnMap.addEventListener('click', function () {
             hide();
             nuiPost('pausemenu:map');
+        });
+
+        btnGarage.addEventListener('click', function () {
+            hide();
+            nuiPost('pausemenu:garage');
         });
 
         btnMainMenu.addEventListener('click', function () {
@@ -313,7 +316,7 @@
                 overlay.classList.toggle('is-pausemenu-controller-nav', enabled);
             },
             getFocusables: function () {
-                return [btnContinue, btnMap, btnSettings, btnMainMenu, btnExit];
+                return [btnContinue, btnMap, btnSettings, btnGarage, btnMainMenu, btnExit];
             },
             getPreferredFocus: function () {
                 return btnContinue;
