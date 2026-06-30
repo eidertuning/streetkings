@@ -6,7 +6,7 @@ local roster = {}
 local active = false
 local lastEmpty = true
 
-local MAX_DIST = 80.0
+local MAX_DIST = 30.0
 
 local function sendNametags(players)
     SendNUIMessage({
