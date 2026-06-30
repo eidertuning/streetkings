@@ -56,45 +56,11 @@
   }
 
   #sk-pausemenu-panel {
-    width: 840px;
-    padding: 68px 104px 56px 104px;
+    padding: clamp(1.4rem, 2vh, 2.4rem) clamp(1.4rem, 2.2vw, 2.8rem);
   }
 
   #sk-pausemenu-logo {
-    margin-bottom: 48px;
-    width: min(100%, 480px);
-  }
-
-  #sk-pausemenu-logo .pm-beta-badge {
-    margin-top: 32px;
-    padding: 12px 28px;
-  }
-
-  #sk-pausemenu-nav {
-    margin-bottom: 64px;
-  }
-
-  .pm-menu-item {
-    padding: 48px 0;
-  }
-
-  .pm-menu-item::before {
-    left: -104px;
-    width: 6px;
-  }
-
-  .pm-menu-item:hover {
-    padding-left: 24px;
-  }
-
-  #pm-patchnotes {
-    margin-top: 16px;
-    padding: 24px 28px;
-    max-height: 240px;
-  }
-
-  #sk-pausemenu-mid {
-    margin: 36px 0;
+    width: min(17rem, 74%);
   }
 
   .initiation-info-panel {

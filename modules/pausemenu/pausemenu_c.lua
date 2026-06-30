@@ -96,6 +96,8 @@ local function openMenu()
     local pos        = GetEntityCoords(ped)
     local streetHash = GetStreetNameAtCoord(pos.x, pos.y, pos.z)
     local stats      = lib.callback.await('streetkings:stats:getData', false)
+    local profile    = lib.callback.await('streetkings:pausemenu:getProfile', false)
+    local env        = GlobalState and GlobalState.streetkingsEnvironment or nil
 
     SKControllerFriendly.resetTracker(controllerTracker)
     setControllerModeEnabled(false)
@@ -103,17 +105,28 @@ local function openMenu()
     SendNUIMessage({
         type       = 'pausemenu:open',
         playerName = GetPlayerName(PlayerId()),
+        profile    = profile or {},
         street     = GetStreetNameFromHashKey(streetHash),
         zone       = GetLabelText(GetNameOfZone(pos.x, pos.y, pos.z)),
         gameTime   = string.format('%02d:%02d', GetClockHours(), GetClockMinutes()),
+        weather     = env and env.weather or 'CLEAR',
+        serverName  = profile and profile.serverName or 'Five Horizon',
+        playersOnline = #GetActivePlayers(),
         level        = stats and stats.level or 1,
+        maxLevel     = stats and stats.maxLevel or 50,
+        nextLevel    = stats and stats.nextLevel or nil,
+        playerXp     = stats and stats.playerXp or 0,
+        xpInLevel    = stats and stats.xpInLevel or 0,
+        xpNeeded     = stats and stats.xpNeeded or 1,
+        xpRemainingToNext = stats and stats.xpRemainingToNext or 0,
         cash         = stats and stats.cash  or 0,
         milesDriven  = stats and stats.stats and stats.stats.totalMilesDriven or 0,
         racesWon     = stats and stats.stats and stats.stats.racesWon or 0,
+        vehiclesOwned = stats and stats.vehiclesOwned or 0,
+        propertiesOwned = stats and stats.propertiesOwned or 0,
         storeUrl     = STORE_URL,
     })
 
-    TriggerScreenblurFadeIn(150)
     SetNuiFocus(true, true)
     menuOpen = true
     menuOpening = false

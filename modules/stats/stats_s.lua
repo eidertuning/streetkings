@@ -87,6 +87,7 @@ lib.callback.register('streetkings:stats:getData', function(source)
         level           = level,
         maxLevel        = SKProgression.PLAYER_MAX_LEVEL,
         nextLevel       = nextLevel,
+        playerXp        = xp,
         xpInLevel       = xpInLevel,
         xpNeeded        = xpNeeded,
         xpRemainingToNext = xpRemainingToNext,
