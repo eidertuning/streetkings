@@ -476,7 +476,7 @@ Elige un coche que de verdad te guste. Aprende cómo se mueve. Conduce limpio. U
                 data = "Datos",
             },
             labels = {
-                nametagsEnabled = "Nombres de jugadores",
+                nametagsEnabled = "Mostrar nametags",
                 controllerGlyphStyle = "Iconos de mando",
                 mapWaypointMode = "Modo de ruta del mapa",
                 speedometerStyle = "Estilo del velocímetro",

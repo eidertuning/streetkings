@@ -10,6 +10,7 @@
 
 ---@class SKSaveProfileDocument
 ---@field alias string
+---@field vipTag table
 
 ---@class SKSaveProgressionDocument
 ---@field level integer
@@ -154,7 +155,7 @@ end
 ---@return SKSaveDocument
 function SKSaves.newDocument()
     return {
-        profile = { alias = '' },
+        profile = { alias = '', vipTag = {} },
         progression = { level = 1, playerXp = 0, bestActivityScores = {}, tutorialCompleted = false },
         garage = { activeVehicleId = '', vehicles = {} },
         economy = { cash = 5000 },
@@ -207,6 +208,43 @@ local function isValidVehicleNeons(value)
     return true
 end
 
+---@param value any
+---@param fallback string
+---@param maxLength integer
+---@return string
+local function normalizeString(value, fallback, maxLength)
+    if type(value) ~= 'string' then return fallback end
+    value = value:gsub('[\r\n\t]', ' '):gsub('%s+', ' '):gsub('^%s+', ''):gsub('%s+$', '')
+    if value == '' then return fallback end
+    return value:sub(1, maxLength)
+end
+
+---@param value any
+---@return table
+local function normalizeVipTagConfig(value)
+    value = type(value) == 'table' and value or {}
+    return {
+        enabled = value.enabled ~= false,
+        selectedTier = normalizeString(value.selectedTier, '', 32),
+        textColor = normalizeString(value.textColor, '#ffffff', 16),
+        mainColor = normalizeString(value.mainColor, '', 16),
+        borderColor = normalizeString(value.borderColor, '', 16),
+        backgroundColor = normalizeString(value.backgroundColor, '#000000', 16),
+        backgroundStyle = normalizeString(value.backgroundStyle, 'dark', 24),
+        icon = normalizeString(value.icon, '', 64),
+        bannerStyle = normalizeString(value.bannerStyle, 'default', 24),
+        effect = normalizeString(value.effect, 'none', 24),
+        glow = value.glow == true,
+        animated = value.animated == true,
+        rainbow = value.rainbow == true,
+        showAdminTag = value.showAdminTag ~= false,
+        adminDisplayMode = normalizeString(value.adminDisplayMode, 'admin_plus_vip', 32),
+        adminColor = normalizeString(value.adminColor, '#ef4444', 16),
+        adminIcon = normalizeString(value.adminIcon, 'fa-solid fa-shield-halved', 64),
+        adminBannerStyle = normalizeString(value.adminBannerStyle, 'admin', 24),
+    }
+end
+
 ---@param vehicleData table
 ---@return table
 local function normalizeVehicleData(vehicleData)
@@ -243,6 +281,14 @@ end
 ---@param document table
 ---@return table
 local function normalizeDocument(document)
+    if type(document.profile) ~= 'table' then
+        document.profile = {}
+    end
+    if type(document.profile.alias) ~= 'string' then
+        document.profile.alias = ''
+    end
+    document.profile.vipTag = normalizeVipTagConfig(document.profile.vipTag)
+
     if type(document.progression) ~= 'table' then
         document.progression = {}
     end
@@ -331,6 +377,7 @@ function SKSaves.validateDocument(document)
     normalizeDocument(document)
     assert(type(document) == 'table', 'streetkings: invalid save document')
     assert(type(document.profile) == 'table' and type(document.profile.alias) == 'string', 'streetkings: invalid save document profile')
+    assert(type(document.profile.vipTag) == 'table', 'streetkings: invalid save document profile.vipTag')
     assert(type(document.progression) == 'table', 'streetkings: invalid save document progression')
     requireNonNegativeInt(document.progression.level, 'progression.level')
     requireNonNegativeInt(document.progression.playerXp, 'progression.playerXp')

@@ -11,6 +11,7 @@ local DEFAULT_TABLET = {
         'Stats',
         'sotyfly',
         'profile',
+        'vipstudio',
         'RealEstate',
         'Towing',
         'Leaderboards',

@@ -476,7 +476,7 @@ Pick a car you actually like. Learn how it moves. Drive it clean. A flashy run d
                 data = "Data",
             },
             labels = {
-                nametagsEnabled = "Player Nametags",
+                nametagsEnabled = "Show nametags",
                 controllerGlyphStyle = "Controller Icons",
                 mapWaypointMode = "Map Waypoint Mode",
                 speedometerStyle = "Speedometer Style",

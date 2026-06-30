@@ -33,7 +33,8 @@
   var GENERAL_DEFS = [
     {
       key: 'nametagsEnabled',
-      label: 'Player Nametags',
+      label: 'Mostrar nametags',
+      description: 'Muestra u oculta nombres, rangos, VIP y tags de admin encima de los jugadores.',
       type: 'toggle',
       def: true,
       group: 'General'

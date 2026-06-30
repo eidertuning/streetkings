@@ -1,0 +1,174 @@
+.sk-nametag-root {
+  position: fixed;
+  inset: 0;
+  z-index: 8400;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sk-nametag-item {
+  position: absolute;
+  transform-origin: 50% 100%;
+  will-change: left, top, transform;
+}
+
+.sk-nametag {
+  --tag-main: #9ca3af;
+  --tag-border: #9ca3af;
+  --tag-text: #ffffff;
+  --tag-bg: #000000;
+  position: relative;
+  display: inline-flex;
+  align-items: stretch;
+  max-width: 24rem;
+  min-height: 2.2rem;
+  color: var(--tag-text);
+  font-family: Poppins, Inter, system-ui, sans-serif;
+  filter: drop-shadow(0 0.45rem 0.7rem rgba(0, 0, 0, 0.48));
+}
+
+.sk-nametag.has-glow {
+  filter:
+    drop-shadow(0 0 0.5rem var(--tag-main))
+    drop-shadow(0 0.45rem 0.7rem rgba(0, 0, 0, 0.48));
+}
+
+.sk-nametag.is-animated {
+  animation: skNametagFloat 1.5s ease-in-out infinite;
+}
+
+.sk-nametag-id,
+.sk-nametag-body {
+  border: 1px solid var(--tag-border);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 42%),
+    var(--tag-bg);
+  backdrop-filter: blur(5px);
+}
+
+.sk-nametag-id {
+  min-width: 2.75rem;
+  display: grid;
+  place-items: center;
+  color: var(--tag-main);
+  font-size: 0.92rem;
+  font-weight: 900;
+}
+
+.sk-nametag-body {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  max-width: 21rem;
+  padding: 0 0.62rem;
+  border-left: 0;
+}
+
+.sk-nametag-body i {
+  color: var(--tag-main);
+  flex: 0 0 auto;
+  font-size: 0.86rem;
+}
+
+.sk-nametag-role,
+.sk-nametag-secondary,
+.sk-nametag-level {
+  flex: 0 0 auto;
+  color: var(--tag-main);
+  font-family: Oswald, Poppins, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.sk-nametag-secondary {
+  max-width: 6rem;
+  color: #ffd147;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sk-nametag-name {
+  max-width: 9rem;
+  overflow: hidden;
+  color: var(--tag-text);
+  font-size: 0.86rem;
+  font-weight: 800;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sk-nametag-level {
+  opacity: 0.7;
+}
+
+.sk-nametag-triangle {
+  position: absolute;
+  left: 50%;
+  bottom: -0.42rem;
+  width: 0;
+  height: 0;
+  border-left: 0.36rem solid transparent;
+  border-right: 0.36rem solid transparent;
+  border-top: 0.42rem solid var(--tag-border);
+  transform: translateX(-50%);
+}
+
+.sk-nametag-bg--glass .sk-nametag-id,
+.sk-nametag-bg--glass .sk-nametag-body {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)),
+    rgba(0, 0, 0, 0.52);
+}
+
+.sk-nametag-bg--gold .sk-nametag-id,
+.sk-nametag-bg--gold .sk-nametag-body {
+  background:
+    linear-gradient(135deg, rgba(255, 209, 71, 0.22), rgba(0, 0, 0, 0.74)),
+    rgba(0, 0, 0, 0.78);
+}
+
+.sk-nametag-bg--neon .sk-nametag-id,
+.sk-nametag-bg--neon .sk-nametag-body,
+.sk-nametag-bg--elite .sk-nametag-id,
+.sk-nametag-bg--elite .sk-nametag-body {
+  background:
+    linear-gradient(120deg, rgba(255, 0, 106, 0.22), rgba(158, 229, 255, 0.12), rgba(0, 0, 0, 0.78)),
+    rgba(0, 0, 0, 0.82);
+}
+
+.sk-nametag-banner--admin .sk-nametag-id,
+.sk-nametag-banner--admin .sk-nametag-body {
+  background:
+    linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(0, 0, 0, 0.78)),
+    rgba(0, 0, 0, 0.8);
+}
+
+.sk-nametag-effect--rainbow .sk-nametag-id,
+.sk-nametag-effect--rainbow .sk-nametag-body {
+  border-image: linear-gradient(90deg, #ff006a, #ffd147, #9ee5ff, #ff006a) 1;
+}
+
+.sk-nametag-effect--scan::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+  animation: skNametagScan 1.6s linear infinite;
+  mix-blend-mode: screen;
+  opacity: 0.8;
+}
+
+@keyframes skNametagFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-0.1rem); }
+}
+
+@keyframes skNametagScan {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}

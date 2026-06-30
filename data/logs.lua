@@ -101,6 +101,7 @@ SKLogsConfig = {
         storage = { public = '', admin = '' },
         stunts = { public = '', admin = '' },
         tutorial = { public = '', admin = '' },
+        vip = { public = '', admin = '' },
         waypoints = { public = '', admin = '' },
     },
 

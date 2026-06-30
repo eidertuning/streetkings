@@ -1,101 +1,178 @@
 ---@class SKNametagsModule
 SKNametags = {}
 
---- source id > display name for every visible player
----@type table<integer, string>
-local names  = {}
+---@type table<integer, table>
+local roster = {}
 local active = false
+local lastEmpty = true
 
 local MAX_DIST = 80.0
 
---- Enable nametags for freeroam and request a fresh name sync from the server.
+local function sendNametags(players)
+    SendNUIMessage({
+        type = 'streetkings:nametags:update',
+        players = players or {},
+    })
+end
+
+local function clearNametags()
+    if not lastEmpty then
+        sendNametags({})
+        lastEmpty = true
+    end
+end
+
+local function settingsEnabled()
+    if not SKSettings or type(SKSettings.areNametagsEnabled) ~= 'function' then return true end
+    return SKSettings.areNametagsEnabled()
+end
+
+local function entryFromRoster(src, fallbackName)
+    local entry = roster[src] or {}
+    local nametag = entry.nametag or {}
+    if type(nametag.alias) ~= 'string' or nametag.alias == '' then
+        nametag.alias = entry.alias or fallbackName or 'Piloto'
+    end
+    if type(nametag.level) ~= 'number' then
+        nametag.level = tonumber(entry.level) or 1
+    end
+    return entry, nametag
+end
+
+local function setEntry(src, entry)
+    if type(src) ~= 'number' then src = tonumber(src) end
+    if not src then return end
+    if type(entry) ~= 'table' then
+        roster[src] = nil
+        return
+    end
+    entry.source = src
+    roster[src] = entry
+end
+
+local function syncRoster(entries)
+    roster = {}
+    if type(entries) ~= 'table' then return end
+    for src, entry in pairs(entries) do
+        if type(entry) == 'table' then
+            setEntry(tonumber(entry.source or src), entry)
+        end
+    end
+end
+
+--- Enable nametags for freeroam and request a fresh sync from the server.
 function SKNametags.startFreeroam()
     active = true
-    names  = {}
+    roster = {}
+    lastEmpty = true
     TriggerServerEvent('streetkings:nametags:requestSync')
 end
 
---- Disable nametags and clear the name table.
+--- Disable nametags and clear the roster.
 function SKNametags.stop()
     active = false
-    names  = {}
+    roster = {}
+    clearNametags()
 end
 
----@param roster { source: integer, alias: string }[]
-function SKNametags.setRoster(roster)
-    names = {}
-    for _, entry in ipairs(roster) do
-        names[entry.source] = entry.alias
-    end
+---@param entries table[]
+function SKNametags.setRoster(entries)
+    syncRoster(entries)
     active = true
 end
 
-RegisterNetEvent('streetkings:nametags:sync', function(nameMap)
-    names = nameMap
+RegisterNetEvent('streetkings:nametags:sync', function(entries)
+    syncRoster(entries)
 end)
 
-RegisterNetEvent('streetkings:nametags:playerJoined', function(src, alias)
-    names[src] = alias
+RegisterNetEvent('streetkings:nametags:playerJoined', function(src, entry)
+    setEntry(src, entry)
+end)
+
+RegisterNetEvent('streetkings:nametags:playerUpdated', function(src, entry)
+    setEntry(src, entry)
 end)
 
 RegisterNetEvent('streetkings:nametags:playerLeft', function(src)
-    names[src] = nil
+    roster[tonumber(src)] = nil
 end)
 
----@param position vector3
----@param name string
-local function drawNametag(position, name)
-    local onScreen, sx, sy = World3dToScreen2d(position.x, position.y, position.z + 1.5)
-    if not onScreen then return end
+local function getNametagWorldPos(ped)
+    local vehicle = GetVehiclePedIsIn(ped, false)
+    if vehicle ~= 0 then
+        local coords = GetEntityCoords(vehicle)
+        local minDim, maxDim = GetModelDimensions(GetEntityModel(vehicle))
+        local height = (maxDim and minDim) and math.max(1.15, (maxDim.z - minDim.z) + 0.75) or 1.8
+        return vector3(coords.x, coords.y, coords.z + height)
+    end
 
-    local dist  = #(GetGameplayCamCoords() - position)
-    local scale = (1 / dist) * 2 * (1 / GetGameplayCamFov()) * 100
+    local head = GetPedBoneCoords(ped, 0x796E, 0.0, 0.0, 0.32)
+    return vector3(head.x, head.y, head.z)
+end
 
-    SetTextScale(0.0, 1.0 * scale)
-    SetTextFont(0)
-    SetTextProportional(1)
-    SetTextColour(255, 255, 255, 215)
-    SetTextDropshadow(0, 0, 0, 0, 255)
-    SetTextEdge(2, 0, 0, 0, 150)
-    SetTextDropShadow()
-    SetTextOutline()
-    SetTextEntry('STRING')
-    SetTextCentre(true)
-    AddTextComponentSubstringPlayerName(name)
-    DrawText(sx, sy)
+local function buildVisibleNametags()
+    local myPed = PlayerPedId()
+    local myPos = GetEntityCoords(myPed)
+    local myId = PlayerId()
+    local camera = GetGameplayCamCoords()
+    local players = {}
+
+    for _, playerId in ipairs(GetActivePlayers()) do
+        if playerId ~= myId then
+            local ped = GetPlayerPed(playerId)
+            if ped and ped ~= 0 and DoesEntityExist(ped) then
+                local pos = getNametagWorldPos(ped)
+                local dist = #(myPos - pos)
+                if dist <= MAX_DIST and HasEntityClearLosToEntity(myPed, ped, 17) then
+                    local onScreen, sx, sy = World3dToScreen2d(pos.x, pos.y, pos.z)
+                    if onScreen then
+                        local src = GetPlayerServerId(playerId)
+                        local _, nametag = entryFromRoster(src, GetPlayerName(playerId))
+                        if nametag and (not nametag.display or nametag.display.enabled ~= false) then
+                            local camDist = #(camera - pos)
+                            local scale = math.max(0.74, math.min(1.05, 1.12 - (camDist / MAX_DIST) * 0.42))
+                            players[#players + 1] = {
+                                source = src,
+                                screenX = sx,
+                                screenY = sy,
+                                distance = dist,
+                                scale = scale,
+                                alias = nametag.alias,
+                                level = nametag.level,
+                                nametag = nametag,
+                            }
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    return players
 end
 
 RegisterCommand('sk_toggle_nametags', function()
+    if not SKSettings or type(SKSettings.areNametagsEnabled) ~= 'function' then return end
     local enabled = not SKSettings.areNametagsEnabled()
     SKSettings.setGeneralValue('nametagsEnabled', enabled)
+    clearNametags()
     SKNotify({ type = 'info', title = enabled and 'Nametags On' or 'Nametags Off' })
 end)
 RegisterKeyMapping('sk_toggle_nametags', 'Toggle player nametags', 'keyboard', 'F1')
 
 CreateThread(function()
     while true do
-        if not active or not SKSettings.areNametagsEnabled() then
-            Wait(500)
+        if not active or not settingsEnabled() then
+            clearNametags()
+            Wait(400)
         else
-            local myPed = PlayerPedId()
-            local myPos = GetEntityCoords(myPed)
-            local myId  = PlayerId()
-
-            for _, playerId in ipairs(GetActivePlayers()) do
-                if playerId ~= myId then
-                    local ped     = GetPlayerPed(playerId)
-                    local vehicle = GetVehiclePedIsIn(ped, false)
-                    if vehicle ~= 0 then
-                        local vehPos = GetEntityCoords(vehicle)
-                        if #(myPos - vehPos) < MAX_DIST then
-                            local src  = GetPlayerServerId(playerId)
-                            local name = names[src] or GetPlayerName(playerId)
-                            drawNametag(vehPos, name)
-                        end
-                    end
-                end
+            local players = buildVisibleNametags()
+            if #players == 0 then
+                clearNametags()
+            else
+                sendNametags(players)
+                lastEmpty = false
             end
-
             Wait(0)
         end
     end

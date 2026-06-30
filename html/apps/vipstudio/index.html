@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VIP Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Oswald:wght@500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="vip-studio">
+    <header class="vip-header">
+      <div>
+        <p class="vip-kicker">Five Horizon</p>
+        <h1>VIP Studio</h1>
+      </div>
+      <button id="refreshBtn" type="button" class="vip-icon-btn" aria-label="Actualizar VIP"><i class="fa-solid fa-rotate"></i></button>
+    </header>
+
+    <section id="lockedPanel" class="vip-locked" hidden>
+      <i class="fa-solid fa-lock"></i>
+      <h2>Studio bloqueado</h2>
+      <p>Necesitas VIP o permisos de admin para personalizar tu nametag.</p>
+    </section>
+
+    <section id="studioPanel" class="vip-layout" hidden>
+      <aside class="vip-preview-panel">
+        <p class="vip-section-label">Vista previa</p>
+        <div class="vip-preview-stage">
+          <div id="previewTag" class="vip-preview-tag">
+            <span id="previewId" class="vip-preview-id">25</span>
+            <span class="vip-preview-body">
+              <i id="previewIcon" class="fa-solid fa-crown"></i>
+              <span id="previewRole">VIP</span>
+              <strong id="previewName">Piloto</strong>
+            </span>
+            <span class="vip-preview-triangle"></span>
+          </div>
+        </div>
+        <div class="vip-status-grid">
+          <div>
+            <span>Discord</span>
+            <strong id="vipTier">Sin VIP</strong>
+          </div>
+          <div>
+            <span>Rol activo</span>
+            <strong id="effectiveRole">Piloto</strong>
+          </div>
+        </div>
+      </aside>
+
+      <section class="vip-controls">
+        <div class="vip-control-card">
+          <div class="vip-card-head">
+            <h2>Identidad</h2>
+            <label class="vip-switch"><input id="enabledInput" type="checkbox"><span></span>Visible</label>
+          </div>
+          <div class="vip-form-grid">
+            <label>Icono<select id="iconInput"></select></label>
+            <label>Banner<select id="bannerInput"></select></label>
+            <label>Fondo<select id="backgroundInput"></select></label>
+            <label>Efecto<select id="effectInput"></select></label>
+          </div>
+        </div>
+
+        <div class="vip-control-card">
+          <div class="vip-card-head">
+            <h2>Color</h2>
+          </div>
+          <div class="vip-color-grid">
+            <label>Principal<input id="mainColorInput" type="color"></label>
+            <label>Borde<input id="borderColorInput" type="color"></label>
+            <label>Texto<input id="textColorInput" type="color"></label>
+            <label>Base<input id="backgroundColorInput" type="color"></label>
+          </div>
+          <div class="vip-toggle-grid">
+            <label><input id="glowInput" type="checkbox">Brillo</label>
+            <label><input id="animatedInput" type="checkbox">Animado</label>
+            <label><input id="rainbowInput" type="checkbox">Rainbow</label>
+          </div>
+        </div>
+
+        <div id="adminCard" class="vip-control-card" hidden>
+          <div class="vip-card-head">
+            <h2>Admin</h2>
+          </div>
+          <div class="vip-form-grid">
+            <label>Modo<select id="adminModeInput"></select></label>
+            <label>Icono<select id="adminIconInput"></select></label>
+            <label>Color<input id="adminColorInput" type="color"></label>
+            <label class="vip-switch vip-switch--inline"><input id="showAdminInput" type="checkbox"><span></span>Mostrar admin</label>
+          </div>
+        </div>
+
+        <div class="vip-actions">
+          <button id="resetBtn" type="button" class="vip-secondary"><i class="fa-solid fa-arrow-rotate-left"></i>Restablecer</button>
+          <button id="saveBtn" type="button"><i class="fa-solid fa-floppy-disk"></i>Guardar</button>
+        </div>
+        <p id="message" class="vip-message">Cargando VIP Studio...</p>
+      </section>
+    </section>
+  </main>
+
+  <script src="../../js/tablet-sdk.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
