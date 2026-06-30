@@ -25,6 +25,14 @@
     return '$' + Math.floor(n).toLocaleString('en-US');
   }
 
+  function t(key, replacements, fallback) {
+    if (SK.i18n && SK.i18n.t) {
+      var value = SK.i18n.t(key, replacements);
+      if (value !== key) return value;
+    }
+    return fallback || key;
+  }
+
   function isOpen() {
     return !!els.root && els.root.style.display !== 'none';
   }
@@ -162,6 +170,8 @@
     els.carBrand    = document.getElementById('dealershipCarBrand');
     els.carName     = document.getElementById('dealershipCarName');
     els.classBadge  = document.getElementById('dealershipClassBadge');
+    els.carPrice    = document.getElementById('dealershipCarPrice');
+    els.carStatus   = document.getElementById('dealershipCarStatus');
     els.customizability = document.getElementById('dealershipCustomizability');
     els.actions     = document.getElementById('dealershipActions');
     els.viewport    = els.root.querySelector('.sk-dealership-viewport');
@@ -281,8 +291,10 @@
       var tag = document.createElement('span');
       tag.className   = 'sk-dealership-thumb-tag';
       tag.textContent = state.ownedModels[v.model]
-        ? 'OWNED'
-        : (v.requiredVipTier && !hasVipAccess(v.requiredVipTier) ? (VIP_LABELS[v.requiredVipTier] || v.requiredVipTier) + ' REQUERIDO' : fmt(v.price));
+        ? t('dealership.owned', null, 'COMPRADO')
+        : (v.requiredVipTier && !hasVipAccess(v.requiredVipTier)
+          ? t('dealership.vip_required', { vip: VIP_LABELS[v.requiredVipTier] || v.requiredVipTier }, (VIP_LABELS[v.requiredVipTier] || v.requiredVipTier) + ' REQUERIDO')
+          : fmt(v.price));
 
       btn.appendChild(name);
       btn.appendChild(tag);
@@ -302,8 +314,27 @@
 
     els.carBrand.textContent  = v.brand;
     els.carName.textContent   = v.name;
-    els.classBadge.textContent = 'Class ' + v.class;
+    els.classBadge.textContent = t('dealership.class_label', { class: v.class }, 'Clase ' + v.class);
     els.classBadge.dataset.cls = v.class;
+    if (els.carPrice) els.carPrice.textContent = fmt(v.price);
+    if (els.carStatus) {
+      var requiredLevel = CLASS_UNLOCK_LEVELS[v.class];
+      var vipLocked = v.requiredVipTier && !hasVipAccess(v.requiredVipTier);
+      els.carStatus.className = '';
+      if (state.ownedModels[v.model]) {
+        els.carStatus.textContent = t('dealership.owned', null, 'Comprado');
+        els.carStatus.classList.add('is-owned');
+      } else if (state.playerLevel < requiredLevel) {
+        els.carStatus.textContent = t('dealership.unlocks_at_level', { level: requiredLevel }, 'Nv. ' + requiredLevel);
+        els.carStatus.classList.add('is-locked');
+      } else if (vipLocked) {
+        els.carStatus.textContent = VIP_LABELS[v.requiredVipTier] || v.requiredVipTier;
+        els.carStatus.classList.add('is-vip');
+      } else {
+        els.carStatus.textContent = t('dealership.available', null, 'Disponible');
+        els.carStatus.classList.add('is-ready');
+      }
+    }
     renderCustomizability(v.customizability || 1);
 
     renderList();
@@ -323,17 +354,17 @@
     if (isLocked) {
       var lockedTag = document.createElement('span');
       lockedTag.className = 'sk-dealership-owned-tag';
-      lockedTag.textContent = 'Unlocks at Lv. ' + requiredLevel;
+      lockedTag.textContent = t('dealership.unlocks_at_level', { level: requiredLevel }, 'Desbloquea Nv. ' + requiredLevel);
       els.actions.appendChild(lockedTag);
     } else if (vipLocked) {
       var vipTag = document.createElement('span');
       vipTag.className = 'sk-dealership-owned-tag sk-dealership-owned-tag--vip';
-      vipTag.textContent = (VIP_LABELS[v.requiredVipTier] || v.requiredVipTier) + ' requerido para comprar';
+      vipTag.textContent = t('dealership.vip_required_purchase', { vip: VIP_LABELS[v.requiredVipTier] || v.requiredVipTier }, (VIP_LABELS[v.requiredVipTier] || v.requiredVipTier) + ' requerido para comprar');
       els.actions.appendChild(vipTag);
     } else if (!owned) {
       var buyBtn = document.createElement('button');
       buyBtn.className   = 'sk-dealership-btn sk-dealership-btn--buy';
-      buyBtn.textContent = 'Purchase ' + fmt(v.price);
+      buyBtn.textContent = t('dealership.purchase', { price: fmt(v.price) }, 'Comprar ' + fmt(v.price));
       buyBtn.addEventListener('click', function () {
         buyBtn.disabled = true;
         SK.nui.post('dealership:purchase', { model: v.model, name: v.name, price: v.price }).done(function (result) {
@@ -344,6 +375,10 @@
           state.balance                = result.balance;
           state.ownedModels[v.model]   = true;
           els.balance.textContent      = fmt(result.balance);
+          if (els.carStatus && state.previewModel === v.model) {
+            els.carStatus.className = 'is-owned';
+            els.carStatus.textContent = t('dealership.owned', null, 'Comprado');
+          }
           renderList();
           renderActions(v);
         });
@@ -352,13 +387,13 @@
     } else {
       var ownedTag = document.createElement('span');
       ownedTag.className   = 'sk-dealership-owned-tag';
-      ownedTag.textContent = 'Owned';
+      ownedTag.textContent = t('dealership.owned', null, 'Comprado');
       els.actions.appendChild(ownedTag);
     }
 
     var exitBtn = document.createElement('button');
     exitBtn.className   = 'sk-dealership-btn sk-dealership-btn--exit';
-    exitBtn.textContent = 'Leave';
+    exitBtn.textContent = t('dealership.leave', null, 'Salir');
     exitBtn.addEventListener('click', exitDealership);
     els.actions.appendChild(exitBtn);
 

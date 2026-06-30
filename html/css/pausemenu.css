@@ -45,10 +45,10 @@
 #sk-pausemenu-panel {
     width: 100vw;
     height: 100vh;
-    padding: clamp(1rem, 2.2vh, 2rem) clamp(1rem, 2.4vw, 2.4rem);
+    padding: clamp(0.45rem, 1.05vh, 0.9rem) clamp(1rem, 2.4vw, 2.4rem) clamp(0.75rem, 1.6vh, 1.35rem);
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
-    gap: clamp(0.8rem, 1.6vh, 1.35rem);
+    gap: clamp(0.6rem, 1.35vh, 1.1rem);
     overflow: hidden;
     background: transparent;
     border: 0;
@@ -57,9 +57,9 @@
 }
 
 #sk-pausemenu-header {
-    min-height: 6rem;
+    min-height: 5.25rem;
     display: grid;
-    grid-template-columns: minmax(34rem, 1fr) minmax(18rem, 0.42fr);
+    grid-template-columns: minmax(14rem, 0.32fr) minmax(34rem, 1fr) minmax(18rem, 0.42fr);
     gap: 1rem;
     align-items: stretch;
 }
@@ -321,7 +321,9 @@
 }
 
 #sk-pausemenu-logo {
-    width: min(15rem, 74%);
+    width: min(13.6rem, 100%);
+    align-self: start;
+    margin-top: -0.1rem;
     user-select: none;
 }
 
@@ -765,22 +767,42 @@
 }
 
 #sk-pausemenu-footer {
-    min-height: 3.2rem;
+    min-height: 0;
+    width: fit-content;
+    justify-self: end;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 0.75rem;
-    padding: 0.65rem 0.85rem;
-    border-radius: 18px;
+    gap: 0.55rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
 }
 
-#sk-pausemenu-footer span {
+#sk-pausemenu-footer > span {
     display: inline-flex;
     align-items: center;
     gap: 0.42rem;
+    min-height: 2.35rem;
+    padding: 0.34rem 0.52rem;
+    border: 1px solid var(--pm-border);
+    border-radius: 999px;
+    background: linear-gradient(145deg, rgba(15, 15, 24, 0.54), rgba(11, 11, 17, 0.32));
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     color: var(--pm-muted);
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 700;
+}
+
+#sk-pausemenu-footer > span > span {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    min-height: 0;
 }
 
 #sk-pausemenu-footer kbd {
@@ -819,7 +841,7 @@
 
 @media (max-width: 1280px), (max-height: 760px) {
     #sk-pausemenu-header {
-        grid-template-columns: minmax(22rem, 1fr);
+        grid-template-columns: minmax(11rem, 0.32fr) minmax(22rem, 1fr);
     }
 
     #pm-xp-panel {

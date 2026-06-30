@@ -776,7 +776,7 @@
     <div class="sk-dealership-top">
       <h1 class="sk-dealership-heading" id="dealershipTitle"></h1>
       <div class="sk-dealership-wallet">
-        <span class="sk-dealership-wallet-label">Efectivo</span>
+        <span class="sk-dealership-wallet-label" data-i18n="dealership.cash">Efectivo</span>
         <span class="sk-dealership-wallet-amount" id="dealershipBalance"></span>
       </div>
     </div>
@@ -786,8 +786,18 @@
         <span class="sk-dealership-car-brand" id="dealershipCarBrand"></span>
         <h2 class="sk-dealership-car-name" id="dealershipCarName"></h2>
         <span class="sk-dealership-class-badge" id="dealershipClassBadge"></span>
+        <div class="sk-dealership-meta-grid">
+          <div class="sk-dealership-meta-card">
+            <span data-i18n="dealership.price">Precio</span>
+            <strong id="dealershipCarPrice"></strong>
+          </div>
+          <div class="sk-dealership-meta-card">
+            <span data-i18n="dealership.status">Estado</span>
+            <strong id="dealershipCarStatus"></strong>
+          </div>
+        </div>
         <div class="sk-dealership-customizability">
-          <span class="sk-dealership-customizability-label">Personalización</span>
+          <span class="sk-dealership-customizability-label" data-i18n="dealership.customization">Personalización</span>
           <div class="sk-dealership-customizability-stars" id="dealershipCustomizability"></div>
         </div>
       </div>
@@ -1388,7 +1398,6 @@
     <div id="sk-pausemenu-panel">
       <div id="sk-pausemenu-logo">
         <img class="pm-logo-image" src="assets/fhm.png" alt="" draggable="false" />
-        <span class="pm-beta-badge">BETA</span>
       </div>
       <nav id="sk-pausemenu-nav">
         <button class="pm-menu-item" id="pm-btn-continue" data-i18n="pause_menu.continue">CONTINUE</button>

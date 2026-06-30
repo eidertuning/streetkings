@@ -44,6 +44,7 @@
     function buildLayout() {
         panel.innerHTML = [
             '<header id="sk-pausemenu-header">',
+            '  <div id="sk-pausemenu-logo"><img class="pm-logo-image" src="assets/fhm.png" alt="" draggable="false" /></div>',
             '  <div id="pm-header-stats">',
             '    <div class="pm-header-stat"><span data-i18n="pause_menu.level">LEVEL</span><strong id="pm-stat-level">--</strong></div>',
             '    <div class="pm-header-stat pm-header-stat--wide"><span data-i18n="pause_menu.cash">CASH</span><strong id="pm-stat-cash">--</strong></div>',
@@ -57,7 +58,6 @@
             '</header>',
             '<main id="sk-pausemenu-grid">',
             '  <aside id="sk-pausemenu-left">',
-            '    <div id="sk-pausemenu-logo"><img class="pm-logo-image" src="assets/fhm.png" alt="" draggable="false" /></div>',
             '    <div class="pm-profile-card pm-profile-card--side">',
             '      <div class="pm-profile-avatar-wrap"><img id="pm-profile-avatar" src="assets/SKIcon.png" alt="" draggable="false" /></div>',
             '      <div class="pm-profile-copy">',
