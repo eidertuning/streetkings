@@ -86,7 +86,8 @@ SKConfig = {
                 },
             },
             vip_3 = {
-                discordRoleId = '1520761376866570291',
+                -- Set your real VIP+++ Discord role id here. Do not reuse the VIP role id.
+                discordRoleId = '',
                 label = 'VIP+++',
                 tag = 'VIP+++',
                 color = '#ff006a',
@@ -169,6 +170,7 @@ SKConfig = {
         },
     },
 
+    -- Legacy VIP Studio compatibility. Runtime permission checks use DiscordPermissions.roles above.
     DiscordVipRoles = {
         vip_1 = {
             label = 'VIP',
@@ -247,7 +249,8 @@ SKConfig = {
         },
         vip_3 = {
             label = 'VIP+++',
-            discordRoleId = '1520761376866570291',
+            -- Set your real VIP+++ Discord role id here. Do not reuse the VIP role id.
+            discordRoleId = '',
             priority = 30,
             color = '#ff006a',
             icon = 'fa-solid fa-shield-halved',

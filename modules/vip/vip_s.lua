@@ -859,12 +859,7 @@ CreateThread(function()
     registerVipStudioApp()
 end)
 
-exports('GetVip', function(source)
-    return SKPermissions and SKPermissions.GetVip and SKPermissions.GetVip(source) or SKVip.Refresh(source, false)
-end)
-exports('HasVip', function(source) return SKVip.Has(source) end)
 exports('HasVipLevel', function(source, levelOrTier) return SKVip.HasLevel(source, levelOrTier) end)
-exports('HasVipPermission', function(source, permission) return SKVip.HasPermission(source, permission) end)
 exports('RefreshVip', function(source)
     if SKPermissions and SKPermissions.RefreshPlayerDiscordPermissions then
         return SKPermissions.RefreshPlayerDiscordPermissions(source, true)

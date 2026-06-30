@@ -18,6 +18,12 @@ local VIP_TIER_LABELS = {
     vipplusplus = 'VIP+++',
 }
 
+local VIP_TIER_KEYS = {
+    vip = 'vip_1',
+    vipplus = 'vip_2',
+    vipplusplus = 'vip_3',
+}
+
 local RANDOM_COLORS = {
     { r = 220, g = 30,  b = 30  },  -- red
     { r = 220, g = 100, b = 20  },  -- orange
@@ -82,6 +88,18 @@ end
 ---@return boolean
 local function hasVipAccess(playerTier, requiredTier)
     return getVipRank(playerTier) >= getVipRank(requiredTier)
+end
+
+local function hasRequiredVipTier(source, playerTier, requiredTier)
+    if not requiredTier then return true end
+    if SKPermissions and type(SKPermissions.HasVipTier) == 'function' then
+        local roleKey = VIP_TIER_KEYS[requiredTier]
+        if roleKey then
+            return SKPermissions.HasVipTier(source, roleKey)
+        end
+        return SKPermissions.HasVipTier(source, requiredTier)
+    end
+    return hasVipAccess(playerTier, requiredTier)
 end
 
 ---@param vehicles table<string, table>
@@ -190,11 +208,7 @@ lib.callback.register('streetkings:dealership:purchase', function(source, model,
         return { ok = false, reason = 'class_locked', requiredLevel = getClassUnlockLevel(serverVehicle.class) }
     end
 
-    if requiredVipTier and not hasVipAccess(playerVipTier, requiredVipTier) then
-        return { ok = false, reason = 'vip_locked', requiredVipTier = requiredVipTier, requiredVipLabel = VIP_TIER_LABELS[requiredVipTier] or requiredVipTier }
-    end
-
-    if requiredVipTier and SKPermissions and not SKPermissions.HasPermission(source, 'vip.vehicle_shop') then
+    if requiredVipTier and not hasRequiredVipTier(source, playerVipTier, requiredVipTier) then
         return { ok = false, reason = 'vip_locked', requiredVipTier = requiredVipTier, requiredVipLabel = VIP_TIER_LABELS[requiredVipTier] or requiredVipTier }
     end
 

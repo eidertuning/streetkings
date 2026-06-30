@@ -26,6 +26,39 @@ local function getPlayerVipTier(source, document)
     return bestTier
 end
 
+local VIP_TIER_KEYS = {
+    vip = 'vip_1',
+    vipplus = 'vip_2',
+    vipplusplus = 'vip_3',
+}
+
+local VIP_TIER_LABELS = {
+    vip = 'VIP',
+    vipplus = 'VIP++',
+    vipplusplus = 'VIP+++',
+}
+
+local function hasRequiredVipTier(source, document, requiredTier)
+    if not requiredTier then return true end
+    if SKPermissions and type(SKPermissions.HasVipTier) == 'function' then
+        local roleKey = VIP_TIER_KEYS[requiredTier]
+        if roleKey then
+            return SKPermissions.HasVipTier(source, roleKey)
+        end
+        return SKPermissions.HasVipTier(source, requiredTier)
+    end
+    return SKShopShared.hasVipAccess(getPlayerVipTier(source, document), requiredTier)
+end
+
+local function vipRequired(requiredTier)
+    return {
+        ok = false,
+        reason = 'vip_required',
+        requiredVipTier = requiredTier,
+        requiredVipLabel = VIP_TIER_LABELS[requiredTier] or requiredTier,
+    }
+end
+
 lib.callback.register('streetkings:shop:getVipTier', function(source)
     return getPlayerVipTier(source, SKSaves.getDocument(source))
 end)
@@ -247,11 +280,8 @@ lib.callback.register('streetkings:shop:purchaseNeons', function(source, enabled
 
     local document, vehicleId, entry = getActiveVehicleEntry(source)
     local requiredVipTier = SKShopShared.getRequiredVipTier('neons')
-    if enabled and requiredVipTier and SKPermissions and not SKPermissions.HasPermission(source, 'vip.workshop') then
-        return { ok = false, reason = 'vip_required', requiredVipTier = requiredVipTier }
-    end
-    if enabled and requiredVipTier and not SKShopShared.hasVipAccess(getPlayerVipTier(source, document), requiredVipTier) then
-        return { ok = false, reason = 'vip_required', requiredVipTier = requiredVipTier }
+    if enabled and requiredVipTier and not hasRequiredVipTier(source, document, requiredVipTier) then
+        return vipRequired(requiredVipTier)
     end
 
     local cash = document.economy.cash
@@ -330,11 +360,8 @@ lib.callback.register('streetkings:shop:purchaseMod', function(source, shopTypeK
 
     local document, vehicleId, entry = getActiveVehicleEntry(source)
     local requiredVipTier = SKShopShared.getRequiredVipTier(modType, modIndex) or SKShopShared.getRequiredVipTier(modType)
-    if requiredVipTier and SKPermissions and not SKPermissions.HasPermission(source, 'vip.tuning') then
-        return { ok = false, reason = 'vip_required', requiredVipTier = requiredVipTier }
-    end
-    if requiredVipTier and not SKShopShared.hasVipAccess(getPlayerVipTier(source, document), requiredVipTier) then
-        return { ok = false, reason = 'vip_required', requiredVipTier = requiredVipTier }
+    if requiredVipTier and not hasRequiredVipTier(source, document, requiredVipTier) then
+        return vipRequired(requiredVipTier)
     end
 
     local cash = document.economy.cash

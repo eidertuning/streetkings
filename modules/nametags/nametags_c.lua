@@ -138,8 +138,9 @@ local function buildVisibleNametags()
                     local onScreen, sx, sy = World3dToScreen2d(pos.x, pos.y, pos.z)
                     if onScreen then
                         local src = GetPlayerServerId(playerId)
-                        local _, nametag = entryFromRoster(src, GetPlayerName(playerId))
-                        if nametag and (not nametag.display or nametag.display.enabled ~= false) then
+                        local entry, nametag = entryFromRoster(src, GetPlayerName(playerId))
+                        local hiddenForOthers = playerId ~= myId and entry.hiddenNametag == true
+                        if not hiddenForOthers and nametag and (not nametag.display or nametag.display.enabled ~= false) then
                             local camDist = #(camera - pos)
                             local scale = math.max(0.74, math.min(1.05, 1.12 - (camDist / maxDist) * 0.42))
                             players[#players + 1] = {
