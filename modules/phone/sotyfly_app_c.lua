@@ -33,6 +33,27 @@ local function xsoundReady()
     return GetResourceState('xsound') == 'started'
 end
 
+local function xsoundSoundExists(soundName)
+    if not xsoundReady() or type(soundName) ~= 'string' or soundName == '' then return false end
+    local ok, exists = pcall(function()
+        return exports['xsound']:soundExists(soundName)
+    end)
+    if ok then return exists == true end
+    return startedSounds[soundName] == true
+end
+
+local function safeXsound(soundName, callback)
+    if not xsoundSoundExists(soundName) then
+        startedSounds[soundName] = nil
+        return false
+    end
+    local ok = pcall(callback)
+    if not ok then
+        startedSounds[soundName] = nil
+    end
+    return ok
+end
+
 local function notifyError(message)
     if SKNotify then
         SKNotify({ type = 'error', title = 'Sotyfly', body = message or 'Error' })
@@ -99,19 +120,21 @@ local function elapsedSeconds(sourceData)
 end
 
 local function destroySound(soundName)
-    if xsoundReady() then
-        pcall(function() exports['xsound']:Destroy(soundName) end)
+    if xsoundSoundExists(soundName) then
+        safeXsound(soundName, function()
+            exports['xsound']:Destroy(soundName)
+        end)
     end
     startedSounds[soundName] = nil
 end
 
 local function setSoundVolume(soundName, volume)
     if not xsoundReady() then return end
-    local ok = pcall(function()
+    local ok = safeXsound(soundName, function()
         exports['xsound']:setVolumeMax(soundName, volume)
     end)
-    if not ok then
-        pcall(function()
+    if not ok and xsoundSoundExists(soundName) then
+        safeXsound(soundName, function()
             exports['xsound']:setVolume(soundName, volume)
         end)
     end
@@ -123,27 +146,38 @@ local function ensureSound(sourceData)
     local soundName = sourceData.soundName
     if not soundName or soundName == '' or not sourceData.url then return false end
     local coords = sourceCoords(sourceData)
-    if startedSounds[soundName] then
-        pcall(function()
+    if startedSounds[soundName] and xsoundSoundExists(soundName) then
+        safeXsound(soundName, function()
             exports['xsound']:Position(soundName, coords)
         end)
         return true
     end
+    startedSounds[soundName] = nil
 
-    pcall(function()
-        exports['xsound']:Destroy(soundName)
+    local ok = pcall(function()
+        if xsoundSoundExists(soundName) then
+            exports['xsound']:Destroy(soundName)
+        end
         exports['xsound']:PlayUrlPos(soundName, sourceData.url, 0.0, coords, false)
         exports['xsound']:Distance(soundName, tonumber(cfg('MaxAudibleDistance', 25.0)) or 25.0)
     end)
+    if not ok then
+        startedSounds[soundName] = nil
+        return false
+    end
     startedSounds[soundName] = true
 
     CreateThread(function()
         Wait(450)
         if not activeSources[soundName] or not startedSounds[soundName] then return end
-        pcall(function()
+        safeXsound(soundName, function()
             exports['xsound']:setTimeStamp(soundName, elapsedSeconds(sourceData))
-            if sourceData.paused then exports['xsound']:Pause(soundName) end
         end)
+        if sourceData.paused then
+            safeXsound(soundName, function()
+                exports['xsound']:Pause(soundName)
+            end)
+        end
     end)
     return true
 end
@@ -228,7 +262,7 @@ local function requestNextWhenEnded()
     local currentMs = tonumber(currentPlayerState.currentMs) or 0
     local endedByTime = currentMs >= math.max(0, durationMs - 750)
     local endedBySound = false
-    if currentPlayerState.soundName and startedSounds[currentPlayerState.soundName] and xsoundReady() then
+    if currentPlayerState.soundName and startedSounds[currentPlayerState.soundName] and xsoundSoundExists(currentPlayerState.soundName) then
         local ok, playing = pcall(function()
             return exports['xsound']:isPlaying(currentPlayerState.soundName)
         end)
@@ -418,12 +452,20 @@ end)
 
 RegisterNetEvent('streetmusic:client:pauseSound', function(soundName, sourceData)
     if sourceData then mergeSource(sourceData) end
-    if xsoundReady() then pcall(function() exports['xsound']:Pause(soundName) end) end
+    safeXsound(soundName, function()
+        exports['xsound']:Pause(soundName)
+    end)
 end)
 
 RegisterNetEvent('streetmusic:client:resumeSound', function(soundName, sourceData)
     if sourceData then mergeSource(sourceData) end
-    if xsoundReady() then pcall(function() exports['xsound']:Resume(soundName) end) end
+    local sourceDataForSound = sourceData or activeSources[soundName]
+    if sourceDataForSound and not xsoundSoundExists(soundName) then
+        ensureSound(sourceDataForSound)
+    end
+    safeXsound(soundName, function()
+        exports['xsound']:Resume(soundName)
+    end)
 end)
 
 RegisterNetEvent('streetmusic:client:updateSoundPosition', function(soundName, coords, vehicleNetId)
@@ -500,7 +542,7 @@ CreateThread(function()
                         local factor = distanceFactor(item.distance)
                         local finalVolume = (tonumber(sourceData.volume) or cfg('DefaultSourceVolume', 0.35)) * listenerVolume * factor
                         finalVolume = math.max(tonumber(cfg('MinVolume', 0.0)) or 0.0, math.min(finalVolume, 1.0))
-                        pcall(function()
+                        safeXsound(sourceData.soundName, function()
                             exports['xsound']:Position(sourceData.soundName, sourceCoords(sourceData))
                         end)
                         setSoundVolume(sourceData.soundName, finalVolume)

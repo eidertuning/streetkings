@@ -3,6 +3,7 @@ SKConfig = {
     DisablePauseMenu   = false, -- Disable the pause menu
     Locale             = 'es',  -- Default language: 'es' or 'en'
     FallbackLocale     = 'en',  -- Used when a key is missing in the selected language
+    Debug              = false, -- Enables verbose framework debug logs
     DiscordAvatarEndpoint = '', -- Optional: 'https://your-api/avatar/{id}' for real Discord avatars
 
     Nametag = {
@@ -18,7 +19,7 @@ SKConfig = {
         enabled = true,
         guildId = '1520687570810310686',
         botTokenConvar = 'sk_discord_bot_token',
-        legacyBotTokenConvars = { 'streetkings_discord_bot_token' },
+        legacyBotTokenConvars = { 'streetkings_discord_bot_token', 'discord_bot_token', 'DISCORD_BOT_TOKEN' },
         refreshMinutes = 5,
         roles = {
             founder = {
@@ -322,3 +323,19 @@ SKConfig = {
         displayModes = { 'admin_plus_vip', 'admin_only', 'vip_only' },
     },
 }
+
+do
+    local sourceRoles = SKConfig.DiscordPermissions and SKConfig.DiscordPermissions.roles or {}
+    local legacyRoles = SKConfig.DiscordVipRoles or {}
+    for _, key in ipairs({ 'vip_1', 'vip_2', 'vip_3' }) do
+        local source = sourceRoles[key]
+        local legacy = legacyRoles[key]
+        if type(source) == 'table' and type(legacy) == 'table' then
+            legacy.discordRoleId = source.discordRoleId or legacy.discordRoleId
+            legacy.label = source.label or legacy.label
+            legacy.color = source.color or legacy.color
+            legacy.icon = source.icon or legacy.icon
+            legacy.aceGroup = source.aceGroup or legacy.aceGroup
+        end
+    end
+end

@@ -158,6 +158,67 @@ local function ownsDiscordRole(owned, role)
     return roleId ~= '' and owned[roleId] == true
 end
 
+local function debugEnabled()
+    return (SKConfig and SKConfig.Debug == true) or cfg().debug == true
+end
+
+local function sortedTextList(values)
+    local out = {}
+    if type(values) == 'table' then
+        for _, value in ipairs(values) do
+            if type(value) == 'string' and value ~= '' then out[#out + 1] = value end
+        end
+    end
+    table.sort(out)
+    return out
+end
+
+local function joined(values)
+    values = sortedTextList(values)
+    return #values > 0 and table.concat(values, ',') or 'none'
+end
+
+local function configuredRoleDebugList()
+    local out = {}
+    for _, role in ipairs(sortedRoles()) do
+        local roleId = tostring(role.discordRoleId or '')
+        if roleId ~= '' then
+            out[#out + 1] = ('%s:%s'):format(role.key, roleId)
+        end
+    end
+    return sortedTextList(out)
+end
+
+local function validateDiscordRoleIds()
+    local seen = {}
+    for _, role in ipairs(sortedRoles()) do
+        local roleId = tostring(role.discordRoleId or '')
+        if roleId ~= '' then
+            if seen[roleId] then
+                local names = sortedTextList({ seen[roleId], role.key })
+                print(('^3[SKPermissions] Duplicate Discord role id detected between %s and %s (%s)^7'):format(names[1], names[2], roleId))
+            else
+                seen[roleId] = role.key
+            end
+        end
+    end
+
+    local legacy = SKConfig and SKConfig.DiscordVipRoles or nil
+    if type(legacy) == 'table' then
+        for _, key in ipairs({ 'vip_1', 'vip_2', 'vip_3' }) do
+            local primary = roleForKey(key)
+            local legacyRole = legacy[key]
+            if primary and type(legacyRole) == 'table' then
+                local primaryId = tostring(primary.discordRoleId or '')
+                local legacyId = tostring(legacyRole.discordRoleId or '')
+                if primaryId ~= legacyId then
+                    print(('^3[SKPermissions] DiscordVipRoles.%s role id differs from DiscordPermissions.roles.%s; using DiscordPermissions as source of truth.^7'):format(key, key))
+                end
+            end
+        end
+    end
+end
+
 local function playerAceAllowed(source, ace)
     if source == 0 then return true end
     if type(ace) ~= 'string' or ace == '' then return false end
@@ -242,24 +303,35 @@ end
 local function buildData(source, member, reason)
     local discordId = getDiscordId(source)
     local owned = {}
+    local discordRoleIds = {}
     if type(member) == 'table' and type(member.roles) == 'table' then
         for _, roleId in ipairs(member.roles) do
             owned[tostring(roleId)] = true
+            discordRoleIds[#discordRoleIds + 1] = tostring(roleId)
         end
     end
 
     local matched = {}
+    local matchedKeys = {}
+    local matchedKeySet = {}
+    local function addMatched(role)
+        if type(role) ~= 'table' or type(role.key) ~= 'string' or matchedKeySet[role.key] then return end
+        matchedKeySet[role.key] = true
+        matched[#matched + 1] = role
+        matchedKeys[#matchedKeys + 1] = role.key
+    end
+
     for _, role in ipairs(sortedRoles()) do
-        if ownsDiscordRole(owned, role) then matched[#matched + 1] = role end
+        if ownsDiscordRole(owned, role) then addMatched(role) end
     end
 
     for _, key in ipairs(aceFallbackKeys(source)) do
         local role = roleForKey(key)
-        if role then matched[#matched + 1] = role end
+        addMatched(role)
     end
 
     local racingRole = internalRacingRole(source)
-    if racingRole then matched[#matched + 1] = racingRole end
+    addMatched(racingRole)
 
     local permissions = { user = true }
     local staffRole = nil
@@ -307,6 +379,11 @@ local function buildData(source, member, reason)
         reason = reason or 'ok',
         refreshedAt = os.time(),
         refreshedAtMs = nowMs(),
+        _debug = {
+            discordRoleIds = sortedTextList(discordRoleIds),
+            configuredRoles = configuredRoleDebugList(),
+            matched = sortedTextList(matchedKeys),
+        },
     }
 end
 
@@ -349,7 +426,24 @@ end
 local function clientData(data)
     local copy = shallowCopy(data or {})
     copy._principals = nil
+    copy._debug = nil
     return copy
+end
+
+local function debugLogRefresh(source, data)
+    if not debugEnabled() or type(data) ~= 'table' then return end
+    local dbg = type(data._debug) == 'table' and data._debug or {}
+    print(('[SKPermissions] source=%s discordId=%s received=%s configured=%s matched=%s finalVip=%s finalRacing=%s finalStaff=%s reason=%s'):format(
+        tostring(source),
+        tostring(data.discordId or 'none'),
+        joined(dbg.discordRoleIds),
+        joined(dbg.configuredRoles),
+        joined(dbg.matched),
+        tostring(data.vip and data.vip.label ~= '' and data.vip.label or 'none'),
+        tostring(data.racing and data.racing.label or 'none'),
+        tostring(data.staff and data.staff.label ~= '' and data.staff.label or 'none'),
+        tostring(data.reason or 'unknown')
+    ))
 end
 
 local function emitUpdates(source, data, previous)
@@ -376,6 +470,7 @@ function SKPermissions.RefreshPlayerDiscordPermissions(source, force)
     if source == 0 then
         local data = buildData(0, nil, 'console')
         SKPermissions.cache[0] = data
+        debugLogRefresh(source, data)
         return data
     end
 
@@ -395,6 +490,7 @@ function SKPermissions.RefreshPlayerDiscordPermissions(source, force)
         cached.reason = reason or 'discord_failed_cached'
         cached.refreshedAtMs = nowMs()
         cached.refreshedAt = os.time()
+        debugLogRefresh(source, cached)
         return cached
     end
 
@@ -402,6 +498,7 @@ function SKPermissions.RefreshPlayerDiscordPermissions(source, force)
     data.nametagSettings = SKPermissions.GetNametagSettings(source)
     applyAcePrincipals(previous, data)
     SKPermissions.cache[source] = data
+    debugLogRefresh(source, data)
     emitUpdates(source, data, previous)
     return data
 end
@@ -543,6 +640,11 @@ function SKPermissions.CanManageRacingEvents(source) return SKPermissions.HasPer
 function SKPermissions.CanCreateRacingEvents(source) return SKPermissions.HasPermission(source, 'racing.create_event') end
 function SKPermissions.CanManageLeaderboards(source) return SKPermissions.HasPermission(source, 'racing.manage_leaderboards') end
 
+CreateThread(function()
+    Wait(0)
+    validateDiscordRoleIds()
+end)
+
 RegisterNetEvent('sk_permissions:server:requestRefresh', function()
     SKPermissions.RefreshPlayerDiscordPermissions(source --[[@as integer]], true)
 end)
@@ -566,6 +668,62 @@ RegisterCommand('refreshperms', function(source, args)
     if target and GetPlayerName(target) then
         SKPermissions.RefreshPlayerDiscordPermissions(target, true)
     end
+end, false)
+
+local function roleLine(role)
+    role = type(role) == 'table' and role or {}
+    local label = role.label
+    if type(label) ~= 'string' or label == '' then label = 'none' end
+    return ('%s (%s, lvl %s)'):format(label, role.key or 'none', tostring(role.level or 0))
+end
+
+local function permissionList(permissions)
+    local values = {}
+    if type(permissions) == 'table' then
+        for permission, allowed in pairs(permissions) do
+            if allowed == true then values[#values + 1] = tostring(permission) end
+        end
+    end
+    table.sort(values)
+    return #values > 0 and table.concat(values, ', ') or 'none'
+end
+
+local function sendPermsLine(source, line)
+    print('[SKPerms] ' .. line)
+    if source ~= 0 then
+        TriggerClientEvent('chat:addMessage', source, {
+            args = { 'SKPerms', line },
+        })
+    end
+end
+
+RegisterCommand('skperms', function(source, args)
+    if source ~= 0 and not SKPermissions.HasPermission(source, 'admin.menu') and not SKPermissions.HasPermission(source, 'debug') then return end
+    local target = tonumber(args and args[1]) or source
+    if not target or target <= 0 or not GetPlayerName(target) then
+        sendPermsLine(source, 'Uso: /skperms ID')
+        return
+    end
+
+    local data = SKPermissions.RefreshPlayerDiscordPermissions(target, true)
+    if not data then
+        sendPermsLine(source, ('No se pudo leer permisos para %s.'):format(target))
+        return
+    end
+
+    local nametag = SKVip and SKVip.GetEffectiveNametag and SKVip.GetEffectiveNametag(target) or nil
+    local dbg = type(data._debug) == 'table' and data._debug or {}
+    sendPermsLine(source, ('Jugador %s: %s'):format(target, GetPlayerName(target) or 'unknown'))
+    sendPermsLine(source, ('Discord ID: %s'):format(data.discordId or 'none'))
+    sendPermsLine(source, ('Roles Discord recibidos: %s'):format(joined(dbg.discordRoleIds)))
+    sendPermsLine(source, ('Roles configurados: %s'):format(joined(dbg.configuredRoles)))
+    sendPermsLine(source, ('Roles matcheados: %s'):format(joined(dbg.matched)))
+    sendPermsLine(source, ('Staff: %s'):format(roleLine(data.staff)))
+    sendPermsLine(source, ('VIP: %s'):format(roleLine(data.vip)))
+    sendPermsLine(source, ('Racing: %s'):format(roleLine(data.racing)))
+    sendPermsLine(source, ('Nametag efectivo: %s'):format(nametag and nametag.role and roleLine(nametag.role) or 'none'))
+    sendPermsLine(source, ('Reason: %s | Last refresh: %s'):format(data.reason or 'unknown', data.refreshedAt and os.date('%Y-%m-%d %H:%M:%S', data.refreshedAt) or 'unknown'))
+    sendPermsLine(source, ('Permissions: %s'):format(permissionList(data.permissions)))
 end, false)
 
 AddEventHandler('playerJoining', function()

@@ -418,6 +418,12 @@ local function setCachedRole(source, role, reason)
     return SKVip.players[source]
 end
 
+AddEventHandler('sk_permissions:server:refreshed', function(source, data)
+    source = tonumber(source)
+    if not source or source <= 0 or type(data) ~= 'table' then return end
+    setCachedRole(source, roleFromPermissionsVip(data.vip), data.reason or 'permissions_synced')
+end)
+
 function SKVip.Get(source)
     return SKVip.players[source] or setCachedRole(source, NONE_ROLE, 'not_refreshed')
 end
@@ -636,13 +642,23 @@ function SKVip.ResetTagConfig(source)
     return { ok = true, config = SKVip.GetTagConfig(source), nametag = SKVip.GetEffectiveNametag(source) }
 end
 
+local function choosePlayerNametagRole(vipRole, defaultRole)
+    local hasVip = (vipRole and vipRole.priority or 0) > 0
+    local mode = type(SKConfig.Nametag) == 'table' and tostring(SKConfig.Nametag.priorityMode or 'vip_first') or 'vip_first'
+    if mode == 'racing_first' then
+        return defaultRole, hasVip and publicRole(vipRole) or nil
+    end
+    if hasVip then
+        return publicRole(vipRole), defaultRole
+    end
+    return defaultRole, nil
+end
+
 function SKVip.GetEffectiveRole(source)
     local vip = SKVip.Refresh(source, false)
     local vipRole = vip and vip.role or NONE_ROLE
-    if (vipRole.priority or 0) > 0 then
-        return publicRole(vipRole)
-    end
-    return SKVip.GetDefaultRole(source)
+    local role = choosePlayerNametagRole(vipRole, SKVip.GetDefaultRole(source))
+    return publicRole(role)
 end
 
 function SKVip.GetEffectiveNametag(source)
@@ -654,8 +670,7 @@ function SKVip.GetEffectiveNametag(source)
     local staffRole = roleFromPermissionsStaff(permissionData and permissionData.staff)
     local admin = isAdmin(source)
     local adminCfg = type(SKConfig.AdminNametag) == 'table' and SKConfig.AdminNametag or {}
-    local role = (vipRole.priority or 0) > 0 and vipRole or defaultRole
-    local secondaryRole = nil
+    local role, secondaryRole = choosePlayerNametagRole(vipRole, defaultRole)
 
     if admin and config.showAdminTag ~= false then
         local mode = config.adminDisplayMode or 'admin_plus_vip'
