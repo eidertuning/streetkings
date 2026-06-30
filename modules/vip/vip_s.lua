@@ -225,13 +225,71 @@ local function safeOption(value, allowed, fallback)
     return tableIncludes(allowed, value) and value or fallback
 end
 
-local function isAdmin(source)
-    local allowed = IsPlayerAceAllowed(source, 'command')
+local function isAceAllowed(source, ace)
+    local allowed = IsPlayerAceAllowed(source, ace)
     return allowed == true or allowed == 1
+end
+
+local function isAdmin(source)
+    if source == 0 then return true end
+    for _, ace in ipairs({
+        'command',
+        'admin',
+        'group.admin',
+        'group.superadmin',
+        'streetkings.admin',
+        'streetkings.vipstudio.admin',
+        'command.sk_refresh_vip',
+        'command.sk_refresh_vip_id',
+        'command.sk_vip_debug',
+    }) do
+        if isAceAllowed(source, ace) then return true end
+    end
+    return false
 end
 
 local function baseTagConfig()
     return shallowCopy(DEFAULT_TAG)
+end
+
+local function fallbackVipRoleFromAce(source)
+    local aceMap = {
+        {
+            key = 'vip_3',
+            aces = {
+                'streetkings.vipplusplus',
+                'streetkings.vip+++',
+                'streetkings.vipelite',
+                'group.vipelite',
+            },
+        },
+        {
+            key = 'vip_2',
+            aces = {
+                'streetkings.vipplus',
+                'streetkings.vip++',
+                'group.vipplus',
+            },
+        },
+        {
+            key = 'vip_1',
+            aces = {
+                'streetkings.vip',
+                'group.vip',
+            },
+        },
+    }
+
+    for _, entry in ipairs(aceMap) do
+        for _, ace in ipairs(entry.aces) do
+            if isAceAllowed(source, ace) then
+                local role = roleForKey(entry.key)
+                if role then return role end
+            end
+        end
+    end
+
+    return nil
 end
 
 local function getAllowedPresets(vipRole, admin)
@@ -340,17 +398,23 @@ function SKVip.Refresh(source, force)
         return cached
     end
 
+    local aceRole = fallbackVipRoleFromAce(source)
     local discordId = getDiscordIdentifier(source)
     if not discordId or not hasConfiguredDiscordRoles() then
-        return setCachedRole(source, cached and cached.role or NONE_ROLE, 'discord_not_configured')
+        return setCachedRole(source, aceRole or (cached and cached.role) or NONE_ROLE, aceRole and 'ace_synced' or 'discord_not_configured')
     end
 
     local member, err = fetchGuildMember(discordId)
     if not member then
-        return setCachedRole(source, cached and cached.role or NONE_ROLE, err or 'discord_failed')
+        return setCachedRole(source, aceRole or (cached and cached.role) or NONE_ROLE, aceRole and ('ace_fallback_' .. (err or 'discord_failed')) or (err or 'discord_failed'))
     end
 
-    return setCachedRole(source, resolveVipRole(member.roles), 'discord_synced')
+    local discordRole = resolveVipRole(member.roles)
+    if aceRole and (aceRole.priority or 0) > (discordRole.priority or 0) then
+        return setCachedRole(source, aceRole, 'discord_synced_ace_override')
+    end
+
+    return setCachedRole(source, discordRole, 'discord_synced')
 end
 
 function SKVip.Has(source)

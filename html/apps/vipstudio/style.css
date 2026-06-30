@@ -31,6 +31,10 @@ select {
   font: inherit;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .vip-studio {
   height: 100%;
   overflow: auto;
