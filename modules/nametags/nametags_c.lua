@@ -6,7 +6,10 @@ local roster = {}
 local active = false
 local lastEmpty = true
 
-local MAX_DIST = 30.0
+local function maxDistance()
+    local configured = SKConfig and SKConfig.Nametag and tonumber(SKConfig.Nametag.distance)
+    return configured and configured > 0 and configured or 30.0
+end
 
 local function sendNametags(players)
     SendNUIMessage({
@@ -130,14 +133,15 @@ local function buildVisibleNametags()
                 local pos = getNametagWorldPos(ped)
                 local dist = #(myPos - pos)
                 local clearLos = playerId == myId or HasEntityClearLosToEntity(myPed, ped, 17)
-                if dist <= MAX_DIST and clearLos then
+                local maxDist = maxDistance()
+                if dist <= maxDist and clearLos then
                     local onScreen, sx, sy = World3dToScreen2d(pos.x, pos.y, pos.z)
                     if onScreen then
                         local src = GetPlayerServerId(playerId)
                         local _, nametag = entryFromRoster(src, GetPlayerName(playerId))
                         if nametag and (not nametag.display or nametag.display.enabled ~= false) then
                             local camDist = #(camera - pos)
-                            local scale = math.max(0.74, math.min(1.05, 1.12 - (camDist / MAX_DIST) * 0.42))
+                            local scale = math.max(0.74, math.min(1.05, 1.12 - (camDist / maxDist) * 0.42))
                             players[#players + 1] = {
                                 source = src,
                                 screenX = sx,

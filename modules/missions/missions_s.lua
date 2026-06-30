@@ -619,18 +619,28 @@ SKEventsSubmit.submitActivityScore = function(source, eventId, scoreValue, vehic
     return result
 end
 
+local function canUseMissionAdmin(source)
+    if source == 0 then return true end
+    if SKPermissions and type(SKPermissions.HasPermission) == 'function' then
+        return SKPermissions.HasPermission(source, 'debug') or SKPermissions.HasPermission(source, 'admin.menu')
+    end
+    return IsPlayerAceAllowed(source, 'group.admin') or IsPlayerAceAllowed(source, 'command')
+end
+
 lib.addCommand('missionskip', {
     help = 'Force-advance the current mission objective',
-    restricted = 'group.admin',
+    restricted = false,
 }, function(source)
+    if not canUseMissionAdmin(source) then return end
     if source == 0 then return end
     SKMissionsServer.advanceObjective(source, { source = 'dev_skip' })
 end)
 
 lib.addCommand('missioncooldownclear', {
     help = 'Clear the next-mission cooldown so the next unlock fires immediately',
-    restricted = 'group.admin',
+    restricted = false,
 }, function(source)
+    if not canUseMissionAdmin(source) then return end
     if source == 0 then return end
     local missions = readMissions(source)
     if not missions then return end
@@ -641,8 +651,9 @@ end)
 
 lib.addCommand('missionreset', {
     help = 'Reset all mission progress on the active save (development)',
-    restricted = 'group.admin',
+    restricted = false,
 }, function(source)
+    if not canUseMissionAdmin(source) then return end
     if source == 0 or not SKSaves.hasActiveSave(source) then return end
     local fresh = SKSaves.defaultMissions()
     fresh.chapter = 1
@@ -652,11 +663,12 @@ end)
 
 lib.addCommand('testmission', {
     help = 'Jump to a specific mission number (e.g. /testmission 3)',
-    restricted = 'group.admin',
+    restricted = false,
     params = {
         { name = 'number', type = 'number', help = 'Mission number (1-based index in current chapter)', optional = false },
     },
 }, function(source, args)
+    if not canUseMissionAdmin(source) then return end
     if source == 0 or not SKSaves.hasActiveSave(source) then return end
     local num = math.floor(args.number)
     if num < 1 then return end

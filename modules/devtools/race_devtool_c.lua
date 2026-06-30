@@ -40,6 +40,20 @@ local function notify(title, notifyType)
     })
 end
 
+local function canUseRaceEditor()
+    local resource = GetCurrentResourceName()
+    return exports[resource]:HasCachedPermission('racing.create_event')
+        or exports[resource]:HasCachedPermission('racing.manage')
+        or exports[resource]:HasCachedPermission('debug')
+        or exports[resource]:HasCachedPermission('framework.inspect')
+end
+
+local function requireRaceEditor()
+    if canUseRaceEditor() then return true end
+    notify('No permission', 'error')
+    return false
+end
+
 ---@return integer
 local function getStartEntity()
     local ped = PlayerPedId()
@@ -512,34 +526,42 @@ local function handleEditorControls()
 end
 
 RegisterCommand('raceedit', function()
+    if not requireRaceEditor() then return end
     toggleEditor()
 end)
 
 RegisterCommand('racecp', function()
+    if not requireRaceEditor() then return end
     placeCheckpointAtRaycast()
 end)
 
 RegisterCommand('racemove', function()
+    if not requireRaceEditor() then return end
     moveLastCheckpoint()
 end)
 
 RegisterCommand('racecopy', function()
+    if not requireRaceEditor() then return end
     copyDraft()
 end)
 
 RegisterCommand('raceclear', function()
+    if not requireRaceEditor() then return end
     clearCheckpointStack()
 end)
 
 RegisterCommand('racepop', function()
+    if not requireRaceEditor() then return end
     popCheckpoint()
 end)
 
 RegisterCommand('racestart', function()
+    if not requireRaceEditor() then return end
     setStartFromPlayer()
 end)
 
 RegisterCommand('racescheme', function(_, args)
+    if not requireRaceEditor() then return end
     local value = args[1]
     if not value or value == '' then
         cycleScheme()

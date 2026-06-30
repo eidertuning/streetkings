@@ -39,7 +39,7 @@ SKShopShared.NITROUS_PRICES = {
 }
 
 -- Visual mod VIP gates. Use nil/omit for public mods, or one of:
--- vip, vipplus, vipplusplus. Server callbacks enforce these rules.
+-- vip, vipplus (VIP++), vipplusplus (VIP+++). Server callbacks enforce these rules.
 SKShopShared.VIP_MOD_REQUIREMENTS = {
     neons = 'vip',
     [22] = 'vip', -- Xenon lights

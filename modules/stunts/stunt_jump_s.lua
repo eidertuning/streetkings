@@ -7,6 +7,17 @@ local function tableCount(t)
     return n
 end
 
+local function canEditStunts(source)
+    if source == 0 then return true end
+    if SKPermissions and type(SKPermissions.HasPermission) == 'function' then
+        return SKPermissions.HasPermission(source, 'debug')
+            or SKPermissions.HasPermission(source, 'framework.inspect')
+            or SKPermissions.HasPermission(source, 'racing.create_event')
+            or SKPermissions.HasPermission(source, 'racing.manage')
+    end
+    return IsPlayerAceAllowed(source, 'command')
+end
+
 MySQL.ready(function()
     MySQL.query.await([[
         CREATE TABLE IF NOT EXISTS `stunt_jumps` (
@@ -39,7 +50,7 @@ lib.callback.register('streetkings:stunts:load', function()
 end)
 
 lib.callback.register('streetkings:stunts:save', function(source, def)
-    if not IsPlayerAceAllowed(source, 'command') then
+    if not canEditStunts(source) then
         return { ok = false, reason = 'No permission' }
     end
     if not dbReady then
@@ -72,7 +83,7 @@ lib.callback.register('streetkings:stunts:save', function(source, def)
 end)
 
 lib.callback.register('streetkings:stunts:delete', function(source, jumpId)
-    if not IsPlayerAceAllowed(source, 'command') then
+    if not canEditStunts(source) then
         return { ok = false, reason = 'No permission' }
     end
     if not dbReady then

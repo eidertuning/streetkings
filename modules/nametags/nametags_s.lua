@@ -18,11 +18,17 @@ local function buildRosterEntry(src)
     if not SKSaves.hasActiveSave(src) then return nil end
 
     local nametag = SKVip and SKVip.GetEffectiveNametag and SKVip.GetEffectiveNametag(src) or nil
+    local roleData = SKPermissions and SKPermissions.GetPlayerNametagData and SKPermissions.GetPlayerNametagData(src) or nil
     local level = SKSaves.read(src, 'progression.level') or 1
     return {
         source = src,
         alias = nametag and nametag.alias or getAlias(src),
         level = nametag and nametag.level or level,
+        staff = roleData and roleData.staff or nil,
+        vip = roleData and roleData.vip or nil,
+        racing = roleData and roleData.racing or nil,
+        hiddenNametag = roleData and roleData.hiddenNametag or false,
+        nametagSettings = roleData and roleData.nametagSettings or nil,
         nametag = nametag,
     }
 end
@@ -78,6 +84,12 @@ AddEventHandler('playerDropped', function()
 end)
 
 AddEventHandler('streetkings:vip:updated', function(src)
+    if freeroamRoster[src] then
+        broadcastRosterUpdate(src)
+    end
+end)
+
+AddEventHandler('sk_permissions:server:refreshed', function(src)
     if freeroamRoster[src] then
         broadcastRosterUpdate(src)
     end

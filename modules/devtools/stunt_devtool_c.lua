@@ -81,6 +81,20 @@ local function notify(title, nType)
     SKNotify({ title = title, type = nType, duration = 2500, inCinematic = true })
 end
 
+local function canUseStuntEditor()
+    local resource = GetCurrentResourceName()
+    return exports[resource]:HasCachedPermission('debug')
+        or exports[resource]:HasCachedPermission('framework.inspect')
+        or exports[resource]:HasCachedPermission('racing.create_event')
+        or exports[resource]:HasCachedPermission('racing.manage')
+end
+
+local function requireStuntEditor()
+    if canUseStuntEditor() then return true end
+    notify('No permission', 'error')
+    return false
+end
+
 local function deletePreviewProp()
     if previewProp then
         if DoesEntityExist(previewProp) then DeleteEntity(previewProp) end
@@ -680,6 +694,7 @@ end, false)
 RegisterKeyMapping('+stuntdev_undo', 'Stunt Dev Undo Last', 'keyboard', 'F12')
 
 RegisterCommand('stuntdev', function()
+    if not requireStuntEditor() then return end
     if buildMode then
         buildMode = false
         notify('Stunt Dev Tool closed', 'warning')
@@ -692,9 +707,10 @@ RegisterCommand('stuntdev', function()
     editingJumpName = nil
     notify('Stunt Jump Creator opened', 'success')
     startBuildThread()
-end, true)
+end, false)
 
 RegisterCommand('stuntedit', function()
+    if not requireStuntEditor() then return end
     if buildMode then
         notify('Already in build mode', 'error')
         return
@@ -715,9 +731,10 @@ RegisterCommand('stuntedit', function()
     rampTarget = 'a'
     notify(('Editing "%s" (%.0fm away)'):format(editingJumpName, nearest.dist), 'success')
     startBuildThread()
-end, true)
+end, false)
 
 RegisterCommand('stuntdelete', function()
+    if not requireStuntEditor() then return end
     local nearest = findNearestJump()
     if not nearest then
         notify('No stunt jump within 200m', 'error')
@@ -737,7 +754,7 @@ RegisterCommand('stuntdelete', function()
     else
         notify(('Delete failed: %s'):format(result and result.reason or 'unknown'), 'error')
     end
-end, true)
+end, false)
 
 AddEventHandler('onResourceStop', function(resource)
     if resource == GetCurrentResourceName() then

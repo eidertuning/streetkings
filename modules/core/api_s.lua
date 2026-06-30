@@ -46,3 +46,58 @@ exports('GetValidGameStates', function()
     table.sort(values)
     return copyArray(values)
 end)
+
+local function permissionApi()
+    return SKPermissions
+end
+
+exports('GetStreetKingsRoleData', function(source)
+    local api = permissionApi()
+    return api and api.GetPlayerRoleData and api.GetPlayerRoleData(source) or nil
+end)
+
+exports('HasAdminPermission', function(source, permission)
+    local api = permissionApi()
+    if not api or not api.HasPermission then return false end
+    return api.HasPermission(source, permission or 'admin.menu')
+end)
+
+exports('IsVip', function(source)
+    local api = permissionApi()
+    return api and api.HasVip and api.HasVip(source) or false
+end)
+
+exports('IsStaffMember', function(source)
+    local api = permissionApi()
+    return api and api.IsStaff and api.IsStaff(source) or false
+end)
+
+exports('CanAccessVipShop', function(source)
+    local api = permissionApi()
+    return api and api.CanUseVipShop and api.CanUseVipShop(source) or false
+end)
+
+exports('CanAccessVipVehicleShop', function(source)
+    local api = permissionApi()
+    return api and api.CanUseVipVehicleShop and api.CanUseVipVehicleShop(source) or false
+end)
+
+exports('CanUseVipWorkshop', function(source)
+    local api = permissionApi()
+    return api and api.CanUseVipWorkshop and api.CanUseVipWorkshop(source) or false
+end)
+
+exports('CanUseVipTuning', function(source)
+    local api = permissionApi()
+    return api and api.CanUseVipTuning and api.CanUseVipTuning(source) or false
+end)
+
+exports('CanUseVipRepairDiscount', function(source)
+    local api = permissionApi()
+    return api and api.CanUseVipRepairDiscount and api.CanUseVipRepairDiscount(source) or false
+end)
+
+exports('CanUseVipCosmetics', function(source)
+    local api = permissionApi()
+    return api and api.CanUseVipCosmetics and api.CanUseVipCosmetics(source) or false
+end)

@@ -19,10 +19,10 @@ local function configuredEndpointUrl(id)
 end
 
 local function getBotToken()
-    local convarToken = GetConvar('streetkings_discord_bot_token', '')
+    local convarToken = GetConvar('sk_discord_bot_token', '')
     if type(convarToken) == 'string' and convarToken ~= '' then return convarToken end
-    local configToken = SKConfig and SKConfig.DiscordBotToken or ''
-    if type(configToken) == 'string' and configToken ~= '' then return configToken end
+    convarToken = GetConvar('streetkings_discord_bot_token', '')
+    if type(convarToken) == 'string' and convarToken ~= '' then return convarToken end
     return ''
 end
 

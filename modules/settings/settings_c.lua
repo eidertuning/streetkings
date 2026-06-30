@@ -304,6 +304,7 @@ function SKSettings.setGeneralValue(key, value)
 
         generalConfig.nametagsEnabled = value
         SetResourceKvp(NAMETAGS_ENABLED_KVP, value and 'true' or 'false')
+        TriggerServerEvent('sk_permissions:server:setNametagSettings', { showOtherNametags = value })
         return true
     end
 
@@ -312,6 +313,7 @@ function SKSettings.setGeneralValue(key, value)
 
         generalConfig.ownNametagEnabled = value
         SetResourceKvp(OWN_NAMETAG_ENABLED_KVP, value and 'true' or 'false')
+        TriggerServerEvent('sk_permissions:server:setNametagSettings', { hideOwnNametag = not value })
         return true
     end
 
@@ -370,6 +372,19 @@ end)
 
 CreateThread(function()
     Wait(1000)
+    pushGeneralConfigToNui()
+end)
+
+RegisterNetEvent('sk_nametag:client:settingsUpdated', function(settings)
+    if type(settings) ~= 'table' then return end
+    if settings.showOtherNametags ~= nil then
+        generalConfig.nametagsEnabled = settings.showOtherNametags ~= false
+        SetResourceKvp(NAMETAGS_ENABLED_KVP, generalConfig.nametagsEnabled and 'true' or 'false')
+    end
+    if settings.hideOwnNametag ~= nil then
+        generalConfig.ownNametagEnabled = settings.hideOwnNametag ~= true
+        SetResourceKvp(OWN_NAMETAG_ENABLED_KVP, generalConfig.ownNametagEnabled and 'true' or 'false')
+    end
     pushGeneralConfigToNui()
 end)
 

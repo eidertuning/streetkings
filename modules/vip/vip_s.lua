@@ -149,10 +149,8 @@ local function getDiscordIdentifier(source)
 end
 
 local function getBotToken()
-    local token = GetConvar('streetkings_discord_bot_token', '')
-    if token == '' and type(SKConfig.DiscordBotToken) == 'string' then
-        token = SKConfig.DiscordBotToken
-    end
+    local token = GetConvar('sk_discord_bot_token', '')
+    if token == '' then token = GetConvar('streetkings_discord_bot_token', '') end
     return token
 end
 
@@ -232,6 +230,9 @@ end
 
 local function isAdmin(source)
     if source == 0 then return true end
+    if SKPermissions and type(SKPermissions.IsStaff) == 'function' then
+        return SKPermissions.IsStaff(source)
+    end
     for _, ace in ipairs({
         'command',
         'admin',
@@ -345,6 +346,39 @@ local function publicRole(role)
     }
 end
 
+local function roleFromPermissionsVip(vip)
+    if type(vip) ~= 'table' or vip.enabled ~= true then return NONE_ROLE end
+    local base = roleForKey(vip.key) or {}
+    local role = shallowCopy(base)
+    role.key = vip.key or base.key or 'none'
+    role.tier = vip.legacyTier or base.legacyTier or base.tier or role.key
+    role.label = vip.label or base.label or ''
+    role.priority = tonumber(base.priority) or ((tonumber(vip.level) or 0) * 10)
+    role.color = vip.color or base.color or '#9ca3af'
+    role.icon = vip.icon or base.icon or 'fa-solid fa-road'
+    role.aceGroup = vip.aceGroup or base.aceGroup
+    role.permissions = type(base.permissions) == 'table' and shallowCopy(base.permissions) or {}
+    for permission, allowed in pairs(vip.permissions or {}) do
+        if allowed then role.permissions[permission] = true end
+    end
+    role.customization = type(base.customization) == 'table' and shallowCopy(base.customization) or {}
+    role.allowedPresets = type(base.allowedPresets) == 'table' and shallowCopy(base.allowedPresets) or {}
+    return role
+end
+
+local function roleFromPermissionsStaff(staff)
+    if type(staff) ~= 'table' or staff.enabled ~= true then return nil end
+    return publicRole({
+        key = staff.key or 'staff',
+        tier = staff.key or 'staff',
+        label = staff.label or 'STAFF',
+        priority = tonumber(staff.priority) or 1000,
+        color = staff.color or '#ef4444',
+        icon = staff.icon or 'fa-solid fa-shield-halved',
+        permissions = staff.permissions,
+    })
+end
+
 local function setCachedRole(source, role, reason)
     local previous = SKVip.players[source]
     local oldRole = previous and previous.role or NONE_ROLE
@@ -392,6 +426,11 @@ function SKVip.Refresh(source, force)
     source = tonumber(source)
     if not source or source <= 0 then return nil end
 
+    if SKPermissions and type(SKPermissions.RefreshPlayerDiscordPermissions) == 'function' then
+        local data = SKPermissions.RefreshPlayerDiscordPermissions(source, force == true)
+        return setCachedRole(source, roleFromPermissionsVip(data and data.vip), data and data.reason or 'permissions_synced')
+    end
+
     local cached = SKVip.players[source]
     local refreshMs = tonumber(SKConfig.DiscordVipRefreshMs) or 300000
     if cached and not force and (nowMs() - (cached.refreshedAt or 0)) < refreshMs then
@@ -418,11 +457,17 @@ function SKVip.Refresh(source, force)
 end
 
 function SKVip.Has(source)
+    if SKPermissions and type(SKPermissions.HasVip) == 'function' then
+        return SKPermissions.HasVip(source)
+    end
     local state = SKVip.Refresh(source, false)
     return state and state.role and (state.role.priority or 0) > 0 or false
 end
 
 function SKVip.HasLevel(source, levelOrTier)
+    if SKPermissions and type(SKPermissions.HasVipTier) == 'function' then
+        return SKPermissions.HasVipTier(source, levelOrTier)
+    end
     local state = SKVip.Refresh(source, false)
     local role = state and state.role or NONE_ROLE
     if type(levelOrTier) == 'number' then
@@ -436,6 +481,9 @@ function SKVip.HasLevel(source, levelOrTier)
 end
 
 function SKVip.HasPermission(source, permission)
+    if SKPermissions and type(SKPermissions.HasVipPermission) == 'function' then
+        return SKPermissions.HasVipPermission(source, permission)
+    end
     local state = SKVip.Refresh(source, false)
     local permissions = state and state.role and state.role.permissions or {}
     return permissions[tostring(permission or '')] == true
@@ -460,8 +508,8 @@ function SKVip.GetDefaultRole(source)
 
     if not best then
         best = {
-            key = 'pilot',
-            tier = 'pilot',
+            key = 'piloto',
+            tier = 'piloto',
             label = 'PILOTO',
             priority = 1,
             color = '#9ca3af',
@@ -602,6 +650,8 @@ function SKVip.GetEffectiveNametag(source)
     local vip = SKVip.Refresh(source, false)
     local vipRole = vip and vip.role or NONE_ROLE
     local defaultRole = SKVip.GetDefaultRole(source)
+    local permissionData = SKPermissions and SKPermissions.GetPlayerRoleData and SKPermissions.GetPlayerRoleData(source) or nil
+    local staffRole = roleFromPermissionsStaff(permissionData and permissionData.staff)
     local admin = isAdmin(source)
     local adminCfg = type(SKConfig.AdminNametag) == 'table' and SKConfig.AdminNametag or {}
     local role = (vipRole.priority or 0) > 0 and vipRole or defaultRole
@@ -610,7 +660,7 @@ function SKVip.GetEffectiveNametag(source)
     if admin and config.showAdminTag ~= false then
         local mode = config.adminDisplayMode or 'admin_plus_vip'
         if mode == 'admin_only' or mode == 'admin_plus_vip' then
-            role = publicRole({
+            role = staffRole or publicRole({
                 key = 'admin',
                 tier = 'admin',
                 label = adminCfg.label or 'ADMIN',
@@ -665,6 +715,7 @@ function SKVip.GetStudioData(source)
     local state = SKVip.Refresh(source, false)
     local role = state and state.role or NONE_ROLE
     local admin = isAdmin(source)
+    local permissionData = SKPermissions and SKPermissions.GetPlayerRoleData and SKPermissions.GetPlayerRoleData(source) or nil
     local allRoles = {}
     for _, vipRole in ipairs(sortedVipRoles()) do
         allRoles[#allRoles + 1] = publicRole(vipRole)
@@ -674,6 +725,8 @@ function SKVip.GetStudioData(source)
         ok = true,
         isVip = (role.priority or 0) > 0,
         isAdmin = admin,
+        staff = permissionData and permissionData.staff or nil,
+        permissionsData = permissionData,
         vip = publicRole(role),
         defaultRole = SKVip.GetDefaultRole(source),
         effective = SKVip.GetEffectiveNametag(source),
@@ -806,11 +859,18 @@ CreateThread(function()
     registerVipStudioApp()
 end)
 
-exports('GetVip', function(source) return SKVip.Refresh(source, false) end)
+exports('GetVip', function(source)
+    return SKPermissions and SKPermissions.GetVip and SKPermissions.GetVip(source) or SKVip.Refresh(source, false)
+end)
 exports('HasVip', function(source) return SKVip.Has(source) end)
 exports('HasVipLevel', function(source, levelOrTier) return SKVip.HasLevel(source, levelOrTier) end)
 exports('HasVipPermission', function(source, permission) return SKVip.HasPermission(source, permission) end)
-exports('RefreshVip', function(source) return SKVip.Refresh(source, true) end)
+exports('RefreshVip', function(source)
+    if SKPermissions and SKPermissions.RefreshPlayerDiscordPermissions then
+        return SKPermissions.RefreshPlayerDiscordPermissions(source, true)
+    end
+    return SKVip.Refresh(source, true)
+end)
 exports('GetDefaultNametagRole', function(source) return SKVip.GetDefaultRole(source) end)
 exports('GetEffectiveNametagRole', function(source) return SKVip.GetEffectiveRole(source) end)
 exports('GetEffectiveNametag', function(source) return SKVip.GetEffectiveNametag(source) end)

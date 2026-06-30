@@ -49,7 +49,7 @@
   }
 
   var VIP_RANKS = { none: 0, vip: 1, vipplus: 2, vipplusplus: 3 };
-  var VIP_LABELS = { vip: 'VIP', vipplus: 'VIP+', vipplusplus: 'VIP++' };
+  var VIP_LABELS = { vip: 'VIP', vipplus: 'VIP++', vipplusplus: 'VIP+++' };
 
   function hasVipAccess(requiredTier) {
     if (!requiredTier) return true;

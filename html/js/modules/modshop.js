@@ -927,7 +927,7 @@
   }
 
   function vipLabel(tier) {
-    return ({ vip: 'VIP', vipplus: 'VIP+', vipplusplus: 'VIP++' })[tier] || tier || 'VIP';
+    return ({ vip: 'VIP', vipplus: 'VIP++', vipplusplus: 'VIP+++' })[tier] || tier || 'VIP';
   }
 
   function hasVipAccess(requiredTier) {

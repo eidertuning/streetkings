@@ -1,6 +1,10 @@
 ---@param source integer
 ---@return boolean
 local function playerHasDebugTools(source)
+    if source == 0 then return true end
+    if SKPermissions and type(SKPermissions.HasPermission) == 'function' then
+        return SKPermissions.HasPermission(source, 'debug') or SKPermissions.HasPermission(source, 'admin.menu')
+    end
     return IsPlayerAceAllowed(source, 'command') == 1
 end
 

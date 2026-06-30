@@ -14,8 +14,8 @@ local VIP_TIERS = {
 
 local VIP_TIER_LABELS = {
     vip = 'VIP',
-    vipplus = 'VIP+',
-    vipplusplus = 'VIP++',
+    vipplus = 'VIP++',
+    vipplusplus = 'VIP+++',
 }
 
 local RANDOM_COLORS = {
@@ -54,12 +54,21 @@ end
 ---@param document table|nil
 ---@return string
 local function getPlayerVipTier(source, document)
+    if SKPermissions and type(SKPermissions.GetVip) == 'function' then
+        local vip = SKPermissions.GetVip(source)
+        if vip and vip.enabled then
+            return vip.legacyTier or ({ vip_1 = 'vip', vip_2 = 'vipplus', vip_3 = 'vipplusplus' })[vip.key] or 'none'
+        end
+        return 'none'
+    end
+
     local savedTier = document and document.profile and document.profile.vipTier
     local bestTier = type(savedTier) == 'string' and savedTier or 'none'
-
-    if IsPlayerAceAllowed(source, 'streetkings.vipplusplus') then
+    if IsPlayerAceAllowed(source, 'streetkings.vipplusplus') or IsPlayerAceAllowed(source, 'streetkings.vip+++') then
         bestTier = 'vipplusplus'
-    elseif IsPlayerAceAllowed(source, 'streetkings.vipplus') and getVipRank(bestTier) < getVipRank('vipplus') then
+    elseif (IsPlayerAceAllowed(source, 'streetkings.vipplus') or IsPlayerAceAllowed(source, 'streetkings.vip++'))
+        and getVipRank(bestTier) < getVipRank('vipplus')
+    then
         bestTier = 'vipplus'
     elseif IsPlayerAceAllowed(source, 'streetkings.vip') and getVipRank(bestTier) < getVipRank('vip') then
         bestTier = 'vip'
@@ -185,6 +194,10 @@ lib.callback.register('streetkings:dealership:purchase', function(source, model,
         return { ok = false, reason = 'vip_locked', requiredVipTier = requiredVipTier, requiredVipLabel = VIP_TIER_LABELS[requiredVipTier] or requiredVipTier }
     end
 
+    if requiredVipTier and SKPermissions and not SKPermissions.HasPermission(source, 'vip.vehicle_shop') then
+        return { ok = false, reason = 'vip_locked', requiredVipTier = requiredVipTier, requiredVipLabel = VIP_TIER_LABELS[requiredVipTier] or requiredVipTier }
+    end
+
     if cash < price then
         return { ok = false, reason = 'insufficient_funds' }
     end
@@ -248,16 +261,21 @@ lib.addCommand('setvip', {
     help = 'Set a player VIP tier for VIP dealerships',
     params = {
         { name = 'id', help = 'Player server ID', type = 'playerId' },
-        { name = 'tier', help = 'none, vip, vipplus, vipplusplus', type = 'string' },
+        { name = 'tier', help = 'none, vip, vip++/vipplus, vip+++/vipplusplus', type = 'string' },
     },
-    restricted = 'group.admin',
+    restricted = false,
 }, function(source, args)
+    if source ~= 0 then
+        local allowed = SKPermissions and SKPermissions.HasPermission and SKPermissions.HasPermission(source, 'admin.menu')
+        if not allowed and not IsPlayerAceAllowed(source, 'group.admin') then return end
+    end
+
     local tier = string.lower(args.tier or 'none')
-    if tier == 'vip+' then tier = 'vipplus' end
-    if tier == 'vip++' then tier = 'vipplusplus' end
+    if tier == 'vip+' or tier == 'vip++' then tier = 'vipplus' end
+    if tier == 'vip+++' then tier = 'vipplusplus' end
     if not VIP_TIERS[tier] then
         if source > 0 then
-            TriggerClientEvent('streetkings:notify', source, { type = 'error', title = 'Sistema', body = 'VIP tier invalido. Usa none, vip, vipplus o vipplusplus.' })
+            TriggerClientEvent('streetkings:notify', source, { type = 'error', title = 'Sistema', body = 'VIP tier invalido. Usa none, vip, vip++ o vip+++.' })
         end
         return
     end

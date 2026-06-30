@@ -22,7 +22,8 @@ Global configuration flags that can be toggled before the resource starts. Edit 
 | `SKConfig.Locale` | `string` | `'es'` | Default locale. |
 | `SKConfig.FallbackLocale` | `string` | `'en'` | Locale fallback when a key is missing. |
 | `SKConfig.DiscordAvatarEndpoint` | `string` | `''` | Optional external endpoint such as `https://api.example/avatar/{id}`. If set, profile UI uses it for Discord avatars. |
-| `SKConfig.DiscordBotToken` | `string` | `''` | Optional bot token fallback for real Discord avatars. Prefer `set streetkings_discord_bot_token "BOT_TOKEN"` in `server.cfg`. |
+| `SKConfig.DiscordPermissions` | `table` | configured | Discord role ID based permission map for staff, VIP, racing, raffles, and future permissions. Bot tokens are never stored here. |
+| `SKConfig.Nametag` | `table` | configured | Nametag distance and visual priority settings. |
 
 ```lua
 -- data/sk_config.lua
@@ -406,13 +407,44 @@ local identity = exports['streetkings']:GetPlayerIdentity(source)
 print(('SK #%s / source %s / %s'):format(identity.streetkingsId or '?', identity.source, identity.name))
 ```
 
-Server configuration for real Discord avatars:
+Server configuration for real Discord avatars and Discord permissions:
 
 ```cfg
-set streetkings_discord_bot_token "YOUR_DISCORD_BOT_TOKEN"
+set sk_discord_bot_token "YOUR_DISCORD_BOT_TOKEN"
 ```
 
 Without a token or `SKConfig.DiscordAvatarEndpoint`, Discord only allows a default avatar URL because the player identifier does not include the user's avatar hash.
+
+### Discord Permissions
+
+Discord permissions are resolved on the server from Discord role IDs in `SKConfig.DiscordPermissions.roles`. Clients only receive a cache for UI decisions; all important gameplay actions must call server exports or server callbacks.
+
+| Export | Params | Returns | Description |
+|--------|--------|---------|-------------|
+| `GetPlayerRoleData(source)` | server id | `table` | Full staff/VIP/racing/permissions payload |
+| `GetPlayerPermissions(source)` | server id | `table` | Flat permission map |
+| `HasPermission(source, permission)` | server id, permission | `boolean` | Main permission check |
+| `IsOwner(source)` / `IsDeveloper(source)` / `IsAdmin(source)` / `IsModerator(source)` / `IsStaff(source)` | server id | `boolean` | Staff role helpers |
+| `GetVip(source)` / `HasVip(source)` / `GetVipLevel(source)` / `HasVipTier(source, tierKey)` / `HasVipPermission(source, permission)` | server id | mixed | VIP helpers |
+| `GetRacingRole(source)` / `IsRacingOrganizer(source)` / `IsPilot(source)` / `IsPilotPro(source)` / `HasRacingPermission(source, permission)` | server id | mixed | Racing helpers |
+| `RefreshPlayerDiscordPermissions(source)` | server id | `table` | Force a Discord permission refresh |
+| `GetPlayerNametagData(source)` | server id | `table` | Server-approved nametag role data |
+| `SetHideOwnNametag(source, state)` / `SetShowOtherNametags(source, state)` / `GetNametagSettings(source)` | server id | mixed | Nametag settings helpers |
+| `CanUseVipShop(source)` / `CanUseVipVehicleShop(source)` / `CanUseVipWorkshop(source)` / `CanUseVipTuning(source)` / `CanUseVipRepairDiscount(source)` / `CanUseVipCosmetics(source)` | server id | `boolean` | VIP gameplay helpers |
+| `CanUseAdminMenu(source)` / `CanKickPlayers(source)` / `CanBanPlayers(source)` / `CanUseAdminVehicle(source)` / `CanSpectate(source)` / `CanTeleport(source)` | server id | `boolean` | Admin gameplay helpers |
+| `CanManageRacingEvents(source)` / `CanCreateRacingEvents(source)` / `CanManageLeaderboards(source)` | server id | `boolean` | Racing admin helpers |
+
+Compatibility wrappers such as `IsVip`, `HasAdminPermission`, `CanAccessVipShop`, `CanUseVipWorkshop`, and old `GetVip`/`HasVip` exports route into the same central permission system.
+
+```lua
+if not exports['streetkings']:HasPermission(source, 'vip.vehicle_shop') then
+    return { ok = false, reason = 'vip_locked' }
+end
+
+if exports['streetkings']:CanCreateRacingEvents(source) then
+    -- allow race editor/save flow
+end
+```
 
 ### Economy
 

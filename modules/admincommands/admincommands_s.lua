@@ -2,10 +2,19 @@ local MONEY_PATHS = {
     cash = 'economy.cash',
 }
 
+local function canUseAdminCommand(source, permission)
+    if source == 0 then return true end
+    if SKPermissions and type(SKPermissions.HasPermission) == 'function' then
+        return SKPermissions.HasPermission(source, permission or 'admin.menu')
+    end
+    return IsPlayerAceAllowed(source, 'group.admin') or IsPlayerAceAllowed(source, 'command')
+end
+
 lib.addCommand('tp', {
     help = 'Teleport to coordinates',
-    restricted = 'group.admin',
+    restricted = false,
 }, function(source, _, raw)
+    if not canUseAdminCommand(source, 'admin.teleport') then return end
     local values = {}
 
     for value in raw:gmatch('[%-]?%d+%.?%d*') do
@@ -29,8 +38,9 @@ end)
 
 lib.addCommand({'tpm', 'warp'}, {
     help = 'Teleport to waypoint marker',
-    restricted = 'group.admin',
+    restricted = false,
 }, function(source)
+    if not canUseAdminCommand(source, 'admin.teleport') then return end
     TriggerClientEvent('streetkings:admin:teleportMarker', source)
     if SKLogs then
         SKLogs.Admin('adminCommand', {
@@ -43,8 +53,9 @@ end)
 
 lib.addCommand('logout', {
     help = 'Save and return to main menu',
-    restricted = 'group.admin',
+    restricted = false,
 }, function(source)
+    if not canUseAdminCommand(source, 'admin.menu') then return end
     if SKSaves.hasActiveSave(source) then
         SKSaves.persist(source)
         SKSaves.clearActive(source)
@@ -66,8 +77,9 @@ lib.addCommand('givemoney', {
         { name = 'type',   help = 'cash',              type = 'string'   },
         { name = 'amount', help = 'Amount to give',    type = 'number'   },
     },
-    restricted = 'group.admin',
+    restricted = false,
 }, function(source, args)
+    if not canUseAdminCommand(source, 'admin.menu') then return end
     local path = MONEY_PATHS[args.type]
     if not path or not SKSaves.hasActiveSave(args.id) then return end
     local before = SKSaves.read(args.id, path)
@@ -90,8 +102,9 @@ lib.addCommand('setmoney', {
         { name = 'type',   help = 'cash',              type = 'string'   },
         { name = 'amount', help = 'Amount to set',     type = 'number'   },
     },
-    restricted = 'group.admin',
+    restricted = false,
 }, function(source, args)
+    if not canUseAdminCommand(source, 'admin.menu') then return end
     local path = MONEY_PATHS[args.type]
     if not path or not SKSaves.hasActiveSave(args.id) then return end
     local before = SKSaves.read(args.id, path)
@@ -108,8 +121,9 @@ end)
 
 lib.addCommand('v3', {
     help = 'Copy current position as vector3 to clipboard',
-    restricted = 'group.admin',
+    restricted = false,
 }, function(source)
+    if not canUseAdminCommand(source, 'debug') then return end
     local coords = GetEntityCoords(GetPlayerPed(source))
     TriggerClientEvent('streetkings:admin:copyCoords', source, coords)
     if SKLogs then
@@ -123,8 +137,9 @@ end)
 
 lib.addCommand('v4', {
     help = 'Copy current position and heading as vector4 to clipboard',
-    restricted = 'group.admin',
+    restricted = false,
 }, function(source)
+    if not canUseAdminCommand(source, 'debug') then return end
     local ped    = GetPlayerPed(source)
     local coords = GetEntityCoords(ped)
     local heading = GetEntityHeading(ped)
@@ -143,8 +158,9 @@ lib.addCommand('time', {
     params = {
         { name = 'hour', help = 'Hour (0–23)', type = 'number' },
     },
-    restricted = 'group.admin',
+    restricted = false,
 }, function(source, args)
+    if not canUseAdminCommand(source, 'admin.menu') then return end
     SKEnvironment.SetHour(args.hour)
     if SKLogs then
         SKLogs.Admin('adminCommand', {
@@ -167,8 +183,9 @@ lib.addCommand('weather', {
     params = {
         { name = 'weather', help = 'Weather type (e.g. CLEAR, RAIN, FOGGY)', type = 'string' },
     },
-    restricted = 'group.admin',
+    restricted = false,
 }, function(source, args)
+    if not canUseAdminCommand(source, 'admin.menu') then return end
     local weather = args.weather:upper()
     if not VALID_WEATHERS[weather] then return end
     SKEnvironment.SetWeather(weather)
