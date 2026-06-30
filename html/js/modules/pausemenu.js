@@ -44,15 +44,6 @@
     function buildLayout() {
         panel.innerHTML = [
             '<header id="sk-pausemenu-header">',
-            '  <div class="pm-profile-card">',
-            '    <div class="pm-profile-avatar-wrap"><img id="pm-profile-avatar" src="assets/SKIcon.png" alt="" draggable="false" /></div>',
-            '    <div class="pm-profile-copy">',
-            '      <span class="pm-kicker">Five Horizon</span>',
-            '      <h1 id="pm-info-name">Driver</h1>',
-            '      <span id="pm-profile-alias">@streetkings</span>',
-            '      <div id="pm-profile-badges" class="pm-profile-badges"></div>',
-            '    </div>',
-            '  </div>',
             '  <div id="pm-header-stats">',
             '    <div class="pm-header-stat"><span data-i18n="pause_menu.level">LEVEL</span><strong id="pm-stat-level">--</strong></div>',
             '    <div class="pm-header-stat pm-header-stat--wide"><span data-i18n="pause_menu.cash">CASH</span><strong id="pm-stat-cash">--</strong></div>',
@@ -66,7 +57,16 @@
             '</header>',
             '<main id="sk-pausemenu-grid">',
             '  <aside id="sk-pausemenu-left">',
-            '    <div id="sk-pausemenu-logo"><img class="pm-logo-image" src="assets/fhm.png" alt="" draggable="false" /><span class="pm-beta-badge">BETA</span></div>',
+            '    <div id="sk-pausemenu-logo"><img class="pm-logo-image" src="assets/fhm.png" alt="" draggable="false" /></div>',
+            '    <div class="pm-profile-card pm-profile-card--side">',
+            '      <div class="pm-profile-avatar-wrap"><img id="pm-profile-avatar" src="assets/SKIcon.png" alt="" draggable="false" /></div>',
+            '      <div class="pm-profile-copy">',
+            '        <span class="pm-kicker">Five Horizon</span>',
+            '        <h1 id="pm-info-name">Driver</h1>',
+            '        <span id="pm-profile-alias">StreetKings</span>',
+            '        <div id="pm-profile-badges" class="pm-profile-badges"></div>',
+            '      </div>',
+            '    </div>',
             '    <nav id="sk-pausemenu-nav">',
             menuButton('pm-btn-continue', 'fa-solid fa-play', 'pause_menu.continue', 'pause_menu.continue_sub', true),
             menuButton('pm-btn-map', 'fa-solid fa-map-location-dot', 'pause_menu.map', 'pause_menu.map_sub'),
@@ -201,14 +201,30 @@
     function updateProfile(data) {
         var profile = data.profile || {};
         var name = data.playerName || profile.name || 'Driver';
-        var alias = profile.alias || profile.discordId || name;
-        if (alias && alias.charAt(0) !== '@') alias = '@' + alias;
+        var alias = displayAlias(profile.alias, name, profile);
 
         setText(els.name, name);
         setText(els.alias, alias);
         setAvatar(profile.avatarUrl || profile.discordAvatarUrl);
         setBadges(profile.badges);
         setText(els.rank, profile.rank || (profile.vip && profile.vip.label) || (profile.racing && profile.racing.label) || t('pause_menu.default_badge'));
+    }
+
+    function displayAlias(alias, name, profile) {
+        alias = typeof alias === 'string' ? alias.trim() : '';
+        name = typeof name === 'string' ? name.trim() : '';
+
+        if (alias && !/^\d+$/.test(alias)) {
+            return alias.charAt(0) === '@' ? alias : '@' + alias;
+        }
+
+        if (name && !/^\d+$/.test(name)) {
+            return '@' + name.replace(/\s+/g, '').slice(0, 24);
+        }
+
+        if (profile && profile.vip && profile.vip.label) return profile.vip.label;
+        if (profile && profile.racing && profile.racing.label) return profile.racing.label;
+        return 'Five Horizon';
     }
 
     function open(data) {

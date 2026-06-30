@@ -9,10 +9,53 @@ local controllerTracker = SKControllerFriendly.newTracker()
 local controllerModeEnabled = false
 
 local STORE_URL = 'https://streetkings.com/store'
+local pauseHudHidden = false
+local pauseRadarVisible = true
+local pauseSpeedometerEnabled = true
 
 ---@return boolean
 function SKPauseMenu.isOpen()
     return menuOpen or menuOpening
+end
+
+local function isSpeedometerEnabled()
+    if SKSpeedo and type(SKSpeedo.isEnabled) == 'function' then
+        return SKSpeedo.isEnabled()
+    end
+
+    local ok, result = pcall(function()
+        return exports[GetCurrentResourceName()]:IsSpeedometerEnabled()
+    end)
+    return ok and result == true
+end
+
+local function setSpeedometerEnabled(enabled)
+    if SKSpeedo and type(SKSpeedo.setEnabled) == 'function' then
+        SKSpeedo.setEnabled(enabled == true)
+        return
+    end
+
+    pcall(function()
+        exports[GetCurrentResourceName()]:SetSpeedometerEnabled(enabled == true)
+    end)
+end
+
+local function hidePauseHud()
+    if pauseHudHidden then return end
+    pauseRadarVisible = not IsRadarHidden()
+    pauseSpeedometerEnabled = isSpeedometerEnabled()
+    DisplayRadar(false)
+    setSpeedometerEnabled(false)
+    pauseHudHidden = true
+end
+
+local function restorePauseHud()
+    if not pauseHudHidden then return end
+    DisplayRadar(pauseRadarVisible == true)
+    if pauseSpeedometerEnabled then
+        setSpeedometerEnabled(true)
+    end
+    pauseHudHidden = false
 end
 
 local shots = {
@@ -128,6 +171,7 @@ local function openMenu()
     })
 
     SetNuiFocus(true, true)
+    hidePauseHud()
     menuOpen = true
     menuOpening = false
     startCinematicCam()
@@ -135,6 +179,7 @@ end
 
 local function closeMenu()
     menuOpen = false
+    restorePauseHud()
     SKControllerFriendly.resetTracker(controllerTracker)
     setControllerModeEnabled(false)
     CreateThread(stopCinematicCam)
@@ -218,6 +263,7 @@ end)
 
 RegisterNUICallback('pausemenu:map', function(_, cb)
     menuOpen = false
+    restorePauseHud()
     if cineCam then
         RenderScriptCams(false, false, 0, true, true)
         DestroyCam(cineCam, false)

@@ -2,6 +2,9 @@ SKSpeedo = {}
 
 if SKConfig.DisableSpeedometer then
     function SKSpeedo.setEnabled() end
+    function SKSpeedo.isEnabled() return false end
+    exports('SetSpeedometerEnabled', function() return false end)
+    exports('IsSpeedometerEnabled', function() return false end)
     return
 end
 
@@ -51,10 +54,18 @@ function SKSpeedo.setEnabled(on)
     end
 end
 
+function SKSpeedo.isEnabled()
+    return enabled == true
+end
+
 exports('SetSpeedometerEnabled', function(on)
     if type(on) ~= 'boolean' then return false end
     SKSpeedo.setEnabled(on)
     return true
+end)
+
+exports('IsSpeedometerEnabled', function()
+    return SKSpeedo.isEnabled()
 end)
 
 CreateThread(function()
