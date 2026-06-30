@@ -5,7 +5,6 @@
 
     var overlay = null;
     var panel = null;
-    var storeUrl = '';
     var menuVisible = false;
     var nav = null;
     var els = {};
@@ -97,10 +96,6 @@
             metric('fa-solid fa-car-side', 'pause_menu.vehicles', 'pm-stat-vehicles'),
             metric('fa-solid fa-warehouse', 'pause_menu.properties', 'pm-stat-properties'),
             '      </div>',
-            '    </div>',
-            '    <div class="pm-card pm-store-card">',
-            '      <div class="pm-store-copy"><span class="pm-kicker" data-i18n="pause_menu.store_kicker">STREETKINGS STORE</span><h2 data-i18n="pause_menu.store_title">Premium rides, boosts and style drops.</h2><p data-i18n="pause_menu.store_copy">Grab the next upgrade before the grid moves on.</p><button id="pm-btn-store"><span data-i18n="pause_menu.visit_store">VISIT STORE</span><i class="fa-solid fa-arrow-right-long"></i></button></div>',
-            '      <div class="pm-store-art" aria-hidden="true"><i class="fa-solid fa-car-side"></i></div>',
             '    </div>',
             '    <div id="pm-lower-cards">',
             '      <div class="pm-card" id="pm-patchnotes"><div id="pm-patchnotes-header"><div class="pm-section-title"><i class="fa-solid fa-newspaper"></i><span id="pm-patchnotes-title" data-i18n="pause_menu.patch_notes">PATCH NOTES</span></div><span id="pm-patchnotes-version" data-i18n="pause_menu.latest">LATEST</span></div><ul id="pm-patchnotes-list"><li data-i18n="pause_menu.patch_1">New waypoint system with distance tracking</li><li data-i18n="pause_menu.patch_2">Cinematic pause menu added</li><li data-i18n="pause_menu.patch_3">Performance improvements across all modules</li></ul></div>',
@@ -232,8 +227,6 @@
         updateProfile(data);
 
         var xp = xpInfo(data);
-        if (data.storeUrl) storeUrl = data.storeUrl;
-
         setText(els.time, data.gameTime || '00:00');
         setText(els.street, data.street || '--');
         setText(els.zone, data.zone || '--');
@@ -282,7 +275,6 @@
         var btnSettings = document.getElementById('pm-btn-settings');
         var btnMainMenu = document.getElementById('pm-btn-mainmenu');
         var btnExit = document.getElementById('pm-btn-exit');
-        var btnStore = document.getElementById('pm-btn-store');
 
         btnContinue.addEventListener('click', function () {
             hide();
@@ -297,10 +289,6 @@
         btnMap.addEventListener('click', function () {
             hide();
             nuiPost('pausemenu:map');
-        });
-
-        btnStore.addEventListener('click', function () {
-            if (storeUrl && window.invokeNative) window.invokeNative('openUrl', storeUrl);
         });
 
         btnMainMenu.addEventListener('click', function () {
