@@ -41,7 +41,8 @@
     var nodes = document.querySelectorAll(
       '#dealershipClassTabs .sk-dealership-class-tab, ' +
       '#dealershipList .sk-dealership-thumb, ' +
-      '#dealershipActions .sk-dealership-btn'
+      '#dealershipActions .sk-dealership-btn, ' +
+      '.sk-dealership-floating-exit'
     );
     var list = [];
     for (var i = 0; i < nodes.length; i++) {
@@ -345,6 +346,9 @@
 
   function renderActions(v) {
     els.actions.innerHTML = '';
+    els.root.querySelectorAll('.sk-dealership-floating-exit').forEach(function (node) {
+      node.remove();
+    });
 
     var owned = !!state.ownedModels[v.model];
     var requiredLevel = CLASS_UNLOCK_LEVELS[v.class];
@@ -392,10 +396,10 @@
     }
 
     var exitBtn = document.createElement('button');
-    exitBtn.className   = 'sk-dealership-btn sk-dealership-btn--exit';
+    exitBtn.className   = 'sk-dealership-floating-exit';
     exitBtn.textContent = t('dealership.leave', null, 'Salir');
     exitBtn.addEventListener('click', exitDealership);
-    els.actions.appendChild(exitBtn);
+    els.root.appendChild(exitBtn);
 
     if (controllerEnabled) {
       scheduleControllerRefresh({ retainCurrent: false });

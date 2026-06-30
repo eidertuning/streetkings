@@ -611,3 +611,245 @@
   text-transform: uppercase;
   color: rgba(158, 229, 255, 0.8);
 }
+
+/* -- Pause/dealership visual refresh -------------------------------------- */
+
+.sk-garage {
+  --garage-panel: rgba(15, 15, 24, 0.58);
+  --garage-panel-soft: rgba(11, 11, 17, 0.46);
+  --garage-border: rgba(255, 255, 255, 0.12);
+  --garage-hot: #ff0a73;
+  --garage-cyan: #8cecff;
+  --garage-gold: #ffd039;
+  --garage-text: #f4f4f7;
+  --garage-muted: rgba(244, 244, 247, 0.64);
+  --garage-soft: rgba(244, 244, 247, 0.42);
+  font-family: 'Poppins', 'Inter', sans-serif;
+}
+
+.sk-garage-top {
+  top: clamp(1rem, 2.2vh, 2rem);
+  left: clamp(1rem, 2.4vw, 2.4rem);
+  right: clamp(1rem, 2.4vw, 2.4rem);
+  padding: 0;
+  background: transparent;
+  gap: 1rem;
+}
+
+.sk-garage-top-copy {
+  max-width: min(45rem, 58vw);
+  padding: clamp(0.82rem, 1.25vw, 1.12rem) clamp(1.05rem, 1.7vw, 1.5rem);
+  background: linear-gradient(145deg, var(--garage-panel), rgba(11, 11, 17, 0.30));
+  border: 1px solid var(--garage-border);
+  border-left: 3px solid var(--garage-hot);
+  border-radius: 20px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.sk-garage-heading {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: clamp(2rem, 3.4vw, 3.7rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--garage-text);
+  text-shadow: 0 0 28px rgba(255, 10, 115, 0.24);
+}
+
+.sk-garage-hint {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: clamp(0.72rem, 0.88vw, 0.92rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--garage-muted);
+}
+
+.sk-garage-top-status {
+  gap: 0.75rem;
+}
+
+.sk-garage-wallet,
+.sk-garage-player-card,
+.sk-garage-card,
+.sk-garage-actions,
+.sk-garage-settings-box,
+.sk-garage-confirm-box {
+  background: linear-gradient(145deg, var(--garage-panel), rgba(11, 11, 17, 0.34));
+  border: 1px solid var(--garage-border);
+  border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.sk-garage-wallet {
+  align-items: stretch;
+  min-width: clamp(14rem, 18vw, 21rem);
+  border-right: 3px solid var(--garage-cyan);
+}
+
+.sk-garage-wallet-label,
+.sk-garage-player-label,
+.sk-garage-card-label,
+.sk-garage-level-label,
+.sk-garage-settings-btn,
+.sk-garage-confirm-btn {
+  font-family: 'Oswald', sans-serif;
+}
+
+.sk-garage-wallet-label,
+.sk-garage-player-label,
+.sk-garage-card-label,
+.sk-garage-level-label {
+  color: var(--garage-soft);
+}
+
+.sk-garage-wallet-amount {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(1.55rem, 2.25vw, 2.25rem);
+  font-weight: 700;
+  color: var(--garage-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sk-garage-player-card {
+  border-right: 3px solid var(--garage-hot);
+}
+
+.sk-garage-player-level,
+.sk-garage-level-value,
+.sk-garage-settings-title,
+.sk-garage-confirm-title {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  color: var(--garage-cyan);
+}
+
+.sk-garage-player-fill,
+.sk-garage-level-fill {
+  background: linear-gradient(90deg, var(--garage-cyan), var(--garage-hot), var(--garage-gold));
+  box-shadow: 0 0 22px rgba(255, 10, 115, 0.32);
+}
+
+.sk-garage-side {
+  width: clamp(300px, 23vw, 430px);
+}
+
+.sk-garage-card {
+  position: relative;
+  overflow: hidden;
+  border-left: 3px solid var(--garage-hot);
+  padding: clamp(1.1rem, 1.55vw, 1.55rem);
+}
+
+.sk-garage-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: linear-gradient(90deg, var(--garage-hot), var(--garage-cyan), transparent);
+  opacity: 0.8;
+}
+
+.sk-garage-car-display-name {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: clamp(1.75rem, 2.35vw, 2.65rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  color: var(--garage-text);
+}
+
+.sk-garage-active-badge {
+  border: 1px solid rgba(34, 197, 94, 0.34);
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.12);
+  color: #22c55e;
+}
+
+.sk-garage-actions {
+  padding: 0.7rem;
+}
+
+.sk-garage-btn,
+.sk-garage-settings-btn,
+.sk-garage-confirm-btn {
+  min-height: 2.85rem;
+  border-radius: 14px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.sk-garage-btn--primary,
+.sk-garage-settings-btn.is-active,
+.sk-garage-confirm-btn {
+  background: rgba(255, 10, 115, 0.17);
+  border-color: rgba(255, 10, 115, 0.48);
+  color: var(--garage-hot);
+}
+
+.sk-garage-btn--primary:hover:not(:disabled),
+.sk-garage-settings-btn.is-active:hover:not(:disabled),
+.sk-garage-confirm-btn:hover:not(:disabled) {
+  background: rgba(255, 10, 115, 0.28);
+  border-color: rgba(255, 10, 115, 0.68);
+  color: #fff;
+}
+
+.sk-garage-btn--exit,
+.sk-garage-confirm-btn--secondary {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.055);
+  color: var(--garage-muted);
+}
+
+.sk-garage-strip {
+  padding: 0 clamp(1.6rem, 3vw, 3.25rem) clamp(1rem, 1.8vh, 1.5rem);
+  background: linear-gradient(0deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.22) 58%, transparent 100%);
+}
+
+.sk-garage-strip-inner {
+  gap: 0.8rem;
+}
+
+.sk-garage-thumb {
+  align-items: stretch;
+  gap: 0.5rem;
+  padding: 0.68rem;
+  min-width: clamp(200px, 15vw, 270px);
+  max-width: clamp(200px, 15vw, 270px);
+  border: 1px solid var(--garage-border);
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.022)), var(--garage-panel-soft);
+  box-shadow: 0 0.8rem 1.8rem rgba(0, 0, 0, 0.24);
+}
+
+.sk-garage-thumb-image {
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  background: radial-gradient(circle at 50% 30%, rgba(255, 10, 115, 0.12), transparent 50%), rgba(255,255,255,0.045);
+}
+
+.sk-garage-thumb-name {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: clamp(0.78rem, 0.9vw, 0.96rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+.sk-garage-thumb-tag,
+.sk-garage-thumb-level {
+  width: fit-content;
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  font-family: 'Oswald', sans-serif;
+  color: var(--garage-muted);
+}
+
+.sk-garage-thumb.is-active,
+.sk-garage-thumb.is-active.is-preview,
+.sk-garage-thumb.is-preview {
+  border-color: rgba(255, 10, 115, 0.58);
+  background: linear-gradient(145deg, rgba(255, 10, 115, 0.18), rgba(140, 236, 255, 0.075)), rgba(15, 15, 24, 0.70);
+}
