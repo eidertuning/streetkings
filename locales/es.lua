@@ -477,6 +477,7 @@ Elige un coche que de verdad te guste. Aprende cómo se mueve. Conduce limpio. U
             },
             labels = {
                 nametagsEnabled = "Mostrar nametags",
+                ownNametagEnabled = "Mostrar mi nametag",
                 controllerGlyphStyle = "Iconos de mando",
                 mapWaypointMode = "Modo de ruta del mapa",
                 speedometerStyle = "Estilo del velocímetro",

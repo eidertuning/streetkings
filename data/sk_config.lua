@@ -6,13 +6,13 @@ SKConfig = {
     DiscordAvatarEndpoint = '', -- Optional: 'https://your-api/avatar/{id}' for real Discord avatars
     DiscordBotToken    = '',    -- Optional fallback. Prefer server.cfg: set streetkings_discord_bot_token "BOT_TOKEN"
 
-    DiscordGuildId = '',        -- Discord guild/server id used for VIP role checks
+    DiscordGuildId = '1520687570810310686',        -- Discord guild/server id used for VIP role checks
     DiscordVipRefreshMs = 300000,
 
     DiscordVipRoles = {
         vip_1 = {
             label = 'VIP',
-            discordRoleId = '',
+            discordRoleId = '1520761376866570291',
             priority = 10,
             color = '#facc15',
             icon = 'fa-solid fa-crown',
@@ -41,7 +41,7 @@ SKConfig = {
         },
         vip_2 = {
             label = 'VIP+',
-            discordRoleId = '',
+            discordRoleId = '1520761378246234212',
             priority = 20,
             color = '#9ee5ff',
             icon = 'fa-solid fa-gem',
@@ -71,7 +71,7 @@ SKConfig = {
         },
         vip_3 = {
             label = 'VIP ELITE',
-            discordRoleId = '',
+            discordRoleId = '1520761376866570291',
             priority = 30,
             color = '#ff006a',
             icon = 'fa-solid fa-shield-halved',
@@ -106,14 +106,14 @@ SKConfig = {
         pilot = {
             label = 'PILOTO',
             minLevel = 1,
-            maxLevel = 24,
+            maxLevel = 49,
             priority = 1,
             color = '#9ca3af',
             icon = 'fa-solid fa-road',
         },
         pilot_pro = {
             label = 'PILOTO PRO',
-            minLevel = 25,
+            minLevel = 50,
             priority = 2,
             color = '#9ee5ff',
             icon = 'fa-solid fa-gauge-high',

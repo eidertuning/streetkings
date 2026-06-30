@@ -341,6 +341,9 @@ function SKProgression.awardPlayerXp(source, amount)
     end
 
     SKSaves.write(source, 'progression', progression)
+    if progression.level ~= oldLevel then
+        TriggerEvent('streetkings:progression:playerLevelChanged', source, oldLevel, progression.level, levelUps)
+    end
 
     local cosmeticCurrencyAwarded = #levelUps * SKProgression.COSMETIC_CURRENCY_PER_LEVEL
     local awardedCoins = 0
@@ -407,9 +410,13 @@ function SKProgression.setPlayerLevel(source, targetLevel)
 
     targetLevel = math.max(1, math.min(targetLevel, SKProgression.PLAYER_MAX_LEVEL))
     local progression = getProgression(document)
+    local oldLevel = progression.level or 1
     progression.playerXp = SKProgression.PLAYER_LEVEL_THRESHOLDS[targetLevel]
     progression.level = targetLevel
     SKSaves.write(source, 'progression', progression)
+    if progression.level ~= oldLevel then
+        TriggerEvent('streetkings:progression:playerLevelChanged', source, oldLevel, progression.level, {})
+    end
     return true
 end
 

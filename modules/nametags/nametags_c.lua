@@ -27,6 +27,11 @@ local function settingsEnabled()
     return SKSettings.areNametagsEnabled()
 end
 
+local function ownNametagEnabled()
+    if not SKSettings or type(SKSettings.isOwnNametagEnabled) ~= 'function' then return true end
+    return SKSettings.isOwnNametagEnabled()
+end
+
 local function entryFromRoster(src, fallbackName)
     local entry = roster[src] or {}
     local nametag = entry.nametag or {}
@@ -116,14 +121,16 @@ local function buildVisibleNametags()
     local myId = PlayerId()
     local camera = GetGameplayCamCoords()
     local players = {}
+    local showOwn = ownNametagEnabled()
 
     for _, playerId in ipairs(GetActivePlayers()) do
-        if playerId ~= myId then
+        if playerId ~= myId or showOwn then
             local ped = GetPlayerPed(playerId)
             if ped and ped ~= 0 and DoesEntityExist(ped) then
                 local pos = getNametagWorldPos(ped)
                 local dist = #(myPos - pos)
-                if dist <= MAX_DIST and HasEntityClearLosToEntity(myPed, ped, 17) then
+                local clearLos = playerId == myId or HasEntityClearLosToEntity(myPed, ped, 17)
+                if dist <= MAX_DIST and clearLos then
                     local onScreen, sx, sy = World3dToScreen2d(pos.x, pos.y, pos.z)
                     if onScreen then
                         local src = GetPlayerServerId(playerId)

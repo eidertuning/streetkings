@@ -477,6 +477,7 @@ Pick a car you actually like. Learn how it moves. Drive it clean. A flashy run d
             },
             labels = {
                 nametagsEnabled = "Show nametags",
+                ownNametagEnabled = "Show my nametag",
                 controllerGlyphStyle = "Controller Icons",
                 mapWaypointMode = "Map Waypoint Mode",
                 speedometerStyle = "Speedometer Style",

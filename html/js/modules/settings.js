@@ -40,6 +40,14 @@
       group: 'General'
     },
     {
+      key: 'ownNametagEnabled',
+      label: 'Mostrar mi nametag',
+      description: 'Muestra tu propio nametag encima de tu coche cuando los nametags estan activos.',
+      type: 'toggle',
+      def: true,
+      group: 'General'
+    },
+    {
       key: 'controllerGlyphStyle',
       label: 'Controller Icons',
       type: 'choice',

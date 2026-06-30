@@ -89,6 +89,12 @@ AddEventHandler('streetkings:vip:tagUpdated', function(src)
     end
 end)
 
+AddEventHandler('streetkings:progression:playerLevelChanged', function(src)
+    if freeroamRoster[src] then
+        broadcastRosterUpdate(src)
+    end
+end)
+
 RegisterNetEvent('streetkings:nametags:requestSync', function()
     local src = source --[[@as integer]]
     if SKSaves.hasActiveSave(src) and freeroamRoster[src] then
