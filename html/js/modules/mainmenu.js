@@ -11,7 +11,6 @@
   var creditsOpen = false;
   var creditsFrame = null;
   var isLoading = false;
-  var CREDITS_SCROLL_SPEED = 0.5;
   var controllerEnabled = false;
   var mainMenuLinks = {};
 
@@ -60,7 +59,7 @@
     var seen = [];
 
     if (context === 'main') {
-      nodes = document.querySelectorAll('#viewMain .menu button:not([disabled]):not(.is-disabled)');
+      nodes = document.querySelectorAll('#viewMain .menu button:not([disabled]):not(.is-disabled), #viewMain .main-menu-social');
     } else if (context === 'saves') {
       nodes = document.querySelectorAll('#btnSaveBack, #saveCards .save-card, #saveCards .save-card-delete');
     } else if (context === 'nameInput') {
@@ -264,36 +263,9 @@
     stopCreditsScroll();
     var $scroller = $('#creditsScroll');
     var scroller = $scroller.get(0);
-    var spacerTop = $('#creditsSpacerTop').get(0);
-    var spacerBottom = $('#creditsSpacer').get(0);
     if (!scroller) return;
-    var spacerHeight = Math.max(Math.floor(scroller.clientHeight * 0.95), 160) + 'px';
-    if (spacerTop) {
-      spacerTop.style.height = spacerHeight;
-    }
-    if (spacerBottom) {
-      spacerBottom.style.height = spacerHeight;
-    }
     scroller.scrollTop = 0;
     $scroller.addClass('is-ready');
-
-    function tick() {
-      if (!creditsOpen) {
-        stopCreditsScroll();
-        return;
-      }
-
-      if (scroller.scrollHeight > scroller.clientHeight) {
-        scroller.scrollTop += CREDITS_SCROLL_SPEED;
-        if (scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 1) {
-          scroller.scrollTop = 0;
-        }
-      }
-
-      creditsFrame = window.requestAnimationFrame(tick);
-    }
-
-    creditsFrame = window.requestAnimationFrame(tick);
   }
 
   function showCredits() {
