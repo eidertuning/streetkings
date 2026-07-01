@@ -147,3 +147,94 @@
   from { opacity: 1; transform: translateY(-50%) translateX(0); }
   to   { opacity: 0; transform: translateY(-50%) translateX(12px); }
 }
+
+/* -- New compact prompt style ---------------------------------------------- */
+
+.sk-prompt {
+  right: var(--sk-space-shell);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-right-color: rgba(140, 236, 255, 0.42);
+  border-radius: 8px;
+  overflow: hidden;
+  background:
+    linear-gradient(145deg, rgba(8, 8, 13, 0.74), rgba(10, 10, 16, 0.52)),
+    linear-gradient(180deg, rgba(255, 10, 115, 0.10), rgba(140, 236, 255, 0.04));
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(14px) saturate(130%);
+}
+
+.sk-prompt::before,
+.sk-prompt::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
+.sk-prompt::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid #ff0a73;
+  border-left: 2px solid #ff0a73;
+}
+
+.sk-prompt::after {
+  right: -1px;
+  bottom: -1px;
+  border-right: 2px solid #ff0a73;
+  border-bottom: 2px solid #ff0a73;
+}
+
+.sk-prompt-key {
+  width: clamp(2.55rem, 4.7vh, 3rem);
+  height: clamp(2.55rem, 4.7vh, 3rem);
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(0.9rem, 1.8vh, 1.08rem);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #ff0a73;
+  background: rgba(255, 10, 115, 0.12);
+  border-right: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.sk-prompt-text {
+  min-height: clamp(2.55rem, 4.7vh, 3rem);
+  padding: 0 clamp(0.9rem, 1.5vw, 1.25rem);
+  background: transparent;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.74rem, 1.42vh, 0.9rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.94);
+  text-shadow: none;
+}
+
+.sk-prompt-rich {
+  background: transparent;
+  min-width: clamp(280px, 22vw, 380px);
+}
+
+.sk-prompt-rich-label,
+.sk-prompt-rich-action,
+.sk-prompt-rich-chip {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 800;
+}
+
+.sk-prompt-rich-label {
+  color: rgba(140, 236, 255, 0.92);
+}
+
+.sk-prompt-rich-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0;
+  color: #fff;
+}
+
+.sk-prompt-rich-chip {
+  border-color: rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+}
