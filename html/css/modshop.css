@@ -1332,3 +1332,105 @@
 .sk-modshop-controller-hint {
   display: none;
 }
+
+/* -- Workshop label/close alignment fixes ---------------------------------- */
+
+.sk-modshop-status {
+  margin-right: 3.35rem;
+}
+
+.sk-modshop-close {
+  display: inline-flex;
+  top: clamp(1rem, 2.2vh, 2rem);
+  right: clamp(1rem, 2.4vw, 2.4rem);
+  width: 2.85rem;
+  height: 2.85rem;
+  min-width: 0;
+  padding: 0;
+  border-radius: 8px;
+  background: linear-gradient(145deg, var(--shop-panel), rgba(8, 8, 13, 0.74));
+  border: 1px solid rgba(255, 10, 115, 0.46);
+  color: var(--shop-hot);
+  box-shadow: 0 0 20px rgba(255, 10, 115, 0.12);
+}
+
+.sk-modshop-close:hover,
+.sk-modshop-close.is-controller-focused {
+  background: rgba(255, 10, 115, 0.18);
+  border-color: rgba(255, 10, 115, 0.72);
+  color: #fff;
+}
+
+.sk-modshop-strip-inner {
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-height: none;
+}
+
+.sk-modshop-cat {
+  width: auto;
+  min-width: clamp(8.4rem, 9.8vw, 11.5rem);
+  height: 2.85rem;
+  padding: 0.35rem 0.65rem;
+  justify-content: flex-start;
+  gap: 0.55rem;
+}
+
+.sk-modshop-cat-icon {
+  width: 2.05rem;
+  height: 2.05rem;
+  border-radius: 6px;
+}
+
+.sk-modshop-cat-text {
+  position: static;
+  width: auto;
+  height: auto;
+  clip: auto;
+  overflow: hidden;
+  min-width: 0;
+  max-width: 8rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: currentColor;
+}
+
+.sk-modshop-option {
+  gap: 0.32rem;
+}
+
+.sk-modshop-option-title {
+  font-size: clamp(0.78rem, 0.9vw, 0.96rem);
+  color: var(--shop-text);
+}
+
+.sk-modshop-option-status {
+  align-self: flex-start;
+  width: fit-content;
+  padding: 0.22rem 0.48rem;
+  border: 1px solid rgba(140, 236, 255, 0.24);
+  background: rgba(140, 236, 255, 0.08);
+  color: var(--shop-cyan);
+}
+
+.sk-modshop-option.is-locked .sk-modshop-option-status {
+  border-color: rgba(255, 10, 115, 0.30);
+  background: rgba(255, 10, 115, 0.10);
+  color: var(--shop-hot);
+}
+
+@media (max-width: 1366px), (max-height: 768px) {
+  .sk-modshop-cat {
+    min-width: 7.4rem;
+  }
+
+  .sk-modshop-cat-text {
+    max-width: 6rem;
+  }
+}

@@ -113,6 +113,17 @@ end
 ---@param shopTypeKey string
 ---@param progressionData table|nil
 ---@return table
+local function isProgressionOptionUnlocked(progressionData, key, unlockLevel)
+    if unlockLevel == nil then return true end
+    if type(progressionData) ~= 'table' then return false end
+    if type(progressionData.unlocks) == 'table' and progressionData.unlocks[key] == true then
+        return true
+    end
+
+    local level = tonumber(progressionData.level) or 1
+    return level >= unlockLevel
+end
+
 local function buildModList(vehicle, shopTypeKey, progressionData)
     local mods   = {}
     for modType = 0, 49 do
@@ -143,7 +154,7 @@ local function buildModList(vehicle, shopTypeKey, progressionData)
                         key = key,
                         name = name,
                         price = SKShopShared.getModPrice(shopTypeKey, modType, i),
-                        locked = unlockLevel ~= nil and not (progressionData and progressionData.unlocks[key]),
+                        locked = unlockLevel ~= nil and not isProgressionOptionUnlocked(progressionData, key, unlockLevel),
                         unlockLevel = unlockLevel,
                         packName = packName,
                         requiredVipTier = requiredVipTier,
@@ -270,7 +281,8 @@ local function isOptionUnlocked(modType, modIndex)
     end
 
     local key = SKProgression.getModOptionKey(modType, modIndex)
-    return currentVehicleProgression.unlocks[key] == true
+    local unlockLevel = currentVehicleProgression.unlockLevels and currentVehicleProgression.unlockLevels[key] or nil
+    return isProgressionOptionUnlocked(currentVehicleProgression, key, unlockLevel)
 end
 
 ---@param modType integer|nil
@@ -408,9 +420,9 @@ function SKShop.registerShopState(shopTypeKey)
                         race = currentVehicleProgression and currentVehicleProgression.unlockLevels[nitrousUnlockKeys.race] or nil,
                     }
                     local nitrousLocked = {
-                        street = nitrousUnlockLevels.street ~= nil and not (currentVehicleProgression and currentVehicleProgression.unlocks[nitrousUnlockKeys.street]),
-                        sport = nitrousUnlockLevels.sport ~= nil and not (currentVehicleProgression and currentVehicleProgression.unlocks[nitrousUnlockKeys.sport]),
-                        race = nitrousUnlockLevels.race ~= nil and not (currentVehicleProgression and currentVehicleProgression.unlocks[nitrousUnlockKeys.race]),
+                        street = nitrousUnlockLevels.street ~= nil and not isProgressionOptionUnlocked(currentVehicleProgression, nitrousUnlockKeys.street, nitrousUnlockLevels.street),
+                        sport = nitrousUnlockLevels.sport ~= nil and not isProgressionOptionUnlocked(currentVehicleProgression, nitrousUnlockKeys.sport, nitrousUnlockLevels.sport),
+                        race = nitrousUnlockLevels.race ~= nil and not isProgressionOptionUnlocked(currentVehicleProgression, nitrousUnlockKeys.race, nitrousUnlockLevels.race),
                     }
                     table.insert(mods, {
                         modType   = 'gearbox',
@@ -442,7 +454,7 @@ function SKShop.registerShopState(shopTypeKey)
                     local neons = lib.callback.await('streetkings:shop:getActiveVehicleNeons', false)
                     local neonUnlockKey = SKProgression.getModOptionKey(SKShopShared.NEON_UNLOCK_MOD_TYPE, SKShopShared.NEON_UNLOCK_MOD_INDEX)
                     local neonUnlockLevel = currentVehicleProgression and currentVehicleProgression.unlockLevels[neonUnlockKey] or nil
-                    local neonLocked = neonUnlockLevel ~= nil and not (currentVehicleProgression and currentVehicleProgression.unlocks[neonUnlockKey])
+                    local neonLocked = neonUnlockLevel ~= nil and not isProgressionOptionUnlocked(currentVehicleProgression, neonUnlockKey, neonUnlockLevel)
                     table.insert(mods, {
                         modType   = 'neons',
                         name      = 'Neons',

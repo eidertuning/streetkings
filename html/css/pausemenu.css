@@ -1580,3 +1580,100 @@
         grid-template-columns: 1fr 1fr;
     }
 }
+
+/* -- Pause menu alignment/social polish ------------------------------------ */
+
+#sk-pausemenu-overlay {
+    --pm-left-rail: clamp(18rem, 22vw, 24rem);
+}
+
+#sk-pausemenu-panel {
+    grid-template-rows: clamp(5.5rem, 9vh, 6.8rem) minmax(0, 1fr) auto;
+}
+
+#sk-pausemenu-header {
+    height: clamp(5.5rem, 9vh, 6.8rem);
+    grid-template-columns: var(--pm-left-rail) minmax(0, 1fr) minmax(24rem, 0.78fr);
+}
+
+#sk-pausemenu-grid {
+    grid-template-columns: var(--pm-left-rail) minmax(0, 1fr);
+}
+
+#sk-pausemenu-logo {
+    width: 100%;
+    justify-content: flex-start;
+    padding-left: 0.15rem;
+}
+
+#sk-pausemenu-logo .pm-logo-image {
+    width: clamp(15.5rem, 20vw, 23rem);
+    max-width: 100%;
+    max-height: 112%;
+    object-fit: contain;
+}
+
+#sk-pausemenu-left {
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+}
+
+#sk-pausemenu-socials {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+}
+
+.pm-social-button {
+    min-width: 0;
+    min-height: 2.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border: 1px solid var(--pm-border);
+    border-radius: var(--pm-radius-lg);
+    background: rgba(8, 8, 13, 0.78);
+    color: var(--pm-muted);
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.pm-social-button i {
+    color: var(--pm-hot);
+    font-size: 0.9rem;
+}
+
+.pm-social-button:hover,
+.pm-social-button.is-controller-focused {
+    color: #fff;
+    border-color: var(--pm-border-hot);
+    background: rgba(255, 10, 115, 0.15);
+    box-shadow: 0 0 20px rgba(255, 10, 115, 0.16);
+}
+
+@media (max-width: 1366px), (max-height: 768px) {
+    #sk-pausemenu-overlay {
+        --pm-left-rail: clamp(15.5rem, 23vw, 19rem);
+    }
+
+    #sk-pausemenu-panel {
+        grid-template-rows: clamp(4.7rem, 8.2vh, 5.45rem) minmax(0, 1fr) auto;
+    }
+
+    #sk-pausemenu-header {
+        height: clamp(4.7rem, 8.2vh, 5.45rem);
+        grid-template-columns: var(--pm-left-rail) minmax(0, 1fr) minmax(19rem, 0.78fr);
+    }
+
+    #sk-pausemenu-logo .pm-logo-image {
+        width: clamp(13rem, 20vw, 17.5rem);
+    }
+
+    .pm-social-button span {
+        display: none;
+    }
+}

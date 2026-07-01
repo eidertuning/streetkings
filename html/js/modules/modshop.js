@@ -831,6 +831,7 @@
     var status = document.createElement('span');
     var title = document.createElement('span');
     var meta = document.createElement('span');
+    var optionName = opt.name || (mod.name ? mod.name + ' ' + (opt.index + 1) : 'Part ' + (opt.index + 1));
     var statusText = t('modshop.available', null, 'Available');
     var subtitle = t('modshop.ready_to_install', { price: fmt(mod.basePrice) }, 'Ready to install for {price}');
     var requiredVipTier = opt.requiredVipTier || mod.requiredVipTier;
@@ -865,14 +866,14 @@
     status.textContent = statusText;
 
     title.className = 'sk-modshop-option-title';
-    title.textContent = opt.name;
+    title.textContent = optionName;
 
     meta.className = 'sk-modshop-option-meta';
     meta.textContent = subtitle;
 
-    btn.appendChild(status);
     btn.appendChild(title);
     btn.appendChild(meta);
+    btn.appendChild(status);
 
     btn.addEventListener('click', function () {
       els.options.querySelectorAll('.sk-modshop-option').forEach(function (b) {
@@ -882,13 +883,13 @@
       btn.classList.add('is-selected');
 
       if (opt.locked) {
-        setSelection(opt.name, (opt.packName ? opt.packName + ' ' : '') + t('modshop.locked_until_level_copy', { level: opt.unlockLevel }, 'Locked until vehicle level {level}. Earn more vehicle XP to unlock this part.'));
+        setSelection(optionName, (opt.packName ? opt.packName + ' ' : '') + t('modshop.locked_until_level_copy', { level: opt.unlockLevel }, 'Locked until vehicle level {level}. Earn more vehicle XP to unlock this part.'));
         setInstallState(fmtPackUnlock(opt), t('modshop.locked_part_note', null, 'Locked part. Keep driving and winning to unlock it.'), t('modshop.locked', null, 'Locked'), true);
         return;
       }
 
       if (vipLocked) {
-        setSelection(opt.name, t('modshop.vip_required_copy', { tier: vipLabel(requiredVipTier) }, '{tier} required for this mod.'));
+        setSelection(optionName, t('modshop.vip_required_copy', { tier: vipLabel(requiredVipTier) }, '{tier} required for this mod.'));
         setInstallState(vipLabel(requiredVipTier), t('modshop.vip_required_note', null, 'VIP mod. Upgrade your access to install it.'), t('modshop.locked', null, 'Locked'), true);
         return;
       }
@@ -901,21 +902,21 @@
 
       if (opt.index === mod.current) {
         if (mod.isNeon && opt.index >= 0) {
-          setSelection(opt.name, t('modshop.choose_neon_sides', null, 'Choose the underglow color and which sides are enabled.'));
+          setSelection(optionName, t('modshop.choose_neon_sides', null, 'Choose the underglow color and which sides are enabled.'));
           setInstallState(t('modshop.installed', null, 'Installed'), t('modshop.neon_save_note', null, 'Use Save Neon Setup after changing color or sides.'), t('modshop.installed', null, 'Installed'), true);
           renderNeonControls(mod, cloneNeons(mod.neons || state.neons) || buildDefaultNeons());
         } else {
-          setSelection(opt.name, t('modshop.installed_now', null, 'Installed on your vehicle right now.'));
+          setSelection(optionName, t('modshop.installed_now', null, 'Installed on your vehicle right now.'));
           setInstallState(t('modshop.installed', null, 'Installed'), t('modshop.select_other_preview', null, 'Select another option to preview a different look.'), t('modshop.installed', null, 'Installed'), true);
         }
       } else if (mod.isNeon && opt.index < 0) {
-        setSelection(opt.name, t('modshop.remove_neon_copy', null, 'Remove the underglow kit from this vehicle.'));
+        setSelection(optionName, t('modshop.remove_neon_copy', null, 'Remove the underglow kit from this vehicle.'));
         setInstallState(t('modshop.free', null, 'Free'), t('modshop.no_cost_remove', null, 'No cost to remove.'), t('modshop.remove', null, 'Remove'), false);
       } else if (mod.isNeon) {
-        setSelection(opt.name, t('modshop.install_neon_start', null, 'Install underglow and start with the default blue setup.'));
+        setSelection(optionName, t('modshop.install_neon_start', null, 'Install underglow and start with the default blue setup.'));
         setInstallState(fmt(opt.price), t('modshop.install_neon_note', null, 'Install the kit, then tune color and sides.'), t('modshop.install', null, 'Install'), false);
       } else {
-        setSelection(opt.name, t('modshop.unlocked_ready', null, 'Unlocked and ready to install.'));
+        setSelection(optionName, t('modshop.unlocked_ready', null, 'Unlocked and ready to install.'));
         setInstallState(fmt(mod.basePrice), t('modshop.unlocked_part_note', null, 'Unlocked part. Install it now for your current ride.'), t('modshop.install', null, 'Install'), false);
       }
 

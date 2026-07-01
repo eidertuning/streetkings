@@ -8,6 +8,11 @@
     var menuVisible = false;
     var nav = null;
     var els = {};
+    var pauseMenuLinks = {
+        discord: 'https://discord.gg/streetkings',
+        tiktok: 'https://www.tiktok.com/@streetkings',
+        tebex: 'https://streetkings.tebex.io',
+    };
 
     function t(key, replacements) {
         return SK.i18n && SK.i18n.t ? SK.i18n.t(key, replacements) : key;
@@ -81,6 +86,11 @@
             menuButton('pm-btn-mainmenu', 'fa-solid fa-house', 'pause_menu.main_menu', 'pause_menu.main_menu_sub'),
             menuButton('pm-btn-exit', 'fa-solid fa-right-from-bracket', 'pause_menu.exit_game', 'pause_menu.exit_game_sub', false, true),
             '    </nav>',
+            '    <div id="sk-pausemenu-socials" aria-label="Social links">',
+            socialButton('discord', 'fa-brands fa-discord', 'Discord'),
+            socialButton('tebex', 'fa-solid fa-cart-shopping', 'Tebex'),
+            socialButton('tiktok', 'fa-brands fa-tiktok', 'TikTok'),
+            '    </div>',
             '  </aside>',
             '  <section id="sk-pausemenu-content">',
             '    <div class="pm-card pm-progress-card">',
@@ -112,6 +122,15 @@
             '  <span class="pm-menu-icon"><i class="' + icon + '"></i></span>',
             '  <span class="pm-menu-copy"><strong data-i18n="' + titleKey + '">' + titleKey + '</strong><small data-i18n="' + subKey + '">' + subKey + '</small></span>',
             '  <i class="fa-solid fa-chevron-right pm-menu-chevron"></i>',
+            '</button>'
+        ].join('');
+    }
+
+    function socialButton(key, icon, label) {
+        return [
+            '<button class="pm-social-button" type="button" data-social-link="' + key + '" aria-label="' + label + '">',
+            '  <i class="' + icon + '"></i>',
+            '  <span>' + label + '</span>',
             '</button>'
         ].join('');
     }
@@ -219,8 +238,17 @@
         return 'Five Horizon';
     }
 
+    function openExternalLink(key) {
+        var url = pauseMenuLinks && pauseMenuLinks[key];
+        if (!url || !window.invokeNative) return;
+        window.invokeNative('openUrl', url);
+    }
+
     function open(data) {
         data = data || {};
+        if (data.links) {
+            pauseMenuLinks = Object.assign({}, pauseMenuLinks, data.links);
+        }
         updateProfile(data);
 
         var xp = xpInfo(data);
@@ -273,6 +301,7 @@
         var btnGarage = document.getElementById('pm-btn-garage');
         var btnMainMenu = document.getElementById('pm-btn-mainmenu');
         var btnExit = document.getElementById('pm-btn-exit');
+        var socialButtons = Array.prototype.slice.call(document.querySelectorAll('#sk-pausemenu-socials .pm-social-button'));
 
         btnContinue.addEventListener('click', function () {
             hide();
@@ -304,6 +333,12 @@
             nuiPost('pausemenu:exitgame');
         });
 
+        socialButtons.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                openExternalLink(btn.dataset.socialLink);
+            });
+        });
+
         overlay.addEventListener('dblclick', function (e) {
             if (panel.contains(e.target)) return;
             hide();
@@ -316,7 +351,7 @@
                 overlay.classList.toggle('is-pausemenu-controller-nav', enabled);
             },
             getFocusables: function () {
-                return [btnContinue, btnMap, btnSettings, btnGarage, btnMainMenu, btnExit];
+                return [btnContinue, btnMap, btnSettings, btnGarage, btnMainMenu, btnExit].concat(socialButtons);
             },
             getPreferredFocus: function () {
                 return btnContinue;

@@ -8,7 +8,12 @@ local cineCam  = nil
 local controllerTracker = SKControllerFriendly.newTracker()
 local controllerModeEnabled = false
 
-local STORE_URL = 'https://streetkings.com/store'
+local PAUSE_MENU_LINKS = {
+    discord = 'https://discord.gg/streetkings',
+    tiktok  = 'https://www.tiktok.com/@streetkings',
+    tebex   = 'https://streetkings.tebex.io',
+}
+local STORE_URL = PAUSE_MENU_LINKS.tebex
 local pauseHudHidden = false
 local pauseRadarVisible = true
 local pauseSpeedometerEnabled = true
@@ -167,6 +172,7 @@ local function openMenu()
         racesWon     = stats and stats.stats and stats.stats.racesWon or 0,
         vehiclesOwned = stats and stats.vehiclesOwned or 0,
         propertiesOwned = stats and stats.propertiesOwned or 0,
+        links        = PAUSE_MENU_LINKS,
         storeUrl     = STORE_URL,
     })
 
