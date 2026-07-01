@@ -1451,3 +1451,136 @@
     display: none;
   }
 }
+
+/* -- Edge-fit menu corrections --------------------------------------------- */
+
+.sk-mainmenu-frame {
+  padding: 0;
+}
+
+.sk-mainmenu-frame .menu-views-stack {
+  height: 100%;
+  width: clamp(26rem, 31vw, 34rem);
+  max-width: min(34rem, 42vw);
+}
+
+#viewMain .panel,
+#viewSaves .saves-panel {
+  height: 100%;
+  max-height: none;
+  border-left: 0;
+  border-top: 0;
+  border-bottom: 0;
+  border-radius: 0 8px 8px 0;
+  padding: clamp(1rem, 2vh, 1.55rem) clamp(1rem, 1.65vw, 1.45rem);
+}
+
+.brand-version {
+  display: none;
+}
+
+.menu button {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.7rem, 1.2vw, 1rem);
+}
+
+.menu button i {
+  flex: 0 0 clamp(2rem, 4vh, 2.45rem);
+  width: clamp(2rem, 4vh, 2.45rem);
+  height: clamp(2rem, 4vh, 2.45rem);
+  display: grid;
+  place-items: center;
+  color: #ff0a73;
+  border: 1px solid rgba(255, 10, 115, 0.28);
+  border-radius: 8px;
+  background: rgba(255, 10, 115, 0.08);
+  font-size: clamp(0.82rem, 1.7vh, 1.05rem);
+}
+
+.menu button span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu button:hover i,
+.menu button:focus-visible i,
+#app.is-mainmenu-controller-nav .menu button.is-controller-focused i {
+  color: #fff;
+  border-color: rgba(255, 10, 115, 0.58);
+  background: rgba(255, 10, 115, 0.18);
+}
+
+#viewSaves .saves-panel {
+  justify-content: flex-start;
+}
+
+#viewSaves .saves-head {
+  align-items: flex-start;
+}
+
+#viewSaves .saves-logo {
+  align-self: center;
+}
+
+.save-card {
+  gap: clamp(0.55rem, 1.1vh, 0.78rem);
+}
+
+.save-portrait {
+  width: clamp(2.35rem, 5vh, 3.05rem);
+  height: clamp(2.35rem, 5vh, 3.05rem);
+  font-size: clamp(0.72rem, 1.5vh, 0.9rem);
+}
+
+#viewSaves .saves-back {
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: clamp(2.75rem, 5.6vh, 3.3rem);
+  margin-top: clamp(0.5rem, 1vh, 0.72rem);
+  padding: 0.55rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  color: rgba(244, 244, 247, 0.82);
+  background: rgba(8, 8, 13, 0.74);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+}
+
+#viewSaves .saves-back i {
+  color: #ff0a73;
+}
+
+#viewSaves .saves-back:hover,
+#viewSaves .saves-back:focus-visible,
+#app.is-mainmenu-controller-nav #viewSaves .saves-back.is-controller-focused {
+  color: #fff;
+  border-color: rgba(255, 10, 115, 0.68);
+  background: rgba(255, 10, 115, 0.15);
+  box-shadow: 0 0 20px rgba(255, 10, 115, 0.16);
+}
+
+@media (max-width: 1366px), (max-height: 768px) {
+  .sk-mainmenu-frame .menu-views-stack {
+    width: clamp(23.5rem, 33vw, 30rem);
+    max-width: min(30rem, 43vw);
+  }
+
+  #viewMain .panel,
+  #viewSaves .saves-panel {
+    padding: 0.74rem 0.86rem;
+  }
+
+  .save-portrait {
+    width: 2.45rem;
+    height: 2.45rem;
+  }
+
+  #viewSaves .saves-back {
+    min-height: 2.45rem;
+    margin-top: 0.44rem;
+  }
+}

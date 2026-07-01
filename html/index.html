@@ -22,13 +22,12 @@
             <h1 class="brand brand-logo" aria-label="Five Horizon Motorsport">
               <img src="assets/fhm.png" alt="Five Horizon Motorsport" draggable="false" />
             </h1>
-            <p id="mainMenuVersion" class="brand-version"></p>
             <ul class="menu">
-              <li><button type="button" id="btnContinue" data-i18n="main_menu.continue">Continuar</button></li>
-              <li><button type="button" id="btnPlay" data-i18n="main_menu.play">Jugar</button></li>
-              <li><button type="button" id="btnCustomizeAvatar" data-i18n="main_menu.customize_avatar">Personalizar Avatar</button></li>
-              <li><button type="button" id="btnCredits" data-i18n="main_menu.credits">Créditos</button></li>
-              <li><button type="button" id="btnExitGame" data-i18n="main_menu.exit_game">Salir del juego</button></li>
+              <li><button type="button" id="btnContinue"><i class="fa-solid fa-play"></i><span data-i18n="main_menu.continue">Continuar</span></button></li>
+              <li><button type="button" id="btnPlay"><i class="fa-solid fa-flag-checkered"></i><span data-i18n="main_menu.play">Jugar</span></button></li>
+              <li><button type="button" id="btnCustomizeAvatar"><i class="fa-solid fa-user-gear"></i><span data-i18n="main_menu.customize_avatar">Personalizar Avatar</span></button></li>
+              <li><button type="button" id="btnCredits"><i class="fa-solid fa-code"></i><span data-i18n="main_menu.credits">Créditos</span></button></li>
+              <li><button type="button" id="btnExitGame"><i class="fa-solid fa-right-from-bracket"></i><span data-i18n="main_menu.exit_game">Salir del juego</span></button></li>
             </ul>
             <div class="main-menu-patchnotes">
               <div class="main-menu-patchnotes-head">
@@ -54,11 +53,11 @@
               <div class="saves-logo" aria-hidden="true">
                 <img src="assets/fhm.png" alt="" draggable="false" />
               </div>
-              <button type="button" class="btn-back" id="btnSaveBack" data-i18n="common.back">← Atrás</button>
               <h2 class="saves-title" data-i18n="main_menu.choose_save">Elige partida</h2>
               <p class="saves-sub" data-i18n="main_menu.select_slot">Seleccione una ranura</p>
             </div>
             <div class="save-cards" id="saveCards"></div>
+            <button type="button" class="btn-back saves-back" id="btnSaveBack"><i class="fa-solid fa-arrow-left"></i><span data-i18n="common.back">Atrás</span></button>
           </div>
         </div>
       </div>

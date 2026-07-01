@@ -61,7 +61,7 @@
     if (context === 'main') {
       nodes = document.querySelectorAll('#viewMain .menu button:not([disabled]):not(.is-disabled), #viewMain .main-menu-social');
     } else if (context === 'saves') {
-      nodes = document.querySelectorAll('#btnSaveBack, #saveCards .save-card, #saveCards .save-card-delete');
+      nodes = document.querySelectorAll('#saveCards .save-card, #saveCards .save-card-delete, #btnSaveBack');
     } else if (context === 'nameInput') {
       nodes = document.querySelectorAll('#btnNameCancel, #btnNameConfirm');
     } else if (context === 'deleteConfirm') {
@@ -515,7 +515,6 @@
       if (vis) {
         isLoading = false;
         $app.removeClass('is-leaving');
-        $('#mainMenuVersion').text('BETA');
         mainMenuLinks = data.links || {};
         if (data.saveSlotCount != null) {
           saveSlotCount = data.saveSlotCount;
