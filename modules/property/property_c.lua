@@ -105,17 +105,17 @@ end
 ---@param entry SKPropertyEntry
 local function promptText(entry)
     if isOwned(entry.id) then
-        return 'Enter ' .. entry.name
+        return _L('lua.prompts.enter', { name = entry.name })
     end
 
     if SKPropertyInvite.hasInvite(entry.id) then
         local invite = SKPropertyInvite.getActiveInvite()
         if invite then
-            return 'Join ' .. invite.inviterName
+            return _L('lua.prompts.join_player', { name = invite.inviterName })
         end
     end
 
-    return 'View ' .. entry.name
+    return _L('lua.prompts.view_property', { name = entry.name })
 end
 
 ---@param entry SKPropertyEntry
@@ -196,7 +196,7 @@ local function createExitPoint()
 
         onEnter = function()
             promptKey = SKInput.getInteractLabel()
-            SendNUIMessage({ type = 'prompt:show', key = promptKey, text = 'Exit Property' })
+            SendNUIMessage({ type = 'prompt:show', key = promptKey, text = _L('lua.prompts.exit_property') })
         end,
 
         onExit = function()
@@ -218,7 +218,7 @@ local function createExitPoint()
             local nextPromptKey = SKInput.getInteractLabel()
             if nextPromptKey ~= promptKey then
                 promptKey = nextPromptKey
-                SendNUIMessage({ type = 'prompt:show', key = promptKey, text = 'Exit Property' })
+                SendNUIMessage({ type = 'prompt:show', key = promptKey, text = _L('lua.prompts.exit_property') })
             end
 
             if SKInput.isInteractJustReleased() then

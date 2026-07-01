@@ -8,7 +8,7 @@ handler.requiresFreeroam = true
 function handler.start(ctx)
     SendNUIMessage({
         type = 'missions:objectiveHint',
-        text = 'Enter a race from the phone to continue.',
+        text = _L('lua.prompts.enter_race_phone'),
     })
     return {
         remove = function()

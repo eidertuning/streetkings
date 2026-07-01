@@ -153,7 +153,7 @@ enterInterior = function(zoneDef)
         coords   = vector3(interior.exit.x, interior.exit.y, interior.exit.z),
         distance = SKHangoutZones.INTERACT_DISTANCE,
         onEnter = function()
-            SendNUIMessage({ type = 'prompt:show', key = SKInput.getInteractLabel(), text = 'Exit ' .. zoneDef.name })
+            SendNUIMessage({ type = 'prompt:show', key = SKInput.getInteractLabel(), text = _L('lua.prompts.exit', { name = zoneDef.name }) })
         end,
         onExit = function()
             SendNUIMessage({ type = 'prompt:hide' })
@@ -162,7 +162,7 @@ enterInterior = function(zoneDef)
             local key = SKInput.getInteractLabel()
             if key ~= self._lastKey then
                 self._lastKey = key
-                SendNUIMessage({ type = 'prompt:show', key = key, text = 'Exit ' .. zoneDef.name })
+                SendNUIMessage({ type = 'prompt:show', key = key, text = _L('lua.prompts.exit', { name = zoneDef.name }) })
             end
             if SKInput.isInteractJustReleased() then exitInterior() end
         end,
@@ -287,7 +287,7 @@ local function createZoneForEntry(zoneDef)
 
     if zoneDef.interior then
         local entrance  = zoneDef.interior.entranceCoords
-        local promptTxt = zoneDef.poly and ('Enter ' .. zoneDef.name .. ' Interior') or ('Enter ' .. zoneDef.name)
+        local promptTxt = zoneDef.poly and _L('lua.prompts.enter_interior', { name = zoneDef.name }) or _L('lua.prompts.enter', { name = zoneDef.name })
         local entrancePoint = lib.points.new({
             coords   = entrance,
             distance = SKHangoutZones.INTERACT_DISTANCE,

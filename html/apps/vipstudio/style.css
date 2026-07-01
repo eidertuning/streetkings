@@ -68,7 +68,6 @@ select {
   background:
     linear-gradient(90deg, rgba(255, 0, 106, 0.15), transparent 36%),
     rgba(4, 4, 7, 0.92);
-  backdrop-filter: blur(12px);
 }
 
 .vip-kicker,

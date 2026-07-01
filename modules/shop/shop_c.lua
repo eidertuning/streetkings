@@ -659,7 +659,7 @@ local function setupLocationPoints(location)
                     interactable = true,
                 })
                 lib.callback.await('streetkings:shop:discover', false, location.id)
-                SKNotify({ type = 'success', title = location.name .. ' Discovered!' })
+                SKNotify({ type = 'success', title = _L('lua.notify.location_discovered', { name = location.name }) })
             end
         end,
     })
@@ -671,7 +671,7 @@ local function setupLocationPoints(location)
 
         onEnter = function()
             promptKey = SKInput.getInteractLabel()
-            SendNUIMessage({ type = 'prompt:show', key = promptKey, text = 'Enter ' .. location.name })
+            SendNUIMessage({ type = 'prompt:show', key = promptKey, text = _L('lua.prompts.enter', { name = location.name }) })
         end,
 
         onExit = function()
@@ -683,7 +683,7 @@ local function setupLocationPoints(location)
             local nextPromptKey = SKInput.getInteractLabel()
             if nextPromptKey ~= promptKey then
                 promptKey = nextPromptKey
-                SendNUIMessage({ type = 'prompt:show', key = promptKey, text = 'Enter ' .. location.name })
+                SendNUIMessage({ type = 'prompt:show', key = promptKey, text = _L('lua.prompts.enter', { name = location.name }) })
             end
             if SKInput.isInteractJustReleased() then
                 SKShop.enter(location)

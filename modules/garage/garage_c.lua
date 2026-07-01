@@ -482,7 +482,7 @@ AddEventHandler('streetkings:garage:freeroamEnter', function()
                         garageWaypoints[location.id] = addWaypoint(location)
                     end
                     lib.callback.await('streetkings:garage:recordVisit', false, location.id)
-                    SKNotify({ type = 'success', title = location.name .. ' Discovered!' })
+                    SKNotify({ type = 'success', title = _L('lua.notify.location_discovered', { name = location.name }) })
                 end
             end,
         })
@@ -494,7 +494,7 @@ AddEventHandler('streetkings:garage:freeroamEnter', function()
 
             onEnter = function()
                 promptKey = SKInput.getInteractLabel()
-                SendNUIMessage({ type = 'prompt:show', key = promptKey, text = 'Enter ' .. location.name })
+                SendNUIMessage({ type = 'prompt:show', key = promptKey, text = _L('lua.prompts.enter', { name = location.name }) })
             end,
 
             onExit = function()
@@ -506,7 +506,7 @@ AddEventHandler('streetkings:garage:freeroamEnter', function()
                 local nextPromptKey = SKInput.getInteractLabel()
                 if nextPromptKey ~= promptKey then
                     promptKey = nextPromptKey
-                    SendNUIMessage({ type = 'prompt:show', key = promptKey, text = 'Enter ' .. location.name })
+                    SendNUIMessage({ type = 'prompt:show', key = promptKey, text = _L('lua.prompts.enter', { name = location.name }) })
                 end
                 if SKInput.isInteractJustReleased() then
                     SKGarage.enter(location)

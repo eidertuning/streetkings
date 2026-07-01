@@ -364,9 +364,9 @@ RegisterNetEvent('streetkings:missions:autoWaypoint', function(payload)
     SetNewWaypoint(c.x + 0.0, c.y + 0.0)
     SendNUIMessage({
         type = 'missions:banner',
-        title = payload.label or 'New Mission',
+        title = payload.label or _L('ui.missions.new_mission'),
         subtitle = payload.subtitle or '',
-        kicker = 'New Mission',
+        kicker = _L('ui.missions.new_mission'),
     })
 end)
 

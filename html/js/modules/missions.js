@@ -33,6 +33,19 @@
   var bannerTimer = null;
   var completeTimer = null;
 
+  function t(key, params) {
+    var SK = window.StreetKings || {};
+    if (SK.i18n && SK.i18n.t) return SK.i18n.t(key, params);
+    return key;
+  }
+
+  function translateKicker(value, fallbackKey) {
+    if (!value) return t(fallbackKey);
+    if (value === 'New Mission') return t('missions.new_mission');
+    if (value === 'Cutscene') return t('missions.cutscene');
+    return value;
+  }
+
   function ensureVisible() {
     if (hud.style.display === 'none') hud.style.display = 'block';
   }
@@ -49,7 +62,7 @@
   }
 
   function showBanner(title, subtitleText, kicker) {
-    bannerKicker.textContent = kicker || 'New Mission';
+    bannerKicker.textContent = translateKicker(kicker, 'missions.new_mission');
     bannerTitle.textContent = title || '';
     bannerSub.textContent = subtitleText || '';
     banner.style.display = 'flex';
@@ -122,16 +135,17 @@
     hideHud();
   }
 
-  var tooCloseTexts = ["He'll see you!", "Back off!", "Way too close!", "You're on his bumper!"];
-  var tooFarTexts   = ["Losing him!", "He's getting away!", "Close the gap!", "Don't lose sight!"];
-  var spottedTexts  = ["In his mirror!", "He's checking his mirrors!", "You've been clocked!"];
-  var losingTexts   = ["You're falling behind", "Pick up the pace", "Don't let him slip"];
+  var tooCloseTexts = ['missions.tail_too_close_1', 'missions.tail_too_close_2', 'missions.tail_too_close_3', 'missions.tail_too_close_4'];
+  var tooFarTexts   = ['missions.tail_too_far_1', 'missions.tail_too_far_2', 'missions.tail_too_far_3', 'missions.tail_too_far_4'];
+  var spottedTexts  = ['missions.tail_spotted_1', 'missions.tail_spotted_2', 'missions.tail_spotted_3'];
+  var losingTexts   = ['missions.tail_losing_1', 'missions.tail_losing_2', 'missions.tail_losing_3'];
 
-  var susMild     = ["He's checking his mirrors", "Something feels off", "Easy... he might notice"];
-  var susUrgent   = ["He's slowing down to look", "He knows someone's behind him", "He definitely noticed something"];
-  var susCritical = ["He's about to bolt!", "One more second and you're done!", "Pull back NOW"];
+  var susMild     = ['missions.suspicion_mild_1', 'missions.suspicion_mild_2', 'missions.suspicion_mild_3'];
+  var susUrgent   = ['missions.suspicion_urgent_1', 'missions.suspicion_urgent_2', 'missions.suspicion_urgent_3'];
+  var susCritical = ['missions.suspicion_critical_1', 'missions.suspicion_critical_2', 'missions.suspicion_critical_3'];
 
   function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function pickText(arr) { return t(pick(arr)); }
 
   var lastTailZone = '';
   var lastAlertState = '';
@@ -154,11 +168,11 @@
     if (data.zone !== lastTailZone) {
       lastTailZone = data.zone;
       if (data.zone === 'safe') {
-        cachedStatusText = 'Tailing';
+        cachedStatusText = t('missions.tailing');
       } else if (data.zone === 'warnClose' || data.zone === 'warnFar') {
-        cachedStatusText = data.zone === 'warnClose' ? 'Too close' : 'Too far';
+        cachedStatusText = data.zone === 'warnClose' ? t('missions.too_close') : t('missions.too_far');
       } else {
-        cachedStatusText = data.zone === 'tooClose' ? pick(tooCloseTexts) : pick(tooFarTexts);
+        cachedStatusText = data.zone === 'tooClose' ? pickText(tooCloseTexts) : pickText(tooFarTexts);
       }
     }
     tailStatus.textContent = cachedStatusText;
@@ -175,11 +189,11 @@
       : '';
     if (alertKey !== lastAlertState) {
       lastAlertState = alertKey;
-      if (alertKey === 'spotted')          cachedAlertText = pick(spottedTexts);
-      else if (alertKey === 'sus_critical') cachedAlertText = pick(susCritical);
-      else if (alertKey === 'sus_urgent')   cachedAlertText = pick(susUrgent);
-      else if (alertKey === 'sus_mild')     cachedAlertText = pick(susMild);
-      else if (alertKey === 'losing')       cachedAlertText = pick(losingTexts);
+      if (alertKey === 'spotted')           cachedAlertText = pickText(spottedTexts);
+      else if (alertKey === 'sus_critical') cachedAlertText = pickText(susCritical);
+      else if (alertKey === 'sus_urgent')   cachedAlertText = pickText(susUrgent);
+      else if (alertKey === 'sus_mild')     cachedAlertText = pickText(susMild);
+      else if (alertKey === 'losing')       cachedAlertText = pickText(losingTexts);
     }
     if (alertKey) {
       tailAlert.textContent = cachedAlertText;
@@ -191,7 +205,7 @@
 
   function showComplete(payload) {
     if (!payload) return;
-    completeTitle.textContent = payload.missionTitle || 'Mission Complete';
+    completeTitle.textContent = payload.missionTitle || t('missions.complete');
     completeRewards.innerHTML = '';
     var r = payload.rewards || {};
     if (r.cash) {
@@ -257,21 +271,21 @@
         break;
       case 'missions:tailFailed':
         var failHeadlines = {
-          spotted: 'HE SAW YOU',
-          spooked: 'YOU SPOOKED HIM',
-          lost: 'YOU LOST HIM',
-          timeout: 'TOO SLOW',
-          target_lost: 'TARGET GONE',
+          spotted: t('missions.failed_spotted'),
+          spooked: t('missions.failed_spooked'),
+          lost: t('missions.failed_lost'),
+          timeout: t('missions.failed_timeout'),
+          target_lost: t('missions.failed_target_lost'),
         };
         var failSubs = {
-          spotted: 'Cover blown.',
-          spooked: 'He bolted.',
-          lost: 'Too far behind.',
-          timeout: 'Took too long.',
-          target_lost: 'Target vanished.',
+          spotted: t('missions.failed_spotted_sub'),
+          spooked: t('missions.failed_spooked_sub'),
+          lost: t('missions.failed_lost_sub'),
+          timeout: t('missions.failed_timeout_sub'),
+          target_lost: t('missions.failed_target_lost_sub'),
         };
         tail.classList.add('is-failed');
-        tailStatus.textContent = failHeadlines[d.reason] || 'FAILED';
+        tailStatus.textContent = failHeadlines[d.reason] || t('missions.failed');
         tailStatus.classList.remove('is-safe', 'is-warn');
         tailStatus.classList.add('is-danger');
         tailAlert.textContent = failSubs[d.reason] || '';
@@ -294,7 +308,7 @@
         break;
       case 'missions:completed':
         var payload = d.payload || {};
-        payload.missionTitle = (tracker && trackerTitle.textContent) || 'Mission Complete';
+        payload.missionTitle = (tracker && trackerTitle.textContent) || t('missions.complete');
         showComplete(payload);
         hideTracker();
         currentMissionId = null;

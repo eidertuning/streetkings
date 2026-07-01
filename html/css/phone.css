@@ -238,8 +238,6 @@
 .phone-screen-frost {
   position: absolute;
   inset: 0;
-  backdrop-filter: blur(14px) saturate(1.1);
-  -webkit-backdrop-filter: blur(14px) saturate(1.1);
   background: rgba(0, 0, 0, 0.22);
   opacity: 0;
   pointer-events: none;

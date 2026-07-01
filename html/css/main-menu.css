@@ -1077,7 +1077,6 @@
   border-radius: 8px;
   clip-path: none;
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(16px) saturate(135%);
   scrollbar-width: none;
 }
 
@@ -1299,7 +1298,6 @@
 
 #viewCredits {
   background: transparent;
-  backdrop-filter: blur(6px);
 }
 
 .credits-panel {
@@ -1312,7 +1310,6 @@
     linear-gradient(180deg, rgba(255, 10, 115, 0.10), rgba(140, 236, 255, 0.04));
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
-  backdrop-filter: blur(18px) saturate(135%);
 }
 
 .credits-scroll-mask {
@@ -1589,7 +1586,6 @@
 
 .name-input-overlay {
   background: rgba(0, 0, 0, 0.18);
-  backdrop-filter: blur(8px) saturate(120%);
 }
 
 .name-input-panel {
@@ -1604,7 +1600,6 @@
     linear-gradient(145deg, rgba(8, 8, 13, 0.72), rgba(10, 10, 16, 0.48)),
     linear-gradient(180deg, rgba(255, 10, 115, 0.10), rgba(140, 236, 255, 0.04));
   box-shadow: 0 20px 54px rgba(0, 0, 0, 0.44), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(18px) saturate(135%);
 }
 
 .name-input-panel .saves-sub {

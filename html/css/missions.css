@@ -421,3 +421,186 @@
   from { opacity: 0; transform: translateX(-24px); }
   to   { opacity: 1; transform: translateX(0); }
 }
+
+/* -- Pause-menu aligned mission HUD ---------------------------------------- */
+
+.sk-missions-banner,
+.sk-missions-tracker,
+.sk-missions-subtitle,
+.sk-missions-complete-inner {
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-right-color: rgba(140, 236, 255, 0.42);
+  background:
+    linear-gradient(145deg, rgba(8, 8, 13, 0.84), rgba(10, 10, 16, 0.68)),
+    linear-gradient(180deg, rgba(255, 10, 115, 0.10), rgba(140, 236, 255, 0.04));
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  clip-path: none;
+}
+
+.sk-missions-banner::before,
+.sk-missions-banner::after,
+.sk-missions-tracker::before,
+.sk-missions-tracker::after,
+.sk-missions-complete-inner::before,
+.sk-missions-complete-inner::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sk-missions-banner::before,
+.sk-missions-tracker::before,
+.sk-missions-complete-inner::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid #ff0a73;
+  border-left: 2px solid #ff0a73;
+  background: none;
+}
+
+.sk-missions-banner::after,
+.sk-missions-tracker::after,
+.sk-missions-complete-inner::after {
+  right: -1px;
+  bottom: -1px;
+  border-right: 2px solid #ff0a73;
+  border-bottom: 2px solid #ff0a73;
+}
+
+.sk-missions-banner-inner,
+.sk-missions-tracker > *,
+.sk-missions-complete-inner > * {
+  position: relative;
+  z-index: 2;
+}
+
+.sk-missions-banner-kicker,
+.sk-missions-tracker-giver,
+.sk-missions-tracker-step,
+.sk-missions-tracker-timer,
+.sk-missions-subtitle-speaker,
+.sk-missions-tail-label,
+.sk-missions-tail-status,
+.sk-missions-tail-alert,
+.sk-missions-complete-kicker,
+.sk-missions-complete-rewards {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 800;
+  text-shadow: none;
+}
+
+.sk-missions-banner-title,
+.sk-missions-tracker-title,
+.sk-missions-subtitle-body,
+.sk-missions-tail-dist,
+.sk-missions-complete-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-shadow: none;
+  transform: none;
+}
+
+.sk-missions-banner {
+  top: 10vh;
+  min-width: min(28rem, 70vw);
+  max-width: min(40rem, 76vw);
+  padding: clamp(0.9rem, 2vh, 1.25rem) clamp(1.1rem, 2.2vw, 1.7rem);
+}
+
+.sk-missions-banner-kicker,
+.sk-missions-complete-kicker {
+  color: rgba(140, 236, 255, 0.94);
+  letter-spacing: 0.2em;
+}
+
+.sk-missions-banner-title {
+  font-size: clamp(1.6rem, 3.1vh, 2.4rem);
+  color: #fff;
+}
+
+.sk-missions-banner-sub,
+.sk-missions-tracker-text,
+.sk-missions-subtitle-body,
+.sk-missions-complete-hint {
+  color: rgba(244, 244, 247, 0.72);
+}
+
+.sk-missions-tracker {
+  top: 2.4vh;
+  left: 2.2vw;
+  min-width: min(21rem, 32vw);
+  max-width: min(27rem, 36vw);
+  padding: clamp(0.8rem, 1.8vh, 1.05rem) clamp(0.9rem, 1.5vw, 1.2rem);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sk-missions-tracker-title {
+  font-size: clamp(1rem, 1.8vh, 1.28rem);
+}
+
+.sk-missions-tracker-step {
+  border-color: rgba(255, 10, 115, 0.46);
+  border-radius: 6px;
+  background: rgba(255, 10, 115, 0.12);
+  color: #ff0a73;
+}
+
+.sk-missions-subtitle {
+  bottom: 9vh;
+  width: min(42rem, 62vw);
+  max-width: min(42rem, 62vw);
+  padding: clamp(0.72rem, 1.5vh, 0.95rem) clamp(1rem, 1.8vw, 1.45rem);
+}
+
+.sk-missions-subtitle-speaker {
+  color: rgba(140, 236, 255, 0.92);
+  letter-spacing: 0.18em;
+}
+
+.sk-missions-tail-label {
+  color: rgba(140, 236, 255, 0.94);
+  letter-spacing: 0.18em;
+}
+
+.sk-missions-tail-dist {
+  color: rgba(140, 236, 255, 0.94);
+  font-size: clamp(0.95rem, 1.55vh, 1.15rem);
+}
+
+.sk-missions-tail-status,
+.sk-missions-tail-alert {
+  letter-spacing: 0.13em;
+}
+
+.sk-missions-tail.is-failed .sk-missions-tail-status {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-shadow: none;
+}
+
+.sk-missions-complete {
+  max-width: min(28rem, 34vw);
+  min-width: min(20rem, 28vw);
+}
+
+.sk-missions-complete-inner {
+  padding: clamp(0.9rem, 2vh, 1.2rem) clamp(1rem, 1.7vw, 1.35rem);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sk-missions-complete-title {
+  font-size: clamp(1.35rem, 2.5vh, 1.9rem);
+  color: #fff;
+}
+
+.sk-missions-complete-rewards {
+  color: #ff0a73;
+  letter-spacing: 0.08em;
+}

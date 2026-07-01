@@ -328,8 +328,6 @@
   justify-content: center;
   padding: 1rem;
   background: rgba(4, 7, 12, 0.78);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   z-index: 2;
 }
 
