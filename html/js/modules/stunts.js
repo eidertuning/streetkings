@@ -21,6 +21,19 @@
     { key: 'zoneBRamp', label: 'Ramp B' }
   ];
 
+  function t(key, params, fallback) {
+    if (SK.i18n && SK.i18n.t) {
+      var value = SK.i18n.t(key, params);
+      if (value && value !== key) return value;
+    }
+    if (fallback) {
+      return fallback.replace(/\{([a-zA-Z0-9_]+)\}/g, function (match, name) {
+        return params && params[name] !== undefined ? String(params[name]) : match;
+      });
+    }
+    return key;
+  }
+
   function propRow(label, value, accent) {
     return '<div class="sk-stuntdev-prop-row">'
       + '<span class="sk-stuntdev-prop-label">' + label + '</span>'
@@ -38,56 +51,56 @@
   function buildControlsHtml(d) {
     var placement = [];
     if (d.rampMode) {
-      placement.push('<kbd>LMB</kbd> Place  <kbd>Scroll</kbd> Rotate');
-      placement.push('<kbd>G</kbd> Cycle Model  <kbd>1</kbd>/<kbd>2</kbd> Target');
+      placement.push('<kbd>LMB</kbd> ' + t('devtools.place') + '  <kbd>Scroll</kbd> ' + t('devtools.rotate'));
+      placement.push('<kbd>G</kbd> ' + t('devtools.cycle_model') + '  <kbd>1</kbd>/<kbd>2</kbd> ' + t('devtools.target'));
     } else {
-      placement.push('<kbd>LMB</kbd> Place  <kbd>Scroll</kbd> Radius');
-      placement.push('<kbd>R</kbd> Ramp Mode');
+      placement.push('<kbd>LMB</kbd> ' + t('devtools.place') + '  <kbd>Scroll</kbd> ' + t('devtools.radius'));
+      placement.push('<kbd>R</kbd> ' + t('devtools.ramp_mode_action'));
     }
 
     var tools = [];
-    tools.push('<kbd>M</kbd> Session Marker  <kbd>T</kbd> Test Jump');
-    tools.push('<kbd>R</kbd> ' + (d.rampMode ? 'Zone Mode' : 'Ramp Mode'));
+    tools.push('<kbd>M</kbd> ' + t('devtools.session_marker') + '  <kbd>T</kbd> ' + t('devtools.test_jump'));
+    tools.push('<kbd>R</kbd> ' + (d.rampMode ? t('devtools.zone_mode_action') : t('devtools.ramp_mode_action')));
 
     var actions = [];
-    actions.push('<kbd>Bksp</kbd> Undo  <kbd>Del</kbd> Clear');
-    actions.push('<kbd>F9</kbd> Export  <kbd>Enter</kbd> Save  <kbd>Esc</kbd> Exit');
+    actions.push('<kbd>Bksp</kbd> ' + t('devtools.undo') + '  <kbd>Del</kbd> ' + t('devtools.clear'));
+    actions.push('<kbd>F9</kbd> ' + t('devtools.export') + '  <kbd>Enter</kbd> ' + t('devtools.save') + '  <kbd>Esc</kbd> ' + t('devtools.exit'));
 
-    return ctrlGroup('PLACEMENT', placement)
-      + ctrlGroup('TOOLS', tools)
-      + ctrlGroup('ACTIONS', actions);
+    return ctrlGroup(t('devtools.placement').toUpperCase(), placement)
+      + ctrlGroup(t('devtools.tools').toUpperCase(), tools)
+      + ctrlGroup(t('devtools.actions').toUpperCase(), actions);
   }
 
   function renderPanel(d) {
     if (!elPanel) return;
 
     if (d.editingId) {
-      elTitle.textContent = 'EDITING JUMP';
+      elTitle.textContent = t('devtools.editing_jump').toUpperCase();
       elSubtitle.textContent = d.editingName || d.editingId;
     } else {
-      elTitle.textContent = 'STUNT JUMP CREATOR';
+      elTitle.textContent = t('devtools.stunt_creator').toUpperCase();
       elSubtitle.textContent = '';
     }
 
     if (d.rampMode) {
-      elModeName.textContent = 'RAMP MODE';
+      elModeName.textContent = t('devtools.ramp_mode').toUpperCase();
       elModeName.className = 'sk-stuntdev-mode-name is-active';
-      elModeDetail.textContent = 'Target: Zone ' + (d.rampTarget || 'A').toUpperCase();
+      elModeDetail.textContent = t('devtools.target_zone', { zone: (d.rampTarget || 'A').toUpperCase() });
     } else {
-      elModeName.textContent = 'ZONE MODE';
+      elModeName.textContent = t('devtools.zone_mode').toUpperCase();
       elModeName.className = 'sk-stuntdev-mode-name';
-      var next = !d.hasZoneA ? 'A' : (!d.hasZoneB ? 'B' : 'Replace');
-      elModeDetail.textContent = 'Next: ' + next;
+      var next = !d.hasZoneA ? 'A' : (!d.hasZoneB ? 'B' : t('devtools.replace'));
+      elModeDetail.textContent = t('devtools.next_zone', { zone: next });
     }
 
     var propsHtml = '';
     if (d.rampMode) {
-      propsHtml += propRow('MODEL', d.rampModel || '');
-      propsHtml += propRow('HEADING', d.heading != null ? d.heading.toFixed(1) + '\u00B0' : '0.0\u00B0');
+      propsHtml += propRow(t('devtools.model').toUpperCase(), d.rampModel || '');
+      propsHtml += propRow(t('devtools.heading').toUpperCase(), d.heading != null ? d.heading.toFixed(1) + '\u00B0' : '0.0\u00B0');
     } else {
-      propsHtml += propRow('RADIUS', d.radius != null ? d.radius.toFixed(1) : '12.0');
+      propsHtml += propRow(t('devtools.radius').toUpperCase(), d.radius != null ? d.radius.toFixed(1) : '12.0');
     }
-    propsHtml += propRow('MARKER', d.hasSessionMark ? 'SET' : '\u2014');
+    propsHtml += propRow(t('devtools.marker').toUpperCase(), d.hasSessionMark ? t('devtools.set').toUpperCase() : '\u2014');
     elPropsCard.innerHTML = propsHtml;
 
     var checkHtml = '';
@@ -147,7 +160,7 @@
   function submitInput() {
     var val = elInputField.value.trim();
     if (!val) {
-      elInputError.textContent = 'Please enter a name.';
+      elInputError.textContent = t('devtools.enter_name');
       elInputField.focus();
       return;
     }
@@ -200,7 +213,7 @@
       if (d.show) {
         elInputEyebrow.textContent    = d.eyebrow     || '';
         elInputTitle.textContent      = d.title       || '';
-        elInputField.placeholder      = d.placeholder || 'Enter a name...';
+        elInputField.placeholder      = d.placeholder || t('devtools.name_placeholder');
         elInputField.value            = d.defaultValue || '';
         elInputError.textContent      = '';
         showEl(elInput);

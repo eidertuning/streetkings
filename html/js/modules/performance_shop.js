@@ -23,7 +23,20 @@
   }
 
   function fmtUnlock(level) {
-    return 'Unlocks at Lv. ' + level;
+    return t('modshop.unlocks_at_level', { level: level });
+  }
+
+  function t(key, params, fallback) {
+    if (SK.i18n && SK.i18n.t) {
+      var value = SK.i18n.t(key, params);
+      if (value && value !== key) return value;
+    }
+    if (fallback) {
+      return fallback.replace(/\{([a-zA-Z0-9_]+)\}/g, function (match, name) {
+        return params && params[name] !== undefined ? String(params[name]) : match;
+      });
+    }
+    return key;
   }
 
   function isOpen() {
@@ -59,18 +72,19 @@
   }
 
   function normalizeBuyButtonText(buttonText) {
-    if (!buttonText || buttonText === 'Install') {
-      return 'Purchase';
+    if (!buttonText || buttonText === 'Install' || buttonText === t('modshop.install')) {
+      return t('modshop.purchase', null, 'Purchase');
     }
     return buttonText;
   }
 
   function renderBuyButton(buttonText) {
     var resolvedText = normalizeBuyButtonText(buttonText);
-    if (controllerEnabled && resolvedText === 'Purchase') {
+    var purchaseText = t('modshop.purchase', null, 'Purchase');
+    if (controllerEnabled && resolvedText === purchaseText) {
       els.buy.innerHTML = '<span class="sk-controller-btn-icon" aria-hidden="true">'
         + controllerGlyphs.getHtml('X')
-        + '</span><span>Purchase</span>';
+        + '</span><span>' + purchaseText + '</span>';
       return;
     }
     els.buy.textContent = resolvedText;
@@ -78,7 +92,7 @@
 
   controllerGlyphs.onChange(function () {
     if (els.buy) {
-      renderBuyButton(els.buy.textContent || 'Purchase');
+      renderBuyButton(els.buy.textContent || t('modshop.purchase', null, 'Purchase'));
     }
   });
 
@@ -161,7 +175,7 @@
 
   function setControllerEnabled(nextEnabled) {
     controllerNav.setEnabled(nextEnabled);
-    renderBuyButton(els.buy.textContent || 'Purchase');
+    renderBuyButton(els.buy.textContent || t('modshop.purchase', null, 'Purchase'));
   }
 
   function scheduleControllerRefresh(options) {
@@ -196,7 +210,7 @@
   function setInstallState(priceText, noteText, buttonText, disabled) {
     els.price.textContent = priceText || '';
     els.installNote.textContent = noteText || '';
-    renderBuyButton(buttonText || 'Purchase');
+    renderBuyButton(buttonText || t('modshop.purchase', null, 'Purchase'));
     els.buy.disabled = !!disabled;
   }
 
@@ -210,10 +224,10 @@
   function refreshProgressionCard() {
     var prog = state.progression;
     if (!prog) {
-      els.vehicleLevel.textContent = 'Lv. 1';
+      els.vehicleLevel.textContent = t('vehicles.level_short', { level: 1 }, 'LV 1');
       els.xpFill.style.width = '0%';
       els.xpText.textContent = '0 / 0 XP';
-      els.unlockSummary.textContent = '0 / 0 unlocked';
+      els.unlockSummary.textContent = t('modshop.unlocked_count', { count: 0, total: 0 }, '0 / 0 unlocked');
       return;
     }
 
@@ -221,7 +235,7 @@
     var nextXp = prog.nextLevelXp;
     var currentXp = prog.xp || 0;
     var fill = 100;
-    var xpLabel = 'MAX LEVEL';
+    var xpLabel = t('modshop.max_level', null, 'MAX LEVEL');
 
     if (nextXp != null) {
       var span = Math.max(1, nextXp - levelStart);
@@ -229,10 +243,13 @@
       xpLabel = fmtCount(currentXp - levelStart) + ' / ' + fmtCount(span) + ' XP';
     }
 
-    els.vehicleLevel.textContent = 'Lv. ' + prog.level;
+    els.vehicleLevel.textContent = t('vehicles.level_short', { level: prog.level }, 'LV ' + prog.level);
     els.xpFill.style.width = fill + '%';
     els.xpText.textContent = xpLabel;
-    els.unlockSummary.textContent = fmtCount(prog.unlockedCount || 0) + ' / ' + fmtCount(prog.totalUnlocks || 0) + ' unlocked';
+    els.unlockSummary.textContent = t('modshop.unlocked_count', {
+      count: fmtCount(prog.unlockedCount || 0),
+      total: fmtCount(prog.totalUnlocks || 0)
+    }, fmtCount(prog.unlockedCount || 0) + ' / ' + fmtCount(prog.totalUnlocks || 0) + ' unlocked');
   }
 
   function buildOptionButton(mod, opt) {
@@ -243,30 +260,39 @@
     var tag = document.createElement('span');
     var stageText;
     if (mod.isGearbox) {
-      var gearboxStageLabels = { '-1': 'Auto', '0': 'Beginner', '1': 'Expert' };
-      stageText = gearboxStageLabels[String(opt.index)] || 'Auto';
+      var gearboxStageLabels = {
+        '-1': t('modshop.stage_auto', null, 'Auto'),
+        '0': t('modshop.stage_beginner', null, 'Beginner'),
+        '1': t('modshop.stage_expert', null, 'Expert')
+      };
+      stageText = gearboxStageLabels[String(opt.index)] || t('modshop.stage_auto', null, 'Auto');
     } else if (mod.isNitrous) {
-      var nitrousStageLabels = { '-1': 'Stock', '0': 'Level 1', '1': 'Level 2', '2': 'Level 3' };
-      stageText = nitrousStageLabels[String(opt.index)] || 'Stock';
+      var nitrousStageLabels = {
+        '-1': t('modshop.stage_stock', null, 'Stock'),
+        '0': t('modshop.stage_level', { level: 1 }, 'Level 1'),
+        '1': t('modshop.stage_level', { level: 2 }, 'Level 2'),
+        '2': t('modshop.stage_level', { level: 3 }, 'Level 3')
+      };
+      stageText = nitrousStageLabels[String(opt.index)] || t('modshop.stage_stock', null, 'Stock');
     } else {
-      stageText = opt.index < 0 ? 'Stock' : 'Stage ' + (opt.index + 1);
+      stageText = opt.index < 0 ? t('modshop.stage_stock', null, 'Stock') : t('modshop.stage_number', { number: opt.index + 1 }, 'Stage ' + (opt.index + 1));
     }
     var optionPrice = getOptionPrice(mod, opt);
-    var metaText = (mod.isGearbox && opt.index < 0) ? 'Remove and restore automatic.' : 'Install for ' + fmt(optionPrice);
+    var metaText = (mod.isGearbox && opt.index < 0) ? t('modshop.remove_restore_auto', null, 'Remove and restore automatic.') : t('modshop.install_for', { price: fmt(optionPrice) }, 'Install for ' + fmt(optionPrice));
     if (mod.isNitrous && opt.index < 0) {
-      metaText = 'Remove the nitrous kit.';
+      metaText = t('modshop.remove_nitrous', null, 'Remove the nitrous kit.');
     }
-    var tagText = 'Ready';
+    var tagText = t('modshop.ready', null, 'Ready');
 
     btn.className = 'sk-perfshop-option';
     if (opt.index === mod.current) {
       btn.classList.add('is-owned');
-      metaText = 'Installed on this vehicle.';
-      tagText = 'Installed';
+      metaText = t('modshop.already_installed', null, 'Already installed on this vehicle.');
+      tagText = t('modshop.installed', null, 'Installed');
     } else if (opt.locked) {
       btn.classList.add('is-locked');
       metaText = fmtUnlock(opt.unlockLevel);
-      tagText = 'Locked';
+      tagText = t('modshop.locked', null, 'Locked');
     }
 
     btn.dataset.modType = mod.modType;
@@ -296,8 +322,8 @@
       btn.classList.add('is-selected');
 
       if (opt.locked) {
-        setSelection(opt.name, 'Vehicle level ' + opt.unlockLevel + ' is required before this tuning stage can be installed.');
-        setInstallState(fmtUnlock(opt.unlockLevel), 'Locked stage. Earn more vehicle XP to unlock it.', 'Locked', true);
+        setSelection(opt.name, t('modshop.locked_stage_required', { level: opt.unlockLevel }, 'Vehicle level ' + opt.unlockLevel + ' is required before this tuning stage can be installed.'));
+        setInstallState(fmtUnlock(opt.unlockLevel), t('modshop.locked_stage_note', null, 'Locked stage. Earn more vehicle XP to unlock it.'), t('modshop.locked', null, 'Locked'), true);
         return;
       }
 
@@ -306,31 +332,31 @@
       }
 
       if (opt.index === mod.current) {
-        setSelection(opt.name, 'This tuning stage is already fitted to your active vehicle.');
-        setInstallState('Installed', 'Select another stage to preview a different setup.', 'Installed', true);
+        setSelection(opt.name, t('modshop.already_fitted', null, 'This tuning stage is already fitted to your active vehicle.'));
+        setInstallState(t('modshop.installed', null, 'Installed'), t('modshop.preview_other_stage', null, 'Select another stage to preview a different setup.'), t('modshop.installed', null, 'Installed'), true);
       } else if (mod.isGearbox && opt.index < 0) {
-        setSelection(opt.name, 'Remove the manual gearbox and restore automatic transmission.');
-        setInstallState('Free', 'No cost to remove.', 'Remove', false);
+        setSelection(opt.name, t('modshop.restore_auto', null, 'Remove the manual gearbox and restore automatic transmission.'));
+        setInstallState(t('modshop.free', null, 'Free'), t('modshop.no_cost_remove', null, 'No cost to remove.'), t('modshop.remove', null, 'Remove'), false);
       } else if (mod.isNitrous && opt.index < 0) {
-        setSelection(opt.name, 'Remove the installed nitrous system.');
-        setInstallState('Free', 'No cost to remove.', 'Remove', false);
+        setSelection(opt.name, t('modshop.remove_installed_nitrous', null, 'Remove the installed nitrous system.'));
+        setInstallState(t('modshop.free', null, 'Free'), t('modshop.no_cost_remove', null, 'No cost to remove.'), t('modshop.remove', null, 'Remove'), false);
       } else {
         var subtitle;
         if (mod.isGearbox) {
           subtitle = opt.index === 0
-            ? 'Beginner manual - forgiving shift timing, no engine stall.'
-            : 'Expert manual - clutch required, engine can stall at low RPM.';
+            ? t('modshop.beginner_manual_copy', null, 'Beginner manual - forgiving shift timing, no engine stall.')
+            : t('modshop.expert_manual_copy', null, 'Expert manual - clutch required, engine can stall at low RPM.');
         } else if (mod.isNitrous) {
           subtitle = [
-            'Entry bottle with a short boost window.',
-            'Larger bottle with a longer boost window.',
-            'Largest bottle with the longest boost window.'
+            t('modshop.nitrous_street_copy', null, 'Entry bottle with a short boost window.'),
+            t('modshop.nitrous_sport_copy', null, 'Larger bottle with a longer boost window.'),
+            t('modshop.nitrous_race_copy', null, 'Largest bottle with the longest boost window.')
           ][opt.index];
         } else {
-          subtitle = mod.name + ' upgrade ready to install.';
+          subtitle = t('modshop.upgrade_ready', { name: mod.name }, mod.name + ' upgrade ready to install.');
         }
         setSelection(opt.name, subtitle);
-        setInstallState(fmt(optionPrice), 'Install this upgrade on your active vehicle.', 'Install', false);
+        setInstallState(fmt(optionPrice), t('modshop.install_upgrade_note', null, 'Install this upgrade on your active vehicle.'), t('modshop.install', null, 'Install'), false);
       }
 
       els.buy.dataset.modType = mod.modType;
@@ -342,8 +368,8 @@
 
   function selectCategory(mod, focusIndex) {
     state.selectedMod = mod;
-    setSelection(mod.name, mod.options.length + ' tuning stages available in this category.');
-    setInstallState('', 'Select a stage to preview it.', 'Install', true);
+    setSelection(mod.name, t('modshop.tuning_stage_count', { count: mod.options.length }, mod.options.length + ' tuning stages available in this category.'));
+    setInstallState('', t('modshop.select_stage_preview', null, 'Select a stage to preview it.'), t('modshop.install', null, 'Install'), true);
 
     els.categories.querySelectorAll('.sk-perfshop-cat').forEach(function (btn) {
       btn.classList.toggle('is-active', btn.dataset.modType === String(mod.modType));
@@ -382,8 +408,8 @@
 
     els.categories.innerHTML = '';
     els.options.innerHTML = '';
-    setSelection('Choose a category', 'Select a tuning stage to preview install cost and unlock state.');
-    setInstallState('', 'Select a stage to preview it.', 'Install', true);
+    setSelection(t('modshop.choose_category', null, 'Choose a category'), t('modshop.choose_category_copy', null, 'Select a tuning stage to preview install cost and unlock state.'));
+    setInstallState('', t('modshop.select_stage_preview', null, 'Select a stage to preview it.'), t('modshop.install', null, 'Install'), true);
 
     state.mods.forEach(function (mod) {
       var btn = document.createElement('button');
@@ -417,8 +443,8 @@
     els.root.style.display = 'none';
     els.categories.innerHTML = '';
     els.options.innerHTML = '';
-    setSelection('Choose a category', 'Select a tuning stage to preview install cost and unlock state.');
-    setInstallState('', 'Select a stage to preview it.', 'Install', true);
+    setSelection(t('modshop.choose_category', null, 'Choose a category'), t('modshop.choose_category_copy', null, 'Select a tuning stage to preview install cost and unlock state.'));
+    setInstallState('', t('modshop.select_stage_preview', null, 'Select a stage to preview it.'), t('modshop.install', null, 'Install'), true);
     state.progression = null;
     state.selectedMod = null;
     state.mods = [];
@@ -477,7 +503,7 @@
       SK.nui.post('perfshop:purchaseNitrous', { type: nitrousType }).done(function (result) {
         if (!result.ok) {
           if (result.reason === 'locked' && result.unlockLevel) {
-            setInstallState(fmtUnlock(result.unlockLevel), 'This stage is still locked for your vehicle.', 'Locked', true);
+            setInstallState(fmtUnlock(result.unlockLevel), t('modshop.still_locked_vehicle', null, 'This part is still locked for your vehicle.'), t('modshop.locked', null, 'Locked'), true);
             return;
           }
           els.buy.disabled = false;
@@ -498,7 +524,7 @@
     SK.nui.post('perfshop:purchaseMod', { modType: modType, modIndex: modIndex }).done(function (result) {
       if (!result.ok) {
         if (result.reason === 'locked' && result.unlockLevel) {
-          setInstallState(fmtUnlock(result.unlockLevel), 'This stage is still locked for your vehicle.', 'Locked', true);
+          setInstallState(fmtUnlock(result.unlockLevel), t('modshop.still_locked_vehicle', null, 'This part is still locked for your vehicle.'), t('modshop.locked', null, 'Locked'), true);
           return;
         }
         els.buy.disabled = false;

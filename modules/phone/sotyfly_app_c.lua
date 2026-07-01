@@ -56,7 +56,7 @@ end
 
 local function notifyError(message)
     if SKNotify then
-        SKNotify({ type = 'error', title = 'Sotyfly', body = message or 'Error' })
+        SKNotify({ type = 'error', title = 'Sotyfly', body = message or _L('lua.notify.sotyfly_error') })
     end
 end
 

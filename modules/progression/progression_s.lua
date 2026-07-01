@@ -108,7 +108,7 @@ local function normalizeAvailableMods(availableMods)
             if #options > 0 then
                 normalized[#normalized + 1] = {
                     modType = mod.modType,
-                    name = mod.name or (SKProgression.MOD_TYPE_NAMES[mod.modType] or ('Mod ' .. mod.modType)),
+                    name = mod.name or SKProgression.getModTypeName(mod.modType),
                     options = options,
                 }
             end

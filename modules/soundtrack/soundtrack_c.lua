@@ -716,7 +716,7 @@ RegisterCommand(SKIP_KEY_COMMAND, function()
     end
     SKSoundtrack.SkipCurrentTrack()
 end)
-RegisterKeyMapping(SKIP_KEY_COMMAND, 'Skip current soundtrack track', 'keyboard', 'Q')
+RegisterKeyMapping(SKIP_KEY_COMMAND, _L('lua.notify.skip_soundtrack_track'), 'keyboard', 'Q')
 
 CreateThread(function()
     while true do

@@ -67,7 +67,7 @@ function SKPropertyInvite.enterFromInvite(entry)
 
     local result = lib.callback.await('streetkings:property:acceptInvite', false)
     if not result.ok then
-        SKNotify({ type = 'error', title = 'Invite no longer valid' })
+        SKNotify({ type = 'error', title = _L('lua.notify.invite_invalid') })
         clearInvite()
         return
     end
@@ -80,12 +80,12 @@ end
 function SKPropertyInvite.handleMessageAction(payload)
     if payload.response == 'accept' then
         if SKC.GetGameState() ~= GameState.FREEROAM then
-            SKNotify({ type = 'error', title = 'You can\'t accept invites right now' })
+            SKNotify({ type = 'error', title = _L('lua.notify.invite_bad_state') })
             return
         end
 
         if GetPlayerWantedLevel(PlayerId()) > 0 then
-            SKNotify({ type = 'error', title = 'You can\'t accept invites with a wanted level' })
+            SKNotify({ type = 'error', title = _L('lua.notify.invite_wanted') })
             return
         end
 
@@ -103,19 +103,19 @@ function SKPropertyInvite.handleMessageAction(payload)
         SetNewWaypoint(payload.exterior.x, payload.exterior.y)
         SKNotify({
             type = 'success',
-            title = payload.propertyName .. ' marked on your map',
+            title = _L('lua.notify.property_invite_marked', { name = payload.propertyName }),
             duration = 5000,
         })
     elseif payload.response == 'decline' then
         clearInvite()
         lib.callback.await('streetkings:property:declineInvite', false)
-        SKNotify({ type = 'info', title = 'Invite declined' })
+        SKNotify({ type = 'info', title = _L('lua.notify.invite_declined') })
     end
 end
 
 RegisterNetEvent('streetkings:property:inviteExpired', function()
     if activeInvite then
-        SKNotify({ type = 'warning', title = 'Property invite cancelled' })
+        SKNotify({ type = 'warning', title = _L('lua.notify.property_invite_cancelled') })
         clearInvite()
     end
 end)
@@ -137,8 +137,8 @@ RegisterNUICallback('phone:realestate:sendInvite', function(data, cb)
     cb(result)
 
     if result.ok then
-        SKNotify({ type = 'success', title = 'Invite Sent' })
+        SKNotify({ type = 'success', title = _L('lua.notify.invite_sent') })
     else
-        SKNotify({ type = 'error', title = 'Failed to send invite' })
+        SKNotify({ type = 'error', title = _L('lua.notify.invite_send_failed') })
     end
 end)

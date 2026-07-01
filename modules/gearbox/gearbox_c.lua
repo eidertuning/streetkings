@@ -122,7 +122,7 @@ end
 
 lib.addKeybind({
     name        = 'sk_gears_upshift',
-    description = 'Manual Gearbox: Shift Up',
+    description = _L('lua.notify.manual_shift_up'),
     defaultKey  = 'UP',
     defaultMapper = 'KEYBOARD',
     secondaryKey = 'RRIGHT_INDEX',
@@ -138,7 +138,7 @@ lib.addKeybind({
 
 lib.addKeybind({
     name        = 'sk_gears_downshift',
-    description = 'Manual Gearbox: Shift Down',
+    description = _L('lua.notify.manual_shift_down'),
     defaultKey  = 'DOWN',
     defaultMapper = 'KEYBOARD',
     secondaryKey = 'RUP_INDEX',
@@ -154,7 +154,7 @@ lib.addKeybind({
 
 lib.addKeybind({
     name        = 'sk_gears_clutch',
-    description = 'Manual Gearbox: Clutch',
+    description = _L('lua.notify.manual_clutch'),
     defaultKey  = 'LSHIFT',
     defaultMapper = 'KEYBOARD',
     secondaryKey = 'L1_INDEX',

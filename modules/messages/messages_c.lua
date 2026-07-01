@@ -10,7 +10,7 @@ RegisterNetEvent('streetkings:messages:newMessage', function(msg)
             SendNUIMessage({
                 type = 'missions:subtitle',
                 speaker = '',
-                body = ('Use [%s] to open your phone!'):format(phoneKey),
+                body = _L('ui.messages.use_key_to_open_phone', { key = phoneKey }),
                 duration = 5000,
             })
         end

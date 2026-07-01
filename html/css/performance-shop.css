@@ -1362,3 +1362,89 @@
     max-width: 5.7rem;
   }
 }
+
+/* -- Performance workshop readable tile recovery --------------------------- */
+
+.sk-perfshop-strip {
+  padding: clamp(0.5rem, 1vh, 0.8rem) clamp(1.2rem, 2.5vw, 2.4rem) clamp(0.85rem, 1.6vh, 1.2rem);
+}
+
+.sk-perfshop-strip-inner {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(8.7rem, 10vw, 11.6rem);
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: clamp(0.45rem, 0.65vw, 0.7rem);
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.2rem 0.15rem 0.45rem;
+}
+
+.sk-perfshop-cat {
+  width: clamp(8.7rem, 10vw, 11.6rem);
+  min-width: 0;
+  min-height: clamp(3.35rem, 5.45vh, 4.1rem);
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0.54rem 0.72rem;
+  border-radius: 8px;
+}
+
+.sk-perfshop-cat-name {
+  display: block !important;
+  min-width: 0;
+  max-width: none !important;
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.58rem, 0.72vw, 0.72rem);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sk-perfshop-option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.28rem 0.55rem;
+  min-height: 4.15rem;
+}
+
+.sk-perfshop-option-title {
+  min-width: 0;
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+  line-height: 1.14;
+}
+
+.sk-perfshop-option-meta {
+  grid-column: 2 / -1;
+  min-width: 0;
+}
+
+.sk-perfshop-option-tag {
+  max-width: 7rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 1366px), (max-height: 768px) {
+  .sk-perfshop-strip-inner {
+    grid-auto-columns: clamp(8rem, 10vw, 10.2rem);
+  }
+
+  .sk-perfshop-cat {
+    width: clamp(8rem, 10vw, 10.2rem);
+    padding: 0.48rem 0.62rem;
+  }
+
+  .sk-perfshop-cat-name {
+    font-size: clamp(0.54rem, 0.78vw, 0.66rem);
+  }
+}

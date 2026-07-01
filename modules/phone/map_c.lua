@@ -183,6 +183,6 @@ RegisterNUICallback('phone:map:setWaypoint', function(data, cb)
     end
 
     SetNewWaypoint(def.start.x, def.start.y)
-    SKNotify({ type = 'success', title = 'Event Marked' })
+    SKNotify({ type = 'success', title = _L('lua.notify.event_marked') })
     cb({ ok = true })
 end)

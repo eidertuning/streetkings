@@ -190,13 +190,13 @@ function runIntroCutscene(obj)
         end,
         onFail = function(reason)
             local failNotify = {
-                spotted     = 'He saw you! Cover blown.',
-                spooked     = 'You spooked him!',
-                lost        = 'You lost him.',
-                timeout     = 'Took too long.',
-                target_lost = 'Target vanished.',
+                spotted     = _L('lua.notify.tail_spotted'),
+                spooked     = _L('lua.notify.tail_spooked'),
+                lost        = _L('lua.notify.tail_lost'),
+                timeout     = _L('lua.notify.tail_timeout'),
+                target_lost = _L('lua.notify.tail_target_lost'),
             }
-            SKNotify({ title = failNotify[reason] or 'Mission Failed', type = 'error', duration = 5000 })
+            SKNotify({ title = failNotify[reason] or _L('lua.notify.mission_failed'), type = 'error', duration = 5000 })
             SendNUIMessage({ type = 'missions:tailFailed', reason = reason })
             Wait(4000)
             TriggerServerEvent('streetkings:missions:midMessage', 'Saint', 'saint', "He must be getting suspicious. Lay low for a bit, I'll let you know when we can try again.")

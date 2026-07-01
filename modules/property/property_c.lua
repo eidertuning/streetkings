@@ -464,31 +464,31 @@ end
 ---@param result table
 local function notifyPurchaseFailure(result)
     if result.reason == 'already_owned' then
-        SKNotify({ type = 'warning', title = 'Already Owned' })
+        SKNotify({ type = 'warning', title = _L('lua.notify.already_owned') })
         return
     end
 
     if result.reason == 'insufficient_funds' then
-        SKNotify({ type = 'error', title = 'Need More Cash' })
+        SKNotify({ type = 'error', title = _L('lua.notify.need_more_cash') })
         return
     end
 
-    SKNotify({ type = 'error', title = 'Purchase Failed' })
+    SKNotify({ type = 'error', title = _L('lua.notify.purchase_failed') })
 end
 
 ---@param result table
 local function notifyWarpFailure(result)
     if result.reason == 'not_owned' then
-        SKNotify({ type = 'warning', title = 'Property Not Owned' })
+        SKNotify({ type = 'warning', title = _L('lua.notify.property_not_owned') })
         return
     end
 
     if result.reason == 'insufficient_funds' then
-        SKNotify({ type = 'error', title = 'Need More Cash' })
+        SKNotify({ type = 'error', title = _L('lua.notify.need_more_cash') })
         return
     end
 
-    SKNotify({ type = 'error', title = 'Warp Failed' })
+    SKNotify({ type = 'error', title = _L('lua.notify.warp_failed') })
 end
 
 RegisterNUICallback('phone:realestate:list', function(data, cb)
@@ -522,7 +522,7 @@ RegisterNUICallback('phone:realestate:purchase', function(data, cb)
         return
     end
 
-    SKNotify({ type = 'success', title = 'Property Purchased' })
+    SKNotify({ type = 'success', title = _L('lua.notify.property_purchased') })
 end)
 
 RegisterNUICallback('phone:realestate:warp', function(data, cb)
@@ -540,7 +540,7 @@ RegisterNUICallback('phone:realestate:warp', function(data, cb)
         return
     end
 
-    SKNotify({ type = 'success', title = 'Warped To Property' })
+    SKNotify({ type = 'success', title = _L('lua.notify.warped_to_property') })
 
     if SKPhone.isOpen() then
         SKPhone.close()
@@ -560,7 +560,7 @@ RegisterNUICallback('phone:realestate:setWaypoint', function(data, cb)
     end
 
     SetNewWaypoint(entry.exterior.x, entry.exterior.y)
-    SKNotify({ type = 'success', title = 'Property Marked' })
+    SKNotify({ type = 'success', title = _L('lua.notify.property_marked') })
     cb({ ok = true })
 end)
 

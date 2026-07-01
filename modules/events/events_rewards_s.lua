@@ -368,7 +368,7 @@ function SKEventsRewards.buildRewardPreview(activity, boardSize, entriesBeaten, 
     }
 
     if preview.phase == 'early' then
-        preview.label = 'Early Board'
+        preview.label = _L('ui.events.early_board')
         preview.detail = ('Beat %d driver%s for the bonus. %d / %d class entries logged.'):format(
             cfgBase.EARLY_BOARD_MIN_BEATEN,
             cfgBase.EARLY_BOARD_MIN_BEATEN == 1 and '' or 's',
@@ -385,7 +385,7 @@ function SKEventsRewards.buildRewardPreview(activity, boardSize, entriesBeaten, 
         return preview
     end
 
-    preview.label = 'Ranked Board'
+    preview.label = _L('ui.events.ranked_board')
 
     for _, band in ipairs(config.rankedBands) do
         if percentile <= band.maxPercentile then

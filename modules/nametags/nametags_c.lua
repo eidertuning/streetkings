@@ -168,9 +168,9 @@ RegisterCommand('sk_toggle_nametags', function()
     local enabled = not SKSettings.areNametagsEnabled()
     SKSettings.setGeneralValue('nametagsEnabled', enabled)
     clearNametags()
-    SKNotify({ type = 'info', title = enabled and 'Nametags On' or 'Nametags Off' })
+    SKNotify({ type = 'info', title = enabled and _L('lua.notify.nametags_on') or _L('lua.notify.nametags_off') })
 end)
-RegisterKeyMapping('sk_toggle_nametags', 'Toggle player nametags', 'keyboard', 'F1')
+RegisterKeyMapping('sk_toggle_nametags', _L('lua.notify.toggle_nametags'), 'keyboard', 'F1')
 
 CreateThread(function()
     while true do

@@ -306,7 +306,7 @@ Lobby closes in %d minutes.]]):format(
         {
             kind = 'joinLobby',
             lobbyId = lobby.id,
-            label = 'Join Lobby',
+            label = _L('ui.events.join_lobby'),
         },
         { excludeSource = lobby.hostSource }
     )

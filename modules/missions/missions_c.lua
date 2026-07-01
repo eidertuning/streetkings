@@ -402,7 +402,7 @@ end)
 RegisterCommand('missiondebug', function()
     local snapshot = lib.callback.await('streetkings:missions:getState', false)
     if not snapshot or not snapshot.ok then
-        SKNotify({ title = 'Missions: no active save', type = 'warning' })
+        SKNotify({ title = _L('lua.notify.missions_no_active_save'), type = 'warning' })
         return
     end
     SKNotify({

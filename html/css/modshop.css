@@ -1434,3 +1434,115 @@
     max-width: 6rem;
   }
 }
+
+/* -- Workshop readable tile recovery --------------------------------------- */
+
+.sk-modshop-strip {
+  padding: clamp(0.5rem, 1vh, 0.8rem) clamp(1.2rem, 2.5vw, 2.4rem) clamp(0.85rem, 1.6vh, 1.2rem);
+}
+
+.sk-modshop-strip-inner {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(8.9rem, 10.4vw, 12rem);
+  align-items: stretch;
+  gap: clamp(0.45rem, 0.65vw, 0.7rem);
+  justify-content: flex-start;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.2rem 0.15rem 0.45rem;
+}
+
+.sk-modshop-cat {
+  width: clamp(8.9rem, 10.4vw, 12rem);
+  min-width: 0;
+  min-height: clamp(3.55rem, 5.8vh, 4.35rem);
+  height: auto;
+  display: grid;
+  grid-template-columns: 2.45rem minmax(0, 1fr);
+  align-items: center;
+  justify-content: stretch;
+  gap: 0.58rem;
+  padding: 0.5rem 0.68rem;
+  border-radius: 8px;
+}
+
+.sk-modshop-cat-icon {
+  width: 2.45rem;
+  height: 2.45rem;
+  border-radius: 8px;
+  flex: 0 0 auto;
+}
+
+.sk-modshop-cat-text {
+  display: block !important;
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 0;
+  max-width: none !important;
+  overflow: visible;
+  clip: auto !important;
+  white-space: normal;
+  text-overflow: clip;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.58rem, 0.72vw, 0.72rem);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sk-modshop-options {
+  align-content: flex-start;
+}
+
+.sk-modshop-option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.28rem 0.55rem;
+  min-height: 4.2rem;
+}
+
+.sk-modshop-option-title {
+  grid-column: 1;
+  min-width: 0;
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+  line-height: 1.14;
+}
+
+.sk-modshop-option-meta {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.sk-modshop-option-status {
+  grid-column: 2;
+  grid-row: 1;
+  max-width: 7rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 1366px), (max-height: 768px) {
+  .sk-modshop-strip-inner {
+    grid-auto-columns: clamp(8rem, 10vw, 10.4rem);
+  }
+
+  .sk-modshop-cat {
+    width: clamp(8rem, 10vw, 10.4rem);
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    padding: 0.46rem 0.58rem;
+  }
+
+  .sk-modshop-cat-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .sk-modshop-cat-text {
+    font-size: clamp(0.54rem, 0.78vw, 0.66rem);
+  }
+}

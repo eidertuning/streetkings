@@ -241,11 +241,9 @@ function SKEventsDaily.maybeSendDailyPlaylistMessage(source, playlistPayload)
         names[#names + 1] = playlistPayload.entries[i].name
     end
 
-    local body = ([[Today's featured runs for %s class are live.
-
-Check your map for the full list.
-
-Complete them all in the day for a special reward.]]):format(playlistPayload.vehicleClass ~= '' and playlistPayload.vehicleClass or 'No Ride')
+    local body = _L('content.daily_playlist_body', {
+        class = playlistPayload.vehicleClass ~= '' and playlistPayload.vehicleClass or _L('ui.events.no_ride')
+    })
 
     SKMessages.enqueueDelayed(source, cfg.MESSAGE_SENDER, cfg.MESSAGE_AVATAR, body, 60)
     eventState.lastSeenPlaylist = playlistPayload.dayKey
@@ -256,10 +254,23 @@ end
 ---@return table[]
 function SKEventsDaily.buildCategories(source)
     local cats = {}
-    local groupOrder = { 'Daily Events', 'Street Races', 'Race Events', 'Deliveries', 'Rampage', 'Stunt Jumps', 'Speed Traps' }
+    local groupOrder = {
+        _L('ui.events.daily_events'),
+        _L('ui.events.street_races'),
+        _L('ui.events.race_events'),
+        _L('ui.events.deliveries'),
+        _L('ui.events.rampage'),
+        _L('ui.events.stunt_jumps'),
+        _L('ui.events.speed_traps')
+    }
     local playlistSet = SKEventsDaily.buildDailyPlaylistSet()
 
-    cats[#cats + 1] = { id = 'npc_street', label = 'NPC Street Races', scoreType = 'wl', group = 'Street Races' }
+    cats[#cats + 1] = {
+        id = 'npc_street',
+        label = _L('ui.events.npc_street_races'),
+        scoreType = 'wl',
+        group = _L('ui.events.street_races')
+    }
 
     for _, def in pairs(SKEvents) do
         if type(def) ~= 'table' or not def.id then goto nextEvent end
@@ -269,12 +280,12 @@ function SKEventsDaily.buildCategories(source)
                 id = def.id,
                 label = def.name,
                 scoreType = 'points',
-                group = 'Rampage',
+                group = _L('ui.events.rampage'),
             }
         else
-            local group = playlistSet[def.id] and 'Daily Events' or 'Race Events'
+            local group = playlistSet[def.id] and _L('ui.events.daily_events') or _L('ui.events.race_events')
             if def.type == EventType.DELIVERY and not playlistSet[def.id] then
-                group = 'Deliveries'
+                group = _L('ui.events.deliveries')
             end
 
             cats[#cats + 1] = {

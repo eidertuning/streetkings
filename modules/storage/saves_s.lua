@@ -807,7 +807,7 @@ end
 local function ceAdminFindAvailableOption(vehicleData, modType, modIndex)
     modType = tonumber(modType); modIndex = tonumber(modIndex)
     if not modType or not modIndex then return nil end
-    if modIndex == -1 then return { index = -1, name = 'Stock' } end
+    if modIndex == -1 then return { index = -1, name = _L('ui.modshop.stock') } end
     for _, group in ipairs(vehicleData.availableMods or {}) do
         if tonumber(group.modType) == modType then
             for _, opt in ipairs(group.options or {}) do

@@ -516,18 +516,19 @@
   }
 
   function normalizeBuyButtonText(buttonText) {
-    if (!buttonText || buttonText === 'Install') {
-      return 'Purchase';
+    if (!buttonText || buttonText === 'Install' || buttonText === t('modshop.install', null, 'Install')) {
+      return t('modshop.purchase', null, 'Purchase');
     }
     return buttonText;
   }
 
   function renderBuyButton(buttonText) {
     var resolvedText = normalizeBuyButtonText(buttonText);
-    if (controllerEnabled && resolvedText === 'Purchase') {
+    var purchaseText = t('modshop.purchase', null, 'Purchase');
+    if (controllerEnabled && resolvedText === purchaseText) {
       els.buy.innerHTML = '<span class="sk-controller-btn-icon" aria-hidden="true">'
         + controllerGlyphs.getHtml('X')
-        + '</span><span>Purchase</span>';
+        + '</span><span>' + purchaseText + '</span>';
       return;
     }
     els.buy.textContent = resolvedText;
@@ -535,7 +536,7 @@
 
   controllerGlyphs.onChange(function () {
     if (els.buy) {
-      renderBuyButton(els.buy.textContent || 'Purchase');
+      renderBuyButton(els.buy.textContent || t('modshop.purchase', null, 'Purchase'));
     }
   });
 
@@ -624,7 +625,7 @@
 
   function setControllerEnabled(nextEnabled) {
     controllerNav.setEnabled(nextEnabled);
-    renderBuyButton(els.buy.textContent || 'Purchase');
+    renderBuyButton(els.buy.textContent || t('modshop.purchase', null, 'Purchase'));
   }
 
   function scheduleControllerRefresh(options) {
@@ -639,17 +640,17 @@
   function setInstallState(priceText, noteText, buttonText, disabled) {
     els.price.textContent = priceText || '';
     els.installNote.textContent = noteText || '';
-    renderBuyButton(buttonText || 'Purchase');
+    renderBuyButton(buttonText || t('modshop.purchase', null, 'Purchase'));
     els.buy.disabled = !!disabled;
   }
 
   function refreshProgressionCard() {
     var prog = state.progression;
     if (!prog) {
-      els.vehicleLevel.textContent = 'Lv. 1';
+      els.vehicleLevel.textContent = t('vehicles.level_short', { level: 1 }, 'LV 1');
       els.xpFill.style.width = '0%';
       els.xpText.textContent = '0 / 0 XP';
-      els.unlockSummary.textContent = '0 / 0 unlocked';
+      els.unlockSummary.textContent = t('modshop.unlocked_count', { count: 0, total: 0 }, '0 / 0 unlocked');
       return;
     }
 
@@ -657,7 +658,7 @@
     var nextXp = prog.nextLevelXp;
     var currentXp = prog.xp || 0;
     var fill = 100;
-    var xpLabel = 'MAX LEVEL';
+    var xpLabel = t('modshop.max_level', null, 'MAX LEVEL');
 
     if (nextXp != null) {
       var span = Math.max(1, nextXp - levelStart);
@@ -665,10 +666,13 @@
       xpLabel = fmtCount(currentXp - levelStart) + ' / ' + fmtCount(span) + ' XP';
     }
 
-    els.vehicleLevel.textContent = 'Lv. ' + prog.level;
+    els.vehicleLevel.textContent = t('vehicles.level_short', { level: prog.level }, 'LV ' + prog.level);
     els.xpFill.style.width = fill + '%';
     els.xpText.textContent = xpLabel;
-    els.unlockSummary.textContent = fmtCount(prog.unlockedCount || 0) + ' / ' + fmtCount(prog.totalUnlocks || 0) + ' unlocked';
+    els.unlockSummary.textContent = t('modshop.unlocked_count', {
+      count: fmtCount(prog.unlockedCount || 0),
+      total: fmtCount(prog.totalUnlocks || 0)
+    }, fmtCount(prog.unlockedCount || 0) + ' / ' + fmtCount(prog.totalUnlocks || 0) + ' unlocked');
   }
 
   function selectColors() {
@@ -831,7 +835,7 @@
     var status = document.createElement('span');
     var title = document.createElement('span');
     var meta = document.createElement('span');
-    var optionName = opt.name || (mod.name ? mod.name + ' ' + (opt.index + 1) : 'Part ' + (opt.index + 1));
+    var optionName = opt.name || (mod.name ? mod.name + ' ' + (opt.index + 1) : t('modshop.part_number', { number: opt.index + 1 }, 'Part ' + (opt.index + 1)));
     var statusText = t('modshop.available', null, 'Available');
     var subtitle = t('modshop.ready_to_install', { price: fmt(mod.basePrice) }, 'Ready to install for {price}');
     var requiredVipTier = opt.requiredVipTier || mod.requiredVipTier;
@@ -1064,8 +1068,8 @@
     els.categories.innerHTML  = '';
     els.options.innerHTML     = '';
     els.install.style.display = '';
-    setSelection('Choose a category', 'Select a part to preview its unlock state and install cost.');
-    setInstallState('', '', 'Install', true);
+    setSelection(t('modshop.choose_category', null, 'Choose a category'), t('modshop.select_part_preview', null, 'Select a part to preview its unlock state and install cost.'));
+    setInstallState('', '', t('modshop.install', null, 'Install'), true);
     state.selectedMod         = null;
     state.colors              = null;
     state.neons               = null;

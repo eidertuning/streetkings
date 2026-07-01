@@ -13,6 +13,11 @@
   var countdownSecs = 0;
   var countdownInterval = null;
 
+  function t(key, replacements) {
+    var SK = window.StreetKings;
+    return SK && SK.i18n && SK.i18n.t ? SK.i18n.t(key, replacements) : key;
+  }
+
   function resolveEls() {
     root         = document.getElementById('skStallRestart');
     keyEl        = document.getElementById('skStallKey');
@@ -153,7 +158,7 @@
     phase = 'success';
     setProgress(1);
     setTimer(1);
-    setStatus('Engine started!', 'is-success');
+    setStatus(t('gearbox.engine_started'), 'is-success');
     root.className = 'sk-stall-restart is-success';
   }
 
@@ -167,12 +172,12 @@
     root.className = 'sk-stall-restart is-countdown';
 
     countdownSecs = seconds;
-    setStatus('Retry in ' + countdownSecs + '...', 'is-countdown');
+    setStatus(t('gearbox.retry_in', { seconds: countdownSecs }), 'is-countdown');
 
     countdownInterval = setInterval(function () {
       countdownSecs -= 1;
       if (countdownSecs > 0) {
-        setStatus('Retry in ' + countdownSecs + '...', 'is-countdown');
+        setStatus(t('gearbox.retry_in', { seconds: countdownSecs }), 'is-countdown');
       } else {
         stopCountdown();
         setStatus('');

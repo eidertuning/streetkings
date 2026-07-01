@@ -160,7 +160,7 @@ end
 ---@return boolean
 local function canInitiateMultiplayerJoin()
     if SKC.GetGameState() ~= GameState.FREEROAM then
-        notify('You cannot join while in this state.', 'error')
+        notify(_L('lua.notify.mp_join_bad_state'), 'error')
         return false
     end
     if SKPolice.hasWantedLevel() then
@@ -474,7 +474,7 @@ local function onRaceEnter(prevState)
         local prepModelLabel = SK.GetVehicleModelLabel(prepVeh)
         local result = lib.callback.await('streetkings:mp:prepareRaceVehicle', false, prepModelLabel)
         if not result or result.ok ~= true or not activeRace then
-            notify('Failed to start race.', 'error')
+            notify(_L('lua.notify.mp_start_failed'), 'error')
             SKC.SetGameState(GameState.FREEROAM)
             return
         end
@@ -486,7 +486,7 @@ local function onRaceEnter(prevState)
 
         local vehicle = awaitVehicle(result.netId, 15000)
         if not vehicle then
-            notify('Failed to prepare race vehicle.', 'error')
+            notify(_L('lua.notify.mp_prepare_vehicle_failed'), 'error')
             SKC.SetGameState(GameState.FREEROAM)
             return
         end
@@ -552,7 +552,7 @@ local function onRaceEnter(prevState)
         activeRace.elapsedMs = elapsedMs
         lib.callback.await('streetkings:mp:finish', false, elapsedMs)
 
-        notify('Finished. Waiting for others...', 'info')
+        notify(_L('lua.notify.mp_finished_waiting'), 'info')
     end)
 end
 
@@ -683,7 +683,7 @@ function SKMultiplayer.hostRace(eventId, options)
     CreateThread(function()
         local result = lib.callback.await('streetkings:events:createRaceLobby', false, eventId, options)
         if not result or result.ok ~= true then
-            notify('Could not open lobby: ' .. tostring(result and result.reason or 'unknown'), 'error')
+            notify(_L('lua.notify.mp_open_lobby_failed', { reason = tostring(result and result.reason or 'unknown') }), 'error')
             return
         end
 
@@ -700,15 +700,15 @@ function SKMultiplayer.joinLobbyFromMessage(lobbyId)
         local result = lib.callback.await('streetkings:events:joinRaceLobby', false, lobbyId)
         if not result or result.ok ~= true then
             local reason = result and result.reason or 'unknown'
-            local msg = 'Could not join lobby.'
+            local msg = _L('lua.notify.mp_join_lobby_failed')
             if reason == 'class_mismatch' then
-                msg = ('Class mismatch: host requires %s.'):format(result.hostClass or '—')
+                msg = _L('lua.notify.mp_class_mismatch', { class = result.hostClass or '-' })
             elseif reason == 'lobby_full' then
-                msg = 'Lobby is full.'
+                msg = _L('lua.notify.mp_lobby_full')
             elseif reason == 'lobby_missing' or reason == 'lobby_started' then
-                msg = 'That lobby is no longer available.'
+                msg = _L('lua.notify.mp_lobby_unavailable')
             elseif reason == 'no_active_vehicle' then
-                msg = 'No active vehicle.'
+                msg = _L('lua.notify.no_active_vehicle')
             end
             notify(msg, 'error')
             return
@@ -760,7 +760,7 @@ function SKMultiplayer.startRaceNow()
     CreateThread(function()
         local result = lib.callback.await('streetkings:events:startRaceNow', false)
         if not result or result.ok ~= true then
-            notify('Could not start race.', 'error')
+            notify(_L('lua.notify.mp_start_failed'), 'error')
             return
         end
         SKPhone.close()
@@ -778,7 +778,7 @@ function SKMultiplayer.requestForfeit()
             if activeRace then
                 activeRace.forfeited = false
             end
-            notify('Could not forfeit race.', 'error')
+            notify(_L('lua.notify.mp_forfeit_failed'), 'error')
             return
         end
 
@@ -829,12 +829,12 @@ RegisterNetEvent('streetkings:mp:lobbyClosed', function(payload)
     local state = SKC.GetGameState()
     if state == GameState.MULTIPLAYER_LOBBY then
         if reason == 'expired' then
-            notify('Lobby expired.', 'warning')
+            notify(_L('lua.notify.mp_lobby_expired'), 'warning')
         elseif reason == 'finished' then
             -- no-op; results flow handles exit
             return
         else
-            notify('Lobby closed.', 'info')
+            notify(_L('lua.notify.mp_lobby_closed'), 'info')
         end
         activeLobby = nil
         pendingSeamlessReturn = payload and payload.seamless == true

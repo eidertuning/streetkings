@@ -9,7 +9,7 @@ exports('awaitDebugToolsPermission', awaitDebugToolsPermission)
 ---@return boolean
 local function requireDebugToolsPermission(cb)
     if not awaitDebugToolsPermission() then
-        SKNotify({ type = 'error', title = 'Not allowed' })
+        SKNotify({ type = 'error', title = _L('lua.notify.not_allowed') })
         cb({ ok = false, reason = 'not_authorized' })
         return false
     end
@@ -400,9 +400,9 @@ RegisterNUICallback('phone:settings:fixVehicle', function(_, cb)
         SetVehicleFixed(veh)
         SetVehicleDeformationFixed(veh)
         SetVehicleDirtLevel(veh, 0.0)
-        SKNotify({ type = 'success', title = 'Vehicle Repaired' })
+        SKNotify({ type = 'success', title = _L('lua.notify.vehicle_repaired') })
     else
-        SKNotify({ type = 'warning', title = 'Not In Vehicle' })
+        SKNotify({ type = 'warning', title = _L('lua.notify.not_in_vehicle') })
     end
     cb({ ok = true })
 end)
@@ -411,7 +411,7 @@ RegisterNUICallback('phone:settings:clearWanted', function(_, cb)
     if not requireDebugToolsPermission(cb) then return end
     ClearPlayerWantedLevel(PlayerId())
     SKPolice.resetPursuit()
-    SKNotify({ type = 'success', title = 'Wanted Level Cleared' })
+    SKNotify({ type = 'success', title = _L('lua.notify.wanted_cleared') })
     cb({ ok = true })
 end)
 
@@ -419,9 +419,9 @@ RegisterNUICallback('phone:settings:ditchCar', function(_, cb)
     if not requireDebugToolsPermission(cb) then return end
     local ok = SKFreeroam.debugDitchVehicle()
     if ok then
-        SKNotify({ type = 'success', title = 'Vehicle Ditched' })
+        SKNotify({ type = 'success', title = _L('lua.notify.vehicle_ditched') })
     else
-        SKNotify({ type = 'warning', title = 'Not In Active Vehicle' })
+        SKNotify({ type = 'warning', title = _L('lua.notify.not_in_active_vehicle') })
     end
     cb({ ok = ok })
 end)
@@ -444,7 +444,7 @@ RegisterNUICallback('phone:settings:grantCosmeticCurrency', function(_, cb)
         return
     end
 
-    SKNotify({ type = 'error', title = 'Grant Failed' })
+    SKNotify({ type = 'error', title = _L('lua.notify.grant_failed') })
     cb({ ok = false })
 end)
 
@@ -544,7 +544,7 @@ RegisterNUICallback('phone:settings:teleportToEvent', function(data, cb)
     if not requireDebugToolsPermission(cb) then return end
     local event = SKEvents[data.eventId]
     if type(event) ~= 'table' or type(event.start) ~= 'vector4' then
-        SKNotify({ type = 'error', title = 'Event Not Found' })
+        SKNotify({ type = 'error', title = _L('lua.notify.event_not_found') })
         cb({ ok = false })
         return
     end
@@ -561,9 +561,9 @@ RegisterNUICallback('phone:settings:setVehicleLevel', function(data, cb)
     if not requireDebugToolsPermission(cb) then return end
     local result = lib.callback.await('phone:settings:setVehicleLevel', false, data.level)
     if result and result.ok then
-        SKNotify({ type = 'success', title = ('Vehicle Lv. %d set'):format(data.level) })
+        SKNotify({ type = 'success', title = _L('lua.notify.vehicle_level_set', { level = data.level }) })
     else
-        SKNotify({ type = 'error', title = 'Set Level Failed' })
+        SKNotify({ type = 'error', title = _L('lua.notify.set_level_failed') })
     end
     cb(result or { ok = false })
 end)
@@ -572,9 +572,9 @@ RegisterNUICallback('phone:settings:setPlayerLevel', function(data, cb)
     if not requireDebugToolsPermission(cb) then return end
     local result = lib.callback.await('phone:settings:setPlayerLevel', false, data.level)
     if result and result.ok then
-        SKNotify({ type = 'success', title = ('Driver Lv. %d set'):format(data.level) })
+        SKNotify({ type = 'success', title = _L('lua.notify.driver_level_set', { level = data.level }) })
     else
-        SKNotify({ type = 'error', title = 'Set Level Failed' })
+        SKNotify({ type = 'error', title = _L('lua.notify.set_level_failed') })
     end
     cb(result or { ok = false })
 end)
@@ -585,7 +585,7 @@ RegisterNUICallback('phone:settings:setDebugToggle', function(data, cb)
         SKPolice.setPoliceDisabled(data.value)
         SKNotify({
             type  = data.value and 'warning' or 'success',
-            title = data.value and 'Police Disabled' or 'Police Enabled',
+            title = data.value and _L('lua.notify.police_disabled') or _L('lua.notify.police_enabled'),
         })
     end
     cb({ ok = true })
@@ -594,12 +594,12 @@ end)
 RegisterNUICallback('phone:settings:deleteSave', function(_, cb)
     local result = lib.callback.await('phone:settings:deleteSave', false)
     if result.ok then
-        SKNotify({ type = 'success', title = 'Save Deleted' })
+        SKNotify({ type = 'success', title = _L('lua.notify.save_deleted') })
         cb({ ok = true })
         Wait(1500)
         SKC.SetGameState(GameState.MAIN_MENU)
     else
-        SKNotify({ type = 'error', title = 'Delete Failed' })
+        SKNotify({ type = 'error', title = _L('lua.notify.delete_failed') })
         cb({ ok = false })
     end
 end)

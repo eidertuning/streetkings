@@ -46,5 +46,5 @@ end)
 
 RegisterNetEvent('streetkings:pausemenu:exitGame', function()
     local src = source
-    DropPlayer(src, 'Thank you for playing Street Kings!')
+    DropPlayer(src, _L('lua.notify.thanks_playing'))
 end)

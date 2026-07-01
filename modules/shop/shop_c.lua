@@ -131,15 +131,15 @@ local function buildModList(vehicle, shopTypeKey, progressionData)
             local basePrice = SKShopShared.getModPrice(shopTypeKey, modType, 0)
             local count = SKShopShared.getVehicleModOptionCount(vehicle, modType)
             if count > 0 then
-                local options = { { index = -1, key = SKProgression.getModOptionKey(modType, -1), name = 'Stock', locked = false } }
+                local options = { { index = -1, key = SKProgression.getModOptionKey(modType, -1), name = _L('ui.modshop.stock'), locked = false } }
                 for i = 0, count - 1 do
-                    local name = SKProgression.MOD_TYPE_NAMES[modType]
+                    local name = SKProgression.getModTypeName(modType)
                     if not SKShopShared.isToggleModType(modType) then
                         local labelKey = GetModTextLabel(vehicle, modType, i)
                         name = GetLabelText(labelKey)
                     end
                     if not name or name == 'NULL' or name == '' then
-                        name = (SKProgression.MOD_TYPE_NAMES[modType] or 'Mod') .. ' ' .. (i + 1)
+                        name = SKProgression.getModTypeName(modType) .. ' ' .. (i + 1)
                     end
                     local key = SKProgression.getModOptionKey(modType, i)
                     local unlockLevel = progressionData and progressionData.unlockLevels[key] or nil
@@ -162,7 +162,7 @@ local function buildModList(vehicle, shopTypeKey, progressionData)
                 end
                 mods[#mods + 1] = {
                     modType = modType,
-                    name    = SKProgression.MOD_TYPE_NAMES[modType] or ('Mod ' .. modType),
+                    name    = SKProgression.getModTypeName(modType),
                     current = SKShopShared.getInstalledModIndex(vehicle, modType),
                     basePrice = basePrice,
                     requiredVipTier = SKShopShared.getRequiredVipTier(modType),
@@ -426,27 +426,27 @@ function SKShop.registerShopState(shopTypeKey)
                     }
                     table.insert(mods, {
                         modType   = 'gearbox',
-                        name      = 'Gearbox',
+                        name      = _L('ui.modshop.gearbox'),
                         current   = gearboxIndex,
                         isGearbox = true,
                         basePrice = SKShopShared.GEARBOX_PRICES.beginner,
                         options   = {
-                            { index = -1, key = 'gearbox:none',     name = 'Stock (Automatic)', price = 0,                                    locked = false },
-                            { index = 0,  key = 'gearbox:beginner', name = 'Beginner Manual',   price = SKShopShared.GEARBOX_PRICES.beginner,  locked = false },
-                            { index = 1,  key = 'gearbox:expert',   name = 'Expert Manual',     price = SKShopShared.GEARBOX_PRICES.expert,    locked = false },
+                            { index = -1, key = 'gearbox:none',     name = _L('ui.modshop.stock_automatic'), price = 0,                                    locked = false },
+                            { index = 0,  key = 'gearbox:beginner', name = _L('ui.modshop.beginner_manual'),   price = SKShopShared.GEARBOX_PRICES.beginner,  locked = false },
+                            { index = 1,  key = 'gearbox:expert',   name = _L('ui.modshop.expert_manual'),     price = SKShopShared.GEARBOX_PRICES.expert,    locked = false },
                         },
                     })
                     table.insert(mods, {
                         modType   = 'nitrous',
-                        name      = 'Nitrous',
+                        name      = _L('ui.modshop.nitrous'),
                         current   = nitrousIndex,
                         isNitrous = true,
                         basePrice = SKShopShared.NITROUS_PRICES.street,
                         options   = {
-                            { index = -1, key = 'nitrous:none',            name = 'No Nitrous',     price = 0,                                  locked = false },
-                            { index = 0,  key = nitrousUnlockKeys.street,  name = 'Street Nitrous', price = SKShopShared.NITROUS_PRICES.street, locked = nitrousLocked.street, unlockLevel = nitrousUnlockLevels.street },
-                            { index = 1,  key = nitrousUnlockKeys.sport,   name = 'Sport Nitrous',  price = SKShopShared.NITROUS_PRICES.sport,  locked = nitrousLocked.sport,  unlockLevel = nitrousUnlockLevels.sport },
-                            { index = 2,  key = nitrousUnlockKeys.race,    name = 'Race Nitrous',   price = SKShopShared.NITROUS_PRICES.race,   locked = nitrousLocked.race,   unlockLevel = nitrousUnlockLevels.race },
+                            { index = -1, key = 'nitrous:none',            name = _L('ui.modshop.no_nitrous'),     price = 0,                                  locked = false },
+                            { index = 0,  key = nitrousUnlockKeys.street,  name = _L('ui.modshop.street_nitrous'), price = SKShopShared.NITROUS_PRICES.street, locked = nitrousLocked.street, unlockLevel = nitrousUnlockLevels.street },
+                            { index = 1,  key = nitrousUnlockKeys.sport,   name = _L('ui.modshop.sport_nitrous'),  price = SKShopShared.NITROUS_PRICES.sport,  locked = nitrousLocked.sport,  unlockLevel = nitrousUnlockLevels.sport },
+                            { index = 2,  key = nitrousUnlockKeys.race,    name = _L('ui.modshop.race_nitrous'),   price = SKShopShared.NITROUS_PRICES.race,   locked = nitrousLocked.race,   unlockLevel = nitrousUnlockLevels.race },
                         },
                     })
                 end
@@ -457,15 +457,15 @@ function SKShop.registerShopState(shopTypeKey)
                     local neonLocked = neonUnlockLevel ~= nil and not isProgressionOptionUnlocked(currentVehicleProgression, neonUnlockKey, neonUnlockLevel)
                     table.insert(mods, {
                         modType   = 'neons',
-                        name      = 'Neons',
+                        name      = _L('ui.modshop.neons'),
                         current   = neons and 0 or -1,
                         isNeon    = true,
                         basePrice = SKShopShared.NEON_PRICE,
                         requiredVipTier = SKShopShared.getRequiredVipTier('neons'),
                         neons     = neons,
                         options   = {
-                            { index = -1, key = 'neons:none', name = 'No Neons', locked = false, price = 0 },
-                            { index = 0,  key = neonUnlockKey, name = 'Neon Kit', locked = neonLocked, unlockLevel = neonUnlockLevel, price = SKShopShared.NEON_PRICE },
+                            { index = -1, key = 'neons:none', name = _L('ui.modshop.no_neons'), locked = false, price = 0 },
+                            { index = 0,  key = neonUnlockKey, name = _L('ui.modshop.neon_kit'), locked = neonLocked, unlockLevel = neonUnlockLevel, price = SKShopShared.NEON_PRICE },
                         },
                     })
                 end

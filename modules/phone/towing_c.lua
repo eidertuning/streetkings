@@ -1,11 +1,11 @@
 ---@param result table
 local function notifyGarageTowFailure(result)
     if result.reason == 'insufficient_funds' then
-        SKNotify({ type = 'error', title = 'Need More Cash' })
+        SKNotify({ type = 'error', title = _L('lua.notify.need_more_cash') })
         return
     end
 
-    SKNotify({ type = 'error', title = 'Tow Failed' })
+    SKNotify({ type = 'error', title = _L('lua.notify.tow_failed') })
 end
 
 RegisterNUICallback('phone:towing:lastGarage', function(_, cb)
@@ -24,7 +24,7 @@ RegisterNUICallback('phone:towing:lastGarage', function(_, cb)
     end
 
     if not SKGarage.getLocationById(result.garageId) then
-        SKNotify({ type = 'error', title = 'Garage Unavailable' })
+        SKNotify({ type = 'error', title = _L('lua.notify.garage_unavailable') })
         return
     end
 
@@ -33,7 +33,7 @@ RegisterNUICallback('phone:towing:lastGarage', function(_, cb)
     end
 
     if not SKGarage.enterById(result.garageId, false) then
-        SKNotify({ type = 'error', title = 'Garage Unavailable' })
+        SKNotify({ type = 'error', title = _L('lua.notify.garage_unavailable') })
         return
     end
 end)
@@ -50,7 +50,7 @@ RegisterNUICallback('phone:towing:recover', function(_, cb)
     local found, roadPos, roadHeading = GetClosestVehicleNodeWithHeading(pos.x, pos.y, pos.z, 0, 3.0, 0)
     if not found then
         cb({ ok = false, reason = 'no_road' })
-        SKNotify({ type = 'error', title = 'No Road Found' })
+        SKNotify({ type = 'error', title = _L('lua.notify.no_road_found') })
         return
     end
 

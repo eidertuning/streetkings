@@ -21,6 +21,10 @@
   var controllerMode = false;
   var confirmVisible = false;
 
+  function t(key, replacements) {
+    return SK.i18n && SK.i18n.t ? SK.i18n.t(key, replacements) : key;
+  }
+
   var confirmNav = SK.controllerFriendly.createNavigator({
     isActive: function () {
       return confirmVisible && controllerMode;
@@ -75,8 +79,8 @@
   }
 
   var headerSub = document.querySelector('.initiation-header-sub');
-  var HINT_MOUSE = 'Hover over a vehicle to inspect it \u2014 click to select';
-  var HINT_CONTROLLER = 'Use D-Pad or Left Stick to browse \u2014 press A to select';
+  var HINT_MOUSE_KEY = 'initiation.hover_hint_mouse';
+  var HINT_CONTROLLER_KEY = 'initiation.hover_hint_controller';
 
   window.addEventListener('message', function (event) {
     var data = event.data;
@@ -95,7 +99,7 @@
     if (data.controllerMode !== undefined) {
       controllerMode = !!data.controllerMode;
       if (headerSub) {
-        headerSub.textContent = controllerMode ? HINT_CONTROLLER : HINT_MOUSE;
+        headerSub.textContent = t(controllerMode ? HINT_CONTROLLER_KEY : HINT_MOUSE_KEY);
       }
       viewInitiation.classList.toggle('is-controller-nav', controllerMode);
       if (confirmVisible) {

@@ -16,13 +16,13 @@ function SKProgression.collectVehicleAvailability(vehicle)
             local options = {}
 
             for modIndex = 0, count - 1 do
-                local name = SKProgression.MOD_TYPE_NAMES[modType]
+                local name = SKProgression.getModTypeName(modType)
                 if not SKShopShared.isToggleModType(modType) then
                     local labelKey = GetModTextLabel(vehicle, modType, modIndex)
                     name = GetLabelText(labelKey)
                 end
                 if not name or name == 'NULL' or name == '' then
-                    name = (SKProgression.MOD_TYPE_NAMES[modType] or 'Mod') .. ' ' .. (modIndex + 1)
+                    name = SKProgression.getModTypeName(modType) .. ' ' .. (modIndex + 1)
                 end
 
                 options[#options + 1] = {
@@ -34,7 +34,7 @@ function SKProgression.collectVehicleAvailability(vehicle)
 
             availableMods[#availableMods + 1] = {
                 modType = modType,
-                name = SKProgression.MOD_TYPE_NAMES[modType] or ('Mod ' .. modType),
+                name = SKProgression.getModTypeName(modType),
                 options = options,
             }
         end
@@ -42,32 +42,32 @@ function SKProgression.collectVehicleAvailability(vehicle)
 
     availableMods[#availableMods + 1] = {
         modType = SKShopShared.NEON_UNLOCK_MOD_TYPE,
-        name = SKProgression.MOD_TYPE_NAMES[SKShopShared.NEON_UNLOCK_MOD_TYPE],
+        name = SKProgression.getModTypeName(SKShopShared.NEON_UNLOCK_MOD_TYPE),
         options = {
             {
                 index = SKShopShared.NEON_UNLOCK_MOD_INDEX,
-                name = 'Neon Kit',
+                name = _L('ui.modshop.neon_kit'),
                 key = SKProgression.getModOptionKey(SKShopShared.NEON_UNLOCK_MOD_TYPE, SKShopShared.NEON_UNLOCK_MOD_INDEX),
             },
         },
     }
     availableMods[#availableMods + 1] = {
         modType = SKShopShared.NITROUS_UNLOCK_MOD_TYPE,
-        name = SKProgression.MOD_TYPE_NAMES[SKShopShared.NITROUS_UNLOCK_MOD_TYPE],
+        name = SKProgression.getModTypeName(SKShopShared.NITROUS_UNLOCK_MOD_TYPE),
         options = {
             {
                 index = SKShopShared.NITROUS_UNLOCKS.street.index,
-                name = 'Street Nitrous',
+                name = _L('ui.modshop.street_nitrous'),
                 unlockLevel = SKShopShared.NITROUS_UNLOCKS.street.level,
             },
             {
                 index = SKShopShared.NITROUS_UNLOCKS.sport.index,
-                name = 'Sport Nitrous',
+                name = _L('ui.modshop.sport_nitrous'),
                 unlockLevel = SKShopShared.NITROUS_UNLOCKS.sport.level,
             },
             {
                 index = SKShopShared.NITROUS_UNLOCKS.race.index,
-                name = 'Race Nitrous',
+                name = _L('ui.modshop.race_nitrous'),
                 unlockLevel = SKShopShared.NITROUS_UNLOCKS.race.level,
             },
         },

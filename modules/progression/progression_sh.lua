@@ -65,6 +65,24 @@ SKProgression.MOD_TYPE_NAMES = {
     [51] = 'Nitrous',
 }
 
+---@param modType integer|string
+---@return string
+function SKProgression.getModTypeName(modType)
+    local numericType = tonumber(modType)
+    local fallback = numericType and SKProgression.MOD_TYPE_NAMES[numericType] or nil
+    fallback = fallback or ('Mod ' .. tostring(modType))
+
+    if type(_L) == 'function' and numericType ~= nil then
+        local key = ('ui.modshop.mod_names.mod_%s'):format(tostring(numericType))
+        local localized = _L(key)
+        if localized ~= key then
+            return localized
+        end
+    end
+
+    return fallback
+end
+
 ---@param maxLevel integer
 ---@param xpForCurrentLevel fun(n: integer): integer
 ---@return integer[]
@@ -179,11 +197,23 @@ end
 ---@param packIndex integer
 ---@return string
 function SKProgression.getWheelPackName(packIndex)
+    local numericPack = tonumber(packIndex) or 1
+
+    if type(_L) == 'function' then
+        local key = ('ui.modshop.wheel_packs.pack_%s'):format(tostring(numericPack))
+        local localized = _L(key)
+        if localized ~= key then
+            return localized
+        end
+
+        return _L('ui.modshop.wheel_packs.fallback', { number = numericPack })
+    end
+
     local names = {
         [1] = 'Street Wheels',
         [2] = 'Sport Wheels',
         [3] = 'Track Wheels',
         [4] = 'Elite Wheels',
     }
-    return names[packIndex] or ('Wheels Pack ' .. tostring(packIndex))
+    return names[numericPack] or ('Wheels Pack ' .. tostring(numericPack))
 end

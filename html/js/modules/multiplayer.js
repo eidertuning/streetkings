@@ -15,6 +15,11 @@
   var chooserChoice   = 'singleplayer';
   var chooserOpen     = false;
 
+  function t(key, params) {
+    if (SK.i18n && SK.i18n.t) return SK.i18n.t(key, params);
+    return key;
+  }
+
   function setChooserChoice(choice) {
     chooserChoice = choice;
     for (var i = 0; i < chooserCards.length; i++) {
@@ -30,7 +35,7 @@
     chooserOpen = true;
     elChooserTitle.textContent  = payload.title  || '';
     elChooserSub.textContent    = payload.sub    || '';
-    elChooserKicker.textContent = payload.kicker || 'Race';
+    elChooserKicker.textContent = payload.kicker || t('events.race');
     if (elChooserMaxPlayers && payload.maxPlayers) {
       elChooserMaxPlayers.textContent = payload.maxPlayers;
     }
@@ -89,15 +94,15 @@
   }
 
   function formatSetupLaps(laps) {
-    return laps === 1 ? '1 Lap' : laps + ' Laps';
+    return laps === 1 ? t('multiplayer.lap_single') : t('multiplayer.lap_plural', { count: laps });
   }
 
   function formatSetupCollision(enabled) {
-    return enabled ? 'On' : 'Off';
+    return enabled ? t('common.on') : t('common.off');
   }
 
   function formatSetupNitrous(enabled) {
-    return enabled ? 'On' : 'Off';
+    return enabled ? t('common.on') : t('common.off');
   }
 
   function formatTrafficDensity(pct) {
@@ -116,7 +121,7 @@
   function applySetupState(payload) {
     if (elSetupTitle) elSetupTitle.textContent = payload.title || '';
     if (elSetupSub) elSetupSub.textContent = payload.sub || '';
-    if (elSetupKicker) elSetupKicker.textContent = payload.kicker || 'Multiplayer Setup';
+    if (elSetupKicker) elSetupKicker.textContent = payload.kicker || t('multiplayer.setup');
     if (elSetupLapsRow) {
       elSetupLapsRow.style.display = payload.showLaps === false ? 'none' : '';
     }
@@ -202,7 +207,7 @@
       var isSelf = p.source === selfServerId;
       html += '<div class="sk-mp-lobby-player' + (isSelf ? ' is-self' : '') + '">'
         + '<span class="sk-mp-lobby-player-alias">' + escapeHtml(p.alias) + '</span>'
-        + (p.isHost ? '<span class="sk-mp-lobby-player-badge">Host</span>' : '')
+        + (p.isHost ? '<span class="sk-mp-lobby-player-badge">' + escapeHtml(t('multiplayer.host')) + '</span>' : '')
         + '</div>';
     }
     elLobbyPlayers.innerHTML = html;
@@ -210,8 +215,8 @@
 
   function applyLobbyData(data) {
     elLobbyTitle.textContent = data.eventName || '';
-    elLobbyType.textContent  = data.eventTypeLabel || 'Race';
-    elLobbyClass.textContent = (data.vehicleClass || '—') + ' Class';
+    elLobbyType.textContent  = data.eventTypeLabel || t('events.race');
+    elLobbyClass.textContent = data.vehicleClass ? t('events.class_label', { class: data.vehicleClass }) : t('events.class_label', { class: '-' });
     elLobbyCount.textContent = (data.playerCount || 0) + ' / ' + (data.maxPlayers || 2);
     if (elLobbyLaps) elLobbyLaps.textContent = formatSetupLaps(data.raceOptions && data.raceOptions.laps || 1);
     if (elLobbyCollision) elLobbyCollision.textContent = formatSetupCollision(!data.raceOptions || data.raceOptions.collision !== false);
@@ -221,11 +226,11 @@
     renderLobbyPlayers(data.players || [], data.selfServerId);
 
     if (data.phase === 'starting' && typeof data.startsInSeconds === 'number') {
-      elLobbyLabel.textContent = 'Starts in';
+      elLobbyLabel.textContent = t('multiplayer.starts_in');
       elLobbyValue.textContent = formatMmSs(data.startsInSeconds);
       elLobbyValue.classList.remove('is-expiring');
     } else {
-      elLobbyLabel.textContent = 'Closes in';
+      elLobbyLabel.textContent = t('multiplayer.closes_in');
       elLobbyValue.textContent = formatMmSs(data.expiresInSeconds || 0);
       elLobbyValue.classList.toggle('is-expiring', (data.expiresInSeconds || 0) <= 30);
     }
@@ -272,7 +277,7 @@
 
   function renderStandings(entries, totalPlayers) {
     if (elStandingsTotal) {
-      elStandingsTotal.textContent = (totalPlayers || entries.length) + ' racers';
+      elStandingsTotal.textContent = t('multiplayer.racers', { count: totalPlayers || entries.length });
     }
     var html = '';
     for (var i = 0; i < entries.length; i++) {
@@ -283,11 +288,11 @@
       if (e.forfeited) classes += ' is-forfeit';
       var cpText;
       if (e.finished) {
-        cpText = e.elapsedMs ? formatRaceTime(e.elapsedMs) : 'FIN';
+        cpText = e.elapsedMs ? formatRaceTime(e.elapsedMs) : t('multiplayer.finished_short');
       } else if (e.forfeited) {
-        cpText = 'OUT';
+        cpText = t('multiplayer.out_short');
       } else {
-        cpText = 'CP ' + (e.cpIndex || 0) + '/' + (e.cpTotal || 0);
+        cpText = t('multiplayer.checkpoint_short', { current: e.cpIndex || 0, total: e.cpTotal || 0 });
       }
       html += '<div class="' + classes + '">'
         + '<span class="sk-mp-standings-rank">' + (i + 1) + '</span>'

@@ -609,7 +609,7 @@
       btn.type = 'button';
       btn.className = 'phone-settings-wallpaper-btn';
       btn.dataset.wallpaper = wallpaper.id;
-      btn.innerHTML = '<span class="phone-settings-wallpaper-swatch phone-settings-wallpaper-swatch--' + wallpaper.id + '"></span><span>' + wallpaper.label + '</span>';
+      btn.innerHTML = '<span class="phone-settings-wallpaper-swatch phone-settings-wallpaper-swatch--' + wallpaper.id + '"></span><span>' + tf('settings.wallpapers.' + wallpaper.id, wallpaper.label) + '</span>';
       btn.addEventListener('click', function () {
         var cfg = window.SKPhone && window.SKPhone.getTabletConfig ? window.SKPhone.getTabletConfig() : null;
         cfg = Object.assign({ notifications: { enabled: true, messagePreviews: true }, appOrder: [], appSlots: {} }, cfg || {});

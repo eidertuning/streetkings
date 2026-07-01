@@ -92,14 +92,20 @@
     var hasLap = elTimerLap && data.lapCurrent != null && data.lapTotal != null;
 
     if (hasCheckpoint) {
-      elTimerCheckpoint.textContent = 'Checkpoint ' + data.checkpointCurrent + ' / ' + data.checkpointTotal;
+      elTimerCheckpoint.textContent = t('events.checkpoint_progress', {
+        current: data.checkpointCurrent,
+        total: data.checkpointTotal
+      });
       show(elTimerCheckpoint);
     } else if (elTimerCheckpoint) {
       hide(elTimerCheckpoint);
     }
 
     if (hasLap) {
-      elTimerLap.textContent = 'Lap ' + data.lapCurrent + ' / ' + data.lapTotal;
+      elTimerLap.textContent = t('events.lap_progress', {
+        current: data.lapCurrent,
+        total: data.lapTotal
+      });
       show(elTimerLap);
     } else if (elTimerLap) {
       hide(elTimerLap);
@@ -178,10 +184,10 @@
 
   function buildStuntBreakdown(score) {
     var rows = [
-      { label: 'Base Score', value: score.base || 0 },
-      { label: 'Speed (' + Math.floor(score.rawSpeed || 0) + ' mph)', value: score.speed || 0 },
-      { label: 'Trick Bonus', value: score.trick || 0 },
-      { label: 'Distance (' + Math.floor(score.rawDist || 0) + 'm)', value: score.distance || 0 },
+      { label: t('events.base_score'), value: score.base || 0 },
+      { label: t('events.speed_with_value', { value: Math.floor(score.rawSpeed || 0) }), value: score.speed || 0 },
+      { label: t('events.trick_bonus'), value: score.trick || 0 },
+      { label: t('events.distance_with_value', { value: Math.floor(score.rawDist || 0) }), value: score.distance || 0 },
     ];
     var html = '';
     for (var i = 0; i < rows.length; i++) {
@@ -445,7 +451,7 @@
 
     if (elRampageCombo) {
       if (combo > 1) {
-        elRampageCombo.textContent = 'x' + combo + ' COMBO';
+        elRampageCombo.textContent = 'x' + combo + ' ' + t('events.combo');
         elRampageCombo.style.display = 'block';
         elRampageCombo.style.animation = 'none';
         void elRampageCombo.offsetWidth;

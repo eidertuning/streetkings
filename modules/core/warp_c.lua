@@ -54,7 +54,7 @@ end
 function SKC.WarpToWaypoint()
     local blipMarker = GetFirstBlipInfoId(8)
     if not DoesBlipExist(blipMarker) then
-        return false, 'No waypoint set.'
+        return false, _L('lua.notify.no_waypoint_set')
     end
 
     local ped = PlayerPedId()
@@ -108,7 +108,7 @@ function SKC.WarpToWaypoint()
 
     if not found then
         SetPedCoordsKeepVehicle(ped, oldCoords.x, oldCoords.y, oldCoords.z - 1.0)
-        return false, 'Failed to find ground at waypoint.'
+        return false, _L('lua.notify.waypoint_ground_failed')
     end
 
     SetPedCoordsKeepVehicle(ped, x, y, groundZ)

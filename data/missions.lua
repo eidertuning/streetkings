@@ -829,3 +829,79 @@ SKMissions = {
         },
     },
 }
+
+local MISSION_TEXT_KEYS = {
+    ['Entry Level'] = 'entry_level',
+    ['Casing the Streets'] = 'casing_the_streets',
+    ['Learn the city before you race it.'] = 'learn_city',
+    ['Vinewood Overlook'] = 'vinewood_overlook',
+    ['Take it in'] = 'take_it_in',
+    ['Visit the Visual Mods Shop'] = 'visit_visual_shop',
+    ['Listen Up!'] = 'listen_up',
+    ['Visit the Performance Shop'] = 'visit_performance_shop',
+    ['Visit the Tuner Dealership'] = 'visit_tuner_dealership',
+    ['Visit Binco'] = 'visit_binco',
+    ['Wrap up the tour'] = 'wrap_tour',
+    ['Local Legend'] = 'local_legend',
+    ['First impression. Make it count.'] = 'first_impression',
+    ['Car Meet'] = 'car_meet',
+    ['Head to the Car Meet'] = 'head_car_meet',
+    ['"Do A Burnout" next to any racer to challenge them to a race!'] = 'do_burnout_challenge',
+    ['Post a time on any track'] = 'post_time_any_track',
+    ['Off the Line'] = 'off_the_line',
+    ['Put the Rockford guy in his place.'] = 'rockford_subtitle',
+    ['Rockford Smash - Race Start'] = 'rockford_race_start',
+    ['Meet the rival'] = 'meet_rival',
+    ['Win the Rockford Smash'] = 'win_rockford',
+    ['Meeting Saint'] = 'meeting_saint',
+    ['A favor for Hector.'] = 'favor_for_hector',
+    ['Elysian Docks - Loading bay'] = 'elysian_loading_bay',
+    ['Meet Saint'] = 'meet_saint',
+    ['Drop at Sandy Shores'] = 'drop_sandy',
+    ['Sandy Shores Drop'] = 'sandy_drop',
+    ['Drop-Car Pickup'] = 'drop_car_pickup',
+    ['Collect the drop-car in Paleto.'] = 'collect_drop_car',
+    ['Paleto - parking lot'] = 'paleto_parking',
+    ['Silent Deliveries'] = 'silent_deliveries',
+    ['Elysian Docks - Pick up'] = 'elysian_pickup',
+    ['Drop 1 - Vespucci alley'] = 'drop_vespucci',
+    ['Drop 2 - Lucky Plucker'] = 'drop_lucky_plucker',
+    ['Drop 3 - Chamberlain Plaza'] = 'drop_chamberlain',
+    ['Midnight Run'] = 'midnight_run',
+    ['Start Mission'] = 'start_mission',
+    ['Chumash - 5 minutes'] = 'chumash_five',
+    ['Paranoid'] = 'paranoid',
+    ['Diamond Casino - stake out'] = 'casino_stakeout',
+    ["Smuggler's Run"] = 'smugglers_run',
+    ['Pick up the parcel'] = 'pick_up_parcel',
+    ['Lose the heat'] = 'lose_heat',
+    ['The Big Score'] = 'the_big_score',
+    ['Pull up at the bank'] = 'pull_up_bank',
+    ['Head to the scrapyard'] = 'head_scrapyard',
+    ['The Arrest'] = 'the_arrest',
+}
+
+local function missionText(value)
+    if type(value) ~= 'string' then return value end
+    local textKey = MISSION_TEXT_KEYS[value]
+    if not textKey then return value end
+    local localeKey = 'content.mission_text.' .. textKey
+    local localized = _L(localeKey)
+    if localized == localeKey then return value end
+    return localized
+end
+
+local function localizeMissionNode(node)
+    if type(node) ~= 'table' then return end
+    if node.title then node.title = missionText(node.title) end
+    if node.subtitle then node.subtitle = missionText(node.subtitle) end
+    if node.label then node.label = missionText(node.label) end
+
+    for _, value in pairs(node) do
+        if type(value) == 'table' then
+            localizeMissionNode(value)
+        end
+    end
+end
+
+localizeMissionNode(SKMissions)

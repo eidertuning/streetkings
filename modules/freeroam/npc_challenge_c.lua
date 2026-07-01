@@ -173,7 +173,7 @@ local function runCountdown(playerVeh, npcVeh)
     SetVehicleHandbrake(playerVeh, true)
     SetVehicleHandbrake(npcVeh, true)
 
-    SKNotify({ title = 'Challenge Accepted!', type = 'info', duration = 2000 })
+    SKNotify({ title = _L('lua.notify.challenge_accepted'), type = 'info', duration = 2000 })
     Wait(1500)
 
     for _, count in ipairs({ 3, 2, 1 }) do
@@ -298,14 +298,14 @@ local function startChallenge(npcVeh, npcPed)
 
         local gs = SKC.GetGameState()
         if gs ~= GameState.FREEROAM and gs ~= GameState.MISSION then
-            SKNotify({ title = 'Challenge Cancelled', type = 'warning' })
+            SKNotify({ title = _L('lua.notify.challenge_cancelled'), type = 'warning' })
             TriggerServerEvent('streetkings:npcchallenge:cancel')
             cleanup()
             return
         end
 
         if not IsPedInAnyVehicle(ped, false) or IsEntityDead(ped) then
-            SKNotify({ title = 'Challenge Forfeited', type = 'error' })
+            SKNotify({ title = _L('lua.notify.challenge_forfeited'), type = 'error' })
             TriggerServerEvent('streetkings:npcchallenge:cancel')
             cleanup()
             return
@@ -532,7 +532,7 @@ local function startScanning()
                 if npcPed then
                     declinedNpcs[npcPed] = true
                 end
-                SKNotify({ title = 'They declined to race you!', type = 'warning' })
+                SKNotify({ title = _L('lua.notify.challenge_declined'), type = 'warning' })
                 if npcPed and DoesEntityExist(npcPed) then
                     playPedSpeech(npcPed, 'GENERIC_NO')
                 end

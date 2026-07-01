@@ -170,7 +170,7 @@ enterInterior = function(zoneDef)
     interiorPoints[#interiorPoints + 1] = exitPoint
 
     DoScreenFadeIn(SKHangoutZones.ZONE_EXIT_FADE_MS)
-    SKNotify({ type = 'info', title = 'Entered ' .. zoneDef.name, duration = 3000 })
+    SKNotify({ type = 'info', title = _L('lua.notify.entered_zone', { name = zoneDef.name }), duration = 3000 })
 end
 
 exitInterior = function()
@@ -226,7 +226,7 @@ local function createZoneForEntry(zoneDef)
                 end
                 startPassiveTick()
                 TriggerServerEvent('streetkings:hangoutzones:enterZone', zoneDef.id)
-                SKNotify({ type = 'info', title = 'Entering Safe Zone: ' .. zoneDef.name, duration = 3000 })
+                SKNotify({ type = 'info', title = _L('lua.notify.entering_safe_zone', { name = zoneDef.name }), duration = 3000 })
             end,
 
             onExit = function()
@@ -243,7 +243,7 @@ local function createZoneForEntry(zoneDef)
                     end
                     zoneEntryVehicle = nil
                     stopPassiveTick()
-                    SKNotify({ type = 'info', title = 'Leaving Safe Zone', duration = 2000 })
+                    SKNotify({ type = 'info', title = _L('lua.notify.leaving_safe_zone'), duration = 2000 })
                 end
             end,
 
@@ -256,7 +256,7 @@ local function createZoneForEntry(zoneDef)
                     end
                     startPassiveTick()
                     TriggerServerEvent('streetkings:hangoutzones:enterZone', zoneDef.id)
-                    SKNotify({ type = 'info', title = 'Entering Safe Zone: ' .. zoneDef.name, duration = 3000 })
+                    SKNotify({ type = 'info', title = _L('lua.notify.entering_safe_zone', { name = zoneDef.name }), duration = 3000 })
                 end
             end,
         })

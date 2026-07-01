@@ -530,7 +530,7 @@ local function showResults(success)
         })
 
         if result and result.summary then
-            SKNotify({ title = 'Tutorial Completed!', type = 'success', duration = 4000 })
+            SKNotify({ title = _L('lua.notify.tutorial_completed'), type = 'success', duration = 4000 })
         end
     else
         attemptCount = attemptCount + 1

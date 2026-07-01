@@ -216,8 +216,8 @@
 
   <div id="viewYouDied" class="sk-you-died">
     <div class="you-died-content">
-      <h1 class="you-died-title">Has muerto</h1>
-      <p class="you-died-sub">$1000 Factura del Hospital</p>
+      <h1 class="you-died-title" data-i18n="death.title">Has muerto</h1>
+      <p class="you-died-sub" data-i18n="death.hospital_bill">$1000 Factura del Hospital</p>
     </div>
     <div class="you-died-footer">
       <span class="you-died-spinner"></span>
@@ -226,8 +226,8 @@
 
   <div id="viewToBeContinued" class="sk-tbc">
     <div class="tbc-content">
-      <h1 class="tbc-title">Continuara</h1>
-      <p class="tbc-sub">Capitulo 2 - Proximamente</p>
+      <h1 class="tbc-title" data-i18n="story.to_be_continued">Continuara</h1>
+      <p class="tbc-sub" data-i18n="story.chapter_2_soon">Capitulo 2 - Proximamente</p>
     </div>
   </div>
 
@@ -235,8 +235,8 @@
     <div class="arrested-light arrested-light--blue"></div>
     <div class="arrested-light arrested-light--red"></div>
     <div class="arrested-content">
-      <h1 class="arrested-title">Detenido</h1>
-      <p class="arrested-sub">Multa de $1000</p>
+      <h1 class="arrested-title" data-i18n="arrested.title">Detenido</h1>
+      <p class="arrested-sub" data-i18n="arrested.fine">$1000 de multa</p>
     </div>
     <div class="arrested-footer">
       <span class="arrested-spinner"></span>
@@ -566,18 +566,18 @@
 
     <div class="sk-modshop-top">
       <div class="sk-modshop-title-block">
-        <span class="sk-modshop-kicker">Taller de Personalización</span>
-        <h1 class="sk-modshop-heading" id="modshopTitle">Modificaciones Visuales</h1>
-        <p class="sk-modshop-subtitle">La XP del vehículo desbloquea más piezas. Las piezas bloqueadas muestran el nivel requerido antes de poder instalarlas.</p>
+        <span class="sk-modshop-kicker" data-i18n="modshop.visual_kicker">Taller de Personalización</span>
+        <h1 class="sk-modshop-heading" id="modshopTitle" data-i18n="modshop.visual_title">Modificaciones Visuales</h1>
+        <p class="sk-modshop-subtitle" data-i18n="modshop.visual_subtitle">La XP del vehículo desbloquea más piezas. Las piezas bloqueadas muestran el nivel requerido antes de poder instalarlas.</p>
       </div>
       <div class="sk-modshop-status">
         <div class="sk-modshop-wallet">
-          <span class="sk-modshop-wallet-label">Efectivo</span>
+          <span class="sk-modshop-wallet-label" data-i18n="common.cash">Efectivo</span>
           <span class="sk-modshop-wallet-amount" id="modshopBalance"></span>
         </div>
         <div class="sk-modshop-progress-card">
           <div class="sk-modshop-progress-head">
-            <span class="sk-modshop-progress-label">Nivel del Vehículo</span>
+            <span class="sk-modshop-progress-label" data-i18n="garage.vehicle_level">Nivel del Vehículo</span>
             <span class="sk-modshop-progress-level" id="modshopVehicleLevel">Nivel 1</span>
           </div>
           <div class="sk-modshop-progress-track">
@@ -585,7 +585,7 @@
           </div>
           <div class="sk-modshop-progress-meta">
             <span id="modshopXpText">0 / 0 XP</span>
-            <span id="modshopUnlockSummary">0 / 0 desbloqueados</span>
+            <span id="modshopUnlockSummary" data-i18n="modshop.unlocked_count">0 / 0 desbloqueados</span>
           </div>
         </div>
       </div>
@@ -593,17 +593,17 @@
 
     <div class="sk-modshop-side" id="modshopSide">
       <div class="sk-modshop-selection-card">
-        <span class="sk-modshop-selection-label">Seleccionado</span>
-        <div class="sk-modshop-selection-title" id="modshopSelectedTitle">Elija una categoría</div>
-        <div class="sk-modshop-selection-subtitle" id="modshopSelectedSubtitle">Seleccione una pieza para ver su estado de desbloqueo y costo de instalación.</div>
+        <span class="sk-modshop-selection-label" data-i18n="garage.selected">Seleccionado</span>
+        <div class="sk-modshop-selection-title" id="modshopSelectedTitle" data-i18n="modshop.choose_category">Elija una categoría</div>
+        <div class="sk-modshop-selection-subtitle" id="modshopSelectedSubtitle" data-i18n="modshop.select_part_install_copy">Seleccione una pieza para ver su estado de desbloqueo y costo de instalación.</div>
       </div>
       <div class="sk-modshop-options" id="modshopOptions"></div>
       <div class="sk-modshop-install" id="modshopInstall">
         <div class="sk-modshop-install-copy">
           <span class="sk-modshop-price" id="modshopPrice"></span>
-          <span class="sk-modshop-install-note" id="modshopInstallNote">Seleccione una pieza para verla.</span>
+          <span class="sk-modshop-install-note" id="modshopInstallNote" data-i18n="modshop.select_part_preview">Seleccione una pieza para verla.</span>
         </div>
-        <button class="sk-modshop-buy" id="modshopBuy">Instalar</button>
+        <button class="sk-modshop-buy" id="modshopBuy" data-i18n="modshop.install">Instalar</button>
       </div>
     </div>
 
@@ -611,25 +611,25 @@
       <div class="sk-modshop-strip-inner" id="modshopCategories"></div>
     </div>
 
-    <button class="sk-modshop-close" id="modshopClose">✕</button>
+    <button class="sk-modshop-close" id="modshopClose" aria-label="Cerrar" title="Cerrar" data-i18n-aria-label="common.close" data-i18n-title="common.close">✕</button>
   </div>
 
   <div id="viewPerformanceShop" class="sk-perfshop" style="display:none">
     <div class="sk-perfshop-viewport"></div>
     <div class="sk-perfshop-top">
       <div class="sk-perfshop-title-block">
-        <span class="sk-perfshop-kicker">Taller de Rendimiento</span>
-        <h1 class="sk-perfshop-heading" id="perfshopTitle">Taller de Rendimiento</h1>
-        <p class="sk-perfshop-subtitle">La XP del vehículo desbloquea nuevas etapas de mejora. Arrastre para mover la cámara alrededor de su vehículo mientras ve e instala las piezas de rendimiento.</p>
+        <span class="sk-perfshop-kicker" data-i18n="modshop.performance_kicker">Taller de Rendimiento</span>
+        <h1 class="sk-perfshop-heading" id="perfshopTitle" data-i18n="modshop.performance_title">Taller de Rendimiento</h1>
+        <p class="sk-perfshop-subtitle" data-i18n="modshop.performance_subtitle">La XP del vehículo desbloquea nuevas etapas de mejora. Arrastre para mover la cámara alrededor de su vehículo mientras ve e instala las piezas de rendimiento.</p>
       </div>
       <div class="sk-perfshop-status">
         <div class="sk-perfshop-wallet">
-          <span class="sk-perfshop-wallet-label">Efectivo</span>
+          <span class="sk-perfshop-wallet-label" data-i18n="common.cash">Efectivo</span>
           <span class="sk-perfshop-wallet-amount" id="perfshopBalance"></span>
         </div>
         <div class="sk-perfshop-progress-card">
           <div class="sk-perfshop-progress-head">
-            <span class="sk-perfshop-progress-label">Nivel del Vehículo</span>
+            <span class="sk-perfshop-progress-label" data-i18n="garage.vehicle_level">Nivel del Vehículo</span>
             <span class="sk-perfshop-progress-level" id="perfshopVehicleLevel">Nivel 1</span>
           </div>
           <div class="sk-perfshop-progress-track">
@@ -637,7 +637,7 @@
           </div>
           <div class="sk-perfshop-progress-meta">
             <span id="perfshopXpText">0 / 0 XP</span>
-            <span id="perfshopUnlockSummary">0 / 0 desbloqueados</span>
+            <span id="perfshopUnlockSummary" data-i18n="modshop.unlocked_count">0 / 0 desbloqueados</span>
           </div>
         </div>
       </div>
@@ -645,17 +645,17 @@
 
     <div class="sk-perfshop-side" id="perfshopSide">
       <div class="sk-perfshop-selection-card">
-        <span class="sk-perfshop-selection-label">Seleccionado</span>
-        <div class="sk-perfshop-selection-title" id="perfshopSelectedTitle">Elija una categoría</div>
-        <div class="sk-perfshop-selection-subtitle" id="perfshopSelectedSubtitle">Seleccione una etapa de rendimiento para ver su costo y estado de desbloqueo.</div>
+        <span class="sk-perfshop-selection-label" data-i18n="garage.selected">Seleccionado</span>
+        <div class="sk-perfshop-selection-title" id="perfshopSelectedTitle" data-i18n="modshop.choose_category">Elija una categoría</div>
+        <div class="sk-perfshop-selection-subtitle" id="perfshopSelectedSubtitle" data-i18n="modshop.choose_category_copy">Seleccione una etapa de rendimiento para ver su costo y estado de desbloqueo.</div>
       </div>
       <div class="sk-perfshop-options" id="perfshopOptions"></div>
       <div class="sk-perfshop-install" id="perfshopInstall">
         <div class="sk-perfshop-install-copy">
           <span class="sk-perfshop-price" id="perfshopPrice"></span>
-          <span class="sk-perfshop-install-note" id="perfshopInstallNote">Seleccione una etapa para verla.</span>
+          <span class="sk-perfshop-install-note" id="perfshopInstallNote" data-i18n="modshop.select_stage_preview">Seleccione una etapa para verla.</span>
         </div>
-        <button class="sk-perfshop-buy" id="perfshopBuy">Instalar</button>
+        <button class="sk-perfshop-buy" id="perfshopBuy" data-i18n="modshop.install">Instalar</button>
       </div>
     </div>
 
@@ -663,7 +663,7 @@
       <div class="sk-perfshop-strip-inner" id="perfshopCategories"></div>
     </div>
 
-    <button class="sk-perfshop-close" id="perfshopClose">✕</button>
+    <button class="sk-perfshop-close" id="perfshopClose" aria-label="Cerrar" title="Cerrar" data-i18n-aria-label="common.close" data-i18n-title="common.close">✕</button>
   </div>
 
   <div id="viewGarage" class="sk-garage" style="display:none">
@@ -769,7 +769,7 @@
         <div class="sk-prompt-content">
           <span class="sk-prompt-text" id="skPromptText"></span>
           <div class="sk-prompt-rich" id="skPromptRich" style="display:none">
-            <div class="sk-prompt-rich-label">Event</div>
+            <div class="sk-prompt-rich-label" data-i18n="hud.event">Event</div>
             <div class="sk-prompt-rich-title" id="skPromptTitle"></div>
             <div class="sk-prompt-rich-meta">
               <span class="sk-prompt-rich-chip" id="skPromptType"></span>
@@ -802,7 +802,7 @@
             </div>
             <div class="sk-soundtrack-player-content">
               <div class="sk-soundtrack-player-head">
-                <span class="sk-soundtrack-player-label">Soundtrack</span>
+                <span class="sk-soundtrack-player-label" data-i18n="hud.soundtrack">Soundtrack</span>
                 <span class="sk-soundtrack-player-time">
                   <span id="skSoundtrackCurrent">00:00</span>
                   <span>/</span>
@@ -835,7 +835,7 @@
                 <div id="skSpeedoRpm" class="sk-speedo-rpm-bar"></div>
               </div>
               <div id="skSpeedoNitrousTrack" class="sk-speedo-nitrous-track" aria-hidden="true">
-                <span class="sk-speedo-nitrous-label">N2O</span>
+                  <span class="sk-speedo-nitrous-label" data-i18n="hud.nitrous_short">N2O</span>
                 <div class="sk-speedo-nitrous-meter">
                   <div id="skSpeedoNitrous" class="sk-speedo-nitrous-bar"></div>
                 </div>
@@ -856,7 +856,7 @@
             <div class="sk-speedo-analog">
               <div class="sk-speedo-analog-dial">
                 <div id="skGearboxBadgeAnalog" class="sk-speedo-gearbox-badge" aria-hidden="true">
-                  <span class="sk-speedo-gearbox-badge-label">MANUAL</span>
+                  <span class="sk-speedo-gearbox-badge-label" data-i18n="hud.manual">MANUAL</span>
                   <span class="sk-speedo-gearbox-badge-type"></span>
                 </div>
                 <svg class="sk-speedo-analog-svg" viewBox="0 0 200 200">
@@ -893,7 +893,7 @@
       <!-- Multiplayer lobby HUD: anchored top-right within the 16:9 safe area -->
       <div id="skMpLobby" class="sk-mp-lobby" aria-hidden="true">
         <div class="sk-mp-lobby-head">
-          <span class="sk-mp-lobby-kicker">Multiplayer Lobby</span>
+          <span class="sk-mp-lobby-kicker" data-i18n="multiplayer.lobby">Multiplayer Lobby</span>
           <div class="sk-mp-lobby-title" id="skMpLobbyTitle"></div>
           <div class="sk-mp-lobby-meta">
             <span class="sk-mp-lobby-chip" id="skMpLobbyType">Sprint</span>
@@ -903,29 +903,29 @@
         </div>
         <div class="sk-mp-lobby-options">
           <div class="sk-mp-lobby-option">
-            <span class="sk-mp-lobby-option-label">Laps</span>
+            <span class="sk-mp-lobby-option-label" data-i18n="multiplayer.laps">Laps</span>
             <span class="sk-mp-lobby-option-value" id="skMpLobbyLaps">1 Lap</span>
           </div>
           <div class="sk-mp-lobby-option">
-            <span class="sk-mp-lobby-option-label">Collision</span>
+            <span class="sk-mp-lobby-option-label" data-i18n="multiplayer.collision">Collision</span>
             <span class="sk-mp-lobby-option-value" id="skMpLobbyCollision">On</span>
           </div>
           <div class="sk-mp-lobby-option">
-            <span class="sk-mp-lobby-option-label">NOS</span>
+            <span class="sk-mp-lobby-option-label" data-i18n="multiplayer.nos">NOS</span>
             <span class="sk-mp-lobby-option-value" id="skMpLobbyNitrous">On</span>
           </div>
           <div class="sk-mp-lobby-option">
-            <span class="sk-mp-lobby-option-label">Traffic</span>
+            <span class="sk-mp-lobby-option-label" data-i18n="multiplayer.traffic">Traffic</span>
             <span class="sk-mp-lobby-option-value" id="skMpLobbyTraffic">20%</span>
           </div>
           <div class="sk-mp-lobby-option">
-            <span class="sk-mp-lobby-option-label">Timeout</span>
+            <span class="sk-mp-lobby-option-label" data-i18n="multiplayer.timeout">Timeout</span>
             <span class="sk-mp-lobby-option-value" id="skMpLobbyTimeout">3m</span>
           </div>
         </div>
         <div class="sk-mp-lobby-players" id="skMpLobbyPlayers"></div>
         <div class="sk-mp-lobby-footer">
-          <span class="sk-mp-lobby-footer-label" id="skMpLobbyFooterLabel">Closes in</span>
+          <span class="sk-mp-lobby-footer-label" id="skMpLobbyFooterLabel" data-i18n="multiplayer.closes_in">Closes in</span>
           <span class="sk-mp-lobby-footer-value" id="skMpLobbyFooterValue">05:00</span>
         </div>
       </div>
@@ -933,7 +933,7 @@
       <!-- Multiplayer live standings: anchored top-right during race -->
       <div id="skMpStandings" class="sk-mp-standings" aria-hidden="true">
         <div class="sk-mp-standings-head">
-          <span class="sk-mp-standings-kicker">Standings</span>
+          <span class="sk-mp-standings-kicker" data-i18n="multiplayer.standings">Standings</span>
           <span class="sk-mp-standings-total" id="skMpStandingsTotal"></span>
         </div>
         <div id="skMpStandingsList"></div>
@@ -943,22 +943,22 @@
       <div id="skStallRestart" class="sk-stall-restart" style="display:none" aria-hidden="true">
         <div class="sk-stall-inner">
           <div class="sk-stall-header">
-            <span class="sk-stall-kicker">Engine Stalled</span>
+            <span class="sk-stall-kicker" data-i18n="gearbox.engine_stalled">Engine Stalled</span>
             <span class="sk-stall-status" id="skStallStatus"></span>
           </div>
           <div class="sk-stall-key-row">
             <div class="sk-stall-key" id="skStallKey">E</div>
-            <div class="sk-stall-label">Spam to start engine</div>
+            <div class="sk-stall-label" data-i18n="gearbox.spam_to_start_engine">Spam to start engine</div>
           </div>
           <div class="sk-stall-bars">
             <div class="sk-stall-bar-wrap">
-              <span class="sk-stall-bar-label">Progress</span>
+              <span class="sk-stall-bar-label" data-i18n="gearbox.progress">Progress</span>
               <div class="sk-stall-bar-track">
                 <div class="sk-stall-bar-fill sk-stall-bar-fill--progress" id="skStallProgressFill"></div>
               </div>
             </div>
             <div class="sk-stall-bar-wrap">
-              <span class="sk-stall-bar-label">Time</span>
+              <span class="sk-stall-bar-label" data-i18n="gearbox.time">Time</span>
               <div class="sk-stall-bar-track">
                 <div class="sk-stall-bar-fill sk-stall-bar-fill--timer" id="skStallTimerFill"></div>
               </div>
@@ -975,14 +975,14 @@
     <img id="sotyflyMiniThumb" alt="">
     <div class="sotyfly-mini-copy">
       <strong id="sotyflyMiniTitle">Sotyfly</strong>
-      <span id="sotyflyMiniMeta">Audio 3D</span>
+      <span id="sotyflyMiniMeta" data-i18n="sotyfly.audio_3d">Audio 3D</span>
       <div class="sotyfly-mini-progress"><i id="sotyflyMiniProgress"></i></div>
       <small id="sotyflyMiniDaily">0:00 / --:--</small>
     </div>
     <div class="sotyfly-mini-actions">
-      <button id="sotyflyMiniPlay" type="button" title="Play/Pausa"><i class="fa-solid fa-play"></i></button>
-      <button id="sotyflyMiniNext" type="button" title="Siguiente"><i class="fa-solid fa-forward-step"></i></button>
-      <button id="sotyflyMiniOpen" type="button" title="Abrir"><i class="fa-solid fa-up-right-from-square"></i></button>
+      <button id="sotyflyMiniPlay" type="button" title="Play/Pausa" data-i18n-title="sotyfly.play_pause"><i class="fa-solid fa-play"></i></button>
+      <button id="sotyflyMiniNext" type="button" title="Siguiente" data-i18n-title="sotyfly.next"><i class="fa-solid fa-forward-step"></i></button>
+      <button id="sotyflyMiniOpen" type="button" title="Abrir" data-i18n-title="sotyfly.open"><i class="fa-solid fa-up-right-from-square"></i></button>
     </div>
   </div>
 
@@ -990,7 +990,7 @@
     <div class="sk-bust-countdown-light sk-bust-countdown-light--blue"></div>
     <div class="sk-bust-countdown-light sk-bust-countdown-light--red"></div>
     <div class="sk-bust-countdown-content">
-      <span class="sk-bust-countdown-label">Busted in</span>
+      <span class="sk-bust-countdown-label" data-i18n="police.busted_in">Busted in</span>
       <span id="skBustCountdownNum" class="sk-bust-countdown-num">3</span>
     </div>
   </div>
@@ -1000,12 +1000,12 @@
   <!-- Countdown: shows 3 / 2 / 1 / GO! centered on screen -->
   <div id="skTutorialHud" class="sk-tutorial-hud" style="display:none">
     <div class="sk-tutorial-timer">
-      <span class="sk-tutorial-timer-label">Time Remaining</span>
+      <span class="sk-tutorial-timer-label" data-i18n="tutorial.time_remaining">Time Remaining</span>
       <span class="sk-tutorial-timer-value" id="tutorialTimerValue">60</span>
     </div>
     <div class="sk-tutorial-checklist" id="tutorialChecklist"></div>
     <div class="sk-tutorial-counter" id="tutorialCounter">
-      <span class="sk-tutorial-counter-num" id="tutorialCounterNum">0/9</span> complete
+      <span class="sk-tutorial-counter-num" id="tutorialCounterNum">0/9</span> <span data-i18n="tutorial.complete_short">complete</span>
     </div>
     <div class="sk-tutorial-countdown" id="tutorialCountdown" style="display:none"></div>
     <div class="sk-tutorial-result" id="tutorialResult" style="display:none">
@@ -1017,11 +1017,11 @@
 
   <div id="skRampageHud" class="sk-rampage-hud" style="display:none">
     <div class="sk-rampage-time-wrap">
-      <span class="sk-rampage-time-label">TIME</span>
+      <span class="sk-rampage-time-label" data-i18n="events.time">TIME</span>
       <span class="sk-rampage-time" id="skRampageTime">60</span>
     </div>
     <div class="sk-rampage-score-wrap">
-      <span class="sk-rampage-score-label">SCORE</span>
+      <span class="sk-rampage-score-label" data-i18n="events.score">SCORE</span>
       <span class="sk-rampage-score" id="skRampageScore">0</span>
     </div>
     <div class="sk-rampage-combo" id="skRampageCombo" style="display:none"></div>
@@ -1036,56 +1036,56 @@
   <div id="skRaceChooser" class="sk-race-chooser" aria-hidden="true">
     <div class="sk-race-chooser-panel">
       <div class="sk-race-chooser-head">
-        <span class="sk-race-chooser-kicker" id="skRaceChooserKicker">Race</span>
+        <span class="sk-race-chooser-kicker" id="skRaceChooserKicker" data-i18n="events.race">Race</span>
         <h2 class="sk-race-chooser-title" id="skRaceChooserTitle"></h2>
         <p class="sk-race-chooser-sub" id="skRaceChooserSub"></p>
       </div>
       <div class="sk-race-chooser-cards">
         <button type="button" class="sk-race-chooser-card is-hovered" data-choice="singleplayer">
-          <span class="sk-race-chooser-card-kicker">Singleplayer</span>
-          <div class="sk-race-chooser-card-title">Race the Clock</div>
-          <p class="sk-race-chooser-card-body">Post your best time. Solo run against the leaderboards.</p>
+          <span class="sk-race-chooser-card-kicker" data-i18n="events.singleplayer">Singleplayer</span>
+          <div class="sk-race-chooser-card-title" data-i18n="events.race_the_clock">Race the Clock</div>
+          <p class="sk-race-chooser-card-body" data-i18n="events.race_the_clock_body">Post your best time. Solo run against the leaderboards.</p>
         </button>
         <button type="button" class="sk-race-chooser-card" data-choice="multiplayer">
-          <span class="sk-race-chooser-card-kicker">Multiplayer</span>
-          <div class="sk-race-chooser-card-title">Race Others</div>
-          <p class="sk-race-chooser-card-body">Open a live lobby and race up to <span id="skRaceChooserMaxPlayers">20</span> drivers head-to-head.</p>
+          <span class="sk-race-chooser-card-kicker" data-i18n="events.multiplayer">Multiplayer</span>
+          <div class="sk-race-chooser-card-title" data-i18n="events.race_others">Race Others</div>
+          <p class="sk-race-chooser-card-body"><span data-i18n="events.race_others_body_prefix">Open a live lobby and race up to</span> <span id="skRaceChooserMaxPlayers">20</span> <span data-i18n="events.race_others_body_suffix">drivers head-to-head.</span></p>
         </button>
       </div>
-      <button type="button" id="skRaceChooserCancel" class="sk-race-chooser-cancel">Cancel</button>
+      <button type="button" id="skRaceChooserCancel" class="sk-race-chooser-cancel" data-i18n="common.cancel">Cancel</button>
     </div>
   </div>
 
   <div id="skMpSetup" class="sk-race-chooser" aria-hidden="true">
     <div class="sk-race-chooser-panel sk-mp-setup-panel">
       <div class="sk-race-chooser-head">
-        <span class="sk-race-chooser-kicker" id="skMpSetupKicker">Multiplayer Setup</span>
+        <span class="sk-race-chooser-kicker" id="skMpSetupKicker" data-i18n="multiplayer.setup">Multiplayer Setup</span>
         <h2 class="sk-race-chooser-title" id="skMpSetupTitle"></h2>
         <p class="sk-race-chooser-sub" id="skMpSetupSub"></p>
       </div>
       <div class="sk-mp-setup-list">
         <button type="button" class="sk-mp-setup-row is-hovered" data-key="laps">
-          <span class="sk-mp-setup-row-label">Laps</span>
+          <span class="sk-mp-setup-row-label" data-i18n="multiplayer.laps">Laps</span>
           <span class="sk-mp-setup-row-value" id="skMpSetupLapsValue">1 Lap</span>
         </button>
         <button type="button" class="sk-mp-setup-row" data-key="collision">
-          <span class="sk-mp-setup-row-label">Collision</span>
+          <span class="sk-mp-setup-row-label" data-i18n="multiplayer.collision">Collision</span>
           <span class="sk-mp-setup-row-value" id="skMpSetupCollisionValue">On</span>
         </button>
         <button type="button" class="sk-mp-setup-row" data-key="nitrousEnabled">
-          <span class="sk-mp-setup-row-label">NOS</span>
+          <span class="sk-mp-setup-row-label" data-i18n="multiplayer.nos">NOS</span>
           <span class="sk-mp-setup-row-value" id="skMpSetupNitrousValue">On</span>
         </button>
         <button type="button" class="sk-mp-setup-row" data-key="trafficDensityPct">
-          <span class="sk-mp-setup-row-label">Traffic Density</span>
+          <span class="sk-mp-setup-row-label" data-i18n="multiplayer.traffic_density">Traffic Density</span>
           <span class="sk-mp-setup-row-value" id="skMpSetupTrafficValue">20%</span>
         </button>
         <button type="button" class="sk-mp-setup-row" data-key="lobbyTimeoutSeconds">
-          <span class="sk-mp-setup-row-label">Race Start Timeout</span>
+          <span class="sk-mp-setup-row-label" data-i18n="multiplayer.race_start_timeout">Race Start Timeout</span>
           <span class="sk-mp-setup-row-value" id="skMpSetupTimeoutValue">3m</span>
         </button>
-        <button type="button" class="sk-race-chooser-cancel sk-mp-setup-action" id="skMpSetupConfirm" data-key="confirm">Create Lobby</button>
-        <button type="button" class="sk-race-chooser-cancel sk-mp-setup-action" id="skMpSetupCancel" data-key="cancel">Cancel</button>
+        <button type="button" class="sk-race-chooser-cancel sk-mp-setup-action" id="skMpSetupConfirm" data-key="confirm" data-i18n="multiplayer.create_lobby">Create Lobby</button>
+        <button type="button" class="sk-race-chooser-cancel sk-mp-setup-action" id="skMpSetupCancel" data-key="cancel" data-i18n="common.cancel">Cancel</button>
       </div>
     </div>
   </div>
@@ -1098,7 +1098,7 @@
         <div class="ev-results-main">
           <div class="ev-results-head">
             <div class="ev-results-head-copy">
-              <span class="ev-results-kicker" id="evResultsKicker">Event Complete</span>
+              <span class="ev-results-kicker" id="evResultsKicker" data-i18n="events.event_complete">Event Complete</span>
               <h2 class="ev-results-name" id="evResultsName"></h2>
             </div>
             <div class="ev-results-head-meta">
@@ -1107,45 +1107,45 @@
             </div>
           </div>
           <div class="ev-results-time-card">
-            <span class="ev-results-time-label" id="evResultsTimeLabel">Final Time</span>
+            <span class="ev-results-time-label" id="evResultsTimeLabel" data-i18n="events.final_time">Final Time</span>
             <div class="ev-results-time" id="evResultsTime"></div>
             <div class="ev-results-goal" id="evResultsGoal" style="display:none"></div>
             <div class="sk-stunt-breakdown" id="skStuntBreakdown" style="display:none"></div>
           </div>
           <div class="ev-results-rewards" id="evResultsRewards" style="display:none">
             <div class="ev-results-section-head">
-              <span class="ev-results-section-kicker">Rewards</span>
+              <span class="ev-results-section-kicker" data-i18n="events.rewards">Rewards</span>
             </div>
             <div class="ev-results-reward-grid">
               <div class="ev-results-reward-row" id="evResultsCashRow" style="display:none">
-                <span class="ev-results-reward-label">Cash</span>
+                <span class="ev-results-reward-label" data-i18n="common.cash">Cash</span>
                 <span class="ev-results-reward-value" id="evResultsCash">+$0</span>
               </div>
               <div class="ev-results-reward-row" id="evResultsCosmeticCurrencyRow" style="display:none">
-                <span class="ev-results-reward-label">GearCoins</span>
+                <span class="ev-results-reward-label" data-i18n="events.gearcoins">GearCoins</span>
                 <span class="ev-results-reward-value" id="evResultsCosmeticCurrency">+0</span>
               </div>
               <div class="ev-results-reward-row" id="evResultsPlayerXpRow" style="display:none">
-                <span class="ev-results-reward-label">Player XP</span>
+                <span class="ev-results-reward-label" data-i18n="events.player_xp">Player XP</span>
                 <span class="ev-results-reward-value" id="evResultsPlayerXp">+0 XP</span>
               </div>
               <div class="ev-results-reward-row" id="evResultsVehicleXpRow" style="display:none">
-                <span class="ev-results-reward-label">Vehicle XP</span>
+                <span class="ev-results-reward-label" data-i18n="events.vehicle_xp">Vehicle XP</span>
                 <span class="ev-results-reward-value" id="evResultsVehicleXp">+0 XP</span>
               </div>
             </div>
           </div>
           <div class="ev-results-progression" id="evResultsProgression" style="display:none">
             <div class="ev-results-section-head">
-              <span class="ev-results-section-kicker">Level Ups</span>
+              <span class="ev-results-section-kicker" data-i18n="events.level_ups">Level Ups</span>
             </div>
             <div class="ev-results-progression-list">
               <div class="ev-results-progression-row" id="evResultsPlayerLevelRow" style="display:none">
-                <span class="ev-results-reward-label">Player Level</span>
+                <span class="ev-results-reward-label" data-i18n="events.player_level">Player Level</span>
                 <span class="ev-results-reward-value" id="evResultsPlayerLevel">Lv. 1 -> Lv. 2</span>
               </div>
               <div class="ev-results-progression-row" id="evResultsVehicleLevelRow" style="display:none">
-                <span class="ev-results-reward-label">Vehicle Level</span>
+                <span class="ev-results-reward-label" data-i18n="events.vehicle_level">Vehicle Level</span>
                 <span class="ev-results-reward-value" id="evResultsVehicleLevel">Lv. 1 -> Lv. 2</span>
               </div>
             </div>
@@ -1153,8 +1153,8 @@
         </div>
         <div id="evLeaderboard" class="ev-leaderboard" style="display:none">
           <div class="ev-results-section-head">
-            <span class="ev-results-section-kicker">Leaderboard</span>
-            <span class="ev-leaderboard-title" id="evLeaderboardTitle">All-Time Board</span>
+            <span class="ev-results-section-kicker" data-i18n="events.leaderboard">Leaderboard</span>
+            <span class="ev-leaderboard-title" id="evLeaderboardTitle" data-i18n="events.all_time_board">All-Time Board</span>
           </div>
           <div class="ev-leaderboard-pb" id="evLeaderboardPb" style="display:none"></div>
           <div class="ev-leaderboard-list-wrap">
@@ -1162,13 +1162,13 @@
           </div>
         </div>
       </div>
-      <p class="ev-results-hint">Press <kbd id="evResultsContinueKey">E</kbd> to continue</p>
+      <p class="ev-results-hint" id="evResultsContinueHint"><span data-i18n="events.press_continue_prefix">Press</span> <kbd id="evResultsContinueKey">E</kbd> <span data-i18n="events.press_continue_suffix">to continue</span></p>
     </div>
   </div>
 
   <div id="skStuntdevPanel" class="sk-stuntdev-panel" style="display:none">
     <div class="sk-stuntdev-header">
-      <span class="sk-stuntdev-title" id="skStuntdevTitle">STUNT JUMP CREATOR</span>
+      <span class="sk-stuntdev-title" id="skStuntdevTitle" data-i18n="devtools.stunt_creator">STUNT JUMP CREATOR</span>
       <span class="sk-stuntdev-subtitle" id="skStuntdevSubtitle"></span>
     </div>
     <div class="sk-stuntdev-divider"></div>
@@ -1192,8 +1192,8 @@
       <h2 class="sk-devtool-title" id="skDevConfirmTitle"></h2>
       <p class="sk-devtool-body" id="skDevConfirmBody"></p>
       <div class="sk-devtool-actions">
-        <button id="skDevConfirmNo" class="sk-devtool-btn sk-devtool-btn--cancel">No, skip</button>
-        <button id="skDevConfirmYes" class="sk-devtool-btn sk-devtool-btn--confirm">Yes, place</button>
+        <button id="skDevConfirmNo" class="sk-devtool-btn sk-devtool-btn--cancel" data-i18n="devtools.no_skip">No, skip</button>
+        <button id="skDevConfirmYes" class="sk-devtool-btn sk-devtool-btn--confirm" data-i18n="devtools.yes_place">Yes, place</button>
       </div>
     </div>
   </div>
@@ -1203,11 +1203,11 @@
       <p class="sk-devtool-eyebrow" id="skDevInputEyebrow"></p>
       <h2 class="sk-devtool-title" id="skDevInputTitle"></h2>
       <input id="skDevInputField" class="sk-devtool-input-field" type="text" maxlength="48"
-             autocomplete="off" spellcheck="false" placeholder="Enter a name..." />
+             autocomplete="off" spellcheck="false" placeholder="Enter a name..." data-i18n-placeholder="devtools.name_placeholder" />
       <p id="skDevInputError" class="sk-devtool-input-error"></p>
       <div class="sk-devtool-actions">
-        <button id="skDevInputCancel" class="sk-devtool-btn sk-devtool-btn--cancel">Cancel</button>
-        <button id="skDevInputConfirm" class="sk-devtool-btn sk-devtool-btn--confirm">Save Jump</button>
+        <button id="skDevInputCancel" class="sk-devtool-btn sk-devtool-btn--cancel" data-i18n="common.cancel">Cancel</button>
+        <button id="skDevInputConfirm" class="sk-devtool-btn sk-devtool-btn--confirm" data-i18n="devtools.save_jump">Save Jump</button>
       </div>
     </div>
   </div>
@@ -1227,12 +1227,12 @@
       </div>
       <div class="sk-speedcam-hud-tr">
         <span class="sk-speedcam-rec-dot"></span>
-        <span class="sk-speedcam-rec-label">REC</span>
+        <span class="sk-speedcam-rec-label" data-i18n="speedcam.rec">REC</span>
       </div>
       <div class="sk-speedcam-readout">
         <div class="sk-speedcam-violation-bar"></div>
         <span class="sk-speedcam-speed" id="skSpeedcamSpeed">0</span>
-        <span class="sk-speedcam-unit">MPH DETECTED</span>
+        <span class="sk-speedcam-unit" data-i18n="speedcam.mph_detected">MPH DETECTED</span>
       </div>
       <div class="sk-speedcam-hud-bl">
         <span class="sk-speedcam-timestamp" id="skSpeedcamTimestamp"></span>
@@ -1249,7 +1249,7 @@
     </div>
     <div class="sk-speedcam-ticket-body">
       <div class="sk-speedcam-ticket-head">
-        <span class="sk-speedcam-ticket-kicker">RADAR</span>
+        <span class="sk-speedcam-ticket-kicker" data-i18n="speedcam.radar">RADAR</span>
         <span id="skSpeedcamTicketStars" class="sk-speedcam-ticket-stars"></span>
       </div>
       <div id="skSpeedcamTicketName" class="sk-speedcam-ticket-name"></div>
@@ -1263,7 +1263,7 @@
   <div id="msgNotif" class="sk-msg-notif">
     <div class="sk-msg-notif-header">
       <span class="sk-msg-notif-label" data-i18n="messages.new_message">Nuevo mensaje</span>
-      <span class="sk-msg-notif-hint">TAB to open</span>
+      <span class="sk-msg-notif-hint" data-i18n="messages.tab_to_open">TAB to open</span>
     </div>
     <div class="sk-msg-notif-body">
       <div class="sk-msg-notif-avatar">

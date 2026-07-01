@@ -76,7 +76,7 @@ local function setupPoints()
                 setAllWaypointColor(COLOR_COOLDOWN)
 
                 TriggerServerEvent('streetkings:stats:repair')
-                SKNotify({ title = 'Vehicle repaired and washed', type = 'success' })
+                SKNotify({ title = _L('lua.notify.vehicle_repaired'), type = 'success' })
 
                 CreateThread(function()
                     Wait(REPAIR_COOLDOWN)
