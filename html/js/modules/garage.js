@@ -54,6 +54,34 @@
     els.vehicleXpFill = document.getElementById('garageVehicleXpFill');
     els.vehicleXpText = document.getElementById('garageVehicleXpText');
     els.vehicleLevelCap = document.getElementById('garageVehicleLevelCap');
+
+    if (els.list && !els.list.parentNode.classList.contains('sk-garage-list-wrap')) {
+      var wrap = document.createElement('div');
+      wrap.className = 'sk-garage-list-wrap';
+      var prev = document.createElement('button');
+      var next = document.createElement('button');
+      prev.type = 'button';
+      next.type = 'button';
+      prev.className = 'sk-garage-list-arrow sk-garage-list-arrow--prev';
+      next.className = 'sk-garage-list-arrow sk-garage-list-arrow--next';
+      prev.textContent = '\u2039';
+      next.textContent = '\u203a';
+      prev.setAttribute('aria-label', 'Anterior');
+      next.setAttribute('aria-label', 'Siguiente');
+      els.list.parentNode.insertBefore(wrap, els.list);
+      wrap.appendChild(prev);
+      wrap.appendChild(els.list);
+      wrap.appendChild(next);
+      els.listPrev = prev;
+      els.listNext = next;
+      prev.addEventListener('click', function () { scrollListByPage(-1); });
+      next.addEventListener('click', function () { scrollListByPage(1); });
+      els.list.addEventListener('scroll', syncListArrows);
+      els.list.addEventListener('wheel', onListWheel, { passive: false });
+    } else if (els.list) {
+      els.listPrev = els.list.parentNode.querySelector('.sk-garage-list-arrow--prev');
+      els.listNext = els.list.parentNode.querySelector('.sk-garage-list-arrow--next');
+    }
   }
 
   function fmtMoney(n) {
@@ -126,9 +154,10 @@
     }
 
     var list = [];
-    var nodes = document.querySelectorAll('#garageActions .sk-garage-btn, #garageList .sk-garage-thumb');
+    var nodes = document.querySelectorAll('#garageActions .sk-garage-btn, #garageList .sk-garage-thumb, .sk-garage-list-arrow');
     for (var i = 0; i < nodes.length; i++) {
       if (!controllerNav.isVisible(nodes[i])) continue;
+      if (nodes[i].disabled) continue;
       list.push(nodes[i]);
     }
     return list;
@@ -211,6 +240,28 @@
 
   function scheduleControllerRefresh(options) {
     controllerNav.refresh(options);
+  }
+
+  function scrollListByPage(direction) {
+    if (!els.list) return;
+    els.list.scrollBy({ left: direction * Math.max(240, els.list.clientWidth * 0.72), behavior: 'smooth' });
+  }
+
+  function syncListArrows() {
+    if (!els.list || !els.listPrev || !els.listNext) return;
+    var max = Math.max(0, els.list.scrollWidth - els.list.clientWidth - 2);
+    els.listPrev.disabled = els.list.scrollLeft <= 2;
+    els.listNext.disabled = els.list.scrollLeft >= max;
+    els.listPrev.classList.toggle('is-hidden', max <= 2);
+    els.listNext.classList.toggle('is-hidden', max <= 2);
+  }
+
+  function onListWheel(event) {
+    if (!els.list) return;
+    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+    els.list.scrollLeft += event.deltaY;
+    event.preventDefault();
+    syncListArrows();
   }
 
   function renderQuitConfirm() {
@@ -442,6 +493,8 @@
       btn.addEventListener('click', function () { previewVehicle(entry.id); });
       els.list.appendChild(btn);
     });
+
+    window.requestAnimationFrame(syncListArrows);
 
     if (controllerEnabled) {
       scheduleControllerRefresh({ retainCurrent: false });

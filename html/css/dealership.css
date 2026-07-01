@@ -780,3 +780,88 @@
 .sk-dealership-thumb-image {
   border-radius: 6px;
 }
+
+/* -- Dealership rail alignment and exit action ----------------------------- */
+
+.sk-dealership {
+  --dealer-side-right: clamp(1rem, 2.4vw, 2.4rem);
+  --dealer-side-width: clamp(300px, 23vw, 430px);
+}
+
+.sk-dealership-top {
+  right: var(--dealer-side-right);
+}
+
+.sk-dealership-wallet {
+  width: var(--dealer-side-width);
+  min-width: var(--dealer-side-width);
+  max-width: var(--dealer-side-width);
+}
+
+.sk-dealership-side {
+  top: clamp(8.8rem, 18vh, 12.6rem);
+  right: var(--dealer-side-right);
+  transform: none;
+  width: var(--dealer-side-width);
+  gap: 0.62rem;
+  z-index: 6;
+  animation: dealerSlideInRail 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes dealerSlideInRail {
+  from { opacity: 0; transform: translateX(22px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.sk-dealership-card {
+  padding: clamp(0.92rem, 1.22vw, 1.16rem);
+}
+
+.sk-dealership-meta-grid {
+  margin-top: 0.55rem;
+}
+
+.sk-dealership-customizability {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+}
+
+.sk-dealership-actions {
+  position: relative;
+  z-index: 7;
+  gap: 0.58rem;
+  pointer-events: all;
+}
+
+.sk-dealership-btn {
+  min-height: 2.78rem;
+}
+
+.sk-dealership-btn--exit {
+  background: rgba(255, 10, 115, 0.13);
+  border-color: rgba(255, 10, 115, 0.42);
+  color: var(--dealer-hot);
+  box-shadow: 0 0 22px rgba(255, 10, 115, 0.12);
+}
+
+.sk-dealership-btn--exit:hover:not(:disabled),
+.sk-dealership-btn--exit.is-controller-focused {
+  background: rgba(255, 10, 115, 0.24);
+  border-color: rgba(255, 10, 115, 0.68);
+  color: #fff;
+}
+
+.sk-dealership-floating-exit {
+  display: none !important;
+}
+
+.sk-dealership-strip {
+  z-index: 3;
+  pointer-events: none;
+}
+
+.sk-dealership-class-tabs,
+.sk-dealership-list,
+.sk-dealership-list-arrow {
+  pointer-events: all;
+}
