@@ -619,6 +619,75 @@
     return Math.max(0, Math.min(100, n));
   }
 
+  function clampStat(value) {
+    var n = Number(value);
+    if (!isFinite(n)) n = 0;
+    return Math.max(0, Math.min(10, n));
+  }
+
+  function getVehiclePerformanceStats(entry) {
+    var raw = entry && entry.performanceStats ? entry.performanceStats : {};
+    var vehicleClass = entry && entry.vehicleClass ? String(entry.vehicleClass).toUpperCase() : 'DEFAULT';
+    var defaults = {
+      STARTER: { topSpeed: 5.5, accel: 5.1, handling: 5.2, braking: 5.0 },
+      C:       { topSpeed: 5.8, accel: 5.5, handling: 5.7, braking: 5.2 },
+      B:       { topSpeed: 6.8, accel: 6.4, handling: 6.5, braking: 6.1 },
+      A:       { topSpeed: 7.7, accel: 7.3, handling: 7.2, braking: 6.9 },
+      S:       { topSpeed: 8.7, accel: 8.4, handling: 8.2, braking: 7.8 },
+      DEFAULT: { topSpeed: 6.2, accel: 5.9, handling: 6.0, braking: 5.7 }
+    };
+    var fallback = defaults[vehicleClass] || defaults.DEFAULT;
+
+    return {
+      topSpeed: clampStat(raw.topSpeed != null ? raw.topSpeed : raw.speed != null ? raw.speed : fallback.topSpeed),
+      accel: clampStat(raw.accel != null ? raw.accel : raw.acceleration != null ? raw.acceleration : fallback.accel),
+      handling: clampStat(raw.handling != null ? raw.handling : fallback.handling),
+      braking: clampStat(raw.braking != null ? raw.braking : raw.brake != null ? raw.brake : fallback.braking)
+    };
+  }
+
+  function createPerformanceGraph(entry, compact) {
+    var stats = getVehiclePerformanceStats(entry);
+    var rows = [
+      { key: 'speed', label: compact ? 'VEL' : t('garage.stat_speed'), value: stats.topSpeed },
+      { key: 'accel', label: compact ? 'ACC' : t('garage.stat_accel'), value: stats.accel },
+      { key: 'handling', label: compact ? 'MAN' : t('garage.stat_handling'), value: stats.handling },
+      { key: 'braking', label: compact ? 'BRK' : t('garage.stat_braking'), value: stats.braking }
+    ];
+    var graph = document.createElement('div');
+    graph.className = compact ? 'sk-garage-performance sk-garage-performance--compact' : 'sk-garage-performance';
+
+    rows.forEach(function (row) {
+      var line = document.createElement('div');
+      line.className = 'sk-garage-performance-row sk-garage-performance-row--' + row.key;
+
+      var label = document.createElement('span');
+      label.className = 'sk-garage-performance-label';
+      label.textContent = row.label;
+
+      var track = document.createElement('span');
+      track.className = 'sk-garage-performance-track';
+
+      var fill = document.createElement('span');
+      fill.style.width = (row.value * 10).toFixed(1) + '%';
+      track.appendChild(fill);
+
+      line.appendChild(label);
+      line.appendChild(track);
+
+      if (!compact) {
+        var value = document.createElement('strong');
+        value.className = 'sk-garage-performance-value';
+        value.textContent = row.value.toFixed(row.value % 1 === 0 ? 0 : 1);
+        line.appendChild(value);
+      }
+
+      graph.appendChild(line);
+    });
+
+    return graph;
+  }
+
   function renderVitalRow(label, value, className) {
     var pct = clampPct(value);
     return '<div class="sk-garage-vital ' + className + '">'
@@ -644,6 +713,15 @@
       + '<span>' + t('garage.remote_refuel') + '</span>'
       + '<strong>' + (price > 0 ? fmtMoney(price) : t('garage.full_tank')) + '</strong>'
       + '</div>';
+
+    var performanceCard = document.createElement('div');
+    performanceCard.className = 'sk-garage-performance-card';
+    var performanceTitle = document.createElement('div');
+    performanceTitle.className = 'sk-garage-performance-title';
+    performanceTitle.textContent = t('garage.performance');
+    performanceCard.appendChild(performanceTitle);
+    performanceCard.appendChild(createPerformanceGraph(entry, false));
+    els.vitals.appendChild(performanceCard);
   }
 
   function renderPlayerProgression() {
@@ -671,28 +749,55 @@
     });
 
     sorted.forEach(function (entry) {
+      var isActive = entry.id === state.activeVehicleId;
       var btn = document.createElement('button');
       btn.className = 'sk-garage-thumb';
       btn.dataset.vehicleId = entry.id;
-      if (entry.id === state.activeVehicleId) btn.classList.add('is-active');
+      if (isActive) btn.classList.add('is-active');
+      if (!isActive) btn.classList.add('is-inactive');
       if (entry.id === state.previewId)       btn.classList.add('is-preview');
+
+      var image = createVehicleImage(entry);
+
+      var copy = document.createElement('span');
+      copy.className = 'sk-garage-thumb-copy';
+
+      var top = document.createElement('span');
+      top.className = 'sk-garage-thumb-top';
 
       var name = document.createElement('span');
       name.className   = 'sk-garage-thumb-name';
       name.textContent = entry.displayName;
 
-      var tag = document.createElement('span');
-      tag.className   = 'sk-garage-thumb-tag';
-      tag.textContent = entry.id === state.activeVehicleId ? t('garage.active') : '';
-
       var level = document.createElement('span');
       level.className = 'sk-garage-thumb-level';
       level.textContent = t('garage.thumb_level', { level: (entry.progression && entry.progression.level) || 1 });
 
-      btn.appendChild(createVehicleImage(entry));
-      btn.appendChild(name);
-      btn.appendChild(level);
-      btn.appendChild(tag);
+      var key = document.createElement('span');
+      key.className = 'sk-garage-thumb-key ' + (isActive ? 'is-active' : 'is-inactive');
+      key.title = isActive ? t('garage.active_key') : t('garage.inactive_key');
+      key.innerHTML = '<i class="fa-solid fa-key" aria-hidden="true"></i>';
+
+      top.appendChild(name);
+      top.appendChild(level);
+      top.appendChild(key);
+
+      var meta = document.createElement('span');
+      meta.className = 'sk-garage-thumb-meta';
+
+      if (entry.vehicleClass) {
+        var vehicleClass = document.createElement('span');
+        vehicleClass.className = 'sk-garage-thumb-class';
+        vehicleClass.textContent = t('garage.vehicle_class', { class: entry.vehicleClass });
+        meta.appendChild(vehicleClass);
+      }
+
+      copy.appendChild(top);
+      copy.appendChild(meta);
+      copy.appendChild(createPerformanceGraph(entry, true));
+
+      btn.appendChild(image);
+      btn.appendChild(copy);
       btn.addEventListener('click', function () { previewVehicle(entry.id); });
       els.list.appendChild(btn);
     });

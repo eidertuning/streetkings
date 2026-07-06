@@ -514,7 +514,8 @@
 
 .sk-garage-strip-inner {
   display: flex;
-  gap: 0.5rem;
+  align-items: stretch;
+  gap: 0.62rem;
   overflow-x: auto;
   padding: 0.6rem 0;
   scrollbar-width: none;
@@ -528,22 +529,42 @@
 .sk-garage-thumb {
   flex-shrink: 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.22rem;
-  padding: 0.42rem 0.55rem 0.48rem;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.08);
+  align-items: stretch;
+  gap: 0.58rem;
+  padding: 0.48rem;
+  background:
+    linear-gradient(140deg, rgba(255, 10, 115, 0.08), rgba(7, 8, 13, 0.78) 42%, rgba(140, 236, 255, 0.06)),
+    rgba(8, 8, 13, 0.76);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, transform 0.12s;
-  min-width: clamp(132px, 10.8vw, 178px);
-  max-width: clamp(132px, 10.8vw, 178px);
+  transition: background 0.15s, border-color 0.15s, transform 0.12s, opacity 0.15s;
+  min-width: clamp(250px, 17vw, 320px);
+  max-width: clamp(250px, 17vw, 320px);
+  min-height: 5.45rem;
+  color: var(--sk-text-primary);
+  text-align: left;
 }
 
 .sk-garage-thumb:hover {
-  background: rgba(255,255,255,0.1);
-  border-color: rgba(255,255,255,0.2);
+  background:
+    linear-gradient(140deg, rgba(255, 10, 115, 0.15), rgba(12, 13, 20, 0.86) 44%, rgba(140, 236, 255, 0.10)),
+    rgba(12, 12, 18, 0.88);
+  border-color: rgba(140, 236, 255, 0.36);
   transform: translateY(-2px);
+}
+
+.sk-garage-thumb.is-inactive {
+  opacity: 0.68;
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.035), rgba(6, 6, 10, 0.80) 46%, rgba(255, 10, 115, 0.035)),
+    rgba(5, 5, 8, 0.72);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.sk-garage-thumb.is-inactive:hover,
+.sk-garage-thumb.is-inactive.is-preview {
+  opacity: 0.88;
 }
 
 .sk-garage.is-controller-nav .sk-garage-thumb.is-controller-focused {
@@ -557,23 +578,30 @@
 }
 
 .sk-garage-thumb.is-preview {
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(255,255,255,0.35);
+  background:
+    linear-gradient(140deg, rgba(255, 10, 115, 0.16), rgba(12, 13, 20, 0.88) 42%, rgba(140, 236, 255, 0.12)),
+    rgba(15, 15, 22, 0.9);
+  border-color: rgba(255, 10, 115, 0.56);
 }
 
 .sk-garage-thumb.is-active {
-  border-color: var(--sk-color-spray);
-  background: rgba(255, 209, 71, 0.1);
+  border-color: rgba(39, 233, 133, 0.68);
+  background:
+    linear-gradient(140deg, rgba(39, 233, 133, 0.16), rgba(12, 13, 20, 0.86) 42%, rgba(140, 236, 255, 0.08)),
+    rgba(12, 13, 20, 0.86);
 }
 
 .sk-garage-thumb.is-active.is-preview {
-  border-color: var(--sk-color-spray);
-  background: rgba(255, 209, 71, 0.16);
+  border-color: rgba(39, 233, 133, 0.82);
+  background:
+    linear-gradient(140deg, rgba(39, 233, 133, 0.22), rgba(12, 13, 20, 0.9) 42%, rgba(255, 10, 115, 0.10)),
+    rgba(12, 13, 20, 0.9);
 }
 
 .sk-garage-thumb-image {
-  width: 100%;
-  aspect-ratio: 16 / 8.5;
+  width: clamp(5.7rem, 6.4vw, 7rem);
+  aspect-ratio: 16 / 9.4;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -581,7 +609,8 @@
   background:
     radial-gradient(circle at 50% 30%, rgba(255,255,255,0.08), transparent 48%),
     rgba(255,255,255,0.045);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 6px;
 }
 
 .sk-garage-thumb-image img {
@@ -593,25 +622,55 @@
 
 .sk-garage-thumb-image.is-empty {
   font-family: var(--sk-font-ui);
-  font-size: 0.58rem;
+  font-size: 0.5rem;
   font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: rgba(255,255,255,0.34);
 }
 
+.sk-garage-thumb.is-inactive .sk-garage-thumb-image img {
+  filter: saturate(0.72) brightness(0.66);
+}
+
+.sk-garage-thumb-copy {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.28rem;
+}
+
+.sk-garage-thumb-top,
+.sk-garage-thumb-meta {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.sk-garage-thumb-top {
+  justify-content: space-between;
+  gap: 0.38rem;
+}
+
+.sk-garage-thumb-meta {
+  gap: 0.35rem;
+}
+
 .sk-garage-thumb-name {
+  flex: 1 1 auto;
   font-family: var(--sk-font-ui);
-  font-size: clamp(0.62rem, 0.72vw, 0.72rem);
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-size: clamp(0.66rem, 0.78vw, 0.82rem);
+  font-weight: 800;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--sk-text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
-  text-align: center;
+  text-align: left;
 }
 
 .sk-garage-thumb-tag {
@@ -624,12 +683,117 @@
 }
 
 .sk-garage-thumb-level {
+  flex: 0 0 auto;
   font-family: var(--sk-font-ui);
   font-size: 0.52rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+  font-weight: 900;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(158, 229, 255, 0.8);
+  color: rgba(158, 229, 255, 0.92);
+  padding: 0.18rem 0.34rem;
+  border: 1px solid rgba(158, 229, 255, 0.22);
+  background: rgba(158, 229, 255, 0.055);
+  border-radius: 5px;
+}
+
+.sk-garage-thumb-class {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--sk-font-ui);
+  font-size: 0.48rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(244, 244, 247, 0.48);
+}
+
+.sk-garage-thumb-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 1.34rem;
+  width: 1.34rem;
+  height: 1.34rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.sk-garage-thumb-key.is-active {
+  color: #27e985;
+  box-shadow: 0 0 14px rgba(39, 233, 133, 0.20);
+}
+
+.sk-garage-thumb-key.is-inactive {
+  color: #ff3b63;
+  box-shadow: 0 0 12px rgba(255, 59, 99, 0.16);
+}
+
+.sk-garage-performance {
+  display: grid;
+  gap: 0.32rem;
+  min-width: 0;
+}
+
+.sk-garage-performance-row {
+  display: grid;
+  grid-template-columns: 5.4rem minmax(0, 1fr) 2rem;
+  align-items: center;
+  gap: 0.48rem;
+  min-width: 0;
+}
+
+.sk-garage-performance-label {
+  font-family: var(--sk-font-ui);
+  font-size: 0.56rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(244, 244, 247, 0.56);
+}
+
+.sk-garage-performance-track {
+  height: 0.28rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.sk-garage-performance-track span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--garage-cyan, #8cecff), var(--garage-hot, #ff0a73), var(--garage-gold, #ffd039));
+}
+
+.sk-garage-performance-value {
+  font-family: var(--sk-font-body);
+  font-size: 0.62rem;
+  color: var(--garage-text, #f4f4f7);
+  text-align: right;
+}
+
+.sk-garage-performance--compact {
+  gap: 0.18rem;
+}
+
+.sk-garage-performance--compact .sk-garage-performance-row {
+  grid-template-columns: 1.62rem minmax(0, 1fr);
+  gap: 0.26rem;
+}
+
+.sk-garage-performance--compact .sk-garage-performance-label {
+  font-size: 0.42rem;
+  letter-spacing: 0.08em;
+  color: rgba(244, 244, 247, 0.46);
+}
+
+.sk-garage-performance--compact .sk-garage-performance-track {
+  height: 0.18rem;
 }
 
 /* -- Pause/dealership visual refresh -------------------------------------- */
@@ -832,19 +996,23 @@
 
 .sk-garage-thumb {
   align-items: stretch;
-  gap: 0.5rem;
-  padding: 0.68rem;
-  min-width: clamp(200px, 15vw, 270px);
-  max-width: clamp(200px, 15vw, 270px);
-  border: 1px solid var(--garage-border);
-  border-radius: 18px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.022)), var(--garage-panel-soft);
-  box-shadow: 0 0.8rem 1.8rem rgba(0, 0, 0, 0.24);
+  gap: 0.58rem;
+  padding: 0.48rem;
+  min-width: clamp(250px, 17vw, 320px);
+  max-width: clamp(250px, 17vw, 320px);
+  min-height: 5.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background:
+    linear-gradient(140deg, rgba(255, 10, 115, 0.08), rgba(7, 8, 13, 0.78) 42%, rgba(140, 236, 255, 0.06)),
+    rgba(8, 8, 13, 0.76);
+  box-shadow: 0 0.7rem 1.5rem rgba(0, 0, 0, 0.22);
 }
 
 .sk-garage-thumb-image {
-  aspect-ratio: 16 / 9;
-  border-radius: 14px;
+  width: clamp(5.7rem, 6.4vw, 7rem);
+  aspect-ratio: 16 / 9.4;
+  border-radius: 6px;
   background: radial-gradient(circle at 50% 30%, rgba(255, 10, 115, 0.12), transparent 50%), rgba(255,255,255,0.045);
 }
 
@@ -859,19 +1027,35 @@
 .sk-garage-thumb-tag,
 .sk-garage-thumb-level {
   width: fit-content;
-  padding: 0.28rem 0.55rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.055);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 0.18rem 0.34rem;
+  border-radius: 5px;
+  background: rgba(158, 229, 255, 0.055);
+  border: 1px solid rgba(158, 229, 255, 0.22);
   font-family: 'Oswald', sans-serif;
-  color: var(--garage-muted);
+  color: rgba(158, 229, 255, 0.92);
 }
 
 .sk-garage-thumb.is-active,
-.sk-garage-thumb.is-active.is-preview,
-.sk-garage-thumb.is-preview {
-  border-color: rgba(255, 10, 115, 0.58);
-  background: linear-gradient(145deg, rgba(255, 10, 115, 0.18), rgba(140, 236, 255, 0.075)), rgba(15, 15, 24, 0.70);
+.sk-garage-thumb.is-active.is-preview {
+  border-color: rgba(39, 233, 133, 0.72);
+  background:
+    linear-gradient(140deg, rgba(39, 233, 133, 0.18), rgba(12, 13, 20, 0.88) 42%, rgba(140, 236, 255, 0.10)),
+    rgba(12, 13, 20, 0.88);
+}
+
+.sk-garage-thumb.is-preview:not(.is-active) {
+  border-color: rgba(255, 10, 115, 0.56);
+  background:
+    linear-gradient(140deg, rgba(255, 10, 115, 0.16), rgba(12, 13, 20, 0.88) 42%, rgba(140, 236, 255, 0.12)),
+    rgba(15, 15, 22, 0.9);
+}
+
+.sk-garage-thumb.is-inactive:not(.is-preview) {
+  opacity: 0.68;
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.035), rgba(6, 6, 10, 0.80) 46%, rgba(255, 10, 115, 0.035)),
+    rgba(5, 5, 8, 0.72);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 /* -- Squared racing UI pass ------------------------------------------------ */
@@ -941,6 +1125,11 @@
   z-index: 0;
 }
 
+.sk-garage-thumb::before,
+.sk-garage-thumb::after {
+  display: none;
+}
+
 .sk-garage-top-copy::before,
 .sk-garage-wallet::before,
 .sk-garage-player-card::before,
@@ -1008,6 +1197,7 @@
 .sk-garage-level-value,
 .sk-garage-thumb-name,
 .sk-garage-thumb-tag,
+.sk-garage-thumb-class,
 .sk-garage-thumb-level,
 .sk-garage-btn {
   min-width: 0;
@@ -1027,9 +1217,10 @@
 }
 
 .sk-garage-thumb {
-  min-width: clamp(190px, 14vw, 250px);
-  max-width: clamp(190px, 14vw, 250px);
-  padding: 0.55rem;
+  min-width: clamp(250px, 17vw, 320px);
+  max-width: clamp(250px, 17vw, 320px);
+  padding: 0.48rem;
+  min-height: 5.45rem;
 }
 
 .sk-garage-thumb-image {
@@ -1189,4 +1380,24 @@
 
 .sk-garage-vital-price {
   grid-column: 1 / -1;
+}
+
+.sk-garage-performance-card {
+  grid-column: 1 / -1;
+  min-width: 0;
+  padding: 0.58rem 0.62rem 0.62rem;
+  border: 1px solid rgba(140, 236, 255, 0.18);
+  background:
+    linear-gradient(140deg, rgba(140, 236, 255, 0.06), rgba(255, 10, 115, 0.04)),
+    rgba(255, 255, 255, 0.035);
+}
+
+.sk-garage-performance-title {
+  margin-bottom: 0.42rem;
+  font-family: var(--sk-font-ui);
+  font-size: 0.56rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--garage-cyan);
 }

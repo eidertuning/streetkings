@@ -1,6 +1,76 @@
 local TOW_TO_GARAGE_PRICE = 200
 local DEFAULT_GARAGE_TINT = 'gray'
 
+local CLASS_DEFAULT_STATS = {
+    STARTER = { topSpeed = 5.5, accel = 5.1, handling = 5.2, braking = 5.0 },
+    C       = { topSpeed = 5.8, accel = 5.5, handling = 5.7, braking = 5.2 },
+    B       = { topSpeed = 6.8, accel = 6.4, handling = 6.5, braking = 6.1 },
+    A       = { topSpeed = 7.7, accel = 7.3, handling = 7.2, braking = 6.9 },
+    S       = { topSpeed = 8.7, accel = 8.4, handling = 8.2, braking = 7.8 },
+    DEFAULT = { topSpeed = 6.2, accel = 5.9, handling = 6.0, braking = 5.7 },
+}
+
+local function clampStat(value)
+    value = tonumber(value) or 0
+    if value < 0 then return 0 end
+    if value > 10 then return 10 end
+    return math.floor((value * 10) + 0.5) / 10
+end
+
+local function modelVariance(model, slot)
+    local total = slot * 17
+    for i = 1, #model do
+        total = total + string.byte(model, i) * (slot + i)
+    end
+    return ((total % 9) - 4) * 0.08
+end
+
+local function findVehicleCatalogEntry(model)
+    model = tostring(model or ''):lower()
+    if model == '' then return nil end
+
+    if SKStarterVehiclesByModel and SKStarterVehiclesByModel[model] then
+        local vehicle = SKStarterVehiclesByModel[model]
+        return {
+            class = vehicle.class or 'STARTER',
+            stats = vehicle.stats,
+        }
+    end
+
+    if type(SKGameVehicles) == 'table' then
+        for category, vehicles in pairs(SKGameVehicles) do
+            if type(vehicles) == 'table' then
+                for _, vehicle in ipairs(vehicles) do
+                    if vehicle.model == model then
+                        return {
+                            class = vehicle.class or 'DEFAULT',
+                            stats = vehicle.stats,
+                            category = category,
+                        }
+                    end
+                end
+            end
+        end
+    end
+
+    return nil
+end
+
+local function buildPerformanceStats(entry, vehicleData)
+    local catalog = findVehicleCatalogEntry(entry.modelName)
+    local vehicleClass = catalog and catalog.class or 'DEFAULT'
+    local base = catalog and type(catalog.stats) == 'table' and catalog.stats or CLASS_DEFAULT_STATS[vehicleClass] or CLASS_DEFAULT_STATS.DEFAULT
+    local levelBonus = math.min(1.1, math.max(0, (tonumber(vehicleData.level) or 1) - 1) * 0.08)
+    local model = tostring(entry.modelName or '')
+
+    return vehicleClass, {
+        topSpeed = clampStat((base.topSpeed or base.speed or 6) + levelBonus + modelVariance(model, 1)),
+        accel = clampStat((base.accel or base.acceleration or 6) + levelBonus + modelVariance(model, 2)),
+        handling = clampStat((base.handling or 6) + levelBonus + modelVariance(model, 3)),
+        braking = clampStat((base.braking or base.brake or 6) + (levelBonus * 0.65) + modelVariance(model, 4)),
+    }
+end
+
 ---@param entry table
 ---@param imageEntry table|nil
 ---@return table
@@ -12,11 +82,14 @@ local function buildGarageVehicleDto(entry, imageEntry)
         SKProgression.VEHICLE_LEVEL_THRESHOLDS,
         SKProgression.VEHICLE_MAX_LEVEL
     )
+    local vehicleClass, performanceStats = buildPerformanceStats(entry, vehicleData)
 
     return {
         id = entry.id,
         modelName = entry.modelName,
         displayName = entry.displayName,
+        vehicleClass = vehicleClass,
+        performanceStats = performanceStats,
         image = SKResolveVehicleImage(entry.modelName, entry.image, imageEntry),
         sortIndex = entry.sortIndex,
         plate = entry.plate,
