@@ -1590,3 +1590,203 @@
   line-height: 1;
   color: currentColor;
 }
+
+/* -- Compact two-row category tray + modern color editor ------------------- */
+
+.sk-modshop-strip {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: clamp(0.55rem, 1vh, 0.8rem) clamp(1rem, 2.2vw, 2.2rem) clamp(0.75rem, 1.35vh, 1rem);
+  background:
+    linear-gradient(0deg, rgba(0, 0, 0, 0.74) 0%, rgba(0, 0, 0, 0.34) 68%, transparent 100%);
+}
+
+.sk-modshop-strip-inner {
+  width: 100%;
+  max-width: none;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, clamp(2.48rem, 4.05vh, 3rem));
+  grid-auto-columns: clamp(6.65rem, 7.25vw, 8.15rem);
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: clamp(0.34rem, 0.5vw, 0.52rem);
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.14rem 0.18rem 0.55rem;
+}
+
+.sk-modshop-cat {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: auto;
+  grid-template-columns: 1.72rem minmax(0, 1fr);
+  gap: 0.42rem;
+  padding: 0.34rem 0.48rem;
+  border-radius: 8px;
+}
+
+.sk-modshop-cat-icon {
+  width: 1.72rem;
+  height: 1.72rem;
+  border-radius: 7px;
+}
+
+.sk-modshop-cat-icon i {
+  font-size: 0.82rem;
+}
+
+.sk-modshop-cat-text {
+  font-size: clamp(0.48rem, 0.58vw, 0.58rem);
+  line-height: 1.02;
+  letter-spacing: 0.07em;
+}
+
+.sk-modshop-side {
+  bottom: calc(clamp(1rem, 1.8vh, 1.35rem) + clamp(7rem, 8.8vh, 8.8rem));
+  min-height: 0;
+}
+
+.sk-modshop-options {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  padding-right: 0.55rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 10, 115, 0.55) rgba(255, 255, 255, 0.08);
+}
+
+.sk-modshop-options::-webkit-scrollbar {
+  width: 0.42rem;
+}
+
+.sk-modshop-options::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+}
+
+.sk-modshop-options::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--shop-cyan), var(--shop-hot));
+  border-radius: 999px;
+}
+
+.sk-modshop-color-row {
+  gap: 0.82rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-left: 3px solid rgba(140, 236, 255, 0.62);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(140, 236, 255, 0.16), transparent 36%),
+    linear-gradient(145deg, rgba(20, 20, 30, 0.84), rgba(8, 8, 13, 0.78));
+}
+
+.sk-modshop-color-header {
+  padding-bottom: 0.18rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sk-modshop-color-label {
+  font-family: 'Poppins', 'Inter', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 850;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.sk-modshop-color-controls {
+  display: block;
+}
+
+.sk-modshop-color-editor {
+  grid-template-columns: minmax(0, 1fr) 4.15rem;
+  gap: 0.72rem;
+  align-items: stretch;
+}
+
+.sk-modshop-color-swatch {
+  order: 2;
+  min-height: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    inset 0 0 0 2px rgba(0, 0, 0, 0.22),
+    0 0 24px rgba(140, 236, 255, 0.10);
+}
+
+.sk-modshop-color-picker {
+  order: 1;
+  gap: 0.52rem;
+}
+
+.sk-modshop-color-sv {
+  height: clamp(6.25rem, 10.4vh, 7.6rem);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.32);
+}
+
+.sk-modshop-color-sv-marker,
+.sk-modshop-color-hue-marker {
+  border-radius: 999px;
+}
+
+.sk-modshop-color-hue {
+  height: 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.sk-modshop-color-hex {
+  height: 2.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.34);
+  border-color: rgba(255, 255, 255, 0.14);
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.92rem;
+}
+
+.sk-modshop-color-field--finish {
+  grid-template-columns: 4.2rem minmax(0, 1fr);
+  gap: 0.6rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sk-modshop-paint-type {
+  min-height: 2.35rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.055);
+  border-color: rgba(140, 236, 255, 0.24);
+}
+
+.sk-modshop-color-buy {
+  min-height: 2.65rem;
+  border-radius: 14px;
+}
+
+@media (max-width: 1366px), (max-height: 768px) {
+  .sk-modshop-strip-inner {
+    grid-auto-columns: clamp(6rem, 7.4vw, 7.25rem);
+    grid-template-rows: repeat(2, clamp(2.28rem, 4.2vh, 2.72rem));
+  }
+
+  .sk-modshop-cat {
+    grid-template-columns: 1.58rem minmax(0, 1fr);
+    padding: 0.3rem 0.4rem;
+  }
+
+  .sk-modshop-cat-icon {
+    width: 1.58rem;
+    height: 1.58rem;
+  }
+
+  .sk-modshop-cat-text {
+    font-size: clamp(0.45rem, 0.62vw, 0.54rem);
+  }
+}
