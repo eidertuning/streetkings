@@ -865,3 +865,104 @@
 .sk-dealership-list-arrow {
   pointer-events: all;
 }
+
+/* -- Premium vehicle cards ------------------------------------------------- */
+
+.sk-dealership-strip {
+  padding: 0 clamp(1.05rem, 2vw, 2rem) clamp(0.72rem, 1.25vh, 1rem);
+  gap: 0.5rem;
+  background:
+    linear-gradient(0deg, rgba(0, 0, 0, 0.80) 0%, rgba(0, 0, 0, 0.42) 58%, transparent 100%);
+}
+
+.sk-dealership-list-wrap {
+  grid-template-columns: 2.55rem minmax(0, 1fr) 2.55rem;
+  gap: 0.5rem;
+}
+
+.sk-dealership-list-arrow {
+  width: 2.55rem;
+  border-radius: 10px;
+  background:
+    linear-gradient(145deg, rgba(20, 20, 30, 0.86), rgba(7, 7, 12, 0.82));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 0 20px rgba(255, 10, 115, 0.10);
+}
+
+.sk-dealership-list {
+  gap: clamp(0.56rem, 0.78vw, 0.82rem);
+  padding: 0.12rem 0 0.16rem;
+}
+
+.sk-dealership-thumb {
+  min-width: clamp(210px, 14.5vw, 272px);
+  max-width: clamp(210px, 14.5vw, 272px);
+  gap: 0.48rem;
+  padding: 0.58rem;
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.02)),
+    radial-gradient(circle at 18% 0%, rgba(140, 236, 255, 0.12), transparent 38%),
+    rgba(9, 9, 15, 0.82);
+  border-color: rgba(255, 255, 255, 0.13);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 1rem 2.2rem rgba(0, 0, 0, 0.34);
+}
+
+.sk-dealership-thumb:hover {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.025)),
+    radial-gradient(circle at 18% 0%, rgba(140, 236, 255, 0.17), transparent 40%),
+    rgba(12, 12, 20, 0.88);
+  transform: translateY(-2px);
+}
+
+.sk-dealership-thumb.is-preview {
+  background:
+    linear-gradient(180deg, rgba(255, 10, 115, 0.18), rgba(255, 255, 255, 0.025)),
+    radial-gradient(circle at 72% 18%, rgba(140, 236, 255, 0.18), transparent 42%),
+    rgba(14, 12, 20, 0.92);
+}
+
+.sk-dealership-thumb-image {
+  aspect-ratio: 16 / 8.6;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(0, 0, 0, 0.12)),
+    radial-gradient(circle at 50% 24%, rgba(255, 10, 115, 0.16), transparent 55%),
+    rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.sk-dealership-thumb-image img {
+  object-fit: contain;
+  padding: 0.15rem;
+  filter: drop-shadow(0 0.55rem 0.9rem rgba(0, 0, 0, 0.34));
+}
+
+.sk-dealership-thumb-name {
+  font-size: clamp(0.78rem, 0.88vw, 0.94rem);
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+}
+
+.sk-dealership-thumb-tag {
+  min-height: 1.26rem;
+  padding: 0.22rem 0.48rem;
+  border-radius: 7px;
+  font-size: 0.56rem;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sk-dealership-class-tabs {
+  gap: 0.34rem;
+}
+
+.sk-dealership-class-tab {
+  min-width: 3rem;
+  padding: 0.36rem 0.76rem;
+  border-radius: 8px;
+  font-size: 0.64rem;
+}

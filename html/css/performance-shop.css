@@ -1524,3 +1524,205 @@
     height: 2.25rem;
   }
 }
+
+/* -- Final compact performance pass --------------------------------------- */
+
+.sk-perfshop-close {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+.sk-perfshop-status {
+  margin-right: 0 !important;
+  gap: clamp(0.45rem, 0.8vw, 0.72rem);
+  width: min(38rem, 40vw);
+}
+
+.sk-perfshop-title-block {
+  max-width: min(35rem, 45vw);
+  padding: clamp(0.68rem, 1vw, 0.92rem) clamp(0.86rem, 1.35vw, 1.18rem);
+}
+
+.sk-perfshop-heading {
+  font-size: clamp(1.65rem, 2.55vw, 2.8rem);
+}
+
+.sk-perfshop-subtitle {
+  font-size: clamp(0.64rem, 0.78vw, 0.78rem);
+  line-height: 1.34;
+  max-width: 56ch;
+}
+
+.sk-perfshop-wallet {
+  flex-basis: clamp(140px, 10vw, 180px);
+  padding: 0.62rem 0.75rem;
+}
+
+.sk-perfshop-progress-card {
+  padding: 0.62rem 0.75rem 0.72rem;
+  gap: 0.42rem;
+}
+
+.sk-perfshop-wallet-amount {
+  font-size: clamp(1.15rem, 1.6vw, 1.55rem);
+}
+
+.sk-perfshop-progress-level {
+  font-size: clamp(0.95rem, 1.25vw, 1.18rem);
+}
+
+.sk-perfshop-progress-track {
+  height: 0.44rem;
+}
+
+.sk-perfshop-side {
+  top: clamp(8.4rem, 16vh, 10.8rem);
+  bottom: calc(clamp(0.95rem, 1.8vh, 1.25rem) + clamp(6.1rem, 7.8vh, 7.65rem));
+  width: clamp(310px, 20.5vw, 365px);
+  gap: 0.46rem;
+}
+
+.sk-perfshop-selection-card {
+  padding: 0.68rem 0.78rem 0.74rem;
+  gap: 0.24rem;
+}
+
+.sk-perfshop-selection-label {
+  font-size: 0.52rem;
+}
+
+.sk-perfshop-selection-title {
+  font-size: clamp(0.96rem, 1.22vw, 1.18rem);
+  line-height: 1.05;
+}
+
+.sk-perfshop-selection-subtitle {
+  font-size: 0.66rem;
+  line-height: 1.28;
+  -webkit-line-clamp: 2;
+}
+
+.sk-perfshop-options {
+  gap: 0.36rem;
+  padding: 0.52rem 0.44rem 0.52rem 0.52rem;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 10, 115, 0.55) rgba(255, 255, 255, 0.08);
+}
+
+.sk-perfshop-options::-webkit-scrollbar {
+  width: 0.42rem;
+}
+
+.sk-perfshop-options::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+}
+
+.sk-perfshop-options::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--perf-cyan), var(--perf-hot));
+  border-radius: 999px;
+}
+
+.sk-perfshop-option {
+  min-height: 3.12rem;
+  padding: 0.5rem 0.58rem;
+  border-radius: 8px;
+}
+
+.sk-perfshop-option-title {
+  font-size: clamp(0.7rem, 0.78vw, 0.82rem);
+}
+
+.sk-perfshop-option-meta {
+  font-size: 0.62rem;
+  line-height: 1.22;
+}
+
+.sk-perfshop-install {
+  padding: 0.56rem 0.64rem;
+  border-radius: 8px;
+}
+
+.sk-perfshop-buy {
+  min-height: 2.22rem;
+  border-radius: 8px;
+  font-size: 0.66rem;
+}
+
+.sk-perfshop-strip {
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  box-sizing: border-box;
+  padding: clamp(0.42rem, 0.82vh, 0.62rem) clamp(1.05rem, 2vw, 2rem) clamp(0.56rem, 1vh, 0.82rem);
+  background:
+    linear-gradient(0deg, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.46) 56%, transparent 100%);
+}
+
+.sk-perfshop-strip-inner {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 100%;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, clamp(2.05rem, 3.35vh, 2.48rem));
+  grid-auto-columns: minmax(clamp(5.85rem, 6.65vw, 7.2rem), 1fr);
+  gap: clamp(0.26rem, 0.42vw, 0.44rem);
+  padding: 0.08rem 0.1rem 0.44rem;
+}
+
+.sk-perfshop-cat {
+  grid-template-columns: 1.44rem minmax(0, 1fr);
+  gap: 0.32rem;
+  min-height: 0;
+  width: 100%;
+  padding: 0.24rem 0.34rem;
+  border-radius: 7px;
+}
+
+.sk-perfshop-cat-icon {
+  width: 1.44rem;
+  height: 1.44rem;
+  border-radius: 6px;
+}
+
+.sk-perfshop-cat-icon i {
+  font-size: 0.72rem;
+}
+
+.sk-perfshop-cat-name {
+  font-size: clamp(0.42rem, 0.5vw, 0.52rem);
+  line-height: 1.02;
+  letter-spacing: 0.055em;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal !important;
+  text-overflow: clip !important;
+  overflow: hidden !important;
+}
+
+@media (max-width: 1366px), (max-height: 768px) {
+  .sk-perfshop-side {
+    width: clamp(296px, 21vw, 340px);
+    bottom: calc(clamp(0.85rem, 1.5vh, 1.1rem) + 6.35rem);
+  }
+
+  .sk-perfshop-strip-inner {
+    grid-template-rows: repeat(2, clamp(1.92rem, 3.5vh, 2.28rem));
+    grid-auto-columns: minmax(clamp(5.35rem, 6.8vw, 6.5rem), 1fr);
+  }
+
+  .sk-perfshop-cat {
+    grid-template-columns: 1.3rem minmax(0, 1fr);
+    padding: 0.22rem 0.28rem;
+  }
+
+  .sk-perfshop-cat-icon {
+    width: 1.3rem;
+    height: 1.3rem;
+  }
+}
