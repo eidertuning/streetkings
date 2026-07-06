@@ -77,6 +77,7 @@
     $bar.css('width', (disabled ? 100 : clamped).toFixed(1) + '%');
     $value.text(disabled ? '\u221e' : Math.round(clamped) + '%');
     var $vital = $bar.closest('.sk-speedo-vital');
+    $vital.css('--sk-vital-pct', (disabled ? 100 : clamped).toFixed(1) + '%');
     $vital.toggleClass('is-disabled', !!disabled);
     $vital.toggleClass('is-critical', !disabled && clamped <= 15);
     $vital.toggleClass('is-low', !disabled && clamped > 15 && clamped <= 35);

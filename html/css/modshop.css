@@ -2039,3 +2039,148 @@
     height: clamp(3.85rem, 6.8vh, 4.75rem);
   }
 }
+
+/* -- Ultra compact paint editor pass --------------------------------------- */
+
+#viewModShop .sk-modshop-close,
+#viewModShop .sk-modshop-close * {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#viewModShop .sk-modshop-side {
+  top: clamp(7.7rem, 13.2vh, 9.2rem) !important;
+  right: clamp(0.95rem, 1.75vw, 1.55rem) !important;
+  bottom: calc(clamp(0.65rem, 1.15vh, 0.95rem) + clamp(5.65rem, 7vh, 6.45rem)) !important;
+  width: clamp(270px, 18vw, 330px) !important;
+  gap: 0.34rem !important;
+}
+
+#viewModShop .sk-modshop-selection-card {
+  padding: 0.46rem 0.58rem 0.5rem !important;
+  gap: 0.12rem !important;
+  border-radius: 7px !important;
+}
+
+#viewModShop .sk-modshop-selection-label {
+  font-size: 0.43rem !important;
+  letter-spacing: 0.12em !important;
+}
+
+#viewModShop .sk-modshop-selection-title {
+  font-size: clamp(0.76rem, 0.98vw, 0.95rem) !important;
+  line-height: 1 !important;
+}
+
+#viewModShop .sk-modshop-selection-subtitle {
+  font-size: 0.55rem !important;
+  line-height: 1.12 !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+#viewModShop .sk-modshop-options {
+  gap: 0.28rem !important;
+  padding: 0.36rem 0.3rem 0.36rem 0.38rem !important;
+  border-radius: 7px !important;
+}
+
+#viewModShop .sk-modshop-color-row {
+  gap: 0.34rem !important;
+  padding: 0.42rem 0.46rem !important;
+  border-radius: 7px !important;
+}
+
+#viewModShop .sk-modshop-color-header {
+  padding-bottom: 0.08rem !important;
+}
+
+#viewModShop .sk-modshop-color-label {
+  font-size: 0.64rem !important;
+  line-height: 1 !important;
+}
+
+#viewModShop .sk-modshop-color-editor {
+  grid-template-columns: minmax(0, 1fr) 2.38rem !important;
+  gap: 0.34rem !important;
+}
+
+#viewModShop .sk-modshop-color-swatch {
+  width: 2.38rem !important;
+  height: 2.38rem !important;
+  border-radius: 8px !important;
+}
+
+#viewModShop .sk-modshop-color-picker {
+  gap: 0.3rem !important;
+}
+
+#viewModShop .sk-modshop-color-sv {
+  height: clamp(3.05rem, 5.45vh, 3.9rem) !important;
+  border-radius: 8px !important;
+}
+
+#viewModShop .sk-modshop-color-sv-marker {
+  width: 0.76rem !important;
+  height: 0.76rem !important;
+}
+
+#viewModShop .sk-modshop-color-hue {
+  height: 0.52rem !important;
+}
+
+#viewModShop .sk-modshop-color-hue-marker {
+  width: 0.72rem !important;
+  height: 0.72rem !important;
+}
+
+#viewModShop .sk-modshop-color-hex {
+  height: 1.55rem !important;
+  padding: 0.18rem 0.42rem !important;
+  border-radius: 7px !important;
+  font-size: 0.66rem !important;
+}
+
+#viewModShop .sk-modshop-color-field--finish {
+  grid-template-columns: 3rem minmax(0, 1fr) !important;
+  gap: 0.32rem !important;
+  padding: 0.18rem 0.38rem !important;
+  border-radius: 7px !important;
+}
+
+#viewModShop .sk-modshop-color-field-label {
+  font-size: 0.42rem !important;
+  letter-spacing: 0.09em !important;
+}
+
+#viewModShop .sk-modshop-paint-type {
+  min-height: 1.58rem !important;
+  height: 1.58rem !important;
+  padding: 0.22rem 0.42rem !important;
+  border-radius: 7px !important;
+  font-size: 0.56rem !important;
+}
+
+#viewModShop .sk-modshop-color-buy {
+  min-height: 1.72rem !important;
+  padding: 0.26rem 0.48rem !important;
+  border-radius: 7px !important;
+  font-size: 0.55rem !important;
+}
+
+@media (max-width: 1366px), (max-height: 768px) {
+  #viewModShop .sk-modshop-side {
+    top: 7.35rem !important;
+    width: clamp(252px, 18vw, 300px) !important;
+    bottom: calc(0.55rem + 5.8rem) !important;
+  }
+
+  #viewModShop .sk-modshop-color-row {
+    padding: 0.34rem 0.38rem !important;
+  }
+
+  #viewModShop .sk-modshop-color-sv {
+    height: clamp(2.55rem, 5vh, 3.2rem) !important;
+  }
+}
