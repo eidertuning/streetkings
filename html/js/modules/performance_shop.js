@@ -9,6 +9,15 @@
     mods: [],
     drag: { active: false, lastX: 0, lastY: 0 },
   };
+  var PERFORMANCE_CATEGORY_ICONS = {
+    gearbox: 'fa-solid fa-gears',
+    nitrous: 'fa-solid fa-bolt',
+    11: 'fa-solid fa-oil-can',
+    12: 'fa-solid fa-compact-disc',
+    13: 'fa-solid fa-gears',
+    15: 'fa-solid fa-up-down',
+    18: 'fa-solid fa-fan',
+  };
 
   var els = {};
   var controllerEnabled = false;
@@ -180,6 +189,59 @@
 
   function scheduleControllerRefresh(options) {
     controllerNav.refresh(options);
+  }
+
+  function iconForPerformanceMod(mod) {
+    if (mod && mod.isGearbox) return PERFORMANCE_CATEGORY_ICONS.gearbox;
+    if (mod && mod.isNitrous) return PERFORMANCE_CATEGORY_ICONS.nitrous;
+    return PERFORMANCE_CATEGORY_ICONS[mod && mod.modType] || 'fa-solid fa-screwdriver-wrench';
+  }
+
+  function bindHorizontalCategoryScroll(scroller) {
+    if (!scroller || scroller.dataset.skDragScrollBound === 'true') return;
+    scroller.dataset.skDragScrollBound = 'true';
+
+    var drag = { active: false, startX: 0, startScroll: 0, moved: false };
+
+    scroller.addEventListener('wheel', function (event) {
+      if (!isOpen()) return;
+      var delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+      if (!delta) return;
+      scroller.scrollLeft += delta;
+      event.preventDefault();
+      event.stopPropagation();
+      setControllerEnabled(false);
+    }, { passive: false });
+
+    scroller.addEventListener('mousedown', function (event) {
+      if (event.button !== 0) return;
+      drag.active = true;
+      drag.startX = event.clientX;
+      drag.startScroll = scroller.scrollLeft;
+      drag.moved = false;
+      scroller.classList.add('is-dragging');
+      event.stopPropagation();
+    });
+
+    document.addEventListener('mousemove', function (event) {
+      if (!drag.active) return;
+      var dx = event.clientX - drag.startX;
+      if (Math.abs(dx) > 4) drag.moved = true;
+      scroller.scrollLeft = drag.startScroll - dx;
+    });
+
+    document.addEventListener('mouseup', function () {
+      if (!drag.active) return;
+      drag.active = false;
+      scroller.classList.remove('is-dragging');
+      setTimeout(function () { drag.moved = false; }, 0);
+    });
+
+    scroller.addEventListener('click', function (event) {
+      if (!drag.moved) return;
+      event.preventDefault();
+      event.stopPropagation();
+    }, true);
   }
 
   function resolveEls() {
@@ -413,14 +475,19 @@
 
     state.mods.forEach(function (mod) {
       var btn = document.createElement('button');
+      var icon = document.createElement('span');
       var name = document.createElement('span');
 
       btn.className = 'sk-perfshop-cat';
       btn.dataset.modType = mod.modType;
 
+      icon.className = 'sk-perfshop-cat-icon';
+      icon.innerHTML = '<i class="' + iconForPerformanceMod(mod) + '" aria-hidden="true"></i>';
+
       name.className = 'sk-perfshop-cat-name';
       name.textContent = mod.name;
 
+      btn.appendChild(icon);
       btn.appendChild(name);
       btn.addEventListener('click', function () {
         selectCategory(mod);
@@ -545,6 +612,7 @@
 
   $(function () {
     resolveEls();
+    bindHorizontalCategoryScroll(els.categories);
 
     els.viewport.addEventListener('mousedown', onViewportMouseDown);
     document.addEventListener('mousemove', onMouseMove);

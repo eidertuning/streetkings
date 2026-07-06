@@ -1546,3 +1546,47 @@
     font-size: clamp(0.54rem, 0.78vw, 0.66rem);
   }
 }
+
+/* -- Reliable horizontal tray interaction --------------------------------- */
+
+.sk-modshop-strip {
+  pointer-events: all;
+}
+
+.sk-modshop-strip-inner {
+  width: min(100%, calc(100vw - clamp(3rem, 6vw, 6.5rem) - clamp(300px, 23vw, 430px)));
+  cursor: grab;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 10, 115, 0.52) rgba(255, 255, 255, 0.08);
+}
+
+.sk-modshop-strip-inner.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.sk-modshop-strip-inner::-webkit-scrollbar {
+  display: block;
+  height: 0.34rem;
+}
+
+.sk-modshop-strip-inner::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+}
+
+.sk-modshop-strip-inner::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, var(--shop-cyan), var(--shop-hot));
+  border-radius: 999px;
+}
+
+.sk-modshop-cat {
+  cursor: pointer;
+}
+
+.sk-modshop-cat-icon i {
+  font-size: 1.05rem;
+  line-height: 1;
+  color: currentColor;
+}

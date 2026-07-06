@@ -111,6 +111,46 @@
     mirror: '<path d="M5 10h7v5H5z"/><path d="M12 12h4l3-3v8l-3-3h-4"/>',
     livery: '<path d="M4 5h16v14H4z"/><path d="M4 15 15 5M9 19 20 8"/>',
   };
+  var CATEGORY_FA_ICONS = {
+    palette: 'fa-solid fa-palette',
+    spark: 'fa-solid fa-wand-magic-sparkles',
+    gear: 'fa-solid fa-gears',
+    bolt: 'fa-solid fa-bolt',
+    wing: 'fa-solid fa-plane',
+    front: 'fa-solid fa-car-side',
+    rear: 'fa-solid fa-car-rear',
+    side: 'fa-solid fa-car-side',
+    exhaust: 'fa-solid fa-fire-flame-curved',
+    frame: 'fa-solid fa-vector-square',
+    grille: 'fa-solid fa-grip-lines-vertical',
+    hood: 'fa-solid fa-car-burst',
+    fender: 'fa-solid fa-circle-notch',
+    roof: 'fa-solid fa-house-chimney',
+    engine: 'fa-solid fa-oil-can',
+    brake: 'fa-solid fa-compact-disc',
+    suspension: 'fa-solid fa-up-down',
+    turbo: 'fa-solid fa-fan',
+    light: 'fa-solid fa-lightbulb',
+    wheel: 'fa-solid fa-circle-dot',
+    plate: 'fa-solid fa-id-card',
+    trim: 'fa-solid fa-bars-staggered',
+    ornament: 'fa-solid fa-star',
+    dash: 'fa-solid fa-gauge-high',
+    gauge: 'fa-solid fa-gauge',
+    speaker: 'fa-solid fa-volume-high',
+    seat: 'fa-solid fa-chair',
+    steering: 'fa-solid fa-dharmachakra',
+    lever: 'fa-solid fa-grip-vertical',
+    badge: 'fa-solid fa-shield-halved',
+    filter: 'fa-solid fa-filter',
+    brace: 'fa-solid fa-slash',
+    arch: 'fa-solid fa-archway',
+    antenna: 'fa-solid fa-tower-broadcast',
+    tank: 'fa-solid fa-gas-pump',
+    window: 'fa-solid fa-border-all',
+    mirror: 'fa-solid fa-eye',
+    livery: 'fa-solid fa-brush',
+  };
 
   var state = {
     shopType:    null,
@@ -425,7 +465,7 @@
     button.setAttribute('aria-label', label);
     var iconEl = document.createElement('span');
     iconEl.className = 'sk-modshop-cat-icon';
-    iconEl.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + (ICON_PATHS[icon] || ICON_PATHS.palette) + '</svg>';
+    iconEl.innerHTML = '<i class="' + (CATEGORY_FA_ICONS[icon] || 'fa-solid fa-screwdriver-wrench') + '" aria-hidden="true"></i>';
 
     var textEl = document.createElement('span');
     textEl.className = 'sk-modshop-cat-text';
@@ -630,6 +670,53 @@
 
   function scheduleControllerRefresh(options) {
     controllerNav.refresh(options);
+  }
+
+  function bindHorizontalCategoryScroll(scroller) {
+    if (!scroller || scroller.dataset.skDragScrollBound === 'true') return;
+    scroller.dataset.skDragScrollBound = 'true';
+
+    var drag = { active: false, startX: 0, startScroll: 0, moved: false };
+
+    scroller.addEventListener('wheel', function (event) {
+      if (!isOpen()) return;
+      var delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+      if (!delta) return;
+      scroller.scrollLeft += delta;
+      event.preventDefault();
+      event.stopPropagation();
+      setControllerEnabled(false);
+    }, { passive: false });
+
+    scroller.addEventListener('mousedown', function (event) {
+      if (event.button !== 0) return;
+      drag.active = true;
+      drag.startX = event.clientX;
+      drag.startScroll = scroller.scrollLeft;
+      drag.moved = false;
+      scroller.classList.add('is-dragging');
+      event.stopPropagation();
+    });
+
+    document.addEventListener('mousemove', function (event) {
+      if (!drag.active) return;
+      var dx = event.clientX - drag.startX;
+      if (Math.abs(dx) > 4) drag.moved = true;
+      scroller.scrollLeft = drag.startScroll - dx;
+    });
+
+    document.addEventListener('mouseup', function () {
+      if (!drag.active) return;
+      drag.active = false;
+      scroller.classList.remove('is-dragging');
+      setTimeout(function () { drag.moved = false; }, 0);
+    });
+
+    scroller.addEventListener('click', function (event) {
+      if (!drag.moved) return;
+      event.preventDefault();
+      event.stopPropagation();
+    }, true);
   }
 
   function setSelection(title, subtitle) {
@@ -1165,6 +1252,7 @@
 
   $(function () {
     resolveEls();
+    bindHorizontalCategoryScroll(els.categories);
 
     els.viewport.addEventListener('mousedown', onViewportMouseDown);
     els.viewport.addEventListener('wheel', onViewportWheel, { passive: false });

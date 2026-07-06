@@ -82,7 +82,6 @@
             '    <nav id="sk-pausemenu-nav">',
             menuButton('pm-btn-map', 'fa-solid fa-map-location-dot', 'pause_menu.map', 'pause_menu.map_sub'),
             menuButton('pm-btn-settings', 'fa-solid fa-sliders', 'pause_menu.settings', 'pause_menu.settings_sub'),
-            menuButton('pm-btn-garage', 'fa-solid fa-warehouse', 'pause_menu.garage', 'pause_menu.garage_sub'),
             menuButton('pm-btn-mainmenu', 'fa-solid fa-house', 'pause_menu.main_menu', 'pause_menu.main_menu_sub'),
             menuButton('pm-btn-exit', 'fa-solid fa-right-from-bracket', 'pause_menu.exit_game', 'pause_menu.exit_game_sub', false, true),
             '    </nav>',
@@ -298,7 +297,6 @@
         var btnContinue = document.getElementById('pm-btn-continue');
         var btnMap = document.getElementById('pm-btn-map');
         var btnSettings = document.getElementById('pm-btn-settings');
-        var btnGarage = document.getElementById('pm-btn-garage');
         var btnMainMenu = document.getElementById('pm-btn-mainmenu');
         var btnExit = document.getElementById('pm-btn-exit');
         var socialButtons = Array.prototype.slice.call(document.querySelectorAll('#sk-pausemenu-socials .pm-social-button'));
@@ -316,11 +314,6 @@
         btnMap.addEventListener('click', function () {
             hide();
             nuiPost('pausemenu:map');
-        });
-
-        btnGarage.addEventListener('click', function () {
-            hide();
-            nuiPost('pausemenu:garage');
         });
 
         btnMainMenu.addEventListener('click', function () {
@@ -351,7 +344,7 @@
                 overlay.classList.toggle('is-pausemenu-controller-nav', enabled);
             },
             getFocusables: function () {
-                return [btnContinue, btnMap, btnSettings, btnGarage, btnMainMenu, btnExit].concat(socialButtons);
+                return [btnContinue, btnMap, btnSettings, btnMainMenu, btnExit].concat(socialButtons);
             },
             getPreferredFocus: function () {
                 return btnContinue;
