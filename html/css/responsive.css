@@ -414,30 +414,30 @@
   }
 
   .ev-results-panel {
-    width: min(2160px, calc(100vw - 8rem));
+    width: min(1480px, calc(100vw - 8rem));
     max-height: calc(100vh - 8rem);
-    padding: 4rem;
+    padding: 2.4rem;
   }
 
   .ev-results-layout {
-    grid-template-columns: minmax(0, 1.2fr) minmax(640px, 0.8fr);
-    gap: 2.5rem;
+    grid-template-columns: minmax(0, 1.2fr) minmax(480px, 0.8fr);
+    gap: 1.5rem;
   }
 
   .ev-leaderboard-list-wrap {
-    max-height: 720px;
+    max-height: 520px;
   }
 
   .ev-results-reward-grid {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   }
 
   .sk-race-chooser-panel {
-    width: min(1640px, calc(100vw - 8rem));
+    width: min(980px, calc(100vw - 8rem));
   }
 
   .sk-mp-setup-panel {
-    width: min(1400px, calc(100vw - 8rem));
+    width: min(860px, calc(100vw - 8rem));
   }
 
   .sk-mp-lobby {

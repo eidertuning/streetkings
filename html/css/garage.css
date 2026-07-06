@@ -1039,11 +1039,11 @@
 /* -- Garage carousel and action alignment ---------------------------------- */
 
 .sk-garage-side {
-  top: clamp(8.8rem, 18vh, 12.5rem);
+  top: clamp(8.4rem, 16vh, 10.6rem);
   right: clamp(1rem, 2.4vw, 2.4rem);
   transform: none;
-  width: clamp(300px, 22vw, 410px);
-  gap: 0.55rem;
+  width: clamp(290px, 21vw, 390px);
+  gap: 0.42rem;
   z-index: 8;
   animation: garageSlideInRail 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -1054,25 +1054,25 @@
 }
 
 .sk-garage-card {
-  padding: clamp(0.82rem, 1.12vw, 1.05rem);
+  padding: clamp(0.66rem, 0.92vw, 0.86rem);
 }
 
 .sk-garage-level-card {
-  margin-top: 0.65rem;
-  padding-top: 0.68rem;
-  gap: 0.42rem;
+  margin-top: 0.48rem;
+  padding-top: 0.5rem;
+  gap: 0.32rem;
 }
 
 .sk-garage-actions {
   position: relative;
   z-index: 9;
-  gap: 0.5rem;
-  padding: 0.58rem;
+  gap: 0.38rem;
+  padding: 0.46rem;
   pointer-events: all;
 }
 
 .sk-garage-btn {
-  min-height: 2.75rem;
+  min-height: 2.34rem;
   pointer-events: all;
 }
 
@@ -1132,14 +1132,14 @@
 .sk-garage-vitals {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.5rem;
-  margin-top: 0.75rem;
+  gap: 0.42rem;
+  margin-top: 0.54rem;
 }
 
 .sk-garage-vital,
 .sk-garage-vital-price {
   min-width: 0;
-  padding: 0.65rem 0.7rem;
+  padding: 0.5rem 0.56rem;
   border: 1px solid var(--garage-border);
   background: rgba(255, 255, 255, 0.035);
 }
@@ -1155,9 +1155,9 @@
 .sk-garage-vital-head span,
 .sk-garage-vital-price span {
   font-family: var(--sk-font-ui);
-  font-size: clamp(0.55rem, 0.7vw, 0.64rem);
+  font-size: clamp(0.48rem, 0.58vw, 0.56rem);
   font-weight: 800;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--garage-muted);
 }
@@ -1165,14 +1165,14 @@
 .sk-garage-vital-head strong,
 .sk-garage-vital-price strong {
   font-family: var(--sk-font-body);
-  font-size: clamp(0.7rem, 1vw, 0.9rem);
+  font-size: clamp(0.62rem, 0.82vw, 0.78rem);
   color: var(--garage-text);
   white-space: nowrap;
 }
 
 .sk-garage-vital-track {
-  height: 0.32rem;
-  margin-top: 0.45rem;
+  height: 0.24rem;
+  margin-top: 0.34rem;
   background: rgba(255, 255, 255, 0.08);
   overflow: hidden;
 }
