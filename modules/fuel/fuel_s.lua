@@ -152,7 +152,7 @@ function SKFuel.GetRefuelPrice(entry, multiplier)
     return math.ceil(base * (tonumber(multiplier) or 1.0))
 end
 
-function SKFuel.RefuelVehicle(source, vehicleId, multiplier)
+function SKFuel.RefuelVehicle(source, vehicleId, multiplier, context)
     local document = SKSaves.getDocument(source)
     if not document or type(document.garage) ~= 'table' or type(document.garage.vehicles) ~= 'table' then
         return { ok = false, reason = 'no_active_document' }
@@ -192,11 +192,21 @@ function SKFuel.RefuelVehicle(source, vehicleId, multiplier)
         SKStats.increment(source, 'totalCashSpent', price)
     end
 
+    local logContext = context == 'garage_exit' and {
+        action = 'garage_exit_refuel',
+        title = 'Repostaje al salir del garaje',
+        publicMessage = ('Un jugador reposto %s antes de salir del garaje.'):format(entry.displayName or entry.modelName or 'un vehiculo'),
+    } or {
+        action = 'tablet_refuel',
+        title = 'Repostaje remoto',
+        publicMessage = ('Un jugador reposto %s desde la tablet.'):format(entry.displayName or entry.modelName or 'un vehiculo'),
+    }
+
     if SKLogs then
-        SKLogs.Module('garage', 'tablet_refuel', {
+        SKLogs.Module('garage', logContext.action, {
             source = source,
-            title = 'Repostaje remoto',
-            publicMessage = ('Un jugador reposto %s desde la tablet.'):format(entry.displayName or entry.modelName or 'un vehiculo'),
+            title = logContext.title,
+            publicMessage = logContext.publicMessage,
             details = ('vehicleId=%s\nmodel=%s\nfuel=100\nprice=%s\nbalance=%s'):format(vehicleId, entry.modelName or '-', price, document.economy.cash),
         }, 'admin')
     end
@@ -237,7 +247,16 @@ lib.callback.register('streetkings:fuel:tabletRefuel', function(source, vehicleI
     end
 
     local multiplier = fuelCfg.tablet and fuelCfg.tablet.priceMultiplier or 2.0
-    return SKFuel.RefuelVehicle(source, vehicleId, multiplier)
+    return SKFuel.RefuelVehicle(source, vehicleId, multiplier, 'tablet')
+end)
+
+lib.callback.register('streetkings:fuel:garageRefuel', function(source, vehicleId)
+    local fuelCfg = cfg()
+    if fuelCfg.enabled == false or (fuelCfg.station and fuelCfg.station.refuelVehicle == false) then
+        return { ok = false, reason = 'disabled' }
+    end
+
+    return SKFuel.RefuelVehicle(source, vehicleId, 1.0, 'garage_exit')
 end)
 
 RegisterNetEvent('streetkings:fuel:saveActive', function(fuelLevel, condition)

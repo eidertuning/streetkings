@@ -671,6 +671,19 @@ RegisterNUICallback('phone:vehicles:refuel', function(data, cb)
     cb(result)
 end)
 
+RegisterNUICallback('garage:refuelBeforeExit', function(data, cb)
+    local result = lib.callback.await('streetkings:fuel:garageRefuel', false, data and data.vehicleId)
+    if result and result.ok and result.isActive then
+        TriggerEvent('streetkings:fuel:remoteRefuel')
+        if garageVehicle ~= 0 and DoesEntityExist(garageVehicle) then
+            SetVehicleFuelLevel(garageVehicle, 100.0)
+            SetVehicleUndriveable(garageVehicle, false)
+            SetVehicleEngineOn(garageVehicle, true, true, false)
+        end
+    end
+    cb(result)
+end)
+
 RegisterNUICallback('garage:exit', function(_, cb)
     cb({})
     SKC.SetGameState(GameState.FREEROAM)

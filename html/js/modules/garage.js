@@ -16,6 +16,9 @@
     playerMaxLevel:   1,
     playerMoney:     0,
     confirmQuit:     false,
+    confirmExitRefuel: false,
+    exitRefuelBusy:  false,
+    exitRefuelError: '',
     drag:            { active: false, lastX: 0, lastY: 0 },
   };
 
@@ -146,7 +149,7 @@
   }
 
   function collectFocusables() {
-    if (state.confirmQuit) {
+    if (state.confirmQuit || state.confirmExitRefuel) {
       return Array.prototype.slice.call(document.querySelectorAll('.sk-garage-confirm-btn'));
     }
 
@@ -169,6 +172,15 @@
       for (var i = 0; i < list.length; i++) {
         if (list[i].dataset && list[i].dataset.action === 'cancel-quit') {
           return list[i];
+        }
+      }
+      return list[0] || null;
+    }
+
+    if (state.confirmExitRefuel) {
+      for (var r = 0; r < list.length; r++) {
+        if (list[r].dataset && list[r].dataset.action === 'confirm-refuel-exit') {
+          return list[r];
         }
       }
       return list[0] || null;
@@ -220,6 +232,10 @@
     onBack: function () {
       if (state.confirmQuit) {
         hideQuitConfirm();
+        return true;
+      }
+      if (state.confirmExitRefuel) {
+        hideExitRefuelConfirm();
         return true;
       }
       if (state.garageSettingsOpen) {
@@ -315,6 +331,96 @@
     els.root.appendChild(modal);
   }
 
+  function getActiveEntry() {
+    return state.vehicles && state.activeVehicleId ? state.vehicles[state.activeVehicleId] : null;
+  }
+
+  function getGarageRefuelPrice(entry) {
+    var fuel = entry && entry.fuel ? entry.fuel : {};
+    return Math.max(0, Number(fuel.refuelPrice || 0));
+  }
+
+  function shouldPromptExitRefuel() {
+    return getGarageRefuelPrice(getActiveEntry()) > 0;
+  }
+
+  function renderExitRefuelConfirm() {
+    var existing = els.root.querySelector('.sk-garage-exit-refuel-modal');
+    if (existing) {
+      existing.remove();
+    }
+
+    if (!state.confirmExitRefuel) {
+      return;
+    }
+
+    var entry = getActiveEntry();
+    var price = getGarageRefuelPrice(entry);
+
+    var modal = document.createElement('div');
+    modal.className = 'sk-garage-confirm-modal sk-garage-exit-refuel-modal';
+
+    var box = document.createElement('div');
+    box.className = 'sk-garage-confirm-box';
+
+    var title = document.createElement('h3');
+    title.className = 'sk-garage-confirm-title';
+    title.textContent = t('garage.refuel_exit_title');
+
+    var body = document.createElement('p');
+    body.className = 'sk-garage-confirm-body';
+    body.textContent = t('garage.refuel_exit_body', {
+      name: entry && entry.displayName ? entry.displayName : t('garage.active_vehicle'),
+      price: fmtMoney(price),
+    });
+
+    var error = document.createElement('p');
+    error.className = 'sk-garage-confirm-body sk-garage-confirm-error';
+    error.textContent = state.exitRefuelError || '';
+    error.style.display = state.exitRefuelError ? '' : 'none';
+
+    var actions = document.createElement('div');
+    actions.className = 'sk-garage-confirm-actions sk-garage-confirm-actions--stacked';
+
+    var cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.className = 'sk-garage-confirm-btn sk-garage-confirm-btn--secondary';
+    cancelBtn.dataset.action = 'cancel-refuel-exit';
+    cancelBtn.textContent = t('common.cancel');
+    cancelBtn.disabled = state.exitRefuelBusy;
+    cancelBtn.addEventListener('click', hideExitRefuelConfirm);
+
+    var skipBtn = document.createElement('button');
+    skipBtn.type = 'button';
+    skipBtn.className = 'sk-garage-confirm-btn sk-garage-confirm-btn--secondary';
+    skipBtn.dataset.action = 'skip-refuel-exit';
+    skipBtn.textContent = t('garage.exit_without_refuel');
+    skipBtn.disabled = state.exitRefuelBusy;
+    skipBtn.addEventListener('click', function () {
+      state.confirmExitRefuel = false;
+      renderExitRefuelConfirm();
+      exitGarageNow();
+    });
+
+    var confirmBtn = document.createElement('button');
+    confirmBtn.type = 'button';
+    confirmBtn.className = 'sk-garage-confirm-btn';
+    confirmBtn.dataset.action = 'confirm-refuel-exit';
+    confirmBtn.textContent = state.exitRefuelBusy ? t('garage.refueling') : t('garage.refuel_and_exit', { price: fmtMoney(price) });
+    confirmBtn.disabled = state.exitRefuelBusy;
+    confirmBtn.addEventListener('click', confirmRefuelAndExit);
+
+    actions.appendChild(cancelBtn);
+    actions.appendChild(skipBtn);
+    actions.appendChild(confirmBtn);
+    box.appendChild(title);
+    box.appendChild(body);
+    box.appendChild(error);
+    box.appendChild(actions);
+    modal.appendChild(box);
+    els.root.appendChild(modal);
+  }
+
   function renderGarageSettings() {
     var existing = els.root.querySelector('.sk-garage-settings-modal');
     if (existing) {
@@ -385,8 +491,11 @@
   }
 
   function showQuitConfirm() {
+    state.confirmExitRefuel = false;
+    state.exitRefuelError = '';
     state.confirmQuit = true;
     renderQuitConfirm();
+    renderExitRefuelConfirm();
     if (controllerEnabled) {
       scheduleControllerRefresh({ retainCurrent: false });
     }
@@ -396,6 +505,29 @@
     if (!state.confirmQuit) return;
     state.confirmQuit = false;
     renderQuitConfirm();
+    if (controllerEnabled) {
+      scheduleControllerRefresh({ retainCurrent: false });
+    }
+  }
+
+  function showExitRefuelConfirm() {
+    state.confirmQuit = false;
+    state.confirmExitRefuel = true;
+    state.exitRefuelBusy = false;
+    state.exitRefuelError = '';
+    renderQuitConfirm();
+    renderExitRefuelConfirm();
+    if (controllerEnabled) {
+      scheduleControllerRefresh({ retainCurrent: false });
+    }
+  }
+
+  function hideExitRefuelConfirm() {
+    if (!state.confirmExitRefuel) return;
+    state.confirmExitRefuel = false;
+    state.exitRefuelBusy = false;
+    state.exitRefuelError = '';
+    renderExitRefuelConfirm();
     if (controllerEnabled) {
       scheduleControllerRefresh({ retainCurrent: false });
     }
@@ -422,6 +554,43 @@
     state.confirmQuit = false;
     renderQuitConfirm();
     SK.nui.post('garage:quitToMainMenu');
+  }
+
+  function confirmRefuelAndExit() {
+    var entry = getActiveEntry();
+    if (!entry || state.exitRefuelBusy) return;
+
+    state.exitRefuelBusy = true;
+    state.exitRefuelError = '';
+    renderExitRefuelConfirm();
+
+    SK.nui.post('garage:refuelBeforeExit', { vehicleId: entry.id }).done(function (result) {
+      if (!result || result.ok !== true) {
+        state.exitRefuelBusy = false;
+        state.exitRefuelError = result && result.reason === 'insufficient_funds'
+          ? t('vehicles.refuel_no_cash')
+          : t('vehicles.refuel_failed');
+        renderExitRefuelConfirm();
+        return;
+      }
+
+      if (result.balance != null) {
+        state.playerMoney = result.balance;
+      }
+      if (result.fuel && state.vehicles[entry.id]) {
+        state.vehicles[entry.id].fuel = result.fuel;
+      }
+
+      state.confirmExitRefuel = false;
+      state.exitRefuelBusy = false;
+      state.exitRefuelError = '';
+      renderPanel(state.previewId || state.activeVehicleId);
+      exitGarageNow();
+    }).fail(function () {
+      state.exitRefuelBusy = false;
+      state.exitRefuelError = t('vehicles.refuel_failed');
+      renderExitRefuelConfirm();
+    });
   }
 
   function renderVehicleProgression(entry) {
@@ -582,6 +751,7 @@
     els.actions.appendChild(quitBtn);
 
     renderQuitConfirm();
+    renderExitRefuelConfirm();
     renderGarageSettings();
 
     if (controllerEnabled) {
@@ -677,9 +847,13 @@
     state.playerMaxLevel   = 1;
     state.playerMoney      = 0;
     state.confirmQuit      = false;
+    state.confirmExitRefuel = false;
+    state.exitRefuelBusy   = false;
+    state.exitRefuelError  = '';
     state.garageSettingsOpen = false;
     state.drag.active      = false;
     renderQuitConfirm();
+    renderExitRefuelConfirm();
     renderGarageSettings();
     controllerNav.disconnectObserver();
     setControllerEnabled(false);
@@ -714,6 +888,15 @@
   }
 
   function exitGarage() {
+    if (state.confirmExitRefuel) return;
+    if (shouldPromptExitRefuel()) {
+      showExitRefuelConfirm();
+      return;
+    }
+    exitGarageNow();
+  }
+
+  function exitGarageNow() {
     SK.nui.post('garage:exit');
   }
 
@@ -735,6 +918,8 @@
       if (e.key === 'Escape' && els.root.style.display !== 'none') {
         if (state.confirmQuit) {
           hideQuitConfirm();
+        } else if (state.confirmExitRefuel) {
+          hideExitRefuelConfirm();
         } else if (state.garageSettingsOpen) {
           hideGarageSettings();
         } else {
