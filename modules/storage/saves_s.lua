@@ -103,6 +103,17 @@ local function attachDiscordAvatars(source, slots)
     return slots
 end
 
+---@param value any
+---@return integer
+local function countMapEntries(value)
+    local count = 0
+    if type(value) ~= 'table' then return count end
+    for _ in pairs(value) do
+        count = count + 1
+    end
+    return count
+end
+
 ---@param row table
 ---@return SKSaveSlotDto
 local function rowToSlot(row)
@@ -115,6 +126,10 @@ local function rowToSlot(row)
             photoUrl = '',
             level = document.progression and document.progression.level or 1,
             cash = document.economy and document.economy.cash or 0,
+            vehiclesOwned = countMapEntries(document.garage and document.garage.vehicles),
+            racesWon = document.stats and document.stats.racesWon or 0,
+            topSpeedMph = document.stats and document.stats.topSpeedMph or 0,
+            totalMilesDriven = document.stats and document.stats.totalMilesDriven or 0,
         }
     end
     return slot

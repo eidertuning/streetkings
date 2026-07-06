@@ -1720,3 +1720,464 @@
   color: #fff;
   box-shadow: 0 0 22px rgba(255, 10, 115, 0.14);
 }
+
+/* -- Full-width rail main menu --------------------------------------------- */
+
+.sk-mainmenu-frame {
+  padding: clamp(0.9rem, 1.8vh, 1.35rem) clamp(1rem, 2vw, 1.8rem);
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.sk-mainmenu-frame .menu-views-stack {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  height: 100%;
+  align-self: stretch;
+}
+
+.sk-mainmenu-frame .menu-view,
+.sk-mainmenu-frame .menu-view.is-active {
+  width: 100%;
+  height: 100%;
+}
+
+#viewMain .panel,
+#viewSaves .saves-panel {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  min-width: 0;
+  max-width: none;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  clip-path: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+#viewMain .panel::before,
+#viewMain .panel::after,
+#viewSaves .saves-panel::before,
+#viewSaves .saves-panel::after {
+  display: none;
+}
+
+#viewMain .panel {
+  display: grid;
+  grid-template-columns: minmax(12rem, 16rem) minmax(18rem, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(0.75rem, 1.4vh, 1.1rem);
+}
+
+.main-menu-topbar,
+.main-menu-patchnotes,
+.main-menu-socials,
+#viewMain .menu,
+#viewSaves .save-cards,
+.save-preview,
+#viewSaves .saves-back {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(8, 8, 13, 0.72), rgba(12, 12, 19, 0.48)),
+    linear-gradient(90deg, rgba(255, 10, 115, 0.08), rgba(140, 236, 255, 0.04));
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.main-menu-topbar {
+  grid-column: 1;
+  grid-row: 1;
+  min-height: clamp(4.2rem, 8vh, 5.7rem);
+  padding: 0.52rem 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-logo,
+#viewMain .brand-logo {
+  width: clamp(9.8rem, 13vw, 14.6rem);
+  max-height: clamp(3.3rem, 7vh, 4.8rem);
+  margin: 0;
+  align-self: center;
+  transform: none;
+}
+
+.brand-logo img,
+#viewMain .brand-logo img {
+  max-height: clamp(3.3rem, 7vh, 4.8rem);
+}
+
+#viewMain .main-menu-patchnotes {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0;
+  max-height: none;
+  min-height: clamp(4.2rem, 8vh, 5.7rem);
+  padding: 0.62rem 0.9rem;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.main-menu-patchnotes-head {
+  margin: 0 0 0.36rem;
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(0.66rem, 0.8vw, 0.82rem);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.main-menu-patchnotes ul {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: 0.55rem;
+  font-size: clamp(0.68rem, 0.76vw, 0.82rem);
+  line-height: 1.22;
+}
+
+.main-menu-patchnotes li {
+  -webkit-line-clamp: 2;
+}
+
+.main-menu-socials {
+  grid-column: 3;
+  grid-row: 1;
+  margin: 0;
+  padding: 0.62rem;
+  min-height: clamp(4.2rem, 8vh, 5.7rem);
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.main-menu-social {
+  width: auto;
+  height: auto;
+  min-width: clamp(6rem, 7.4vw, 8.6rem);
+  padding: 0.55rem 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.48rem;
+  color: rgba(244, 244, 247, 0.88);
+  background: rgba(8, 8, 13, 0.68);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 8px;
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(0.72rem, 0.82vw, 0.92rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.main-menu-social i {
+  color: #ff0a73;
+  font-size: 0.96rem;
+}
+
+.main-menu-social:hover,
+.main-menu-social:focus-visible,
+#app.is-mainmenu-controller-nav .main-menu-social.is-controller-focused {
+  transform: translateY(-1px);
+  color: #fff;
+  background: rgba(255, 10, 115, 0.16);
+  border-color: rgba(255, 10, 115, 0.62);
+}
+
+#viewMain .menu {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  margin: 0;
+  padding: 0.62rem;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+#viewMain .menu li {
+  min-width: 0;
+}
+
+#viewMain .menu button {
+  min-height: clamp(4.2rem, 8.5vh, 5.9rem);
+  height: 100%;
+  padding: 0.76rem;
+  justify-content: flex-start;
+  gap: 0.62rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.82rem, 1.04vw, 1.08rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: 0;
+  white-space: normal;
+  border-radius: 8px;
+  border-color: rgba(255, 255, 255, 0.10);
+}
+
+#viewMain .menu button i {
+  flex: 0 0 2.45rem;
+  width: 2.45rem;
+  height: 2.45rem;
+  font-size: 1rem;
+}
+
+#viewMain .menu button:hover,
+#viewMain .menu button:focus-visible,
+#app.is-mainmenu-controller-nav #viewMain .menu button.is-controller-focused {
+  transform: translateY(-2px);
+}
+
+#viewSaves .saves-panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(0.75rem, 1.4vh, 1.1rem);
+}
+
+#viewSaves .saves-topbar {
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: minmax(10rem, 14rem) minmax(12rem, 18rem) minmax(24rem, 1fr) auto;
+  gap: 0.72rem;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
+  min-height: clamp(5.2rem, 10vh, 7rem);
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+#viewSaves .saves-logo,
+#viewSaves .saves-head,
+#viewSaves .save-preview,
+#viewSaves .saves-socials {
+  min-height: clamp(5.2rem, 10vh, 7rem);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(8, 8, 13, 0.72), rgba(12, 12, 19, 0.48)),
+    linear-gradient(90deg, rgba(255, 10, 115, 0.08), rgba(140, 236, 255, 0.04));
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+#viewSaves .saves-logo {
+  width: auto;
+  max-height: none;
+  margin: 0;
+  padding: 0.55rem 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#viewSaves .saves-logo img {
+  max-height: clamp(3.6rem, 8vh, 5.2rem);
+}
+
+#viewSaves .saves-head {
+  margin: 0;
+  padding: 0.74rem 0.9rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.32rem;
+}
+
+#viewSaves .saves-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1.55rem, 2.45vw, 2.65rem);
+  line-height: 0.98;
+  letter-spacing: 0;
+  text-shadow: 0 12px 30px rgba(255, 10, 115, 0.18);
+}
+
+#viewSaves .saves-sub {
+  width: fit-content;
+  padding-left: 0.5rem;
+  border-left: 3px solid #ff0a73;
+  font-size: clamp(0.62rem, 0.78vw, 0.82rem);
+  letter-spacing: 0.18em;
+}
+
+.save-preview {
+  padding: 0.74rem 0.86rem;
+  display: grid;
+  grid-template-columns: 1.25fr repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  align-content: center;
+}
+
+.save-preview div {
+  min-width: 0;
+  padding: 0.44rem 0.54rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.save-preview span {
+  display: block;
+  margin-bottom: 0.18rem;
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(0.58rem, 0.72vw, 0.72rem);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(140, 236, 255, 0.82);
+}
+
+.save-preview strong {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.92rem, 1.3vw, 1.35rem);
+  font-weight: 800;
+  color: rgba(244, 244, 247, 0.96);
+}
+
+#viewSaves .saves-socials {
+  padding: 0.62rem;
+}
+
+#viewSaves .save-cards {
+  grid-row: 3;
+  min-height: 0;
+  margin: 0;
+  padding: 0.62rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: none;
+  gap: 0.65rem;
+}
+
+#viewSaves .save-card {
+  min-height: clamp(6.8rem, 13vh, 9.2rem);
+  height: auto;
+  padding: 0.76rem;
+  gap: 0.75rem;
+  align-items: center;
+  background:
+    linear-gradient(145deg, rgba(8, 8, 13, 0.78), rgba(12, 12, 19, 0.54)),
+    linear-gradient(90deg, rgba(255, 10, 115, 0.07), rgba(140, 236, 255, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+#viewSaves .save-card.is-previewed,
+#viewSaves .save-card:hover,
+#viewSaves .save-card:focus-visible,
+#app.is-mainmenu-controller-nav #viewSaves .save-card.is-controller-focused {
+  transform: translateY(-2px) !important;
+  border-color: rgba(255, 10, 115, 0.68);
+  background:
+    linear-gradient(145deg, rgba(255, 10, 115, 0.14), rgba(12, 12, 19, 0.62)),
+    linear-gradient(90deg, rgba(255, 10, 115, 0.08), rgba(140, 236, 255, 0.08));
+}
+
+#viewSaves .save-portrait {
+  width: clamp(3.3rem, 5.8vw, 5.2rem);
+  height: clamp(3.3rem, 5.8vw, 5.2rem);
+  border-radius: 8px;
+}
+
+#viewSaves .save-name {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1.02rem, 1.62vw, 1.62rem);
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+#viewSaves .save-slot {
+  font-size: clamp(0.62rem, 0.8vw, 0.78rem);
+  letter-spacing: 0.18em;
+}
+
+#viewSaves .save-meta {
+  gap: 0.35rem;
+  font-size: clamp(0.62rem, 0.78vw, 0.78rem);
+}
+
+#viewSaves .save-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+}
+
+#viewSaves .save-meta i {
+  color: #ff0a73;
+}
+
+#viewSaves .save-card-delete {
+  top: 0.56rem;
+  right: 0.56rem;
+  border-radius: 8px;
+}
+
+#viewSaves .saves-back {
+  position: absolute;
+  left: clamp(1rem, 2vw, 1.8rem);
+  bottom: calc(clamp(0.9rem, 1.8vh, 1.35rem) + clamp(7.65rem, 14.2vh, 10rem));
+  width: auto;
+  min-height: 2.55rem;
+  padding: 0.48rem 0.75rem;
+  margin: 0;
+}
+
+@media (max-width: 1366px), (max-height: 768px) {
+  #viewMain .panel {
+    grid-template-columns: minmax(9rem, 12rem) minmax(15rem, 1fr) auto;
+    gap: 0.55rem;
+  }
+
+  .main-menu-topbar,
+  #viewMain .main-menu-patchnotes,
+  .main-menu-socials {
+    min-height: 4.1rem;
+  }
+
+  #viewMain .menu {
+    gap: 0.42rem;
+    padding: 0.48rem;
+  }
+
+  #viewMain .menu button {
+    min-height: 3.8rem;
+    padding: 0.58rem;
+    font-size: clamp(0.72rem, 1vw, 0.94rem);
+  }
+
+  #viewMain .menu button i {
+    width: 2.05rem;
+    height: 2.05rem;
+    flex-basis: 2.05rem;
+  }
+
+  .main-menu-social {
+    min-width: 5.2rem;
+    padding-inline: 0.5rem;
+    font-size: 0.68rem;
+  }
+
+  .main-menu-patchnotes ul {
+    font-size: 0.64rem;
+  }
+
+  #viewSaves .saves-topbar {
+    grid-template-columns: minmax(8.5rem, 11rem) minmax(10rem, 14rem) minmax(20rem, 1fr) auto;
+    gap: 0.52rem;
+  }
+
+  .save-preview {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.35rem;
+  }
+
+  #viewSaves .save-card {
+    min-height: 6.25rem;
+  }
+}

@@ -61,7 +61,7 @@
     if (context === 'main') {
       nodes = document.querySelectorAll('#viewMain .menu button:not([disabled]):not(.is-disabled), #viewMain .main-menu-social');
     } else if (context === 'saves') {
-      nodes = document.querySelectorAll('#saveCards .save-card, #saveCards .save-card-delete, #btnSaveBack');
+      nodes = document.querySelectorAll('#saveCards .save-card, #saveCards .save-card-delete, #btnSaveBack, #viewSaves .main-menu-social');
     } else if (context === 'nameInput') {
       nodes = document.querySelectorAll('#btnNameCancel, #btnNameConfirm');
     } else if (context === 'deleteConfirm') {
@@ -224,6 +224,40 @@
     if (url) window.invokeNative('openUrl', url);
   }
 
+  function fmtCount(value) {
+    var n = Number(value || 0);
+    if (!isFinite(n)) n = 0;
+    return Math.round(n).toLocaleString('en-US');
+  }
+
+  function fmtMoney(value) {
+    return '$' + fmtCount(value);
+  }
+
+  function setSavePreview(slot, cardEl) {
+    var hasSave = !!(slot && slot.occupied);
+    var profile = hasSave && slot.profile ? slot.profile : {};
+    var name = hasSave ? (profile.alias || slot.name || t('main_menu.preview_player')) : t('main_menu.create_new_save');
+    var cash = hasSave ? fmtMoney(profile.cash || 0) : '--';
+    var cars = hasSave ? fmtCount(profile.vehiclesOwned || 0) : '--';
+    var records = hasSave
+      ? t('main_menu.preview_record_line', {
+          wins: fmtCount(profile.racesWon || 0),
+          speed: fmtCount(profile.topSpeedMph || 0),
+        })
+      : t('main_menu.preview_empty');
+
+    $('#savePreviewName').text(name);
+    $('#savePreviewCash').text(cash);
+    $('#savePreviewCars').text(cars);
+    $('#savePreviewRecords').text(records);
+
+    if (cardEl) {
+      $('#saveCards .save-card').removeClass('is-previewed');
+      $(cardEl).addClass('is-previewed');
+    }
+  }
+
   function getProfileInitials(slot) {
     var profile = slot.profile || {};
     var label = profile.alias || slot.name || 'SK';
@@ -383,9 +417,11 @@
 
   function renderSaveCards(slots, slotCount) {
     var n = slotCount != null ? slotCount : saveSlotCount;
+    slots = Array.isArray(slots) ? slots : buildEmptySlots(n);
     var $root = $('#saveCards').empty();
     for (var i = 0; i < n; i++) {
       (function (slot) {
+        slot = slot || { slotIndex: i + 1, occupied: false, id: '', name: '', detail: '' };
         var hasSave = slot.occupied;
         var slotIndex = slot.slotIndex;
         var profile = slot.profile || {};
@@ -418,8 +454,9 @@
         if (hasSave) {
           $body.append(
             $('<span/>', { class: 'save-meta' })
-              .append($('<span/>', { text: t('common.level') + ' ' + (profile.level || 1) }))
-              .append($('<span/>', { text: '$' + Number(profile.cash || 0).toLocaleString('en-US') }))
+              .append($('<span/>', { html: '<i class="fa-solid fa-star"></i>' + t('common.level') + ' ' + (profile.level || 1) }))
+              .append($('<span/>', { html: '<i class="fa-solid fa-wallet"></i>' + fmtMoney(profile.cash || 0) }))
+              .append($('<span/>', { html: '<i class="fa-solid fa-car-side"></i>' + fmtCount(profile.vehiclesOwned || 0) }))
           );
         }
 
@@ -447,9 +484,24 @@
           }
         });
 
+        $card.on('mouseenter focusin', function () {
+          setSavePreview(slot, $card);
+        });
+
         $root.append($card);
       })(slots[i]);
     }
+
+    var previewSlot = null;
+    for (var j = 0; j < n; j++) {
+      if (slots[j] && slots[j].occupied) {
+        previewSlot = slots[j];
+        break;
+      }
+    }
+    if (!previewSlot && slots[0]) previewSlot = slots[0];
+    setSavePreview(previewSlot, $('#saveCards .save-card').get(0));
+
     if (controllerEnabled) {
       scheduleControllerRefresh({ retainCurrent: false });
     }

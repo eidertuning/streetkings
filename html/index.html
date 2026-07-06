@@ -19,12 +19,14 @@
       <div class="menu-views-stack">
         <div id="viewMain" class="menu-view is-active">
           <div class="panel">
+            <div class="main-menu-topbar">
             <h1 class="brand brand-logo" aria-label="Five Horizon Motorsport">
               <img src="assets/fhm.png" alt="Five Horizon Motorsport" draggable="false" />
             </h1>
+            </div>
             <ul class="menu">
               <li><button type="button" id="btnContinue"><i class="fa-solid fa-play"></i><span data-i18n="main_menu.continue">Continuar</span></button></li>
-              <li><button type="button" id="btnPlay"><i class="fa-solid fa-flag-checkered"></i><span data-i18n="main_menu.play">Jugar</span></button></li>
+              <li><button type="button" id="btnPlay"><i class="fa-solid fa-users-viewfinder"></i><span data-i18n="main_menu.play">Seleccionar jugador</span></button></li>
               <li><button type="button" id="btnCustomizeAvatar"><i class="fa-solid fa-user-gear"></i><span data-i18n="main_menu.customize_avatar">Personalizar Avatar</span></button></li>
               <li><button type="button" id="btnCredits"><i class="fa-solid fa-code"></i><span data-i18n="main_menu.credits">Créditos</span></button></li>
               <li><button type="button" id="btnExitGame"><i class="fa-solid fa-right-from-bracket"></i><span data-i18n="main_menu.exit_game">Salir del juego</span></button></li>
@@ -41,20 +43,45 @@
               </ul>
             </div>
             <div class="main-menu-socials" aria-label="Social links">
-              <button type="button" class="main-menu-social" data-social-link="discord" aria-label="Discord"><i class="fa-brands fa-discord"></i></button>
-              <button type="button" class="main-menu-social" data-social-link="tiktok" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></button>
-              <button type="button" class="main-menu-social" data-social-link="tebex" aria-label="Tebex"><i class="fa-solid fa-cart-shopping"></i></button>
+              <button type="button" class="main-menu-social" data-social-link="discord" aria-label="Discord"><i class="fa-brands fa-discord"></i><span>Discord</span></button>
+              <button type="button" class="main-menu-social" data-social-link="tiktok" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i><span>TikTok</span></button>
+              <button type="button" class="main-menu-social" data-social-link="tebex" aria-label="Tebex"><i class="fa-solid fa-cart-shopping"></i><span>Tebex</span></button>
             </div>
           </div>
         </div>
         <div id="viewSaves" class="menu-view is-off-right">
           <div class="panel saves-panel">
-            <div class="saves-head">
-              <div class="saves-logo" aria-hidden="true">
+            <div class="main-menu-topbar saves-topbar">
+              <div class="saves-logo" aria-label="Five Horizon Motorsport">
                 <img src="assets/fhm.png" alt="" draggable="false" />
               </div>
-              <h2 class="saves-title" data-i18n="main_menu.choose_save">Elige partida</h2>
-              <p class="saves-sub" data-i18n="main_menu.select_slot">Seleccione una ranura</p>
+              <div class="saves-head">
+                <p class="saves-sub" data-i18n="main_menu.select_slot">Seleccione una ranura</p>
+                <h2 class="saves-title" data-i18n="main_menu.choose_save">Seleccionar jugador</h2>
+              </div>
+              <div class="save-preview" id="savePreview">
+                <div>
+                  <span data-i18n="main_menu.preview_player">Jugador</span>
+                  <strong id="savePreviewName">--</strong>
+                </div>
+                <div>
+                  <span data-i18n="main_menu.preview_cash">Efectivo</span>
+                  <strong id="savePreviewCash">--</strong>
+                </div>
+                <div>
+                  <span data-i18n="main_menu.preview_cars">Coches</span>
+                  <strong id="savePreviewCars">--</strong>
+                </div>
+                <div>
+                  <span data-i18n="main_menu.preview_records">Records</span>
+                  <strong id="savePreviewRecords">--</strong>
+                </div>
+              </div>
+              <div class="main-menu-socials saves-socials" aria-label="Social links">
+                <button type="button" class="main-menu-social" data-social-link="discord" aria-label="Discord"><i class="fa-brands fa-discord"></i><span>Discord</span></button>
+                <button type="button" class="main-menu-social" data-social-link="tiktok" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i><span>TikTok</span></button>
+                <button type="button" class="main-menu-social" data-social-link="tebex" aria-label="Tebex"><i class="fa-solid fa-cart-shopping"></i><span>Tebex</span></button>
+              </div>
             </div>
             <div class="save-cards" id="saveCards"></div>
             <button type="button" class="btn-back saves-back" id="btnSaveBack"><i class="fa-solid fa-arrow-left"></i><span data-i18n="common.back">Atrás</span></button>
