@@ -502,6 +502,47 @@
   margin-top: 0;
 }
 
+.sk-speedo-analog-vital-ticks {
+  pointer-events: none;
+}
+
+.sk-speedo-analog-vital-tick {
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.58;
+  transition: opacity 120ms linear, stroke 160ms ease, filter 160ms ease;
+}
+
+.sk-speedo-analog-vital-tick.is-active {
+  opacity: 0.96;
+}
+
+.sk-speedo-analog-vital-ticks--fuel .sk-speedo-analog-vital-tick.is-active {
+  stroke: #27e985;
+  filter: drop-shadow(0 0 4px rgba(39, 233, 133, 0.45));
+}
+
+.sk-speedo-analog-vital-ticks--condition .sk-speedo-analog-vital-tick.is-active {
+  stroke: #8cecff;
+  filter: drop-shadow(0 0 4px rgba(140, 236, 255, 0.42));
+}
+
+.sk-speedo-analog-vital-ticks.is-low .sk-speedo-analog-vital-tick.is-active {
+  stroke: #ffd039;
+  filter: drop-shadow(0 0 5px rgba(255, 208, 57, 0.52));
+}
+
+.sk-speedo-analog-vital-ticks.is-critical .sk-speedo-analog-vital-tick.is-active {
+  stroke: #ff3b63;
+  filter: drop-shadow(0 0 6px rgba(255, 59, 99, 0.58));
+}
+
+.sk-speedo-analog-vital-ticks.is-disabled .sk-speedo-analog-vital-tick.is-active {
+  stroke: #8cecff;
+}
+
 .sk-speedo-vitals--analog {
   position: absolute;
   inset: 0;
@@ -515,54 +556,41 @@
 
 .sk-speedo-vitals--analog .sk-speedo-vital {
   position: absolute;
-  top: 50%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   grid-template-columns: none;
-  gap: 0.18rem;
-  width: 1.45rem;
-  height: 5.95rem;
-  transform: translateY(-50%);
+  gap: 0.22rem;
+  width: auto;
+  height: auto;
+  padding: 0.06rem 0.2rem;
+  border: 0;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 999px;
+  transform: none;
 }
 
 .sk-speedo-vitals--analog .sk-speedo-vital--fuel {
-  left: -1.06rem;
+  left: 10px;
+  bottom: 15px;
 }
 
 .sk-speedo-vitals--analog .sk-speedo-vital--condition {
-  right: -1.06rem;
+  right: 10px;
+  bottom: 15px;
 }
 
 .sk-speedo-vitals--analog .sk-speedo-vital-label,
 .sk-speedo-vitals--analog .sk-speedo-vital-value {
-  width: 2rem;
-  font-size: 0.38rem;
-  letter-spacing: 0.06em;
+  width: auto;
+  font-size: 0.36rem;
+  letter-spacing: 0.05em;
   text-align: center;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.72);
 }
 
 .sk-speedo-vitals--analog .sk-speedo-vital-value {
-  font-size: 0.42rem;
-}
-
-.sk-speedo-vitals--analog .sk-speedo-vital-meter {
-  display: flex;
-  align-items: flex-end;
-  width: 0.22rem;
-  height: 4.45rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.13);
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.10),
-    0 0 10px rgba(0, 0, 0, 0.45);
-}
-
-.sk-speedo-vitals--analog .sk-speedo-vital-fill {
-  width: 100% !important;
-  height: var(--sk-vital-pct, 100%);
-  border-radius: 999px;
-  box-shadow: 0 0 8px rgba(255, 10, 115, 0.35);
+  font-size: 0.4rem;
+  color: rgba(255, 255, 255, 0.84);
 }

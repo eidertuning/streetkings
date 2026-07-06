@@ -20,15 +20,17 @@
   var $analogGear     = null;
   var $analogOdoDigits = null;
   var $analogOdoUnit  = null;
-  var $analogFuelBar  = null;
   var $analogFuelValue = null;
-  var $analogConditionBar = null;
   var $analogConditionValue = null;
   var analogNeedle    = null;
   var analogRpmArc    = null;
   var analogNitrousTrack = null;
   var analogNitrousArc = null;
   var analogTicksG    = null;
+  var analogFuelTicksG = null;
+  var analogConditionTicksG = null;
+  var analogFuelTickLines = [];
+  var analogConditionTickLines = [];
 
   var lastGear        = null;
   var lastMetric      = false;
@@ -46,6 +48,7 @@
   var NITROUS_ARC_RADIUS = 87;
   var NITROUS_ARC_CIRCUM = 2 * Math.PI * NITROUS_ARC_RADIUS;
   var NITROUS_ARC_SWEEP = NITROUS_ARC_CIRCUM * (ANALOG_SWEEP / 360);
+  var ANALOG_VITAL_TICK_COUNT = 22;
 
   var ticksBuilt      = false;
   var ticksMetric     = false;
@@ -83,11 +86,90 @@
     $vital.toggleClass('is-low', !disabled && clamped > 15 && clamped <= 35);
   }
 
+  function analogPolarPoint(cx, cy, radius, angleDeg) {
+    var angleRad = (angleDeg - 90) * Math.PI / 180;
+    return {
+      x: cx + radius * Math.cos(angleRad),
+      y: cy + radius * Math.sin(angleRad)
+    };
+  }
+
+  function analogArcPath(cx, cy, radius, startDeg, endDeg, sweepFlag) {
+    var start = analogPolarPoint(cx, cy, radius, startDeg);
+    var end = analogPolarPoint(cx, cy, radius, endDeg);
+    var largeArc = Math.abs(endDeg - startDeg) > 180 ? 1 : 0;
+    return [
+      'M', start.x.toFixed(2), start.y.toFixed(2),
+      'A', radius, radius, 0, largeArc, sweepFlag, end.x.toFixed(2), end.y.toFixed(2)
+    ].join(' ');
+  }
+
+  function buildAnalogVitalTicks(group, side) {
+    if (!group) return [];
+    var ns = 'http://www.w3.org/2000/svg';
+    var segments = [];
+    var cx = 100;
+    var cy = 100;
+    var radius = 97.4;
+    var bottomDeg = side === 'left' ? 183 : 177;
+    var topDeg = side === 'left' ? 338 : 22;
+    var totalDeg = Math.abs(topDeg - bottomDeg);
+    var stepDeg = totalDeg / ANALOG_VITAL_TICK_COUNT;
+    var segmentDeg = stepDeg * 0.68;
+    var sweepFlag = side === 'left' ? 1 : 0;
+
+    while (group.firstChild) group.removeChild(group.firstChild);
+
+    for (var i = 0; i < ANALOG_VITAL_TICK_COUNT; i++) {
+      var startDeg;
+      var endDeg;
+      if (side === 'left') {
+        startDeg = bottomDeg + i * stepDeg;
+        endDeg = startDeg + segmentDeg;
+      } else {
+        startDeg = bottomDeg - i * stepDeg;
+        endDeg = startDeg - segmentDeg;
+      }
+
+      var segment = document.createElementNS(ns, 'path');
+      segment.setAttribute('d', analogArcPath(cx, cy, radius, startDeg, endDeg, sweepFlag));
+      segment.setAttribute('class', 'sk-speedo-analog-vital-tick');
+      group.appendChild(segment);
+      segments.push(segment);
+    }
+
+    return segments;
+  }
+
+  function setAnalogVitalState($value, lines, pct, disabled) {
+    if (!$value || !$value.length) return;
+    var clamped = clampPct(pct);
+    var activePct = disabled ? 100 : clamped;
+    var activeCount = Math.round((activePct / 100) * lines.length);
+    var $vital = $value.closest('.sk-speedo-vital');
+    var group = lines.length ? lines[0].parentNode : null;
+
+    $value.text(disabled ? '\u221e' : Math.round(clamped) + '%');
+    $vital.toggleClass('is-disabled', !!disabled);
+    $vital.toggleClass('is-critical', !disabled && clamped <= 15);
+    $vital.toggleClass('is-low', !disabled && clamped > 15 && clamped <= 35);
+
+    if (group) {
+      group.classList.toggle('is-disabled', !!disabled);
+      group.classList.toggle('is-critical', !disabled && clamped <= 15);
+      group.classList.toggle('is-low', !disabled && clamped > 15 && clamped <= 35);
+    }
+
+    for (var i = 0; i < lines.length; i++) {
+      lines[i].classList.toggle('is-active', i < activeCount);
+    }
+  }
+
   function updateVitals(fuel, condition, fuelDisabled) {
     setVitalState($fuelBar, $fuelValue, fuel, fuelDisabled);
-    setVitalState($analogFuelBar, $analogFuelValue, fuel, fuelDisabled);
     setVitalState($conditionBar, $conditionValue, condition, false);
-    setVitalState($analogConditionBar, $analogConditionValue, condition, false);
+    setAnalogVitalState($analogFuelValue, analogFuelTickLines, fuel, fuelDisabled);
+    setAnalogVitalState($analogConditionValue, analogConditionTickLines, condition, false);
   }
 
   function buildTicks(metric) {
@@ -204,15 +286,15 @@
     $analogGear     = $('#skAnalogGear');
     $analogOdoDigits = $('#skAnalogOdometerDigits');
     $analogOdoUnit  = $('#skAnalogOdometerUnit');
-    $analogFuelBar  = $('#skAnalogFuel');
     $analogFuelValue = $('#skAnalogFuelValue');
-    $analogConditionBar = $('#skAnalogCondition');
     $analogConditionValue = $('#skAnalogConditionValue');
     analogNeedle    = document.getElementById('skAnalogNeedle');
     analogRpmArc    = document.getElementById('skAnalogRpmArc');
     analogNitrousTrack = document.getElementById('skAnalogNitrousTrack');
     analogNitrousArc = document.getElementById('skAnalogNitrousArc');
     analogTicksG    = document.getElementById('skAnalogTicks');
+    analogFuelTicksG = document.getElementById('skAnalogFuelTicks');
+    analogConditionTicksG = document.getElementById('skAnalogConditionTicks');
 
     var rpmTrack = document.getElementById('skAnalogRpmTrack');
     if (rpmTrack) {
@@ -227,6 +309,9 @@
     if (analogNitrousArc) {
       analogNitrousArc.style.strokeDasharray = '0 ' + NITROUS_ARC_CIRCUM;
     }
+    analogFuelTickLines = buildAnalogVitalTicks(analogFuelTicksG, 'left');
+    analogConditionTickLines = buildAnalogVitalTicks(analogConditionTicksG, 'right');
+    updateVitals(100, 100, false);
   });
 
   window.addEventListener('message', function (e) {
