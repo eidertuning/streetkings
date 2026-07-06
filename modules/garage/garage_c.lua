@@ -197,6 +197,15 @@ local function spawnDisplayVehicle(modelName, spawn, vehicleData, plate)
     SetEntityHeading(veh, spawn.w)
     applyVehicleData(veh, vehicleData)
     SetVehicleNumberPlateText(veh, plate)
+    if type(vehicleData) == 'table' then
+        local condition = tonumber(vehicleData.condition) or 100.0
+        condition = math.max(0.0, math.min(100.0, condition))
+        local health = math.max(100.0, condition * 10.0)
+        SetVehicleEngineHealth(veh, health)
+        SetVehicleBodyHealth(veh, health)
+        SetVehiclePetrolTankHealth(veh, health)
+        SetVehicleFuelLevel(veh, math.max(0.0, math.min(100.0, tonumber(vehicleData.fuelLevel) or 100.0)))
+    end
     SetVehicleDirtLevel(veh, 0.0)
     return veh
 end
@@ -652,6 +661,14 @@ end)
 
 RegisterNUICallback('phone:vehicles:getData', function(_, cb)
     cb(lib.callback.await('streetkings:garage:getPhoneOverview', false))
+end)
+
+RegisterNUICallback('phone:vehicles:refuel', function(data, cb)
+    local result = lib.callback.await('streetkings:fuel:tabletRefuel', false, data and data.vehicleId)
+    if result and result.ok and result.isActive then
+        TriggerEvent('streetkings:fuel:remoteRefuel')
+    end
+    cb(result)
 end)
 
 RegisterNUICallback('garage:exit', function(_, cb)

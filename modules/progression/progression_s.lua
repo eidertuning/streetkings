@@ -13,6 +13,14 @@ local DEALERSHIP_CLASS_UNLOCK_LEVELS = {
     [30] = 'S',
 }
 
+local function normalizePercent(value, fallback)
+    local n = tonumber(value)
+    if not n then n = fallback end
+    if n < 0 then return 0.0 end
+    if n > 100 then return 100.0 end
+    return math.floor(n * 10 + 0.5) / 10
+end
+
 ---@param source integer
 ---@param levelUps integer[]
 local function sendDealershipUnlockMessages(source, levelUps)
@@ -27,6 +35,7 @@ end
 ---@param vehicleData table
 ---@return table
 function SKProgression.ensureVehicleData(vehicleData)
+    local fuelDefaults = SKFuelConfig and SKFuelConfig.defaults or {}
     if type(vehicleData.xp) ~= 'number' or vehicleData.xp < 0 or vehicleData.xp % 1 ~= 0 then
         vehicleData.xp = 0
     end
@@ -51,6 +60,8 @@ function SKProgression.ensureVehicleData(vehicleData)
     if type(vehicleData.colors) ~= 'table' then
         vehicleData.colors = {}
     end
+    vehicleData.fuelLevel = normalizePercent(vehicleData.fuelLevel, tonumber(fuelDefaults.fuelLevel) or 100.0)
+    vehicleData.condition = normalizePercent(vehicleData.condition, tonumber(fuelDefaults.condition) or 100.0)
 
     vehicleData.level = math.max(1, math.min(vehicleData.level, SKProgression.VEHICLE_MAX_LEVEL))
     return vehicleData

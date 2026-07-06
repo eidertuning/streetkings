@@ -7,6 +7,7 @@
     vehicles: [],
     activeVehicleId: '',
     selectedVehicleId: '',
+    refuelNotice: '',
   };
 
   var els = {};
@@ -40,6 +41,16 @@
 
   function fmtCount(value) {
     return Math.floor(value || 0).toLocaleString('en-US');
+  }
+
+  function fmtMoney(value) {
+    return '$' + Math.floor(value || 0).toLocaleString('en-US');
+  }
+
+  function clampPct(value) {
+    var n = Number(value);
+    if (!isFinite(n)) n = 0;
+    return Math.max(0, Math.min(100, n));
   }
 
   function getVehicleById(vehicleId) {
@@ -200,6 +211,37 @@
     return html;
   }
 
+  function buildVehicleStatus(vehicle) {
+    var status = vehicle.fuel || {};
+    var fuel = clampPct(status.fuelLevel != null ? status.fuelLevel : vehicle.data && vehicle.data.fuelLevel);
+    var condition = clampPct(status.condition != null ? status.condition : vehicle.data && vehicle.data.condition);
+    var price = Number(status.refuelPriceRemote || 0);
+    var disabled = price <= 0;
+
+    return '<div class="phone-vehicles-status-panel">'
+      + '<div class="phone-vehicles-status-grid">'
+      + '<div class="phone-vehicles-status-card">'
+      + '<div class="phone-vehicles-status-top"><span>' + t('vehicles.fuel') + '</span><strong>' + Math.round(fuel) + '%</strong></div>'
+      + '<div class="phone-vehicles-status-bar phone-vehicles-status-bar--fuel"><span style="width:' + fuel.toFixed(1) + '%"></span></div>'
+      + '</div>'
+      + '<div class="phone-vehicles-status-card">'
+      + '<div class="phone-vehicles-status-top"><span>' + t('vehicles.condition') + '</span><strong>' + Math.round(condition) + '%</strong></div>'
+      + '<div class="phone-vehicles-status-bar phone-vehicles-status-bar--condition"><span style="width:' + condition.toFixed(1) + '%"></span></div>'
+      + '</div>'
+      + '</div>'
+      + '<div class="phone-vehicles-refuel-row">'
+      + '<div class="phone-vehicles-refuel-copy">'
+      + '<span>' + t('vehicles.remote_refuel') + '</span>'
+      + '<strong>' + (disabled ? t('vehicles.full_tank') : fmtMoney(price)) + '</strong>'
+      + '</div>'
+      + '<button type="button" class="phone-vehicles-refuel-btn" data-refuel-vehicle="' + escapeHtml(vehicle.id) + '"' + (disabled ? ' disabled' : '') + '>'
+      + t('vehicles.refuel')
+      + '</button>'
+      + '</div>'
+      + (state.refuelNotice ? '<div class="phone-vehicles-refuel-notice">' + escapeHtml(state.refuelNotice) + '</div>' : '')
+      + '</div>';
+  }
+
   function renderList() {
     if (!els.list) return;
 
@@ -277,6 +319,7 @@
       + '</div>'
       + '</div>'
       + '</div>'
+      + buildVehicleStatus(vehicle)
       + '<div class="phone-vehicles-section">'
       + '<div class="phone-vehicles-section-head">'
       + '<span class="phone-vehicles-section-title">' + t('vehicles.progression') + '</span>'
@@ -344,8 +387,37 @@
 
   function selectVehicle(vehicleId) {
     state.selectedVehicleId = vehicleId;
+    state.refuelNotice = '';
     renderList();
     renderPanel();
+  }
+
+  function refuelVehicle(vehicleId, button) {
+    if (!vehicleId) return;
+    if (button) button.disabled = true;
+    state.refuelNotice = '';
+
+    SK.nui.post('phone:vehicles:refuel', { vehicleId: vehicleId }).done(function (result) {
+      if (!result || result.ok !== true) {
+        if (result && result.reason === 'insufficient_funds') {
+          state.refuelNotice = t('vehicles.refuel_no_cash');
+        } else {
+          state.refuelNotice = t('vehicles.refuel_failed');
+        }
+        renderPanel();
+        return;
+      }
+
+      var vehicle = getVehicleById(vehicleId);
+      if (vehicle && result.fuel) {
+        vehicle.fuel = result.fuel;
+      }
+      state.refuelNotice = result.reason === 'already_full' ? t('vehicles.full_tank') : t('vehicles.refuel_done');
+      renderPanel();
+    }).fail(function () {
+      state.refuelNotice = t('vehicles.refuel_failed');
+      renderPanel();
+    });
   }
 
   function loadVehicles() {
@@ -358,6 +430,7 @@
       state.vehicles = data.vehicles || [];
       state.activeVehicleId = data.activeVehicleId || '';
       state.selectedVehicleId = state.activeVehicleId;
+      state.refuelNotice = '';
 
       if (!state.selectedVehicleId && state.vehicles.length) {
         state.selectedVehicleId = state.vehicles[0].id;
@@ -385,6 +458,14 @@
         var vehicleId = button.getAttribute('data-vehicle-id');
         if (!vehicleId || vehicleId === state.selectedVehicleId) return;
         selectVehicle(vehicleId);
+      });
+    }
+
+    if (els.panel) {
+      els.panel.addEventListener('click', function (event) {
+        var button = event.target.closest('[data-refuel-vehicle]');
+        if (!button) return;
+        refuelVehicle(button.getAttribute('data-refuel-vehicle'), button);
       });
     }
   });

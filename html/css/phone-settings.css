@@ -790,6 +790,109 @@
   background: linear-gradient(90deg, #ff006a 0%, #f59e0b 100%);
 }
 
+.phone-vehicles-status-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.phone-vehicles-status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.phone-vehicles-status-card {
+  padding: 0.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.phone-vehicles-status-top,
+.phone-vehicles-refuel-row,
+.phone-vehicles-refuel-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+}
+
+.phone-vehicles-status-top span,
+.phone-vehicles-refuel-copy span {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.5rem, 0.68vw, 0.58rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.48);
+}
+
+.phone-vehicles-status-top strong,
+.phone-vehicles-refuel-copy strong {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.72rem, 1vw, 0.9rem);
+  color: rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
+}
+
+.phone-vehicles-status-bar {
+  height: 0.35rem;
+  margin-top: 0.55rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.phone-vehicles-status-bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #facc15);
+}
+
+.phone-vehicles-status-bar--condition span {
+  background: linear-gradient(90deg, #8cecff, #ff006a);
+}
+
+.phone-vehicles-refuel-row {
+  padding: 0.55rem 0.65rem;
+  border: 1px solid rgba(255, 0, 106, 0.18);
+  background: rgba(255, 0, 106, 0.06);
+}
+
+.phone-vehicles-refuel-copy {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.phone-vehicles-refuel-btn {
+  border: 1px solid rgba(255, 0, 106, 0.45);
+  background: rgba(255, 0, 106, 0.16);
+  color: #ff006a;
+  min-height: 2.15rem;
+  padding: 0 0.85rem;
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.54rem, 0.75vw, 0.64rem);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.phone-vehicles-refuel-btn:disabled {
+  opacity: 0.42;
+  cursor: default;
+}
+
+.phone-vehicles-refuel-notice {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.56rem, 0.76vw, 0.66rem);
+  color: #22c55e;
+}
+
 .phone-vehicles-mod-card,
 .phone-vehicles-future-row,
 .phone-vehicles-event-row {

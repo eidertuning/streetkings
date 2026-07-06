@@ -46,9 +46,9 @@ local function setupPoints()
 
         local wpId = SKWaypoint.Create({
             coords       = coords,
-            text         = 'Repair',
+            text         = _L('lua.prompts.fuel_station'),
             color        = COLOR_READY,
-            icon         = 'wrench',
+            icon         = 'gas-pump',
             showDist     = true,
             groundBeam   = true,
             maxRender    = 250.0,
@@ -64,11 +64,26 @@ local function setupPoints()
                 if not canRepair or not hasLeft then return end
 
                 local veh = GetVehiclePedIsIn(PlayerPedId(), false)
-                SetVehicleFixed(veh)
-                SetVehicleDeformationFixed(veh)
-                SetVehicleEngineHealth(veh, 1000.0)
-                SetVehiclePetrolTankHealth(veh, 1000.0)
-                SetVehicleDirtLevel(veh, 0.0)
+                local stationCfg = SKFuelConfig and SKFuelConfig.station or {}
+                local shouldRepair = stationCfg.repairVehicle ~= false
+                local shouldRefuel = stationCfg.refuelVehicle ~= false
+                local shouldWash = stationCfg.washVehicle ~= false
+
+                if shouldRepair then
+                    SetVehicleFixed(veh)
+                    SetVehicleDeformationFixed(veh)
+                    SetVehicleEngineHealth(veh, 1000.0)
+                    SetVehicleBodyHealth(veh, 1000.0)
+                    SetVehiclePetrolTankHealth(veh, 1000.0)
+                end
+
+                if shouldWash then
+                    SetVehicleDirtLevel(veh, 0.0)
+                end
+
+                if shouldRefuel then
+                    TriggerEvent('streetkings:fuel:stationRefill')
+                end
 
                 canRepair  = false
                 hasLeft    = false
@@ -76,7 +91,10 @@ local function setupPoints()
                 setAllWaypointColor(COLOR_COOLDOWN)
 
                 TriggerServerEvent('streetkings:stats:repair')
-                SKNotify({ title = _L('lua.notify.vehicle_repaired'), type = 'success' })
+                SKNotify({
+                    title = shouldRefuel and _L('lua.notify.vehicle_repaired_refueled') or _L('lua.notify.vehicle_repaired'),
+                    type = 'success',
+                })
 
                 CreateThread(function()
                     Wait(REPAIR_COOLDOWN)

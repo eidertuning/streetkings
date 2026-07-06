@@ -44,6 +44,7 @@
     els.carName     = document.getElementById('garageCarName');
     els.activeBadge = document.getElementById('garageActiveBadge');
     els.actions     = document.getElementById('garageActions');
+    els.vitals      = document.getElementById('garageVitals');
     els.viewport    = els.root.querySelector('.sk-garage-viewport');
     els.playerMoney = document.getElementById('garagePlayerMoney');
     els.playerLevel = document.getElementById('garagePlayerLevel');
@@ -443,6 +444,39 @@
     els.vehicleLevelCap.textContent = 'Max ' + (prog.maxLevel || 1);
   }
 
+  function clampPct(value) {
+    var n = Number(value);
+    if (!isFinite(n)) n = 0;
+    return Math.max(0, Math.min(100, n));
+  }
+
+  function renderVitalRow(label, value, className) {
+    var pct = clampPct(value);
+    return '<div class="sk-garage-vital ' + className + '">'
+      + '<div class="sk-garage-vital-head">'
+      + '<span>' + label + '</span>'
+      + '<strong>' + Math.round(pct) + '%</strong>'
+      + '</div>'
+      + '<div class="sk-garage-vital-track"><span style="width:' + pct.toFixed(1) + '%"></span></div>'
+      + '</div>';
+  }
+
+  function renderVehicleVitals(entry) {
+    if (!els.vitals) return;
+    var fuel = entry && entry.fuel ? entry.fuel : {};
+    var fuelLevel = fuel.fuelLevel != null ? fuel.fuelLevel : entry.data && entry.data.fuelLevel;
+    var condition = fuel.condition != null ? fuel.condition : entry.data && entry.data.condition;
+    var price = Number(fuel.refuelPriceRemote || 0);
+
+    els.vitals.innerHTML = ''
+      + renderVitalRow(t('garage.fuel'), fuelLevel, 'sk-garage-vital--fuel')
+      + renderVitalRow(t('garage.condition'), condition, 'sk-garage-vital--condition')
+      + '<div class="sk-garage-vital-price">'
+      + '<span>' + t('garage.remote_refuel') + '</span>'
+      + '<strong>' + (price > 0 ? fmtMoney(price) : t('garage.full_tank')) + '</strong>'
+      + '</div>';
+  }
+
   function renderPlayerProgression() {
     var fill = 100;
     var xpText = t('garage.max_level');
@@ -509,6 +543,7 @@
     els.activeBadge.style.display = isActive ? '' : 'none';
     renderPlayerProgression();
     renderVehicleProgression(entry);
+    renderVehicleVitals(entry);
 
     els.actions.innerHTML = '';
 

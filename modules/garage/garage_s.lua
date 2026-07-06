@@ -20,6 +20,12 @@ local function buildGarageVehicleDto(entry, imageEntry)
         image = SKResolveVehicleImage(entry.modelName, entry.image, imageEntry),
         sortIndex = entry.sortIndex,
         plate = entry.plate,
+        fuel = SKFuel and SKFuel.BuildVehicleStatusDto and SKFuel.BuildVehicleStatusDto(entry) or {
+            fuelLevel = vehicleData.fuelLevel or 100.0,
+            condition = vehicleData.condition or 100.0,
+            refuelPrice = 0,
+            refuelPriceRemote = 0,
+        },
         data = vehicleData,
         progression = {
             level = vehicleData.level,
@@ -264,6 +270,7 @@ local function buildPhoneVehicleDto(entry, activeVehicleId, imageEntry)
         image = dto.image,
         sortIndex = dto.sortIndex,
         isActive = dto.id == activeVehicleId,
+        fuel = dto.fuel,
         progression = dto.progression,
         visualParts = {
             categories = visualCategories,

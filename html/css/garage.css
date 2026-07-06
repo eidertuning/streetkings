@@ -1108,3 +1108,65 @@
 .sk-garage-thumb {
   scroll-snap-align: start;
 }
+
+.sk-garage-vitals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.sk-garage-vital,
+.sk-garage-vital-price {
+  min-width: 0;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--garage-border);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.sk-garage-vital-head,
+.sk-garage-vital-price {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.sk-garage-vital-head span,
+.sk-garage-vital-price span {
+  font-family: var(--sk-font-ui);
+  font-size: clamp(0.55rem, 0.7vw, 0.64rem);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--garage-muted);
+}
+
+.sk-garage-vital-head strong,
+.sk-garage-vital-price strong {
+  font-family: var(--sk-font-body);
+  font-size: clamp(0.7rem, 1vw, 0.9rem);
+  color: var(--garage-text);
+  white-space: nowrap;
+}
+
+.sk-garage-vital-track {
+  height: 0.32rem;
+  margin-top: 0.45rem;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.sk-garage-vital-track span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #27e985, var(--garage-gold));
+}
+
+.sk-garage-vital--condition .sk-garage-vital-track span {
+  background: linear-gradient(90deg, var(--garage-cyan), var(--garage-hot));
+}
+
+.sk-garage-vital-price {
+  grid-column: 1 / -1;
+}

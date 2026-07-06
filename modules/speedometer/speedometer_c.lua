@@ -13,6 +13,9 @@ local lastSpeed      = -1.0
 local lastRpm        = -1.0
 local lastGear       = -1
 local lastOdoDisplay = -1
+local lastFuelDisplay = -1
+local lastConditionDisplay = -1
+local lastFuelDisabled = nil
 local shown          = false
 
 local odometerKm     = 0.0
@@ -48,6 +51,9 @@ function SKSpeedo.setEnabled(on)
         lastRpm      = -1.0
         lastGear     = -1
         lastOdoDisplay = -1
+        lastFuelDisplay = -1
+        lastConditionDisplay = -1
+        lastFuelDisabled = nil
         trackedVehicle = 0
         odoLoaded    = false
         SendNUIMessage({ type = 'speedometer:hide' })
@@ -88,6 +94,10 @@ CreateThread(function()
                 local speed = GetEntitySpeed(veh)
                 local rpm   = GetVehicleCurrentRpm(veh)
                 local gear  = GetVehicleCurrentGear(veh)
+                local fuelState = SKFuel and SKFuel.getHudState and SKFuel.getHudState(veh) or nil
+                local fuelLevel = fuelState and fuelState.fuelLevel or 100.0
+                local condition = fuelState and fuelState.condition or 100.0
+                local fuelDisabled = fuelState and fuelState.fuelDisabled == true or false
 
                 if odoLoaded then
                     odometerKm = odometerKm + speed * 0.05 / 1000.0
@@ -99,11 +109,23 @@ CreateThread(function()
                 end
 
                 local odoDisplay = math.floor(odometerKm)
-                if gear ~= lastGear or math.abs(speed - lastSpeed) > 0.1 or math.abs(rpm - lastRpm) > 0.01 or odoDisplay ~= lastOdoDisplay then
+                local fuelDisplay = math.floor((fuelLevel or 0.0) * 10 + 0.5)
+                local conditionDisplay = math.floor((condition or 0.0) * 10 + 0.5)
+                if gear ~= lastGear
+                    or math.abs(speed - lastSpeed) > 0.1
+                    or math.abs(rpm - lastRpm) > 0.01
+                    or odoDisplay ~= lastOdoDisplay
+                    or fuelDisplay ~= lastFuelDisplay
+                    or conditionDisplay ~= lastConditionDisplay
+                    or fuelDisabled ~= lastFuelDisabled
+                then
                     lastSpeed      = speed
                     lastRpm        = rpm
                     lastGear       = gear
                     lastOdoDisplay = odoDisplay
+                    lastFuelDisplay = fuelDisplay
+                    lastConditionDisplay = conditionDisplay
+                    lastFuelDisabled = fuelDisabled
                     SendNUIMessage({
                         type     = 'speedometer:update',
                         speed    = speed,
@@ -111,6 +133,9 @@ CreateThread(function()
                         gear     = gear,
                         metric   = ShouldUseMetricMeasurements(),
                         odometer = odometerKm,
+                        fuel     = fuelLevel,
+                        condition = condition,
+                        fuelDisabled = fuelDisabled,
                     })
                 end
             elseif shown then
@@ -122,6 +147,9 @@ CreateThread(function()
                 lastRpm        = -1.0
                 lastGear       = -1
                 lastOdoDisplay = -1
+                lastFuelDisplay = -1
+                lastConditionDisplay = -1
+                lastFuelDisabled = nil
                 SendNUIMessage({ type = 'speedometer:hide' })
             end
         end

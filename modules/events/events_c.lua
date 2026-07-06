@@ -374,6 +374,9 @@ local function runEvent(def)
     SetEntityCoords(vehicle, def.start.x, def.start.y, def.start.z, false, false, false, false)
     SetEntityHeading(vehicle, def.start.w)
     repairEventVehicle(vehicle)
+    if def.type == EventType.RACE then
+        TriggerEvent('streetkings:fuel:raceStart', vehicle)
+    end
     FreezeEntityPosition(vehicle, true)
     SetRadarZoom(0)
     DisplayHud(true)
@@ -525,6 +528,7 @@ SKC.RegisterGameState(GameState.EVENT, {
     end,
 
     onExit = function()
+        TriggerEvent('streetkings:fuel:raceEnd')
         cleanupActive()
         if SKPhone.isOpen() then
             SKPhone.close()

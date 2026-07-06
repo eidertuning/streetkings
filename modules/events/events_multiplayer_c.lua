@@ -492,6 +492,7 @@ local function onRaceEnter(prevState)
         end
         requestVehicleControl(vehicle)
         repairVehicleForRace(vehicle)
+        TriggerEvent('streetkings:fuel:raceStart', vehicle)
 
         local ped = PlayerPedId()
         local pos = activeRace.gridPos
@@ -563,6 +564,7 @@ local function onRaceExit(nextState)
     SKWaypoint.RemoveAll()
     activeVehicleNetId = nil
     SKSpeedo.setEnabled(false)
+    TriggerEvent('streetkings:fuel:raceEnd')
     TriggerEvent('streetkings:nitrous:setMultiplayerRaceDisabled', false)
     TriggerEvent('streetkings:environment:setMultiplayerTrafficDensity', nil)
     SetTimeScale(1.0)

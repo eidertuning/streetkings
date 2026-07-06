@@ -10,12 +10,20 @@
   var $gear           = null;
   var $odometerDigits = null;
   var $odometerUnit   = null;
+  var $fuelBar        = null;
+  var $fuelValue      = null;
+  var $conditionBar   = null;
+  var $conditionValue = null;
 
   var $analogValue    = null;
   var $analogUnit     = null;
   var $analogGear     = null;
   var $analogOdoDigits = null;
   var $analogOdoUnit  = null;
+  var $analogFuelBar  = null;
+  var $analogFuelValue = null;
+  var $analogConditionBar = null;
+  var $analogConditionValue = null;
   var analogNeedle    = null;
   var analogRpmArc    = null;
   var analogNitrousTrack = null;
@@ -55,6 +63,30 @@
       $analogOdoDigits.text(formatOdometer(km, metric));
       $analogOdoUnit.text(metric ? 'KM' : 'MI');
     }
+  }
+
+  function clampPct(value) {
+    var n = Number(value);
+    if (!isFinite(n)) n = 0;
+    return Math.max(0, Math.min(100, n));
+  }
+
+  function setVitalState($bar, $value, pct, disabled) {
+    if (!$bar || !$bar.length || !$value || !$value.length) return;
+    var clamped = clampPct(pct);
+    $bar.css('width', (disabled ? 100 : clamped).toFixed(1) + '%');
+    $value.text(disabled ? '\u221e' : Math.round(clamped) + '%');
+    var $vital = $bar.closest('.sk-speedo-vital');
+    $vital.toggleClass('is-disabled', !!disabled);
+    $vital.toggleClass('is-critical', !disabled && clamped <= 15);
+    $vital.toggleClass('is-low', !disabled && clamped > 15 && clamped <= 35);
+  }
+
+  function updateVitals(fuel, condition, fuelDisabled) {
+    setVitalState($fuelBar, $fuelValue, fuel, fuelDisabled);
+    setVitalState($analogFuelBar, $analogFuelValue, fuel, fuelDisabled);
+    setVitalState($conditionBar, $conditionValue, condition, false);
+    setVitalState($analogConditionBar, $analogConditionValue, condition, false);
   }
 
   function buildTicks(metric) {
@@ -161,12 +193,20 @@
     $gear           = $('#skSpeedoGear');
     $odometerDigits = $('#skSpeedoOdometerDigits');
     $odometerUnit   = $('#skSpeedoOdometerUnit');
+    $fuelBar        = $('#skSpeedoFuel');
+    $fuelValue      = $('#skSpeedoFuelValue');
+    $conditionBar   = $('#skSpeedoCondition');
+    $conditionValue = $('#skSpeedoConditionValue');
 
     $analogValue    = $('#skAnalogValue');
     $analogUnit     = $('#skAnalogUnit');
     $analogGear     = $('#skAnalogGear');
     $analogOdoDigits = $('#skAnalogOdometerDigits');
     $analogOdoUnit  = $('#skAnalogOdometerUnit');
+    $analogFuelBar  = $('#skAnalogFuel');
+    $analogFuelValue = $('#skAnalogFuelValue');
+    $analogConditionBar = $('#skAnalogCondition');
+    $analogConditionValue = $('#skAnalogConditionValue');
     analogNeedle    = document.getElementById('skAnalogNeedle');
     analogRpmArc    = document.getElementById('skAnalogRpmArc');
     analogNitrousTrack = document.getElementById('skAnalogNitrousTrack');
@@ -265,6 +305,7 @@
       }
 
       updateOdometer(d.odometer, d.metric);
+      updateVitals(d.fuel, d.condition, d.fuelDisabled);
 
     } else if (d.type === 'speedometer:odometer') {
       updateOdometer(d.odometer, lastMetric);
@@ -272,6 +313,7 @@
     } else if (d.type === 'speedometer:hide') {
       $speedo.addClass('sk-speedo--hidden').removeClass('sk-speedo--redline');
       updateNitrous(false, 0, false);
+      updateVitals(100, 100, false);
       lastGear = null;
     }
   });

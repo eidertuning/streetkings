@@ -184,6 +184,17 @@ local function requireNonNegativeInt(value, name)
 end
 
 ---@param value any
+---@param fallback number
+---@return number
+local function normalizePercent(value, fallback)
+    local n = tonumber(value)
+    if not n then n = fallback end
+    if n < 0 then return 0.0 end
+    if n > 100 then return 100.0 end
+    return math.floor(n * 10 + 0.5) / 10
+end
+
+---@param value any
 ---@return boolean
 local function isValidVehicleNeons(value)
     if type(value) ~= 'table' or value.enabled ~= true then
@@ -248,6 +259,7 @@ end
 ---@param vehicleData table
 ---@return table
 local function normalizeVehicleData(vehicleData)
+    local fuelDefaults = SKFuelConfig and SKFuelConfig.defaults or {}
     if type(vehicleData.xp) ~= 'number' or vehicleData.xp < 0 or vehicleData.xp % 1 ~= 0 then
         vehicleData.xp = 0
     end
@@ -272,6 +284,8 @@ local function normalizeVehicleData(vehicleData)
     if type(vehicleData.colors) ~= 'table' then
         vehicleData.colors = {}
     end
+    vehicleData.fuelLevel = normalizePercent(vehicleData.fuelLevel, tonumber(fuelDefaults.fuelLevel) or 100.0)
+    vehicleData.condition = normalizePercent(vehicleData.condition, tonumber(fuelDefaults.condition) or 100.0)
     if vehicleData.neons ~= nil and not isValidVehicleNeons(vehicleData.neons) then
         vehicleData.neons = nil
     end
@@ -394,6 +408,8 @@ function SKSaves.validateDocument(document)
         assert(type(v.data.bestActivityScores) == 'table', 'streetkings: invalid save document vehicle.bestActivityScores')
         assert(type(v.data.mods) == 'table', 'streetkings: invalid save document vehicle.mods')
         assert(type(v.data.colors) == 'table', 'streetkings: invalid save document vehicle.colors')
+        assert(type(v.data.fuelLevel) == 'number' and v.data.fuelLevel >= 0 and v.data.fuelLevel <= 100, 'streetkings: invalid save document vehicle.fuelLevel')
+        assert(type(v.data.condition) == 'number' and v.data.condition >= 0 and v.data.condition <= 100, 'streetkings: invalid save document vehicle.condition')
         assert(v.data.neons == nil or isValidVehicleNeons(v.data.neons), 'streetkings: invalid save document vehicle.neons')
     end
     assert(type(document.economy) == 'table', 'streetkings: invalid save document economy')

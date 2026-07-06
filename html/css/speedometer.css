@@ -27,6 +27,13 @@
   gap: 8px;
 }
 
+.sk-speedo-digital-status {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 200px;
+}
+
 .sk-speedo-gearbox-badge--digital {
   position: static;
   transform: none;
@@ -217,6 +224,79 @@
   box-shadow:
     0 0 0.5208vw rgba(56, 189, 248, 0.42),
     inset 0 0 0.4167vw rgba(56, 189, 248, 0.32);
+}
+
+.sk-speedo-vitals {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  width: 200px;
+  box-sizing: border-box;
+  padding: 0.25rem 0.35rem;
+  border: 0.0521vw solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.sk-speedo-vital {
+  display: grid;
+  grid-template-columns: 2.1rem minmax(0, 1fr) 2.2rem;
+  align-items: center;
+  gap: 0.28rem;
+}
+
+.sk-speedo-vital-label,
+.sk-speedo-vital-value {
+  font-family: var(--sk-font-ui);
+  font-size: 0.48rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.sk-speedo-vital-label {
+  color: rgba(255, 255, 255, 0.56);
+}
+
+.sk-speedo-vital-value {
+  text-align: right;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.sk-speedo-vital-meter {
+  height: 4px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sk-speedo-vital-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #27e985, #ffd039);
+  transition: width 160ms linear, background 180ms ease, box-shadow 180ms ease;
+}
+
+.sk-speedo-vital--condition .sk-speedo-vital-fill {
+  background: linear-gradient(90deg, #8cecff, #ff0a73);
+}
+
+.sk-speedo-vital.is-low .sk-speedo-vital-fill {
+  background: #f59e0b;
+  box-shadow: 0 0 0.4167vw rgba(245, 158, 11, 0.35);
+}
+
+.sk-speedo-vital.is-critical .sk-speedo-vital-fill {
+  background: #ef4444;
+  box-shadow: 0 0 0.4167vw rgba(239, 68, 68, 0.45);
+}
+
+.sk-speedo-vital.is-disabled .sk-speedo-vital-fill {
+  background: linear-gradient(90deg, #8cecff, #ff0a73);
+}
+
+.sk-speedo-vital.is-disabled .sk-speedo-vital-value {
+  color: #8cecff;
 }
 
 .sk-speedo-odometer {
@@ -411,7 +491,14 @@
   justify-content: center;
 }
 
+.sk-speedo-analog-status {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sk-speedo-analog-footer .sk-speedo-vitals,
 .sk-speedo-analog-footer .sk-speedo-odometer {
-  width: auto;
+  width: 200px;
   margin-top: 0;
 }
