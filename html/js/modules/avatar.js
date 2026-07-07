@@ -18,7 +18,7 @@
     },
     // cart maps categoryKey -> { drawable, texture, price, label, kind }
     cart: {},
-    drag: { active: false, lastX: 0, lastY: 0 },
+    drag: { active: false, mode: null, lastX: 0, lastY: 0 },
   };
 
   var els = {};
@@ -154,9 +154,19 @@
 
   function updateCameraControls() {
     if (!state.ui || !state.ui.camera) return;
+    if (!els.cameraHeight) return;
     var camera = state.ui.camera;
     var span = Math.max(0.001, camera.maxHeight - camera.minHeight);
     els.cameraHeight.value = String((camera.height - camera.minHeight) / span);
+  }
+
+  function setCameraHeight(value) {
+    if (!state.ui || !state.ui.camera) return;
+    var camera = state.ui.camera;
+    var next = clamp(value, camera.minHeight, camera.maxHeight);
+    camera.height = next;
+    updateCameraControls();
+    SK.nui.post('avatar:setCameraHeight', { height: next });
   }
 
   function applyResult(result) {
@@ -1101,6 +1111,7 @@
     state.visible = false;
     state.ui = null;
     state.drag.active = false;
+    state.drag.mode = null;
     state.activeLeftTab = 'face';
     state.activeRightTab = 'clothing';
     state.browse.clothing = {};
@@ -1119,9 +1130,11 @@
   }
 
   function onViewportMouseDown(e) {
-    if (e.button !== 0 || !state.visible) return;
+    if ((e.button !== 0 && e.button !== 2) || !state.visible) return;
     if (document.getElementById('avatarExitModal')) return;
+    e.preventDefault();
     state.drag.active = true;
+    state.drag.mode = e.button === 2 ? 'height' : 'rotate';
     state.drag.lastX = e.clientX;
     state.drag.lastY = e.clientY;
   }
@@ -1130,17 +1143,27 @@
     if (!state.drag.active || !state.visible) return;
     if (document.getElementById('avatarExitModal')) {
       state.drag.active = false;
+      state.drag.mode = null;
       return;
     }
     var dx = e.clientX - state.drag.lastX;
     var dy = e.clientY - state.drag.lastY;
     state.drag.lastX = e.clientX;
     state.drag.lastY = e.clientY;
+
+    if (state.drag.mode === 'height') {
+      if (state.ui && state.ui.camera) {
+        setCameraHeight(state.ui.camera.height - dy * 0.006);
+      }
+      return;
+    }
+
     SK.nui.post('avatar:cameraRotate', { dx: dx, dy: dy });
   }
 
   function onMouseUp() {
     state.drag.active = false;
+    state.drag.mode = null;
   }
 
   function onViewportWheel(e) {
@@ -1225,6 +1248,9 @@
     resolveEls();
 
     els.viewport.addEventListener('mousedown', onViewportMouseDown);
+    els.viewport.addEventListener('contextmenu', function (e) {
+      if (state.visible) e.preventDefault();
+    });
     els.viewport.addEventListener('wheel', onViewportWheel, { passive: false });
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
@@ -1233,9 +1259,7 @@
       if (!state.visible || !state.ui || !state.ui.camera) return;
       var camera = state.ui.camera;
       var value = camera.minHeight + (camera.maxHeight - camera.minHeight) * Number(els.cameraHeight.value);
-      SK.nui.post('avatar:setCameraHeight', { height: value }).done(function (result) {
-        applyResult(result);
-      });
+      setCameraHeight(value);
     });
 
     els.back.addEventListener('click', function () {
