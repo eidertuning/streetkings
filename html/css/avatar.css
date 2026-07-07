@@ -1251,27 +1251,82 @@
 
 .sk-avatar-stepper,
 .sk-avatar-slider {
-  padding: 0.48rem 0.52rem;
-  gap: 0.38rem 0.55rem;
+  grid-template-columns: 1fr;
+  padding: 0.56rem 0.62rem;
+  gap: 0.42rem;
+  align-items: stretch;
 }
 
 .sk-avatar-stepper-label,
 .sk-avatar-slider-label {
+  width: 100%;
   font-size: 0.64rem;
+  line-height: 1.2;
+  letter-spacing: 0.11em;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+  color: rgba(140, 236, 255, 0.88);
 }
 
 .sk-avatar-stepper-controls {
+  display: grid;
+  grid-template-columns: minmax(2.1rem, auto) minmax(2.2rem, 1fr) minmax(2.1rem, auto);
   gap: 0.35rem;
+  width: 100%;
 }
 
 .sk-avatar-stepper-value-wrap {
-  min-width: 2.45rem;
+  min-width: 0;
+  width: 100%;
 }
 
 .sk-avatar-mini-btn {
-  min-width: 2.15rem;
+  min-width: 0;
   padding: 0.32rem 0.42rem;
   font-size: 0.62rem;
+}
+
+.sk-avatar-slider {
+  grid-template-columns: 1fr auto;
+}
+
+.sk-avatar-slider-label {
+  grid-column: 1;
+}
+
+.sk-avatar-slider-value {
+  grid-column: 2;
+  justify-self: end;
+  font-size: 0.82rem;
+}
+
+.sk-avatar-slider input {
+  grid-column: 1 / -1;
+}
+
+.sk-avatar-section-head {
+  gap: 0.24rem;
+  padding: 0.52rem 0.58rem;
+  border: 1px solid rgba(140, 236, 255, 0.12);
+  background: linear-gradient(135deg, rgba(140, 236, 255, 0.045), rgba(255, 10, 115, 0.025));
+}
+
+.sk-avatar-section-title {
+  font-size: 0.63rem;
+  line-height: 1.2;
+  color: rgba(140, 236, 255, 0.9);
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+}
+
+.sk-avatar-section-sub {
+  font-size: 0.72rem;
+  line-height: 1.38;
+  color: rgba(238, 238, 244, 0.58);
 }
 
 .sk-avatar-category-accordion {
