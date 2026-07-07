@@ -930,11 +930,17 @@
                 </div>
                 <div class="sk-speedo-vitals sk-speedo-vitals--analog" aria-hidden="true">
                   <div class="sk-speedo-vital sk-speedo-vital--fuel">
-                    <span class="sk-speedo-vital-label" data-i18n="hud.fuel_short">FUEL</span>
+                    <span class="sk-speedo-vital-label" data-i18n-title="hud.fuel_short" title="FUEL">
+                      <i class="fa-solid fa-gas-pump" aria-hidden="true"></i>
+                      <span class="sk-speedo-sr-only" data-i18n="hud.fuel_short">FUEL</span>
+                    </span>
                     <span id="skAnalogFuelValue" class="sk-speedo-vital-value">100%</span>
                   </div>
                   <div class="sk-speedo-vital sk-speedo-vital--condition">
-                    <span class="sk-speedo-vital-label" data-i18n="hud.condition_short">DMG</span>
+                    <span class="sk-speedo-vital-label" data-i18n-title="hud.condition_short" title="DMG">
+                      <i class="fa-solid fa-gears" aria-hidden="true"></i>
+                      <span class="sk-speedo-sr-only" data-i18n="hud.condition_short">DMG</span>
+                    </span>
                     <span id="skAnalogConditionValue" class="sk-speedo-vital-value">100%</span>
                   </div>
                 </div>

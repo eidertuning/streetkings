@@ -48,7 +48,7 @@
   var NITROUS_ARC_RADIUS = 87;
   var NITROUS_ARC_CIRCUM = 2 * Math.PI * NITROUS_ARC_RADIUS;
   var NITROUS_ARC_SWEEP = NITROUS_ARC_CIRCUM * (ANALOG_SWEEP / 360);
-  var ANALOG_VITAL_TICK_COUNT = 22;
+  var ANALOG_VITAL_TICK_COUNT = 18;
 
   var ticksBuilt      = false;
   var ticksMetric     = false;
@@ -110,12 +110,12 @@
     var segments = [];
     var cx = 100;
     var cy = 100;
-    var radius = 97.4;
-    var bottomDeg = side === 'left' ? 183 : 177;
-    var topDeg = side === 'left' ? 338 : 22;
+    var radius = 97.8;
+    var bottomDeg = side === 'left' ? 214 : 146;
+    var topDeg = side === 'left' ? 326 : 34;
     var totalDeg = Math.abs(topDeg - bottomDeg);
     var stepDeg = totalDeg / ANALOG_VITAL_TICK_COUNT;
-    var segmentDeg = stepDeg * 0.68;
+    var segmentDeg = stepDeg * 0.56;
     var sweepFlag = side === 'left' ? 1 : 0;
 
     while (group.firstChild) group.removeChild(group.firstChild);

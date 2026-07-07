@@ -508,7 +508,7 @@
 
 .sk-speedo-analog-vital-tick {
   stroke: rgba(255, 255, 255, 0.18);
-  stroke-width: 3.2;
+  stroke-width: 3;
   stroke-linecap: round;
   fill: none;
   opacity: 0.58;
@@ -561,36 +561,79 @@
   align-items: center;
   justify-content: center;
   grid-template-columns: none;
-  gap: 0.22rem;
+  gap: 0.18rem;
   width: auto;
   height: auto;
-  padding: 0.06rem 0.2rem;
+  min-width: 3.25rem;
+  padding: 0;
   border: 0;
-  background: rgba(0, 0, 0, 0.18);
-  border-radius: 999px;
+  background: transparent;
+  border-radius: 0;
   transform: none;
 }
 
 .sk-speedo-vitals--analog .sk-speedo-vital--fuel {
-  left: 10px;
-  bottom: 15px;
+  left: -3px;
+  bottom: 24px;
+  justify-content: flex-start;
 }
 
 .sk-speedo-vitals--analog .sk-speedo-vital--condition {
-  right: 10px;
-  bottom: 15px;
+  right: -3px;
+  bottom: 24px;
+  justify-content: flex-end;
 }
 
 .sk-speedo-vitals--analog .sk-speedo-vital-label,
 .sk-speedo-vitals--analog .sk-speedo-vital-value {
   width: auto;
-  font-size: 0.36rem;
-  letter-spacing: 0.05em;
+  font-size: 0.43rem;
+  letter-spacing: 0.03em;
   text-align: center;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.72);
 }
 
+.sk-speedo-vitals--analog .sk-speedo-vital-label {
+  width: 0.95rem;
+  height: 0.95rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(8, 8, 13, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sk-speedo-vitals--analog .sk-speedo-vital-label i {
+  font-size: 0.48rem;
+  line-height: 1;
+}
+
+.sk-speedo-vitals--analog .sk-speedo-vital--fuel .sk-speedo-vital-label {
+  color: #27e985;
+  border-color: rgba(39, 233, 133, 0.28);
+  box-shadow: 0 0 10px rgba(39, 233, 133, 0.14);
+}
+
+.sk-speedo-vitals--analog .sk-speedo-vital--condition .sk-speedo-vital-label {
+  color: #8cecff;
+  border-color: rgba(140, 236, 255, 0.28);
+  box-shadow: 0 0 10px rgba(140, 236, 255, 0.14);
+}
+
 .sk-speedo-vitals--analog .sk-speedo-vital-value {
-  font-size: 0.4rem;
+  font-size: 0.44rem;
+  font-weight: 800;
   color: rgba(255, 255, 255, 0.84);
+}
+
+.sk-speedo-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
