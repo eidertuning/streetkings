@@ -81,6 +81,27 @@
       .replace('Lenght', 'Length');
   }
 
+  function categoryIcon(key, kind) {
+    var icons = {
+      mask: 'fa-masks-theater',
+      torso: 'fa-person',
+      shirts: 'fa-shirt',
+      tops: 'fa-shirt',
+      legs: 'fa-person-walking',
+      shoes: 'fa-shoe-prints',
+      bags: 'fa-briefcase',
+      chains: 'fa-link',
+      armor: 'fa-shield-halved',
+      decals: 'fa-spray-can-sparkles',
+      hats: 'fa-hat-cowboy',
+      glasses: 'fa-glasses',
+      ears: 'fa-ear-listen',
+      watches: 'fa-clock',
+      bracelets: 'fa-gem',
+    };
+    return icons[key] || (kind === 'props' ? 'fa-star' : 'fa-shirt');
+  }
+
   function getAppearance() {
     return state.ui.appearance;
   }
@@ -672,23 +693,6 @@
       return;
     }
 
-    var pillWrap = document.createElement('div');
-    pillWrap.className = 'sk-avatar-category-list';
-
-    categories.forEach(function (entry) {
-      var pill = document.createElement('button');
-      pill.type = 'button';
-      pill.className = 'sk-avatar-category-pill';
-      if (entry.key === category.key) pill.classList.add('is-active');
-      pill.textContent = entry.label;
-      pill.addEventListener('click', function () {
-        state.activeCategoryKey[kind] = entry.key;
-        var selection = browserState(kind, entry);
-        previewCategory(kind, entry, selection.drawable, selection.texture);
-      });
-      pillWrap.appendChild(pill);
-    });
-
     var selection = browserState(kind, category);
 
     var card = document.createElement('div');
@@ -841,8 +845,57 @@
     }
     card.appendChild(actionRow);
 
-    els.browser.appendChild(pillWrap);
-    els.browser.appendChild(card);
+    var accordion = document.createElement('div');
+    accordion.className = 'sk-avatar-category-accordion';
+
+    categories.forEach(function (entry) {
+      var isActive = entry.key === category.key;
+      var section = document.createElement('section');
+      section.className = 'sk-avatar-category-section' + (isActive ? ' is-open' : '');
+
+      var toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'sk-avatar-category-toggle';
+
+      var icon = document.createElement('i');
+      icon.className = 'fa-solid ' + categoryIcon(entry.key, kind);
+      icon.setAttribute('aria-hidden', 'true');
+
+      var labelWrap = document.createElement('span');
+      labelWrap.className = 'sk-avatar-category-toggle-label';
+
+      var label = document.createElement('strong');
+      label.textContent = entry.label;
+
+      var sub = document.createElement('span');
+      sub.textContent = t('avatar.cart_item_meta', {
+        drawable: browserState(kind, entry).drawable,
+        texture: browserState(kind, entry).texture,
+      });
+
+      var chevron = document.createElement('i');
+      chevron.className = 'fa-solid fa-chevron-down sk-avatar-category-chevron';
+      chevron.setAttribute('aria-hidden', 'true');
+
+      labelWrap.appendChild(label);
+      labelWrap.appendChild(sub);
+      toggle.appendChild(icon);
+      toggle.appendChild(labelWrap);
+      toggle.appendChild(chevron);
+      toggle.addEventListener('click', function () {
+        state.activeCategoryKey[kind] = entry.key;
+        var nextSelection = browserState(kind, entry);
+        previewCategory(kind, entry, nextSelection.drawable, nextSelection.texture);
+      });
+
+      section.appendChild(toggle);
+      if (isActive) {
+        section.appendChild(card);
+      }
+      accordion.appendChild(section);
+    });
+
+    els.browser.appendChild(accordion);
 
     setPreviewText(
       kind === 'clothing' ? t('avatar.clothing') : t('avatar.props'),

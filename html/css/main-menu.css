@@ -2181,3 +2181,50 @@
     min-height: 6.25rem;
   }
 }
+
+/* -- Shared menu rail alignment -------------------------------------------- */
+
+#viewMain .panel,
+#viewSaves .saves-topbar {
+  --sk-menu-logo-col: minmax(10rem, 14rem);
+  --sk-menu-info-col: minmax(12rem, 18rem);
+  --sk-menu-main-col: minmax(24rem, 1fr);
+  --sk-menu-social-col: auto;
+}
+
+#viewMain .panel {
+  grid-template-columns:
+    var(--sk-menu-logo-col)
+    var(--sk-menu-info-col)
+    var(--sk-menu-main-col)
+    var(--sk-menu-social-col);
+}
+
+#viewMain .main-menu-topbar {
+  grid-column: 1;
+}
+
+#viewMain .main-menu-patchnotes {
+  grid-column: 2 / 4;
+}
+
+#viewMain .main-menu-socials {
+  grid-column: 4;
+}
+
+#viewSaves .saves-topbar {
+  grid-template-columns:
+    var(--sk-menu-logo-col)
+    var(--sk-menu-info-col)
+    var(--sk-menu-main-col)
+    var(--sk-menu-social-col);
+}
+
+@media (max-width: 1366px), (max-height: 768px) {
+  #viewMain .panel,
+  #viewSaves .saves-topbar {
+    --sk-menu-logo-col: minmax(8.5rem, 11rem);
+    --sk-menu-info-col: minmax(10rem, 14rem);
+    --sk-menu-main-col: minmax(20rem, 1fr);
+  }
+}

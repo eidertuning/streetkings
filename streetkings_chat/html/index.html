@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StreetKings Chat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Poppins:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="skChat" class="sk-chat">
+    <section class="sk-chat-panel">
+      <div class="sk-chat-head">
+        <span>Chat</span>
+        <small>Freeroam</small>
+      </div>
+      <div id="skChatLog" class="sk-chat-log" aria-live="polite"></div>
+      <form id="skChatForm" class="sk-chat-form">
+        <input id="skChatInput" type="text" maxlength="220" autocomplete="off" placeholder="Escribe un mensaje... /mp id mensaje" />
+        <button type="submit">Enviar</button>
+      </form>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
