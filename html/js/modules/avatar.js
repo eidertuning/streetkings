@@ -660,6 +660,7 @@
 
   function setActiveCategory(kind, categories) {
     var current = state.activeCategoryKey[kind];
+    if (current === '') return null;
     if (current) {
       for (var i = 0; i < categories.length; i++) {
         if (categories[i].key === current) return current;
@@ -671,6 +672,7 @@
 
   function selectedCategory(kind, categories) {
     var key = setActiveCategory(kind, categories);
+    if (!key) return null;
     for (var i = 0; i < categories.length; i++) {
       if (categories[i].key === key) return categories[i];
     }
@@ -697,37 +699,41 @@
   function renderCategoryBrowser(kind, categories) {
     els.browser.innerHTML = '';
 
-    var category = selectedCategory(kind, categories);
-    if (!category) {
+    if (!categories.length) {
       els.browser.textContent = t('avatar.no_categories');
       return;
     }
 
-    var selection = browserState(kind, category);
+    var category = selectedCategory(kind, categories);
+    var selection = null;
+    var card = null;
 
-    var card = document.createElement('div');
-    card.className = 'sk-avatar-browser-card';
+    if (category) {
+      selection = browserState(kind, category);
 
-    var title = document.createElement('h4');
-    title.className = 'sk-avatar-browser-title';
-    title.textContent = category.label;
+      card = document.createElement('div');
+      card.className = 'sk-avatar-browser-card';
 
-    var meta = document.createElement('p');
-    meta.className = 'sk-avatar-browser-meta';
-    if (isWardrobe()) {
-      meta.textContent = selection.owned
-        ? t('avatar.owned_ready')
-        : t('avatar.not_owned_visit_store');
-    } else {
-      meta.textContent = selection.owned
-        ? t('avatar.owned_ready')
-        : t('avatar.costs_gearcoins', { amount: fmtCurrency(selection.price) });
-    }
+      var title = document.createElement('h4');
+      title.className = 'sk-avatar-browser-title';
+      title.textContent = category.label;
 
-    card.appendChild(title);
-    card.appendChild(meta);
+      var meta = document.createElement('p');
+      meta.className = 'sk-avatar-browser-meta';
+      if (isWardrobe()) {
+        meta.textContent = selection.owned
+          ? t('avatar.owned_ready')
+          : t('avatar.not_owned_visit_store');
+      } else {
+        meta.textContent = selection.owned
+          ? t('avatar.owned_ready')
+          : t('avatar.costs_gearcoins', { amount: fmtCurrency(selection.price) });
+      }
 
-    renderStepper(card, {
+      card.appendChild(title);
+      card.appendChild(meta);
+
+      renderStepper(card, {
       label: t('avatar.drawable'),
       value: selection.drawable,
       step: 1,
@@ -749,9 +755,9 @@
         }
         previewCategory(kind, category, parsed, parsed === -1 ? 0 : selection.texture);
       },
-    });
+      });
 
-    renderStepper(card, {
+      renderStepper(card, {
       label: t('avatar.texture'),
       value: selection.texture,
       step: 1,
@@ -774,19 +780,19 @@
         }
         previewCategory(kind, category, selection.drawable, parsed);
       },
-    });
+      });
 
-    var actionRow = document.createElement('div');
-    actionRow.className = 'sk-avatar-browser-actions';
+      var actionRow = document.createElement('div');
+      actionRow.className = 'sk-avatar-browser-actions';
 
-    var wardrobe = isWardrobe();
+      var wardrobe = isWardrobe();
 
-    if (wardrobe && !selection.owned) {
+      if (wardrobe && !selection.owned) {
       var notOwned = document.createElement('span');
       notOwned.className = 'sk-avatar-browser-locked';
       notOwned.textContent = t('avatar.not_owned');
       actionRow.appendChild(notOwned);
-    } else if (selection.owned || wardrobe) {
+      } else if (selection.owned || wardrobe) {
       // Equip owned directly
       var action = document.createElement('button');
       action.type = 'button';
@@ -812,7 +818,7 @@
         });
       });
       actionRow.appendChild(action);
-    } else {
+      } else {
       // Unowned: show cart controls
       var inCart = !!state.cart[category.key]
         && state.cart[category.key].drawable === selection.drawable
@@ -853,13 +859,14 @@
         actionRow.appendChild(addBtn);
       }
     }
-    card.appendChild(actionRow);
+      card.appendChild(actionRow);
+    }
 
     var accordion = document.createElement('div');
     accordion.className = 'sk-avatar-category-accordion';
 
     categories.forEach(function (entry) {
-      var isActive = entry.key === category.key;
+      var isActive = category && entry.key === category.key;
       var section = document.createElement('section');
       section.className = 'sk-avatar-category-section' + (isActive ? ' is-open' : '');
 
@@ -893,13 +900,18 @@
       toggle.appendChild(labelWrap);
       toggle.appendChild(chevron);
       toggle.addEventListener('click', function () {
+        if (isActive) {
+          state.activeCategoryKey[kind] = '';
+          render();
+          return;
+        }
         state.activeCategoryKey[kind] = entry.key;
         var nextSelection = browserState(kind, entry);
         previewCategory(kind, entry, nextSelection.drawable, nextSelection.texture);
       });
 
       section.appendChild(toggle);
-      if (isActive) {
+      if (isActive && card) {
         section.appendChild(card);
       }
       accordion.appendChild(section);
@@ -907,15 +919,23 @@
 
     els.browser.appendChild(accordion);
 
-    setPreviewText(
-      kind === 'clothing' ? t('avatar.clothing') : t('avatar.props'),
-      category.label,
-      selection.owned
-        ? t('avatar.preview_owned_copy')
-        : isWardrobe()
-          ? t('avatar.not_owned_visit_store')
-          : t('avatar.preview_buy_copy')
-    );
+    if (category) {
+      setPreviewText(
+        kind === 'clothing' ? t('avatar.clothing') : t('avatar.props'),
+        category.label,
+        selection.owned
+          ? t('avatar.preview_owned_copy')
+          : isWardrobe()
+            ? t('avatar.not_owned_visit_store')
+            : t('avatar.preview_buy_copy')
+      );
+    } else {
+      setPreviewText(
+        kind === 'clothing' ? t('avatar.clothing') : t('avatar.props'),
+        t('avatar.browse_wearables'),
+        t('avatar.browser_note')
+      );
+    }
   }
 
   function renderCartTab() {

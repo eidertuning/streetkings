@@ -69,10 +69,31 @@ body {
 .sk-chat-log {
   max-height: 16.5rem;
   padding: 0.55rem;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(140, 236, 255, 0.72) rgba(255, 255, 255, 0.04);
+}
+
+.sk-chat:not(.is-open) .sk-chat-log {
+  max-height: 8.8rem;
+  overflow: hidden;
+}
+
+.sk-chat-log::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sk-chat-log::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.sk-chat-log::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: linear-gradient(180deg, #8cecff, #c86bff, #ff0a73);
 }
 
 .sk-chat-message {

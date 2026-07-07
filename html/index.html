@@ -127,17 +127,26 @@
               <p class="credits-line credits-line--name">Code Eider</p>
               <p class="credits-line credits-line--sub">Five Horizon Motorsport</p>
             </div>
-            <div class="credits-section">
-              <h3 class="credits-section-title" data-i18n="main_menu.development">Desarrollo</h3>
-              <p class="credits-line">Code Eider</p>
+            <div class="credits-role-grid">
+              <div class="credits-role-card">
+                <i class="fa-solid fa-code" aria-hidden="true"></i>
+                <span data-i18n="main_menu.development">Desarrollo</span>
+                <strong>Code Eider</strong>
+              </div>
+              <div class="credits-role-card">
+                <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+                <span data-i18n="main_menu.design">Diseño UI / UX</span>
+                <strong>Code Eider</strong>
+              </div>
+              <div class="credits-role-card">
+                <i class="fa-solid fa-plug-circle-bolt" aria-hidden="true"></i>
+                <span data-i18n="main_menu.fivem_integration">Integración FiveM</span>
+                <strong>Code Eider</strong>
+              </div>
             </div>
-            <div class="credits-section">
-              <h3 class="credits-section-title" data-i18n="main_menu.design">Diseño UI / UX</h3>
-              <p class="credits-line">Code Eider</p>
-            </div>
-            <div class="credits-section">
-              <h3 class="credits-section-title" data-i18n="main_menu.fivem_integration">Integración FiveM</h3>
-              <p class="credits-line">Code Eider</p>
+            <div class="credits-footer-strip">
+              <span>StreetKings Framework</span>
+              <strong>Code Eider</strong>
             </div>
             <div id="creditsSpacer" class="credits-spacer" aria-hidden="true"></div>
           </div>
@@ -157,7 +166,10 @@
         </div>
         <div class="sk-avatar-topbar-tools">
           <input type="range" id="avatarCameraHeight" class="sk-avatar-camera-slider" min="0" max="1" step="0.01" value="0.5" hidden aria-hidden="true" />
-          <button type="button" id="avatarSpotlight" class="sk-avatar-spotlight-btn" data-i18n="avatar.spotlight">Foco</button>
+          <button type="button" id="avatarSpotlight" class="sk-avatar-spotlight-btn" data-i18n-title="avatar.spotlight" data-i18n-aria-label="avatar.spotlight" title="Foco" aria-label="Foco">
+            <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
+            <span class="sr-only" data-i18n="avatar.spotlight">Foco</span>
+          </button>
           <div class="sk-avatar-balance-wrap">
             <span class="sk-avatar-balance-label">GearCoins</span>
             <span class="sk-avatar-balance-value" id="avatarBalance">0</span>

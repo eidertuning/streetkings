@@ -7,6 +7,7 @@
   var input = document.getElementById('skChatInput');
   var messages = [];
   var fadeTimer = null;
+  var previewMs = 6500;
 
   function nui(name, data) {
     return fetch('https://' + GetParentResourceName() + '/' + name, {
@@ -23,22 +24,29 @@
     return 'GLOBAL';
   }
 
-  function appendMessage(message) {
-    messages.push(message);
-    if (messages.length > 80) messages.shift();
-    render();
-    root.classList.add('has-messages');
+  function schedulePreviewHide() {
     window.clearTimeout(fadeTimer);
     fadeTimer = window.setTimeout(function () {
       if (!root.classList.contains('is-open')) {
         root.classList.remove('has-messages');
       }
-    }, 8500);
+    }, previewMs);
+  }
+
+  function appendMessage(message) {
+    messages.push(message);
+    if (messages.length > 120) messages.shift();
+    render();
+    root.classList.add('has-messages');
+    if (!root.classList.contains('is-open')) {
+      schedulePreviewHide();
+    }
   }
 
   function render() {
+    var wasNearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 24;
     log.innerHTML = '';
-    messages.slice(-8).forEach(function (message) {
+    messages.forEach(function (message) {
       var row = document.createElement('article');
       row.className = 'sk-chat-message sk-chat-message--' + (message.scope || 'global');
 
@@ -67,18 +75,25 @@
       row.appendChild(body);
       log.appendChild(row);
     });
-    log.scrollTop = log.scrollHeight;
+    if (root.classList.contains('is-open') || wasNearBottom) {
+      log.scrollTop = log.scrollHeight;
+    }
   }
 
   function open() {
+    window.clearTimeout(fadeTimer);
     root.classList.add('is-open', 'has-messages');
     input.value = '';
-    window.setTimeout(function () { input.focus(); }, 40);
+    window.setTimeout(function () {
+      input.focus();
+      log.scrollTop = log.scrollHeight;
+    }, 40);
   }
 
   function close() {
     root.classList.remove('is-open');
     input.blur();
+    schedulePreviewHide();
     nui('skchat:close');
   }
 
@@ -92,6 +107,7 @@
     nui('skchat:submit', { message: text });
     root.classList.remove('is-open');
     input.blur();
+    schedulePreviewHide();
   });
 
   document.addEventListener('keydown', function (event) {
@@ -104,7 +120,10 @@
   window.addEventListener('message', function (event) {
     var data = event.data || {};
     if (data.type === 'skchat:open') open();
-    if (data.type === 'skchat:close') root.classList.remove('is-open');
+    if (data.type === 'skchat:close') {
+      root.classList.remove('is-open');
+      schedulePreviewHide();
+    }
     if (data.type === 'skchat:denied') appendMessage({ scope: 'system', author: 'Sistema', tag: 'SYS', text: 'Chat disponible solo en freeroam.' });
     if (data.type === 'skchat:message' && data.message) appendMessage(data.message);
   });

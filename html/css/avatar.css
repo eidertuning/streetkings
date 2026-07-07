@@ -1375,6 +1375,57 @@
   min-width: 0;
 }
 
+.sk-avatar-spotlight-btn {
+  width: 2.65rem;
+  height: 2.65rem;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(140, 236, 255, 0.96);
+  background:
+    linear-gradient(145deg, rgba(140, 236, 255, 0.13), rgba(255, 10, 115, 0.07)),
+    rgba(255, 255, 255, 0.045);
+  border-color: rgba(140, 236, 255, 0.28);
+}
+
+.sk-avatar-spotlight-btn i {
+  font-size: 1rem;
+  filter: drop-shadow(0 0 10px rgba(140, 236, 255, 0.35));
+}
+
+.sk-avatar-spotlight-btn.is-active {
+  color: #111;
+  background: linear-gradient(135deg, #8cecff, #c86bff 58%, #ff0a73);
+  border-color: rgba(255, 255, 255, 0.38);
+}
+
+.sk-avatar .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sk-avatar-controls,
+.sk-avatar-browser {
+  scrollbar-color: rgba(140, 236, 255, 0.72) rgba(255, 255, 255, 0.04);
+}
+
+.sk-avatar-controls::-webkit-scrollbar-thumb,
+.sk-avatar-browser::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #8cecff, #c86bff 58%, #ff0a73);
+}
+
+.sk-avatar-controls::-webkit-scrollbar-thumb:hover,
+.sk-avatar-browser::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #b8f4ff, #d28aff 58%, #ff3f94);
+}
+
 .sk-avatar-balance-value {
   font-size: clamp(1.15rem, 1.65vw, 1.65rem);
 }
