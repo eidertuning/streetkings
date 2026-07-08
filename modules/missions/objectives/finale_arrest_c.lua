@@ -209,13 +209,13 @@ local function runInterrogation(ctx, obj)
     DestroyCam(activeCam, false)
     activeCam = varCam
 
-    showSubtitle('Vargas', "End of the line, racer.", 3000)
+    showSubtitle('Vargas', "Todos dicen que solo eran el conductor.", 3000)
     playChatter(vargasPed, 3000)
     Wait(3500)
-    showSubtitle('Vargas', "Grand theft. Armed robbery. Criminal conspiracy. Three felonies, one night.", 4000)
+    showSubtitle('Vargas', "Robo mayor, fuga, conspiración. Tres cargos serios en una noche.", 4000)
     playChatter(vargasPed, 4000)
     Wait(4500)
-    showSubtitle('Vargas', "Twenty years minimum. Unless you want to hear option B.", 3500)
+    showSubtitle('Vargas', "Celda larga. A menos que quieras escuchar la opción B.", 3500)
     playChatter(vargasPed, 3500)
     Wait(4000)
 
@@ -228,7 +228,7 @@ local function runInterrogation(ctx, obj)
     DestroyCam(activeCam, false)
     activeCam = plyCam
 
-    showSubtitle('You', "...Gabe?", 2500)
+    showSubtitle('Tú', "...¿Gabe?", 2500)
     Wait(3000)
 
     local gabCam = CreateCam('DEFAULT_SCRIPTED_CAMERA', true)
@@ -240,10 +240,10 @@ local function runInterrogation(ctx, obj)
     DestroyCam(activeCam, false)
     activeCam = gabCam
 
-    showSubtitle('Gabe', "Detective Gabriel Reyes, LSPD Organized Crime Unit. It's been a long three weeks.", 4000)
+    showSubtitle('Gabe', "Te dije que deberíamos hablar sin Saint.", 4000)
     playChatter(gabePed, 4000)
     Wait(4500)
-    showSubtitle('Gabe', "Every drop. Every plate. Every face. You handed it all to me.", 4000)
+    showSubtitle('Gabe', "No estás arrestado. Estás contratado.", 4000)
     playChatter(gabePed, 4000)
     Wait(4500)
 
@@ -256,7 +256,7 @@ local function runInterrogation(ctx, obj)
     DestroyCam(activeCam, false)
     activeCam = varCam2
 
-    showSubtitle('Vargas', "So here's the deal.", 2200)
+    showSubtitle('Vargas', "Si fueras arrestado, terminarías en una celda.", 2200)
     playChatter(vargasPed, 2200)
     Wait(2800)
 
@@ -269,13 +269,13 @@ local function runInterrogation(ctx, obj)
     DestroyCam(activeCam, false)
     activeCam = gabCam2
 
-    showSubtitle('Gabe', "You get back on the street. You keep driving. For Saint. For us.", 4000)
+    showSubtitle('Gabe', "Si trabajas con nosotros, sigues conduciendo. Para Saint. Para nosotros.", 4000)
     playChatter(gabePed, 4000)
     Wait(4500)
-    showSubtitle('Gabe', "You tell me everything. Every pickup, every drop, every name.", 4000)
+    showSubtitle('Gabe', "Me cuentas cada recogida, cada entrega, cada nombre.", 4000)
     playChatter(gabePed, 4000)
     Wait(4500)
-    showSubtitle('Gabe', "You cooperate, and in six months this all goes away. You don't... well. Vargas has a cell with your name on it.", 5000)
+    showSubtitle('Gabe', "Cooperas y esto desaparece. Te niegas, y Vargas guarda tu celda.", 5000)
     playChatter(gabePed, 5000)
     Wait(5500)
 
@@ -288,7 +288,7 @@ local function runInterrogation(ctx, obj)
     DestroyCam(activeCam, false)
     activeCam = varCam3
 
-    showSubtitle('Vargas', "Choose now. Clock's ticking.", 3000)
+    showSubtitle('Vargas', "Decide ahora. El reloj también corre para ti.", 3000)
     playChatter(vargasPed, 3000)
     Wait(3500)
     Wait(2000)

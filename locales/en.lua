@@ -12,9 +12,9 @@ Open your phone, check what's live, get your name on the boards. Cash keeps you 
             hector_welcome_followup_two = [[Here's the part most rookies miss.
 
 Pick a car you actually like. Learn how it moves. Drive it clean. A flashy run don't mean a thing if you can't repeat it when it matters.]],
-            chapter_intro_end = "Good. Now you know the basics. Next time I call, it's for real.",
-            chapter_intro_unlock = "Time to learn where things are. Head to the overlook - then I'll point you to a few spots you'll need.",
-            local_legend_unlock = "Okay. So it looks like you know how to drive. Let's see you handle real competition. Head up to the Car Meet and show the locals what you got.",
+            chapter_intro_end = "You saw the basics. Now comes the real part.",
+            chapter_intro_unlock = "Before you race this city, you need to learn how to read it. Head to the overlook; after that I'll mark the spots you're going to need.",
+            local_legend_unlock = "Welcome to the underground. Real drivers, real bets, real money. Head to the Car Meet and stop being invisible.",
         },
         daily_playlist_body = [[Today's featured runs for {class} class are live.
 

@@ -12,9 +12,9 @@ Abre el móvil, mira qué hay activo, pon tu nombre en las tablas. El efectivo t
             hector_welcome_followup_two = [[Esta es la parte que casi todos los novatos olvidan.
 
 Elige un coche que de verdad te guste. Aprende cómo se mueve. Conduce limpio. Una pasada vistosa no sirve de nada si no puedes repetirla cuando importa.]],
-            chapter_intro_end = "Bien. Ya conoces lo básico. La próxima vez que te llame, será de verdad.",
-            chapter_intro_unlock = "Hora de aprender dónde están las cosas. Ve al mirador; luego te señalaré algunos sitios que vas a necesitar.",
-            local_legend_unlock = "Vale. Parece que sabes conducir. Vamos a ver cómo te va contra competencia real. Sube al encuentro de coches y enseña a los locales lo que tienes.",
+            chapter_intro_end = "Ya viste lo básico. Ahora viene lo real.",
+            chapter_intro_unlock = "Antes de correr esta ciudad, tienes que aprender a leerla. Sube al mirador; después te marco los sitios que vas a necesitar.",
+            local_legend_unlock = "Bienvenido al subsuelo. Pilotos reales, apuestas reales, dinero real. Sube al encuentro de coches y deja de ser invisible.",
         },
         daily_playlist_body = [[Las rutas destacadas de hoy para clase {class} estan activas.
 

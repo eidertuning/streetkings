@@ -13,7 +13,7 @@ local function reg(id, def) SKCutscene.register(id, def) end
 -- Mission 2: Hector's intro at the Car Meet (player stays in car)
 reg('chapter1/hector_intro_meet', {
     title = 'Leyenda Local',
-    subtitle = 'Es hora de mostrar de qué estás hecho.',
+    subtitle = 'Deja de ser invisible.',
     lookAt = vector3(244.27, 1176.28, 225.5),
     shots = {
         { coords = vector3(238.0, 1186.0, 232.0), lookAt = vector3(250.0, 1170.0, 225.0), fov = 50.0, durationMs = 3500 },
@@ -21,22 +21,23 @@ reg('chapter1/hector_intro_meet', {
     },
     subtitles = {
         { atMs = 400,  speaker = 'Hector', body = "Bienvenido al subsuelo. Pilotos reales, apuestas reales, dinero real.", duration = 3200 },
-        { atMs = 3800, speaker = 'Hector', body = "¿Por qué no eliges a alguien para desafiar? No me avergüences.",               duration = 3500 },
+        { atMs = 3800, speaker = 'Hector', body = "Busca a alguien, ponte al lado y quema rueda. No me avergüences.", duration = 3500 },
     },
 })
 
 -- Mission 1: Overlook reveal (player in car, sweeping pan over LS)
 reg('chapter1/vinewood_overlook', {
     title = 'Reconociendo las Calles',
-    subtitle = 'Aprende la ciudad.',
+    subtitle = 'Aprende a leerla.',
     lookAt = vector3(200.0, -200.0, 60.0),
     shots = {
         { coords = vector3(855.0, 1095.0, 318.0), lookAt = vector3(200.0, -200.0, 60.0),  fov = 48.0, durationMs = 3500 },
         { coords = vector3(810.0, 1100.0, 320.0),  lookAt = vector3(-500.0, -600.0, 50.0), fov = 52.0, durationMs = 4000, interpMs = 3000 },
     },
     subtitles = {
-        { atMs = 400,  speaker = 'Hector', body = "Mira bien. Cada calle, cada callejón, cada esquina con un trato en curso.", duration = 3500 },
-        { atMs = 4200, speaker = 'Hector', body = "Antes de correrla, necesitas conocerla. Ven conmigo.", duration = 3500 },
+        { atMs = 400,  speaker = 'Hector', body = "Antes de correr esta ciudad, tienes que aprender a leerla.", duration = 3000 },
+        { atMs = 3500, speaker = 'Hector', body = "Cada calle tiene dueño, cada esquina tiene historia.", duration = 3000 },
+        { atMs = 6200, speaker = 'Hector', body = "Ven conmigo. Te voy a enseñar dónde se gana respeto.", duration = 2600 },
     },
 })
 
@@ -49,8 +50,8 @@ reg('chapter1/discover_visual', {
         { coords = vector3(-367.0, -138.0, 40.0), lookAt = vector3(-358.0, -130.0, 39.0), fov = 35.0, durationMs = 3500, interpMs = 2000 },
     },
     subtitles = {
-        { atMs = 300,  speaker = 'Hector', body = "Modificaciones visuales. Pintura, llantas, decoraciones - así es como te presentas.", duration = 3000 },
-        { atMs = 3500, speaker = 'Hector', body = "Aquí fuera, la gente mira tu coche antes que tu cara.", duration = 2800 },
+        { atMs = 300,  speaker = 'Hector', body = "Un coche bonito llama la atención. Un coche bien armado gana respeto.", duration = 3300 },
+        { atMs = 3700, speaker = 'Hector', body = "Aquí fuera, tu carro habla antes que tú.", duration = 2600 },
     },
 })
 
@@ -63,8 +64,8 @@ reg('chapter1/discover_performance', {
         { coords = vector3(712.0, -1080.0, 22.5), lookAt = vector3(717.8, -1088.2, 20.6), fov = 35.0, durationMs = 3500, interpMs = 2000 },
     },
     subtitles = {
-        { atMs = 300,  speaker = 'Hector', body = "Taller de rendimiento. Motor, turbo, frenos - las piezas que nadie ve pero todos sienten.", duration = 3200 },
-        { atMs = 3700, speaker = 'Hector', body = "Puedes hablar todo lo que quieras, pero el motor dice la verdad.", duration = 2800 },
+        { atMs = 300,  speaker = 'Hector', body = "Motor, turbo, frenos. Nadie los ve, pero todos los sienten cuando pasas.", duration = 3200 },
+        { atMs = 3700, speaker = 'Hector', body = "Puedes hablar bonito, pero el motor siempre dice la verdad.", duration = 2800 },
     },
 })
 
@@ -77,8 +78,8 @@ reg('chapter1/discover_dealership', {
         { coords = vector3(-72.0, -1108.0, 27.0), lookAt = vector3(-53.8, -1110.4, 26.1), fov = 36.0, durationMs = 3500, interpMs = 2000 },
     },
     subtitles = {
-        { atMs = 300,  speaker = 'Hector', body = "Lote de tuners. Cuando te ganes algo, aquí es donde eliges el siguiente.", duration = 3200 },
-        { atMs = 3600, speaker = 'Hector', body = "El coche adecuado para la carrera adecuada, compadre. Importa más de lo que crees.", duration = 2800 },
+        { atMs = 300,  speaker = 'Hector', body = "El coche adecuado para la carrera adecuada, compadre.", duration = 3000 },
+        { atMs = 3400, speaker = 'Hector', body = "Elige mal y pierdes antes de pisar el acelerador.", duration = 3000 },
     },
 })
 
@@ -91,14 +92,14 @@ reg('chapter1/discover_clothing', {
         { coords = vector3(408.0, -815.0, 29.8), lookAt = vector3(411.3, -808.1, 28.6), fov = 35.0, durationMs = 3500, interpMs = 2000 },
     },
     subtitles = {
-        { atMs = 300,  speaker = 'Hector', body = "Binco. No es alta costura, pero puedes cambiar tu look cuando necesites.", duration = 3000 },
-        { atMs = 3500, speaker = 'Hector', body = "Ese es el tour. Ya conoces la ciudad - no hay excusas. Ve y hazte alguien.", duration = 3500 },
+        { atMs = 300,  speaker = 'Hector', body = "Binco no te hace famoso, pero nadie respeta a un fantasma.", duration = 3000 },
+        { atMs = 3500, speaker = 'Hector', body = "Ya viste lo básico. Ahora viene lo real.", duration = 3500 },
     },
 })
 
 -- Mission 3: Rockford challenge intro (player in car, camera shows the start area)
 reg('chapter1/rockford_challenge', {
-    title = 'Fuera de la Línea',
+    title = 'Desde la salida',
     subtitle = 'Derrota al rival.',
     lookAt = vector3(-1241.0, -456.0, 33.0),
     shots = {
@@ -106,8 +107,8 @@ reg('chapter1/rockford_challenge', {
         { coords = vector3(-1232.0, -461.0, 35.0), lookAt = vector3(-1241.0, -454.0, 33.5), fov = 35.0, durationMs = 3500, interpMs = 2500 },
     },
     subtitles = {
-        { atMs = 400,  speaker = 'Hector', body = "¿Ves a ese tonto? Cree que es dueño de esta cuadra.", duration = 3000 },
-        { atMs = 3600, speaker = 'Hector', body = "Déjalo atrás. Muéstrale de quién es realmente esta calle.",    duration = 3000 },
+        { atMs = 400,  speaker = 'Hector', body = "Hay un tipo en Rockford que cree que esa zona es suya.", duration = 3000 },
+        { atMs = 3400, speaker = 'Hector', body = "No le regales la salida. Él quiere que cometas el error.", duration = 3200 },
     },
 })
 
@@ -122,9 +123,13 @@ reg('chapter1/gabe_meets_vargas', {
         { coords = vector3(2523.0, 2608.2, 38.3), lookAt = vector3(2522.3, 2609.9, 38.5), fov = 32.0, durationMs = 4000, interpMs = 2000 },
     },
     subtitles = {
-        { atMs = 400,   speaker = 'You',    body = "Ese no es un comprador. Ese es un chapa.",                              duration = 3000 },
-        { atMs = 3800,  speaker = 'Gabe',   body = "Todo listo para el viernes. Saint tiene un nuevo piloto - el chico no tiene récord.", duration = 3500 },
-        { atMs = 7600,  speaker = 'Vargas', body = "Bien. Quiero a toda la pandilla en el patio. Hasta el último.",         duration = 3200 },
-        { atMs = 11000, speaker = 'Gabe',   body = "Solo mantén mi nombre fuera del papeleo.",                         duration = 3000 },
+        { atMs = 400,   speaker = 'Tú',     body = "Ese no es comprador. Ese es policía.", duration = 2500 },
+        { atMs = 2700,  speaker = 'Gabe',   body = "Todo listo para el viernes. Saint tiene un conductor nuevo.", duration = 2600 },
+        { atMs = 5200,  speaker = 'Gabe',   body = "El chico no tiene historial.", duration = 1800 },
+        { atMs = 6900,  speaker = 'Vargas', body = "Mejor. Los limpios son más fáciles de ensuciar.", duration = 2600 },
+        { atMs = 8800,  speaker = 'Gabe',   body = "No lo subestimes. Conduce bien.", duration = 2200 },
+        { atMs = 10200, speaker = 'Vargas', body = "Entonces nos sirve.", duration = 1700 },
+        { atMs = 11200, speaker = 'Gabe',   body = "Solo mantén mi nombre fuera del papeleo.", duration = 2400 },
+        { atMs = 12100, speaker = 'Vargas', body = "Déjalo creer. Saint siempre mira al traidor equivocado.", duration = 2800 },
     },
 })

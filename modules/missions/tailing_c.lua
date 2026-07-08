@@ -178,10 +178,14 @@ function SKTailing.beginFromSession(ped, vehicle, obj, callbacks)
                 local copEnt = cop
                 if DoesEntityExist(gabeEnt) and copEnt and DoesEntityExist(copEnt) then
                     local subtitles = {
-                        { atMs = 400,   speaker = 'You',    body = "That's not a buyer. That's a badge.",                              duration = 3000, talker = nil },
-                        { atMs = 3800,  speaker = 'Gabe',   body = "It's all set for Friday. Saint's using a new driver - kid's got no record.", duration = 3500, talker = 'gabe' },
-                        { atMs = 7600,  speaker = 'Vargas', body = "Good. I want the whole crew at the yard. Every last one of them.",         duration = 3200, talker = 'cop' },
-                        { atMs = 11000, speaker = 'Gabe',   body = "Just keep my name out of the paperwork.",                         duration = 3000, talker = 'gabe' },
+                        { atMs = 400,   speaker = 'Tú',     body = "Ese no es comprador. Ese es policía.", duration = 2500, talker = nil },
+                        { atMs = 2700,  speaker = 'Gabe',   body = "Todo listo para el viernes. Saint tiene un conductor nuevo.", duration = 2600, talker = 'gabe' },
+                        { atMs = 5200,  speaker = 'Gabe',   body = "El chico no tiene historial.", duration = 1800, talker = 'gabe' },
+                        { atMs = 6900,  speaker = 'Vargas', body = "Mejor. Los limpios son más fáciles de ensuciar.", duration = 2600, talker = 'cop' },
+                        { atMs = 8800,  speaker = 'Gabe',   body = "No lo subestimes. Conduce bien.", duration = 2200, talker = 'gabe' },
+                        { atMs = 10200, speaker = 'Vargas', body = "Entonces nos sirve.", duration = 1700, talker = 'cop' },
+                        { atMs = 11200, speaker = 'Gabe',   body = "Solo mantén mi nombre fuera del papeleo.", duration = 2400, talker = 'gabe' },
+                        { atMs = 12100, speaker = 'Vargas', body = "Déjalo creer. Saint siempre mira al traidor equivocado.", duration = 2800, talker = 'cop' },
                     }
                     local shots = {
                         { entity = copEnt,  offset = vector3(1.5, 2.5, 1.2),  fov = 50.0, durationMs = 3500 },
