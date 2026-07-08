@@ -1,0 +1,257 @@
+/* Five Horizon server skin. Loaded after the packaged admin CSS. */
+:root{
+  --gold:#ff0a73;
+  --gold2:#8cecff;
+  --blue:#8cecff;
+  --purple:#c86bff;
+  --fh-grad:linear-gradient(90deg,#8cecff 0%,#c86bff 48%,#ff0a73 78%,#ffd43b 100%);
+  --fh-panel:linear-gradient(145deg,rgba(10,10,16,.94),rgba(22,10,22,.88) 54%,rgba(4,7,10,.92));
+}
+
+html,
+body{
+  font-family:Poppins,Inter,Arial,sans-serif;
+  letter-spacing:0;
+}
+
+.admin-app{
+  padding:14px;
+  background:
+    radial-gradient(circle at 16% 0%,rgba(255,10,115,.18),transparent 28%),
+    radial-gradient(circle at 88% 10%,rgba(140,236,255,.12),transparent 34%),
+    linear-gradient(135deg,rgba(3,3,6,.98),rgba(11,11,16,.96) 60%,rgba(3,5,7,.98));
+}
+
+.admin-app:before{
+  background-size:30px 30px;
+  opacity:.78;
+  mask-image:linear-gradient(180deg,rgba(0,0,0,.82),transparent 92%);
+}
+
+.topbar,
+.tabs,
+.panel,
+.card{
+  border-color:rgba(255,255,255,.12);
+  background:var(--fh-panel);
+  box-shadow:0 18px 46px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.07);
+}
+
+.topbar{
+  height:58px;
+  padding:9px 11px;
+  border-radius:8px 8px 0 0;
+}
+
+.brand-mark{
+  background:var(--fh-grad);
+  color:#050507;
+  border-color:rgba(255,255,255,.35);
+  box-shadow:0 0 24px rgba(255,10,115,.24);
+}
+
+.eyebrow,
+.card h3,
+.control-hero-kicker,
+.room-ping,
+.copy-mini,
+.copy-btn,
+.target-title .skico,
+.action-btn .skico,
+.empty-icon .skico,
+.live-empty .skico,
+.status-cards span{
+  color:var(--blue);
+}
+
+.brand h1{
+  font-size:18px;
+  letter-spacing:.12em;
+}
+
+.pill.gold,
+.btn.gold,
+.gold{
+  background:linear-gradient(135deg,#ff0a73,#c86bff 54%,#8cecff)!important;
+  border-color:rgba(140,236,255,.55)!important;
+  color:#fff!important;
+  text-shadow:0 1px 8px rgba(0,0,0,.28);
+}
+
+.pill{
+  border-radius:8px;
+  background:rgba(255,255,255,.055);
+}
+
+button,
+input,
+textarea,
+select{
+  border-radius:8px;
+}
+
+button:hover{
+  border-color:rgba(140,236,255,.65);
+  background:linear-gradient(180deg,rgba(255,10,115,.18),rgba(140,236,255,.06));
+  filter:brightness(1.08);
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+  border-color:rgba(140,236,255,.82);
+  box-shadow:0 0 0 2px rgba(140,236,255,.08),var(--inset);
+}
+
+.tabs{
+  height:52px;
+  border-top:0;
+  border-radius:0 0 8px 8px;
+  background:rgba(0,0,0,.24);
+}
+
+.tab{
+  min-width:104px;
+  height:35px;
+  border-radius:8px;
+  background:rgba(255,255,255,.045);
+}
+
+.tab.active{
+  background:var(--fh-grad);
+  border-color:rgba(140,236,255,.56);
+  color:#050507;
+}
+
+.layout{
+  grid-template-columns:290px minmax(0,1fr) 300px;
+  gap:10px;
+  padding-top:10px;
+}
+
+.panel-head{
+  height:42px;
+  background:rgba(255,255,255,.028);
+}
+
+.player-card,
+.room-card,
+.vehicle-row,
+.catalog-card,
+.action-btn{
+  border-radius:8px;
+  border-color:rgba(255,255,255,.11);
+  background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(0,0,0,.16));
+}
+
+.player-card:before,
+.room-card:before{
+  background:rgba(140,236,255,.35);
+}
+
+.player-card.active,
+.room-card.active,
+.vehicle-row.active,
+.catalog-card:hover{
+  border-color:rgba(255,10,115,.72);
+  background:linear-gradient(135deg,rgba(255,10,115,.18),rgba(140,236,255,.07),rgba(0,0,0,.16));
+}
+
+.player-card.active:before,
+.room-card.active:before,
+.room-card:hover:before{
+  background:var(--fh-grad);
+}
+
+.control-hero,
+.hero-card{
+  border-color:rgba(255,10,115,.42);
+  background:linear-gradient(120deg,rgba(255,10,115,.18),rgba(200,107,255,.08) 45%,rgba(140,236,255,.08));
+  border-radius:10px;
+}
+
+.control-hero h2,
+.hero-card h2{
+  font-size:24px;
+  letter-spacing:.03em;
+}
+
+.stat b{
+  font-size:28px;
+}
+
+.badge.warn,
+.class-badge{
+  background:rgba(255,10,115,.14);
+  color:#ff78ac;
+}
+
+.status-dot.off:before{
+  background:#ff0a73;
+  box-shadow:0 0 12px rgba(255,10,115,.8);
+}
+
+.action-btn{
+  min-height:70px;
+}
+
+.action-btn:after{
+  border-color:rgba(140,236,255,.12);
+}
+
+.screen-view{
+  border-radius:8px;
+  border-color:rgba(140,236,255,.22);
+  background:#010103;
+}
+
+.live-status.on{
+  border-color:rgba(95,224,163,.7);
+  color:#a7ffd1;
+}
+
+.toast{
+  right:28px;
+  bottom:28px;
+  border-radius:8px;
+  border-color:rgba(140,236,255,.48);
+  background:linear-gradient(135deg,rgba(4,12,14,.95),rgba(18,8,18,.94));
+  color:#fff;
+}
+
+.toast.info{
+  border-color:rgba(140,236,255,.5);
+  background:linear-gradient(135deg,rgba(8,13,18,.96),rgba(23,9,23,.95));
+  color:#dff7ff;
+}
+
+.weather-main,
+.weather-chip img,
+.ambient-backdrop .sky-star{
+  filter:drop-shadow(0 0 14px rgba(140,236,255,.34));
+}
+
+.time-chip.active{
+  border-color:rgba(255,10,115,.7);
+  background:linear-gradient(180deg,rgba(255,10,115,.22),rgba(140,236,255,.05));
+}
+
+::-webkit-scrollbar{
+  width:10px;
+  height:10px;
+}
+
+::-webkit-scrollbar-track{
+  background:#050507;
+  border-left:1px solid rgba(255,255,255,.04);
+}
+
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#8cecff,#c86bff,#ff0a73);
+  border:2px solid #050507;
+  border-radius:999px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(180deg,#b7f5ff,#d69cff,#ff3f92);
+}

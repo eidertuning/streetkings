@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>SK Admin Hidden Broadcaster</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      background: transparent;
+      pointer-events: none;
+      opacity: 0.01;
+    }
+    #gameCanvas {
+      position: fixed;
+      top: -9999px;
+      left: -9999px;
+      width: 1280px;
+      height: 720px;
+      visibility: visible;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="1280" height="720"></canvas>
+  <script src="hidden_live.js"></script>
+</body>
+</html>

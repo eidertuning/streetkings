@@ -1,0 +1,28 @@
+ce_skadmin v46.0.0 - Five Horizon Control UI
+
+Cambios aplicados:
+- Nuevo estilo oscuro con acentos rosa, cian y lila como Five Horizon.
+- Vista principal tipo sala de control con tarjetas de jugadores.
+- Menu lateral de jugadores redisenado como lista compacta.
+- Acciones admin separadas por grupos: Jugador, Vehiculo y Framework.
+- Mejoras de legibilidad, scroll, botones cuadrados, tarjetas y paneles.
+- Se mantiene la app dentro de la tablet oficial; no se convierte en NUI fullscreen.
+- Se mantiene la sesion segura de tablet, permisos por rango y seleccion de slot/personaje.
+
+Instalacion:
+1. Haz copia de seguridad de tu ce_skadmin actual.
+2. Sustituye la carpeta ce_skadmin por esta.
+3. Asegurate de tener streetkings iniciado antes de ce_skadmin.
+4. En server.cfg: ensure ce_skadmin
+5. Abre la tablet y entra a la app "Control".
+
+Nota:
+El recurso no depende de servicios externos para el estilo visual.
+
+--- v46 Animacion SVG + sonido ---
+- Copiados los SVG a html/assets/weather/: sun.svg, moon.svg, cloudy.svg y stars.svg.
+- Copiado tsunami_siren.ogg a html/assets/sounds/tsunami_siren.ogg.
+- Registrados los assets en fxmanifest.lua para que FiveM los cargue.
+- Agregada animacion real en la pestana Ambiente: sol/luna/nubes/estrellas segun hora y clima.
+- Agregado boton de prueba de sirena en la UI de admin.
+- Se conserva la app dentro del frame/tablet StreetKings.

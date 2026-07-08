@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Five Horizon Control</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="fh-skin.css" />
+  <script src="https://cfx-nui-streetkings/html/js/tablet-sdk.js"></script>
+</head>
+<body class="boot-hidden">
+  <div id="app" class="admin-app">
+    <div class="ambient-backdrop" aria-hidden="true"><img class="sky-star sky-star-a" src="assets/weather/stars.svg" /><img class="sky-star sky-star-b" src="assets/weather/stars.svg" /><span class="ambient-orbit"><img src="assets/weather/sun.svg" alt="" /></span><span class="ambient-orbit moon-orbit"><img src="assets/weather/moon.svg" alt="" /></span></div>
+    <header class="topbar">
+      <div class="brand">
+        <div id="brandIcon" class="brand-mark"></div>
+        <div><span class="eyebrow">Five Horizon</span><h1>Control</h1></div>
+      </div>
+      <div class="status-strip">
+        <span id="rankPill" class="pill gold">...</span>
+        <span id="clockPill" class="pill">--:--</span>
+        <button id="refreshBtn" class="icon-btn" title="Refrescar"></button>
+        <button id="closeBtn" class="icon-btn" title="Cerrar"></button>
+      </div>
+    </header>
+    <nav class="tabs" id="tabs"></nav>
+    <main class="layout">
+      <section class="players-panel panel">
+        <div class="panel-head"><h2>Jugadores</h2><span id="playerCount" class="muted">0 conectados</span></div>
+        <input id="playerSearch" class="search" placeholder="Buscar sala, jugador, ID o licencia..." />
+        <div id="playersList" class="players-list"></div>
+      </section>
+      <section class="content-panel panel"><div id="content"></div></section>
+      <aside class="target-panel panel"><div class="panel-head"><h2>Objetivo</h2></div><div id="targetBox" class="target-box empty">Selecciona un jugador.</div></aside>
+    </main>
+    <div id="toast" class="toast hidden"></div>
+    <audio id="tsunamiSiren" preload="auto" src="assets/sounds/tsunami_siren.ogg"></audio>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
